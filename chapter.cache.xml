@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cache.xml 474 2012-10-29 11:01:51Z netkiller $ -->
+<chapter id="cache">
+	<title>Cache</title>
+	<section id="ehcache">
+		<title>Ehcache</title>
+	</section>
+</chapter>

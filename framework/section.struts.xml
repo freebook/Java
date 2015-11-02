@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="struts" ?>
+	<title>Struts</title>
+	<para><ulink url="http://struts.apache.org/" /></para>
+	<para>You can checkout all the example applications from the Struts 2 GitHub repository at https://github.com/apache/struts-examples.</para>
+	
+</chapter>

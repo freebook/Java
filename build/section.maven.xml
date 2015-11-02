@@ -1,0 +1,18 @@
+<section id="maven">
+	<title>maven</title>
+	<screen>
+$ sudo apt-get install maven2
+
+$ mvn -version
+Apache Maven 2.2.1 (rdebian-4)
+Java version: 1.6.0_22
+Java home: /usr/lib/jvm/java-6-openjdk/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux" version: "2.6.38-8-generic" arch: "amd64" Family: "unix"
+
+	</screen>
+			<screen>
+JAVA_HOME="/usr/lib/jvm/java-6-openjdk/jre"
+MAVEN_HOME="/usr/share/maven2/"
+			</screen>
+</section>
