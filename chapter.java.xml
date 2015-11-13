@@ -163,5 +163,4 @@ java memcached
 	</section>
 </section>
 	&chapter.cache.xml;
-	&chapter.framework.xml;
 </chapter>

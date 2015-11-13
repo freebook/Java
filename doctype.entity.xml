@@ -7,4 +7,9 @@
 
 <!ENTITY chapter.cache.xml			 	SYSTEM "chapter.cache.xml">
 <!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
-<!ENTITY framework/section.maven.xml	SYSTEM "framework/section.maven.xml">
+<!ENTITY section.maven.xml				SYSTEM "framework/section.maven.xml">
+
+<!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
+<!ENTITY section.maven.xml				SYSTEM "framework/section.maven.xml">
+
+<!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">

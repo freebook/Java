@@ -1,6 +1,11 @@
 <section id="maven">
 	<title>maven</title>
-	<screen>
+	<para>http://maven.apache.org/</para>
+	<section>
+		<title>安装</title>
+		<section>
+			<title>Ubuntu</title>
+			<screen>
 $ sudo apt-get install maven2
 
 $ mvn -version
@@ -10,9 +15,23 @@ Java home: /usr/lib/jvm/java-6-openjdk/jre
 Default locale: en_US, platform encoding: UTF-8
 OS name: "linux" version: "2.6.38-8-generic" arch: "amd64" Family: "unix"
 
-	</screen>
+			</screen>
 			<screen>
 JAVA_HOME="/usr/lib/jvm/java-6-openjdk/jre"
 MAVEN_HOME="/usr/share/maven2/"
+			</screen>			
+		</section>
+		<section>
+			<title>源码安装</title>
+			<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven.sh | bash
 			</screen>
+		</section>
+	</section>
+			
+
+	<section>
+		<title>包查询</title>
+		<para>http://search.maven.org/</para>
+	</section>
 </section>
