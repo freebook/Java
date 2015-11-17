@@ -44,13 +44,6 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 	</section>
 </section>
 
-	<section id="index"><?dbhtml dir="build" ?>
-		<title>Build Tools</title>
-		&section.ant.xml;
-		&section.maven.xml;
-		&section.gradle.xml;
-	</section>
-
 <section id="java.sdk">
 	<title>API</title>
 	<section id="log4j">
@@ -163,4 +156,11 @@ java memcached
 	</section>
 </section>
 	&chapter.cache.xml;
+</chapter>
+
+<chapter id="index"><?dbhtml dir="build" ?>
+	<title>Build Tools</title>
+	&section.ant.xml;
+	&section.maven.xml;
+	&section.gradle.xml;
 </chapter>

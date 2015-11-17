@@ -19,7 +19,7 @@ OS name: "linux" version: "2.6.38-8-generic" arch: "amd64" Family: "unix"
 			<screen>
 JAVA_HOME="/usr/lib/jvm/java-6-openjdk/jre"
 MAVEN_HOME="/usr/share/maven2/"
-			</screen>			
+			</screen>
 		</section>
 		<section>
 			<title>源码安装</title>
@@ -28,10 +28,108 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven.sh |
 			</screen>
 		</section>
 	</section>
-			
+
 
 	<section>
 		<title>包查询</title>
 		<para>http://search.maven.org/</para>
+	</section>
+	<section>
+		<title>properties</title>
+		<para>定义 properties</para>
+		<screen>
+		<![CDATA[
+<properties>
+    <spring.version>4.0.1.RELEASE</spring.version>
+</properties>
+		]]>
+		</screen>
+		<para>引用 properties</para>
+		<screen>
+		<![CDATA[
+  <!-- Spring dependencies -->
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <version>${spring.version}</version>
+  </dependency>
+		]]>
+		</screen>
+		<example>
+			<title>Maven properties</title>
+			<para>pom.xml 文件</para>
+			<screen>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>com.javahash.web</groupId>
+ <artifactId>Spring4MVCHelloWorld</artifactId>
+ <packaging>war</packaging>
+ <version>1.0-SNAPSHOT</version>
+ <name>Spring4MVCHelloWorld Maven Webapp</name>
+ <url>http://maven.apache.org</url>
+
+ <properties>
+    <spring.version>4.0.1.RELEASE</spring.version>
+ </properties>
+
+ <dependencies>
+
+    <dependency>
+     <groupId>junit</groupId>
+     <artifactId>junit</artifactId>
+     <version>4.12</version>
+     <scope>test</scope>
+    </dependency>
+
+   <!-- Spring dependencies -->
+   <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <version>${spring.version}</version>
+  </dependency>
+
+ <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-web</artifactId>
+   <version>${spring.version}</version>
+ </dependency>
+
+ <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>${spring.version}</version>
+ </dependency>
+</dependencies>
+
+ <build>
+ <finalName>Spring4MVCHelloWorld</finalName>
+ </build>
+</project>
+			]]>
+			</screen>
+		</example>
+	</section>
+	<section>
+		<title>dependencies</title>
+		<screen>
+		<![CDATA[
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.struts</groupId>
+    	<artifactId>struts2-core</artifactId>
+    	<version>2.3.24.1</version>
+    </dependency>
+  </dependencies>
+		]]>
+		</screen>
 	</section>
 </section>

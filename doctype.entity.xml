@@ -6,10 +6,11 @@
 <!ENTITY section.maven.xml				SYSTEM "build/section.maven.xml">
 
 <!ENTITY chapter.cache.xml			 	SYSTEM "chapter.cache.xml">
+
 <!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
-<!ENTITY section.maven.xml				SYSTEM "framework/section.maven.xml">
+<!ENTITY section.struts.xml				SYSTEM "framework/section.struts.xml">
+<!ENTITY section.play.xml				SYSTEM "framework/section.play.xml">
 
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
-<!ENTITY section.maven.xml				SYSTEM "framework/section.maven.xml">
 
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">

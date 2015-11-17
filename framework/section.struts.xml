@@ -1,7 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="struts" ?>
+<section id="index"><?dbhtml dir="struts" ?>
 	<title>Struts</title>
 	<para><ulink url="http://struts.apache.org/" /></para>
 	<para>You can checkout all the example applications from the Struts 2 GitHub repository at https://github.com/apache/struts-examples.</para>
-	
-</chapter>
+	<programlisting>
+		
+	</programlisting>
+	<section>
+		<title>Struts Tags</title>
+		<para>使用Struts Tags 需要在jsp页面中加入下面一行。</para>
+		<programlisting>
+		<![CDATA[
+<%@ taglib prefix="s" uri="/struts-tags" %>
+		]]>
+		</programlisting>
+		<section>
+			<title>url</title>
+			<programlisting>
+			<![CDATA[
+<p><a href="<s:url action='hello'/>">Hello World</a></p>
+
+<s:url action="hello" var="helloLink">
+  <s:param name="userName">Bruce Phillips</s:param>
+</s:url>
+ 
+<p><a href="${helloLink}">Hello Bruce Phillips</a></p>
+
+			]]>
+			</programlisting>						
+		</section>
+		
+		<section>
+			<title>form</title>
+			<programlisting>
+			<![CDATA[
+<p>Get your own personal hello by filling out and submitting this form.</p>
+ 
+<s:form action="hello">
+ 
+  <s:textfield name="userName" label="Your name" />
+     
+   <s:submit value="Submit" />
+ 
+</s:form>
+			]]>
+			</programlisting>	
+		</section>
+		
+		<section>
+			<title>property tag</title>
+			<programlisting>
+			<![CDATA[
+<s:property value="messageStore.message" />
+			]]>
+			</programlisting>	
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>	
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>	
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>	
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>	
+		</section>
+	</section>
+</section>
