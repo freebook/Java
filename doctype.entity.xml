@@ -10,6 +10,8 @@
 <!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
 <!ENTITY section.struts.xml				SYSTEM "framework/section.struts.xml">
 <!ENTITY section.play.xml				SYSTEM "framework/section.play.xml">
+<!ENTITY chapter.spring.xml				SYSTEM "framework/chapter.spring.xml">
+<!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
 
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
 

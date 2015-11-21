@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="play">
+<chapter id="play">
 	<title>Play</title>
 	<para>https://www.playframework.com/</para>
 	<para>安装Play</para>
@@ -57,4 +57,4 @@ downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.11/2.3
 	[SUCCESSFUL ] com.typesafe.akka#akka-actor_2.11;2.3.9!akka-actor_2.11.jar (14051ms)
 downloading https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk/1.3.29/aws-java-sdk-1.3.29.jar ...
 	</screen>
-</section>
+</chapter>

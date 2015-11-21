@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter><?dbhtml dir="servlet" ?>
+<chapter id="index"><?dbhtml dir="servlet" ?>
 	<title>Servlet</title>
 	<section>
 		<title>Example</title>
