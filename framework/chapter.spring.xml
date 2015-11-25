@@ -97,7 +97,7 @@ public class Welcome {
 @ResponseBody
 public String getNewsByPath() {
     return "Hello";
-}			
+}
 			</programlisting>
 		</section>
 		<section>
@@ -108,18 +108,18 @@ public String getNewsByPath() {
 @ResponseBody
 public String getFoosAsJsonFromBrowser() {
     return "{...}";
-}			
+}
 			]]>
 			</programlisting>
 			<screen>
-curl -H "Accept:application/json,text/html" http://localhost:8080/spring/news/json.html			
+curl -H "Accept:application/json,text/html" http://localhost:8080/spring/news/json.html
 			</screen>
-		</section>		
+		</section>
 	</section>
 	<section id="ResponseBody">
 		<title>@ResponseBody</title>
 		<programlisting>
-import org.springframework.web.bind.annotation.ResponseBody;		
+import org.springframework.web.bind.annotation.ResponseBody;
 		</programlisting>
 		<section>
 			<title>直接返回HTML</title>
@@ -144,11 +144,11 @@ public class Pathinfo {
 	}
 
 }
-			
+
 			]]>
 			</programlisting>
 		</section>
-	</section>	
+	</section>
 	<section id="ModelAndView">
 		<title>ModelAndView</title>
 		<section>
@@ -228,14 +228,6 @@ ${password}<br>
 			]]>
 			</programlisting>
 		</section>
- 
-		<section>
-			<title>HttpServletRequest</title>
-			<programlisting>
-			<![CDATA[
-			]]>
-			</programlisting>
-		</section>
 		<section>
 			<title>ArrayList</title>
 			<programlisting>
@@ -243,7 +235,7 @@ ${password}<br>
 	@RequestMapping(value = "testList")
 	public ModelAndView testList() {
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/test/list"); 
+		mav.setViewName("/test/list");
 
 		// List
 		List<String> list = new ArrayList<String>();
@@ -278,7 +270,7 @@ ${password}<br>
 </body>
 </html>
 			]]>
-			</programlisting>			
+			</programlisting>
 		</section>
 		<section>
 			<title>HashMap</title>
@@ -297,14 +289,14 @@ ${password}<br>
 		mav.addObject("channel", map);
 
 		return mav;
-	}		
+	}
 			]]>
 			</programlisting>
 			<programlisting>
 			<![CDATA[
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -312,10 +304,10 @@ ${password}<br>
 <title>Insert title here</title>
 </head>
 <body>
-	<c:forEach items="${channel}" var="node">  
+	<c:forEach items="${channel}" var="node">
 		<a href="<c:out value="${node.value}"></c:out>"><c:out value="${node.key}"></c:out></a>
         <br/>
-	</c:forEach> 
+	</c:forEach>
 </body>
 </html>
 			]]>
@@ -328,12 +320,12 @@ ${password}<br>
 	@RequestMapping("/testObject")
 	public ModelAndView testObject() {
 		ModelMap model = new ModelMap();
-		
+
 		User user = new User("neo", "passw0rd");
 		model.addAttribute("user", user);
 		return new ModelAndView("test/object", model);
 
-	}			
+	}
 			]]>
 			</programlisting>
 			<programlisting>
@@ -341,7 +333,7 @@ ${password}<br>
 package cn.netkiller;
 
 public class User {
-	public String username; 
+	public String username;
 	public String password;
 	public User(String username, String password){
 		this.username = username;
@@ -370,7 +362,7 @@ public class User {
 Username: ${user.username}<br>
 Password: ${user.password}<br>
 </body>
-</html>			
+</html>
 			]]>
 			</programlisting>
 		</section>
@@ -380,7 +372,7 @@ Password: ${user.password}<br>
 			<![CDATA[
 			]]>
 			</programlisting>
-		</section>		
+		</section>
 	</section>
 	<section id="PathVariable">
 		<title>RequestMapping with Path Variables - @PathVariable</title>
@@ -436,25 +428,18 @@ ${ id } <br>
 </html>
 			]]>
 			</programlisting>
-			
-		</section>
-		<section>
-			<title></title>
-			<programlisting>
-			<![CDATA[
-			]]>
-			</programlisting>
+
 		</section>
 
 	</section>
-	
+
 	<section id="RequestParam">
 		<title>RequestMapping with Request Parameters - @RequestParam</title>
 		<programlisting>
-import org.springframework.web.bind.annotation.RequestParam;		
+import org.springframework.web.bind.annotation.RequestParam;
 		</programlisting>
 		<section>
-			<title></title>
+			<title>HTTP GET</title>
 			<programlisting>
 			<![CDATA[
 	@RequestMapping("/request/param")
@@ -466,19 +451,124 @@ import org.springframework.web.bind.annotation.RequestParam;
 			</programlisting>
 			<para></para>
 			<screen>
-http://localhost:8080/Spring/request/param.html?id=100			
+http://localhost:8080/Spring/request/param.html?id=100
 			</screen>
-		</section>		
+		</section>
+
+		<section>
+			<title>HTTP POST</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class Http {
+
+	@RequestMapping("/http/form")
+	public ModelAndView createCustomer(){
+		ModelMap model = new ModelMap();
+
+		model.addAttribute("email", "netkiller@msn.com");
+		model.addAttribute("phone", "13113668890");
+
+	    return new ModelAndView("http/form", model);
+	}
+
+	@RequestMapping(value= "/http/post", method = RequestMethod.POST)
+	public ModelAndView saveCustomer(HttpServletRequest request,
+	        @RequestParam(value="Email", required=false) String email,
+	        @RequestParam(value="Password", required=false) String password,
+	        @RequestParam(value="Phone", required=false) String phone){
+
+		ModelMap model = new ModelMap();
+
+		model.addAttribute("email", email);
+		model.addAttribute("password", password);
+		model.addAttribute("phone", phone);
+
+	    return new ModelAndView("http/post", model);
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>http/form.jsp</para>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<form method="POST"
+		action="http://localhost:8080/Spring/http/post.html" id="Register"
+		name="Register">
+		Email: <input class="register" type="text" id="Email" name="Email" value="${email}" /> <br />
+		Password： <input class="register" type="password" id="Password" name="Password" value="" /><br />
+		Phone： <input class="register" type="text" id="Phone" name="Phone" value="${phone}" /> <br />
+		<input type="submit" id="btnRegister" name="btnRegister" value="Register" style="cursor: pointer" />
+	</form>
+
+</body>
+</html>
+			]]>
+			</programlisting>
+			<para>http/post.jsp</para>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	${email}<br>
+	${password}	<br>
+	${phone} <br>
+</body>
+</html>
+			]]>
+			</programlisting>
+		</section>
 	</section>
+	<section>
+		<title>@ModelAttribute</title>
+	</section>
+		<section id="http">
+			<title>HttpServletRequest / HttpServletResponse </title>
+			<programlisting>
+			<![CDATA[
+			]]>
+			</programlisting>
+		</section>
 </section>
 
-<section>
+<section id="tag">
 	<title>Using Spring’s form tag library</title>
 	<section>
 		<title>css</title>
 		<programlisting>
 		<![CDATA[
-		
+
 		]]>
 		</programlisting>
 		<section>
@@ -486,16 +576,16 @@ http://localhost:8080/Spring/request/param.html?id=100
 			<para>cssClass 使用该属性指定表单元素CSS样式名，相当于HTML元素的class属性</para>
 			<programlisting>
 			<![CDATA[
-<form:input path="userName" cssClass="inputStyle"/>			
+<form:input path="userName" cssClass="inputStyle"/>
 			]]>
 			</programlisting>
-		</section>  
+		</section>
 		<section>
 			<title>cssStyle</title>
 			<para>cssStyle 直接通过该属性指定样式，相当于HTML元素的style属性</para>
 			<programlisting>
 			<![CDATA[
-<form:input path="userName" cssStyle="width:100px"/>			
+<form:input path="userName" cssStyle="width:100px"/>
 			]]>
 			</programlisting>
 		</section>
@@ -504,7 +594,7 @@ http://localhost:8080/Spring/request/param.html?id=100
 			<para>cssError Class表示表单元素发生错误时对应的样式</para>
 			<programlisting>
 			<![CDATA[
-<form:input path="userName" cssClass="userNameClass" cssErrorClass= "userNameClassError"/> 
+<form:input path="userName" cssClass="userNameClass" cssErrorClass= "userNameClassError"/>
 			]]>
 			</programlisting>
 		</section>
@@ -513,25 +603,25 @@ http://localhost:8080/Spring/request/param.html?id=100
 		<title>cssClass</title>
 		<programlisting>
 		<![CDATA[
-		
+
 		]]>
 		</programlisting>
 	</section>
-		
+
 </section>
 
 <section id="jstl">
 	<title>JSTL</title>
 	<programlisting>
 	<![CDATA[
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>		
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	]]>
 	</programlisting>
 	<section>
 		<title>List 处理</title>
 
 		<programlisting>
-		<![CDATA[		
+		<![CDATA[
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -550,7 +640,7 @@ http://localhost:8080/Spring/request/param.html?id=100
 	</c:forEach>
 
 </body>
-</html>		
+</html>
 		]]>
 		</programlisting>
 	</section>
@@ -560,7 +650,7 @@ http://localhost:8080/Spring/request/param.html?id=100
 		<![CDATA[
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -568,15 +658,15 @@ http://localhost:8080/Spring/request/param.html?id=100
 <title>Insert title here</title>
 </head>
 <body>
-	<c:forEach items="${channel}" var="node">  
+	<c:forEach items="${channel}" var="node">
 		<a href="<c:out value="${node.value}"></c:out>"><c:out value="${node.key}"></c:out></a>
         <br/>
-	</c:forEach> 
+	</c:forEach>
 </body>
 </html>
 		]]>
 		</programlisting>
-	</section>			
+	</section>
 </section>
 
 </section>
