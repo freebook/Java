@@ -82,7 +82,7 @@ public class Welcome {
 	}
 }
 	</programlisting>
-	<section>
+	<section id="RequestMapping">
 		<title>@RequestMapping</title>
 		<programlisting>
 @RequestMapping("/welcome")
@@ -90,8 +90,66 @@ public class Welcome {
 		<programlisting>
 @RequestMapping(value = "/list", method = RequestMethod.GET)
 		</programlisting>
+		<section>
+			<title>映射多个URL</title>
+			<programlisting>
+@RequestMapping({ "/news/zh-cn", "/news/zh-tw" })
+@ResponseBody
+public String getNewsByPath() {
+    return "Hello";
+}			
+			</programlisting>
+		</section>
+		<section>
+			<title>headers</title>
+			<programlisting>
+			<![CDATA[
+@RequestMapping(value = "/news/json", method = GET, headers = "Accept=application/json")
+@ResponseBody
+public String getFoosAsJsonFromBrowser() {
+    return "{...}";
+}			
+			]]>
+			</programlisting>
+			<screen>
+curl -H "Accept:application/json,text/html" http://localhost:8080/spring/news/json.html			
+			</screen>
+		</section>		
 	</section>
-	<section>
+	<section id="ResponseBody">
+		<title>@ResponseBody</title>
+		<programlisting>
+import org.springframework.web.bind.annotation.ResponseBody;		
+		</programlisting>
+		<section>
+			<title>直接返回HTML</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class Pathinfo {
+
+	@RequestMapping(value = "/news/shenzhen/{numericId:[\\d]+}")
+	@ResponseBody
+	public String getNewsWithPathVariable(@PathVariable final long numericId) {
+		return "Get a specific Bar with id=" + numericId;
+	}
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>	
+	<section id="ModelAndView">
 		<title>ModelAndView</title>
 		<section>
 			<title>变量传递</title>
@@ -324,8 +382,142 @@ Password: ${user.password}<br>
 			</programlisting>
 		</section>		
 	</section>
+	<section id="PathVariable">
+		<title>RequestMapping with Path Variables - @PathVariable</title>
+		<section>
+			<title>URL 参数传递</title>
+			<para>需求，我们需要通过URL传递参数，所传递的值是分类ID与文章ID，例如 /news/1.html, /news/1/1.html。</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class Pathinfo {
+	@RequestMapping("/pathinfo/{id}")
+	public ModelAndView urlTestId(@PathVariable String id) {
+
+		return new ModelAndView("pathinfo/param", "id", id);
+	}
+
+	@RequestMapping("/pathinfo/{cid}/{id}")
+	public ModelAndView urlTestId(@PathVariable String cid, @PathVariable String id) {
+
+		ModelMap model = new ModelMap();
+
+		model.addAttribute("cid", cid);
+		model.addAttribute("id", id);
+
+		return new ModelAndView("pathinfo/param", model);
+	}
+}
+			]]>
+			</programlisting>
+			<para>jsp测试文件</para>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+${ cid } <br>
+${ id } <br>
+</body>
+</html>
+			]]>
+			</programlisting>
+			
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
 	
-	
+	<section id="RequestParam">
+		<title>RequestMapping with Request Parameters - @RequestParam</title>
+		<programlisting>
+import org.springframework.web.bind.annotation.RequestParam;		
+		</programlisting>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/request/param")
+	@ResponseBody
+	public String getBarBySimplePathWithRequestParam(@RequestParam("id") long id) {
+	    return "Get a specific Bar with id=" + id;
+	}
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+http://localhost:8080/Spring/request/param.html?id=100			
+			</screen>
+		</section>		
+	</section>
+</section>
+
+<section>
+	<title>Using Spring’s form tag library</title>
+	<section>
+		<title>css</title>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+		<section>
+			<title>cssClass</title>
+			<para>cssClass 使用该属性指定表单元素CSS样式名，相当于HTML元素的class属性</para>
+			<programlisting>
+			<![CDATA[
+<form:input path="userName" cssClass="inputStyle"/>			
+			]]>
+			</programlisting>
+		</section>  
+		<section>
+			<title>cssStyle</title>
+			<para>cssStyle 直接通过该属性指定样式，相当于HTML元素的style属性</para>
+			<programlisting>
+			<![CDATA[
+<form:input path="userName" cssStyle="width:100px"/>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>cssErrorClass</title>
+			<para>cssError Class表示表单元素发生错误时对应的样式</para>
+			<programlisting>
+			<![CDATA[
+<form:input path="userName" cssClass="userNameClass" cssErrorClass= "userNameClassError"/> 
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>cssClass</title>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
+		
 </section>
 
 <section id="jstl">
