@@ -3,9 +3,51 @@
 	<title>Struts</title>
 	<para><ulink url="http://struts.apache.org/" /></para>
 	<para>You can checkout all the example applications from the Struts 2 GitHub repository at https://github.com/apache/struts-examples.</para>
-	<programlisting>
-		
-	</programlisting>
+	<section id="struts.xml">
+		<title>struts.xml</title>
+		<para>web.xml</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>helloworld</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+</web-app>		
+		]]>
+		</programlisting>
+		<section>
+			<title>include</title>
+			<programlisting>
+			<![CDATA[
+	<include file="/cn/netkiller/struts/ajax.xml" />
+	<include file="/cn/netkiller/struts/admin.xml" />	
+	<include file="/cn/netkiller/struts/logs.xml" />		
+			]]>
+			</programlisting>
+		</section>
+	</section>
+
 	<section>
 		<title>Struts Tags</title>
 		<para>使用Struts Tags 需要在jsp页面中加入下面一行。</para>
@@ -79,13 +121,42 @@
 			]]>
 			</programlisting>	
 		</section>
-		<section>
-			<title></title>
-			<programlisting>
-			<![CDATA[
-
-			]]>
-			</programlisting>	
-		</section>
 	</section>
+	
+	<section id="action">
+		<title>Action</title>
+		<para>struts.xml</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<constant name="struts.devMode" value="true" />
+
+	<package name="basicstruts2" extends="struts-default">
+		<action name="index">
+			<result>/index.jsp</result>
+		</action>
+
+		<action name="hello"
+			class="org.apache.struts.helloworld.action.HelloWorldAction" method="execute">
+			<result name="success">/HelloWorld.jsp</result>
+		</action>
+
+		<action name="register" class="org.apache.struts.register.action.Register"
+			method="execute">
+			<result name="success">/thankyou.jsp</result>
+			<result name="input">/register.jsp</result>
+		</action>
+
+	</package>
+</struts>
+		]]>
+		</programlisting>
+	</section>
+		
 </chapter>

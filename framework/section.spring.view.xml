@@ -1,1 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section id="tag">
+	<title>Using Spring’s form tag library</title>
+	<section>
+		<title>css</title>
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>
+		<section>
+			<title>cssClass</title>
+			<para>cssClass 使用该属性指定表单元素CSS样式名，相当于HTML元素的class属性</para>
+			<programlisting>
+			<![CDATA[
+<form:input path="userName" cssClass="inputStyle"/>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>cssStyle</title>
+			<para>cssStyle 直接通过该属性指定样式，相当于HTML元素的style属性</para>
+			<programlisting>
+			<![CDATA[
+<form:input path="userName" cssStyle="width:100px"/>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>cssErrorClass</title>
+			<para>cssError Class表示表单元素发生错误时对应的样式</para>
+			<programlisting>
+			<![CDATA[
+<form:input path="userName" cssClass="userNameClass" cssErrorClass= "userNameClassError"/>
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>cssClass</title>
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>
+	</section>
+
+</section>
+
+<section id="jstl">
+	<title>JSTL</title>
+	<programlisting>
+	<![CDATA[
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+	]]>
+	</programlisting>
+	<section>
+		<title>List 处理</title>
+
+		<programlisting>
+		<![CDATA[
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	${bookList}
+	<br>
+
+	<c:forEach items="${bookList}" var="node">
+		<c:out value="${node}"></c:out><br>
+	</c:forEach>
+
+</body>
+</html>
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Map 处理</title>
+		<programlisting>
+		<![CDATA[
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<c:forEach items="${channel}" var="node">
+		<a href="<c:out value="${node.value}"></c:out>"><c:out value="${node.key}"></c:out></a>
+        <br/>
+	</c:forEach>
+</body>
+</html>
+		]]>
+		</programlisting>
+	</section>
+</section>
