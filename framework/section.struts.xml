@@ -97,13 +97,36 @@
 			]]>
 			</programlisting>	
 		</section>
-		<section>
-			<title></title>
+		<section id="select">
+			<title>select</title>
 			<programlisting>
 			<![CDATA[
-
+<s:select name="city" list="{'Beijing','Shanghai','Guangdong','Shenzhen'}" theme="simple" headerKey="Shenzhen" headerValue="Shenzhen"></s:select>
+			
+<select name="city" id="searchCriteriaForm_city">
+    <option value="Shenzhen">Shenzhen</option>
+    <option value="Beijing">Beijing</option>
+    <option value="Shanghai">Shanghai</option>
+    <option value="Guangdong">Guangdong</option>
+    <option value="Shenzhen">Shenzhen</option>
+</select>
 			]]>
 			</programlisting>	
+			
+			<programlisting>
+			<![CDATA[
+<s:select name="city" id="city" list="#{1:'Beijing',2:'Shanghai',3:'Guangdong',4:'Shenzhen'}"  label="city" listKey="key" listValue="value"  headerKey="4" headerValue="Shenzhen" />
+
+<select name="city" id="city">
+    <option value="4">Shenzhen</option>
+    <option value="1">Beijing</option>
+    <option value="2">Shanghai</option>
+    <option value="3">Guangdong</option>
+    <option value="4">Shenzhen</option>
+</select>
+			]]>
+			</programlisting>
+			
 		</section>
 		<section>
 			<title></title>

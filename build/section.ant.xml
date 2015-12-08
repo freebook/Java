@@ -14,6 +14,346 @@ ln -s apache-ant-1.8.1 apache-ant
 ANT_HOME=/usr/local/apache-ant
 export CLASSPATH=$CLASSPATH:$ANT_HOME/lib
 	</screen>
+	<section>
+		<title>Project</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+<description>project Name</description>
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+<property name="src" value="src"/>
+<property name="dest" value="classes"/>
+<property name="hello" value="hello.jar"/>		
+		]]>
+		</screen>
+		<section>
+			<title>ant</title>
+			<para>Project name</para>
+			<screen>
+			<![CDATA[
+${ant.project.name}
+			]]>
+			</screen>
+		</section>
+		<section id="environment">
+			<title>environment</title>
+			<screen>
+			<![CDATA[
+<property environment="env"/>
+<echo message="JAVA_HOME is set to = ${env.JAVA_HOME}" />			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="path">
+		<title>path</title>
+		<para>定义</para>
+		<screen>
+		<![CDATA[
+	<path id="classpath">  
+        <fileset dir="${env.JAVA_HOME}/lib">  
+            <include name="*.jar" />  
+        </fileset>  
+        <fileset dir="${env.CATALINA_HOME}/lib">  
+            <include name="*.jar" />  
+        </fileset>  
+        <fileset dir="WebRoot/WEB-INF/lib" includes="*.jar"/>
+    </path>    
+		]]>
+		</screen>
+		<para>引用</para>
+		<screen>
+		<![CDATA[
+	<javac srcdir="${src.dir}" destdir="${classes.dir}" source="1.5" target="1.5">  
+		<classpath refid="classpath" />  
+	</javac>		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+    <classpath>
+		<path refid="classpath"/>
+    </classpath>		
+		]]>
+		</screen>
+	</section>
+	
+	<section id="copy">
+		<title>copy</title>
+		<para>复制目录</para>
+		<screen>
+		<![CDATA[
+	<copy todir="${basedir}/WebContent"> 
+		<fileset dir="${basedir}/WebRoot" includes="**/*"/>
+	</copy>	    
+		]]>
+		</screen>
+		<para>复制指定扩展名文件</para>
+		<screen>
+		<![CDATA[
+	<copy todir="${dest}">  
+		<fileset dir="${src}">  
+			<include name="**/*.xml" />  
+			<include name="**/*.properties" />  
+		</fileset>
+	</copy> 	
+		]]>
+		</screen>
+	</section>
+	<section id="condition">
+		<title>condition</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0"?>
+<project name="test" default="doFoo" basedir=".">
+  <property name="directory" value="/www/directory"/>
+
+  <target name="doFoo" depends="dir.check" if="dir.exists">
+    <echo>${directory} exists</echo>
+  </target>
+
+  <target name="doBar" depends="dir.check" unless="dir.exists">
+    <echo>${directory} missing"</echo>
+  </target>
+
+  <target name="dir.check">
+    <condition property="dir.exists">
+      <available file="${directory}" type="dir"/>
+    </condition>
+  </target>
+</project>		
+		]]>
+		</screen>		
+	</section>
+	<section id="exec">
+		<title>exec</title>
+		<screen>
+		<![CDATA[
+<project name="{{ name }}" default="help" basedir=".">
+  
+  <property name="username" value="{{ username }}"/>
+  <property name="host" value="{{ host }}"/>
+  <property name="dir" value="/srv/{{ path }}/"/>
+
+  <tstamp>
+    <format property="TODAY_UK" pattern="yyyyMMddhhmmss" locale="en,UK"/>
+  </tstamp>
+
+  <target name="help" description="show available commands" >
+    <exec executable="ant" dir="." failonerror="true">
+      <arg value="-p"/>
+    </exec>
+  </target>
+  
+  <target name="deploy-to" description="show where we are deploying to" >
+    <echo>${username}@${host}:${dir}</echo>
+  </target>
+
+  <target name="deploy" description="deploy usng rsync" >
+    <exec executable="rsync" dir="." failonerror="true">
+      <arg value="-r"/>
+      <arg value="."/>
+      <arg value="${username}@${host}:${dir}"/>
+      <arg value="--exclude-from=rsync.excludes"/>
+      <arg value="-v"/>
+    </exec>
+  </target>
+
+  <target name="deploy-test" description="test deploy usng rsync with the dry run flag set" >
+    <exec executable="rsync" dir="." failonerror="true">
+      <arg value="-r"/>
+      <arg value="."/>
+      <arg value="${username}@${host}:${dir}"/>
+      <arg value="--exclude-from=rsync.excludes"/>
+      <arg value="--dry-run"/>
+      <arg value="-v"/>
+    </exec>
+  </target>
+
+  <target name="backup" description="backup site" >
+    <exec executable="scp" dir="." failonerror="true">
+      <arg value="-r"/>
+      <arg value="${username}@${host}:${dir}"/>
+      <arg value="backups/${TODAY_UK}"/>
+    </exec>
+  </target>
+
+</project>		
+		]]>
+		</screen>
+		<section>
+			<title>sshexec</title>
+			<screen>
+			<![CDATA[
+<sshexec host="${remove}" keyfile="~/.ssh/id_rsa" command="/srv/apache-tomcat/bin/catalina.sh stop -force" />			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="if">
+		<title>if</title>
+		<screen>
+		<![CDATA[
+		
+<if>
+  <available file="my_directory" type="dir" />
+  <then>
+    <echo message="Directory exists" />
+  </then>
+  <else>
+    <echo message="Directory does not exist" />
+  </else>
+</if>		
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>macrodef</title>
+		<section>
+			<title>Git</title>
+			<screen>
+			<![CDATA[
+<macrodef name = "git">
+    <attribute name = "command" />
+    <attribute name = "dir" default = "" />
+    <element name = "args" optional = "true" />
+    <sequential>
+        <echo message = "git @{command}" />
+        <exec executable = "git" dir = "@{dir}">
+            <arg value = "@{command}" />
+            <args/>
+        </exec>
+    </sequential>
+</macrodef>
+<macrodef name = "git-clone-pull">
+    <attribute name = "repository" />
+    <attribute name = "dest" />
+    <sequential>
+        <git command = "clone">
+            <args>
+                <arg value = "@{repository}" />
+                <arg value = "@{dest}" />
+            </args>
+        </git>
+        <git command = "pull" dir = "@{dest}" />
+    </sequential>
+</macrodef>
+			]]>
+			</screen>
+			
+			<screen>
+			<![CDATA[
+<git command = "clone">
+    <args>
+        <arg value = "git://github.com/280north/ojunit.git" />
+        <arg value = "ojunit" />
+    </args>
+</git>
+
+<git command = "pull" dir = "repository_path" />		
+
+<git-clone-pull repository="git://github.com/280north/ojunit.git" dest="ojunit" />	
+			]]>
+			</screen>
+			
+		</section>
+		<section>
+			<title>Rsync</title>
+			<screen>
+			<![CDATA[
+			
+	<macrodef name="rsync">
+		<attribute name="option" default="auzv" />
+		<attribute name="src" default="" />
+		<attribute name="dest" default="" />
+		<element name="args" optional="true" />
+		<sequential>
+			<exec executable="rsync">
+				<arg value="@{option}" />
+				<arg value="@{src}" />
+				<arg value="@{dest}" />
+				<args />
+			</exec>
+		</sequential>
+	</macrodef>			
+			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+	<target name="deploy" depends="compile">
+		<rsync option="-auzv" src="${project.dest}" dest="${remote}:${destination}">
+			<args>
+				<arg value="-P" />
+			</args>
+		</rsync>
+	</target>			
+			]]>
+			</screen>
+			
+		</section>
+		
+		<section>
+			<title>SSH</title>
+			<screen>
+			<![CDATA[
+	<macrodef name="ssh">
+		<attribute name="host" />
+		<attribute name="command" />
+		<attribute name="keyfile" default="~/.ssh/id_rsa" />
+		<element name="args" optional="true" />
+		<sequential>
+			<exec executable="ssh">
+				<arg value="@{host}" />
+				<!-- arg value="-i @{keyfile}" / -->
+				<args />
+				<arg value="@{command}" />
+			</exec>
+		</sequential>
+	</macrodef>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+	<target name="stop" depends="">
+		<!-- ssh host="${remote}" command="/srv/apache-tomcat/bin/catalina.sh stop -force" keyfile="~/.ssh/id_rsa" / -->
+		<ssh host="${remote}" command="/srv/apache-tomcat/bin/shutdown.sh" />
+	</target>
+	<target name="start" depends="">
+		<ssh host="${remote}" command="/srv/apache-tomcat/bin/startup.sh" keyfile="~/.ssh/id_rsa" />
+	</target>		
+			]]>
+			</screen>
+			
+		</section>
+				
+	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds</title>
+			<para>includeantruntime="false"</para>
+			<screen>
+			<![CDATA[
+<target name="compile" depends="init">
+   <javac includeantruntime="false" srcdir="${src}" destdir="${dest}"/>
+</target>
+			]]>
+			</screen>
+			<para>or</para>
+			<screen>
+			<![CDATA[
+<property name="build.sysclasspath" value="last"/>
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>
 <section id="ivy">
 	<title>Apache Ivy</title>

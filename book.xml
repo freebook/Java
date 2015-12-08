@@ -59,6 +59,7 @@
 	&chapter.servlet.xml;
 	&chapter.framework.xml;
 	&chapter.json.xml;
+	&chapter.sdk.xml;
 <!-- =========================================================================== -->
 
 </book>

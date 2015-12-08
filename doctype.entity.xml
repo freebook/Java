@@ -19,3 +19,4 @@
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
 
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
+<!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">

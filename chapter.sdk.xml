@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter id="java.sdk">
+	<title>Software Development Kit</title>
+<section id="log4j">
+	<title>log4j</title>
+	<link linkend="java">JDK Install</link>
+	<para>log4j</para>
+	<para>http://logging.apache.org/</para>
+	<screen>
+wget http://government-grants.org/mirrors/apache.org/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz
+tar zxvf logging-log4j-1.2.14.tar.gz
+cd logging-log4j-1.2.14
+
+mkdir -p /usr/local/memcached/api/java
+cp dist/lib/log4j-1.2.14.jar /usr/local/memcached/api/java/
+	</screen>
+	<section id="variable">
+		<title>log4j 环境变量</title>
+		<para>${catalina.home}</para>
+		<screen>
+log4j.appender.R=org.apache.log4j.RollingFileAppender 
+log4j.appender.R.File=${catalina.home}/logs/logs_tomcat.log 
+log4j.appender.R.MaxFileSize=10KB		
+		</screen>
+	</section>
+</section>
+	<section id="memcache">
+		<title>java memcached client</title>
+		<screen>
+wget http://img.whalin.com/memcached/jdk6/log4j/java_memcached-release_1.5.1.tar.gz
+tar zxvf java_memcached-release_1.5.1.tar.gz
+cd java_memcached-release_1.5.1
+cp java_memcached-release_1.5.1.jar /usr/local/memcached/api/java
+		</screen>
+
+		<para>export CLASSPATH="./:/usr/local/java/lib:/usr/local/java/jre/lib:/usr/local/memcached/api/java/java_memcached-release_1.5.1.jar:/usr/local/memcached/api/java/log4j-1.2.14.jar"</para>
+
+		<example>
+			<title>memcached.java</title>
+			<screen>
+			<![CDATA[
+import com.danga.MemCached.*;
+import org.apache.log4j.*;
+public class memcached {
+
+	public static void main(String[] args) {
+		try{
+			BasicConfigurator.configure();
+
+			String[] serverlist = { "127.0.0.1:11211"  };
+
+			// initialize the pool for memcache servers
+			SockIOPool pool = SockIOPool.getInstance( "test" );
+			pool.setServers( serverlist );
+			pool.setInitConn( 10 );
+			pool.setMinConn( 5 );
+			pool.setMaxConn( 250 );
+			pool.setMaintSleep( 30 );
+			pool.setNagle( false );
+			pool.setSocketTO( 3000 );
+			pool.initialize();
+
+	        MemCachedClient mc = new MemCachedClient();
+
+	        // compression is enabled by default
+	        mc.setCompressEnable(true);
+
+	        // set compression threshhold to 4 KB (default: 15 KB)
+	        mc.setCompressThreshold(4096);
+
+	        // turn on storing primitive types as a string representation
+	        // Should not do this in most cases.
+	        mc.setPrimitiveAsString(true);
+
+	    	mc.setPoolName( "test" );
+
+			for ( int i = 0; i < 10; i++ ) {
+				boolean success = mc.set( "" + i, "Hello!" );
+				String result = (String)mc.get( "" + i );
+				System.out.println( String.format( "set( %d ): %s", i, success ) );
+				System.out.println( String.format( "get( %d ): %s", i, result ) );
+			}
+
+			System.out.println( "\n\t -- sleeping --\n" );
+			try { Thread.sleep( 10000 ); } catch ( Exception ex ) { }
+
+			for ( int i = 0; i < 10; i++ ) {
+				boolean success = mc.set( "" + i, "Hello!" );
+				String result = (String)mc.get( "" + i );
+				System.out.println( String.format( "set( %d ): %s", i, success ) );
+				System.out.println( String.format( "get( %d ): %s", i, result ) );
+			}
+
+		}
+		catch (Exception e)
+		{
+			System.out.println("[Exception] - " + e.toString());
+		}
+		finally {}
+
+	}
+
+}
+			]]>
+			</screen>
+			<para>test memcache</para>
+			<screen>
+javac memcached.java
+java memcached
+			</screen>
+		</example>
+	</section>
+	<section id="hessian">
+		<title>Hessian</title>
+		<para> 基于Binary-RPC协议实现</para>
+	</section>
+	<section id="quartz-scheduler">
+		<title>quartz-scheduler</title>
+		<para>http://quartz-scheduler.org/</para>
+	</section>
+	&chapter.cache.xml;
+</chapter>
+	
