@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="jsp">
+	<title>JSP</title>
+	<section>
+		<title>page</title>
+		<screen>
+		<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>include</title>
+		<screen>
+		<![CDATA[
+<%@ include file="analytics.jsp" %>
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>jsp</title>
+		<screen>
+		<![CDATA[
+<jsp:include page="telephone.jsp" />
+<jsp:include page="address.jsp" flush="true"/> 
+		]]>
+		</screen>
+	</section>
+</chapter>

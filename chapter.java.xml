@@ -52,3 +52,5 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 	&section.maven.xml;
 	&section.gradle.xml;
 </chapter>
+
+	&chapter.jsp.xml;

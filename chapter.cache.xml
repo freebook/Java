@@ -2,6 +2,94 @@
 <!-- $Id: chapter.cache.xml 474 2012-10-29 11:01:51Z netkiller $ -->
 <section id="cache">
 	<title>Cache</title>
+	
+<section id="memcache">
+		<title>java memcached client</title>
+		<screen>
+wget http://img.whalin.com/memcached/jdk6/log4j/java_memcached-release_1.5.1.tar.gz
+tar zxvf java_memcached-release_1.5.1.tar.gz
+cd java_memcached-release_1.5.1
+cp java_memcached-release_1.5.1.jar /usr/local/memcached/api/java
+		</screen>
+
+		<para>export CLASSPATH="./:/usr/local/java/lib:/usr/local/java/jre/lib:/usr/local/memcached/api/java/java_memcached-release_1.5.1.jar:/usr/local/memcached/api/java/log4j-1.2.14.jar"</para>
+
+		<example>
+			<title>memcached.java</title>
+			<screen>
+			<![CDATA[
+import com.danga.MemCached.*;
+import org.apache.log4j.*;
+public class memcached {
+
+	public static void main(String[] args) {
+		try{
+			BasicConfigurator.configure();
+
+			String[] serverlist = { "127.0.0.1:11211"  };
+
+			// initialize the pool for memcache servers
+			SockIOPool pool = SockIOPool.getInstance( "test" );
+			pool.setServers( serverlist );
+			pool.setInitConn( 10 );
+			pool.setMinConn( 5 );
+			pool.setMaxConn( 250 );
+			pool.setMaintSleep( 30 );
+			pool.setNagle( false );
+			pool.setSocketTO( 3000 );
+			pool.initialize();
+
+	        MemCachedClient mc = new MemCachedClient();
+
+	        // compression is enabled by default
+	        mc.setCompressEnable(true);
+
+	        // set compression threshhold to 4 KB (default: 15 KB)
+	        mc.setCompressThreshold(4096);
+
+	        // turn on storing primitive types as a string representation
+	        // Should not do this in most cases.
+	        mc.setPrimitiveAsString(true);
+
+	    	mc.setPoolName( "test" );
+
+			for ( int i = 0; i < 10; i++ ) {
+				boolean success = mc.set( "" + i, "Hello!" );
+				String result = (String)mc.get( "" + i );
+				System.out.println( String.format( "set( %d ): %s", i, success ) );
+				System.out.println( String.format( "get( %d ): %s", i, result ) );
+			}
+
+			System.out.println( "\n\t -- sleeping --\n" );
+			try { Thread.sleep( 10000 ); } catch ( Exception ex ) { }
+
+			for ( int i = 0; i < 10; i++ ) {
+				boolean success = mc.set( "" + i, "Hello!" );
+				String result = (String)mc.get( "" + i );
+				System.out.println( String.format( "set( %d ): %s", i, success ) );
+				System.out.println( String.format( "get( %d ): %s", i, result ) );
+			}
+
+		}
+		catch (Exception e)
+		{
+			System.out.println("[Exception] - " + e.toString());
+		}
+		finally {}
+
+	}
+
+}
+			]]>
+			</screen>
+			<para>test memcache</para>
+			<screen>
+javac memcached.java
+java memcached
+			</screen>
+		</example>
+	</section>	
+	
 	<section id="ehcache">
 		<title>Ehcache</title>
 	</section>
