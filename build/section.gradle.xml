@@ -3,7 +3,7 @@
 	<title>Gradle</title>
 	<para>安装 Gradle </para>
 	<screen>
-curl -s https://raw.githubusercontent.com/oscm/shell/38c2d4d307ce7a0760fc88d5d9703eef64d3b81c/lang/java/gradle.sh | bash	
+curl -s https://raw.githubusercontent.com/oscm/shell/38c2d4d307ce7a0760fc88d5d9703eef64d3b81c/lang/java/gradle/gradle-2.9.sh | bash	
 	</screen>
 	<para>安装后运行 gradle --help 验证释放正确安装。</para>
 	<screen>

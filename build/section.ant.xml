@@ -104,6 +104,31 @@ ${ant.project.name}
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>javac</title>
+		<screen>
+		<![CDATA[
+	<path id="classpath">
+		<fileset dir="${env.JAVA_HOME}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${env.CATALINA_HOME}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${project.dir}/WebRoot/WEB-INF/lib" includes="*.jar" />
+	</path>
+
+	<javac srcdir="${project.src}" destdir="${project.build}/WEB-INF/classes" debug="true" listfiles="true">
+			<classpath refid="classpath" />
+			<include name="**/*.java"/>
+			<exclude name="**/*.xml"/>
+			<exclude name="**/*.properties"/>
+	</javac>
+		]]>
+		</screen>
+		<para>listfiles 显示编译文件列表</para>
+		<para>debug 显示调试信息，编译错误信息</para>
+	</section>
 	<section id="condition">
 		<title>condition</title>
 		<para></para>
@@ -213,7 +238,7 @@ ${ant.project.name}
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="macrodef">
 		<title>macrodef</title>
 		<section>
 			<title>Git</title>
@@ -334,7 +359,7 @@ ${ant.project.name}
 		</section>
 				
 	</section>
-	<section>
+	<section id="faq">
 		<title>FAQ</title>
 		<section>
 			<title>warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds</title>

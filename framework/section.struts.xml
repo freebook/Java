@@ -71,7 +71,14 @@
 			]]>
 			</programlisting>						
 		</section>
-		
+		<section id="include">
+			<title>include</title>
+			<programlisting>
+			<![CDATA[
+<s:include value="/pages/example.jsp"></s:include>			
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>form</title>
 			<programlisting>
