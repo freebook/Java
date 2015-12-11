@@ -48,7 +48,7 @@
 </section>
 
 <section id="jstl">
-	<title>JSTL</title>
+	<title>JSTL(JavaServer Pages Standard Tag Library)</title>
 	<programlisting>
 	<![CDATA[
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -104,4 +104,13 @@
 		]]>
 		</programlisting>
 	</section>
+</section>
+
+<section id="freemarker">
+	<title>FreeMarker</title>
+	<para>http://freemarker.org/</para>
+</section>
+<section id="thymeleaf">
+	<title>Thymeleaf</title>
+	<para>http://thymeleaf.org/</para>
 </section>

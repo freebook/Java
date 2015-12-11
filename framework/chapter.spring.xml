@@ -58,7 +58,71 @@
 		]]>
 		</screen>
 	</section>
+	<section id="tomcat">
+		<title>Tomcat</title>
+		<para>web.xml</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+	<display-name>m.cf88.com</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
 
+	<servlet>
+        <servlet-name>netkiller</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>netkiller</servlet-name>
+        <url-pattern>/welcome.jsp</url-pattern>
+        <url-pattern>/welcome.html</url-pattern>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping> 
+
+</web-app>
+		]]>
+		</screen>
+		<para>netkiller-servlet.xml</para>
+		<screen>
+		<![CDATA[
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="cn.netkiller.controller" />
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+</beans>		
+		]]>
+		</screen>
+	</section>
 <section id="spring.framework">
 	<title>Spring Framework</title>
 
@@ -66,5 +130,57 @@
 	&section.spring.view.xml;
 
 </section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>o.s.web.servlet.PageNotFound</title>
+			<para>解决方法，加入下面代码到 dispatcher-servlet.xml 文件中</para>
+			<screen>
+			<![CDATA[
+<mvc:annotation-driven />			
+			]]>
+			</screen>
+			<para>dispatcher-servlet.xml</para>
+			<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<context:component-scan base-package="com.cf88.controller" />
+	<mvc:annotation-driven />
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+</beans>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>HTTP Status 500 - Handler processing failed; nested exception is java.lang.NoClassDefFoundError: javax/servlet/jsp/jstl/core/Config</title>
+			<para>pom.xml 文件中加入依赖包</para>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+			]]>
+			</screen>
+		</section>
+	</section>
 </chapter>
