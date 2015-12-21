@@ -89,7 +89,99 @@ java memcached
 			</screen>
 		</example>
 	</section>	
-	
+	<section>
+		<title>Jedis</title>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+<dependency>
+    <groupId>redis.clients</groupId>
+    <artifactId>jedis</artifactId>
+    <version>2.7.2</version>
+    <type>jar</type>
+    <scope>compile</scope>
+</dependency>		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.redis;
+
+import redis.clients.jedis.Jedis;
+
+public class JedisTest {
+
+	private static Jedis jedis;
+
+	public static void main(String[] args) {
+		jedis = new Jedis("192.168.2.1");
+		System.out.println("Server is running: "+jedis.ping());
+		jedis.set("foo", "bar");
+		String value = jedis.get("foo");
+		System.out.println(value);
+	}
+
+}
+		]]>
+		</programlisting>
+		<section>
+			<title>认证</title>
+			<programlisting>
+			<![CDATA[
+jedis = new Jedis("localhost", 6379, 15000);
+jedis.auth("foobared");
+			]]>
+			</programlisting>
+			<screen>			
+			</screen>
+		</section>
+		<section>
+			<title>jedis.keys</title>
+			<programlisting>
+			<![CDATA[
+	public Map<String, String> getCaptcha() {
+
+		Map<String, String> captchas = new HashMap<String, String>();
+		this.jedis = new Jedis(this.config.getProperty("captcha.redis"));
+		
+		System.out.printf("%s: Redis server is running %s\n", this.getClass().getName(), this.jedis.ping());
+		
+		Set<String> keys = jedis.keys("captcha::phone::*");
+		if (!keys.isEmpty()) {
+			for(String key:keys){
+				if (this.jedis.exists(key)) {
+					captchas.put(key.replace("captcha::phone::", ""), this.jedis.get(key)+" ["+ String.valueOf(this.jedis.ttl(key)) + "s]");
+				}
+			}
+		}
+
+		this.jedis.close();
+
+		return captchas;
+	}		
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+import redis.clients.jedis.Jedis;
+public class RedisKeys {
+   public static void main(String[] args) {
+      
+      Jedis jedis = new Jedis("localhost");
+      System.out.println("Connection to server sucessfully");
+
+      List<String> list = jedis.keys("*");
+      for(int i=0; i<list.size(); i++) {
+         System.out.println("List of stored keys:: "+list.get(i));
+      }
+   }
+}
+			]]>
+			</programlisting>
+			<screen>			
+			</screen>
+		</section>
+	</section>
 	<section id="ehcache">
 		<title>Ehcache</title>
 	</section>

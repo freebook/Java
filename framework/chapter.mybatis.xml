@@ -204,4 +204,85 @@ public class Tests {
 		]]>
 		</programlisting>
 	</section>
+	
+<!-- 	<section id="xml">
+		<title>MyBatis XML 文件</title>
+		
+	</section> -->
+	<section id="mapper">
+		<title>接口注解</title>
+		
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://192.168.6.1:3306/mybatis" />
+				<property name="username" value="mybatis" />
+				<property name="password" value="mybatis" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper class="cn.netkiller.mapper.UserMapper" />
+	</mappers>
+</configuration>
+		]]>
+		</programlisting>		
+		
+		<programlisting language="java">
+		<![CDATA[
+package cn.netkiller.mapper;
+
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+
+import cn.netkiller.model.User;
+
+public interface UserMapper {
+	@Select("SELECT * FROM `user` WHERE id = #{id}")
+	public User findById(@Param("id") int id); 
+}		
+		]]>
+		</programlisting>
+
+		<programlisting language="java">
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.io.InputStream;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import cn.netkiller.mapper.UserMapper;
+import cn.netkiller.model.User;
+
+public class AnnotationsTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String resource = "mybatis.xml";
+
+		InputStream is = XmlTest.class.getClassLoader().getResourceAsStream(resource);
+		SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(is);
+		SqlSession session = sessionFactory.openSession();
+		
+		UserMapper mapper = session.getMapper(UserMapper.class);
+		User user = mapper.findById(2);
+		
+		System.out.println(user.toString());
+		
+	}
+}
+		]]>
+		</programlisting>
+		
+	</section>
 </chapter>

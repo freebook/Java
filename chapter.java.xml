@@ -53,4 +53,21 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 	&section.gradle.xml;
 </chapter>
 
+<chapter>
+	<title>System</title>
+	<section>
+		<title>getProperty</title>
+		<programlisting>
+		<![CDATA[
+public class Test {
+
+	public static void main(String[] args) {
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+	}
+}				
+		]]>
+		</programlisting>
+	</section>
+</chapter>
+
 	&chapter.jsp.xml;

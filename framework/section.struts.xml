@@ -48,7 +48,7 @@
 		</section>
 	</section>
 
-	<section>
+	<section id="tags">
 		<title>Struts Tags</title>
 		<para>使用Struts Tags 需要在jsp页面中加入下面一行。</para>
 		<programlisting>
@@ -188,5 +188,195 @@
 		]]>
 		</programlisting>
 	</section>
+	<section id="ajax">
+		<title>Ajax + JSON</title>
+		<para>struts.xml 中加入</para>
+		<programlisting>
+		<![CDATA[
+		<action name="Captcha" class="com.example.action.ajax.Captcha">
+			<result name="success" type="json"></result>
+		</action>
+		]]>
+		</programlisting>
+		<para>Java 文件</para>
+		<programlisting>
+		<![CDATA[
+package com.example.action.ajax;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionSupport;
+
+public class Captcha extends ActionSupport {
+	private static final long serialVersionUID = 7284583098398030297L;
+
+	private String string1 = "A";
+	private String[] stringarray1 = {"A1","B1"};
+	private int number1 = 123456789;
+	private int[] numberarray1 = {1,2,3,4,5,6,7,8,9};
+	private List<String> lists = new ArrayList<String>();
+	private Map<String, String> maps = new HashMap<String, String>();
+	
+	//no getter method, will not include in the JSON
+
+	public Captcha(){
+		lists.add("list1");
+		lists.add("list2");
+		lists.add("list3");
+		lists.add("list4");
+		lists.add("list5");
 		
+		maps.put("key1", "value1");
+		maps.put("key2", "value2");
+		maps.put("key3", "value3");
+		maps.put("key4", "value4");
+		maps.put("key5", "value5");
+	}
+
+	public String execute() {
+               return Action.SUCCESS;
+        }
+	
+	public String getString1() {
+		return string1;
+	}
+
+	public void setString1(String string1) {
+		this.string1 = string1;
+	}
+
+	public String[] getStringarray1() {
+		return stringarray1;
+	}
+
+	public void setStringarray1(String[] stringarray1) {
+		this.stringarray1 = stringarray1;
+	}
+
+	public int getNumber1() {
+		return number1;
+	}
+
+	public void setNumber1(int number1) {
+		this.number1 = number1;
+	}
+
+	public int[] getNumberarray1() {
+		return numberarray1;
+	}
+
+	public void setNumberarray1(int[] numberarray1) {
+		this.numberarray1 = numberarray1;
+	}
+
+	public List<String> getLists() {
+		return lists;
+	}
+
+	public void setLists(List<String> lists) {
+		this.lists = lists;
+	}
+
+	public Map<String, String> getMaps() {
+		return maps;
+	}
+
+	public void setMaps(Map<String, String> maps) {
+		this.maps = maps;
+	}
+	
+}
+		]]>
+		</programlisting>
+		<para>测试URL http://localhost:8080/ajax/Captcha.action</para>
+
+		<section>
+			<title>GET/POST JSON</title>
+			<para>struts.xml 文件加入 enableSMD</para>
+			<programlisting>
+			<![CDATA[
+		<action name="Captcha" class="com.example.action.ajax.Captcha">
+			<interceptor-ref name="defaultStack" />
+			<interceptor-ref name="json">
+				<param name="enableSMD">true</param>
+			</interceptor-ref>
+			<result name="success" type="json"></result>
+		</action>
+			]]>
+			</programlisting>
+			<para>Java 代码</para>
+			<programlisting>
+			<![CDATA[
+package com.example.action.ajax;
+
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionSupport;
+
+public class Captcha extends ActionSupport {
+	private static final long serialVersionUID = 7284583098398030297L;
+
+	private String phone = "13113668890";
+	private String email = "netkiller@msn.com";
+	private Boolean status = false;
+	
+	//no getter method, will not include in the JSON
+
+	public Captcha() {
+
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String execute() {
+		this.status = true;
+		System.out.printf("%s, %s, %s, %b\n", this.getClass().getName(), this.getPhone(), this.getEmail(), this.getStatus());
+		return Action.SUCCESS;
+	}
+
+	public String getPhone() {
+		return this.phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+	public boolean getStatus() {
+		return this.status;
+	}
+}
+			]]>
+			</programlisting>
+			<para>使用 curl 模拟 post 测试</para>
+			<programlisting>
+			<![CDATA[
+# curl http://192.168.4.34:8080/ajax/Captcha.do
+{"email":"netkiller@msn.com","phone":"13113668890","status":true} 
+
+# curl -X POST -H "Content-Type:application/json" -d '{"phone":"13066884444", "email":"neo.chan@live.com"}' http://192.168.4.34:8080/ajax/Captcha.do
+{"email":"neo.chan@live.com","phone":"13066884444","status":true}
+			]]>
+			</programlisting>
+			<para>GET 例子</para>
+			<programlisting>
+			<![CDATA[
+# curl "http://192.168.4.34:8080/ajax/Captcha.do?phone=13322993040&email=netkiller@mac.com"
+{"email":"netkiller@mac.com","phone":"13322993040","status":true}
+			]]>
+			</programlisting>		
+		</section>
+	</section>
 </chapter>

@@ -123,13 +123,113 @@
 		]]>
 		</screen>
 	</section>
-<section id="spring.framework">
-	<title>Spring Framework</title>
+	<section>
+		<title>集成 Mybatis</title>
+		<section>
+			<title>pom.xml</title>
+			<programlisting>
+			<![CDATA[
+ 		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+   			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>properties</title>
+			<programlisting>
+			<![CDATA[
+ <context:property-placeholder location="classpath:resources/jdbc.properties" />
+   			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+driver=com.mysql.jdbc.Driver  
+url=jdbc:mysql://127.0.0.1:3306/mybatis  
+username=root  
+password=passw0rd
+   			]]>
+			</programlisting>
+			
+		</section>
+		<section>
+			<title>dataSource</title>
+			<screen>
+			<![CDATA[
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>SqlSessionFactory</title>
+			<para>创建SqlSessionFactory，需指定数据源，property名称必须为dataSource</para>
+			<programlisting>
+			<![CDATA[
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Mapper 扫描</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.netkiller.mappers" />
+		<property name="annotationClass" value="cn.netkiller.mappers.annotation.MybatisMapper"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+			]]>
+			</programlisting>
+		</section>
+		
+		
+		<section>
+			<title>Mapper 单一class映射</title>
+			<para>创建数据映射器Mapper，属性mapperInterface的value必须为接口类</para>
+			<programlisting>
+			<![CDATA[
+	<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">  
+		<property name="mapperInterface" value="com.mybatis.demo.UserMapper" />  
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+	</bean>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>DAO</title>
+			<para>数据访问DAO，在DAO中使用Mapper来查数据</para>
+			<programlisting>
+			<![CDATA[
+	<bean id="userDao" class="com.mybatis.demo2.UserDaoImpl">  
+		<property name="userMapper" ref="userMapper"/>  
+	</bean>
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+	<section id="spring.framework">
+		<title>Spring Framework</title>
 
 	&section.spring.controller.xml;
 	&section.spring.view.xml;
 
-</section>
+	</section>
 	<section>
 		<title>FAQ</title>
 		<section>
@@ -170,7 +270,9 @@
 			</screen>
 		</section>
 		<section>
-			<title>HTTP Status 500 - Handler processing failed; nested exception is java.lang.NoClassDefFoundError: javax/servlet/jsp/jstl/core/Config</title>
+			<title>HTTP Status 500 - Handler processing failed; nested exception
+				is java.lang.NoClassDefFoundError:
+				javax/servlet/jsp/jstl/core/Config</title>
 			<para>pom.xml 文件中加入依赖包</para>
 			<screen>
 			<![CDATA[
