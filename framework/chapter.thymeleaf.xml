@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="thymeleaf">
+	<title>Thymeleaf</title>
+	<para>http://thymeleaf.org/</para>
+	
+	<section>
+		<title>配置</title>
+		<para>缓存设置</para>
+		<programlisting>
+		<![CDATA[
+<property name="cacheable" value="false" />	
+		]]>
+		</programlisting>
+		<para>字符集</para>
+		<programlisting>
+		<![CDATA[
+<property name="characterEncoding" value="UTF-8" />	
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	<bean id="templateResolver"
+		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/templates/" />
+		<!-- <property name="suffix" value=".html" /> -->
+		<property name="templateMode" value="HTML5" />
+		<property name="cacheable" value="false" />
+		<property name="characterEncoding" value="UTF-8" />
+	</bean>
+		]]>
+		</programlisting>
+	</section>
+	
+	<section>
+		<title>Template Layout</title>
+		<para>/WEB-INF/templates/footer.html</para>
+		<programlisting>
+		<![CDATA[
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <body>
+  
+    <div th:fragment="copy">
+      &copy; 2011 The Good Thymes Virtual Grocery
+    </div>
+  
+  </body>
+  
+</html>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<body>
+
+  ...
+
+  <div th:include="footer :: copy"></div>
+  
+</body>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:include="header"></div>
+	<span th:text="${name}" />
+	<div th:include="footer"></div>
+</body>
+</html>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Template Layout</title>
+		<programlisting>
+		<![CDATA[
+	
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Template Layout</title>
+		<programlisting>
+		<![CDATA[
+	
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Template Layout</title>
+		<programlisting>
+		<![CDATA[
+	
+		]]>
+		</programlisting>
+	</section>
+
+</section>

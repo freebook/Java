@@ -51,7 +51,3 @@
 	<title>FreeMarker</title>
 	<para>http://freemarker.org/</para>
 </section>
-<section id="thymeleaf">
-	<title>Thymeleaf</title>
-	<para>http://thymeleaf.org/</para>
-</section>

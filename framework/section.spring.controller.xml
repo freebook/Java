@@ -19,6 +19,7 @@ public class Welcome {
 	}
 }
 	</programlisting>
+
 	<section id="RequestMapping">
 		<title>@RequestMapping</title>
 		<programlisting>
@@ -27,6 +28,34 @@ public class Welcome {
 		<programlisting>
 @RequestMapping(value = "/list", method = RequestMethod.GET)
 		</programlisting>
+		
+		<section>
+			<title>@RequestMapping("/")</title>
+			<programlisting>
+			<![CDATA[
+package com.cf88.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/")
+public class HelloController {
+
+	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
+	public String getMovie(@PathVariable String name, ModelMap model) {
+		model.addAttribute("name", name);
+		return "hello";
+	}
+
+}		
+			]]>
+			</programlisting>
+		</section>		
+		
 		<section>
 			<title>映射多个URL</title>
 			<programlisting>

@@ -58,6 +58,22 @@
 		]]>
 		</screen>
 	</section>
+
+<section id="framework">
+	<title>Spring Framework</title>
+	<section id="spring.xml">
+		<title>Spring MVC configuration</title>
+		<programlisting>
+		<![CDATA[
+  <!-- **************************************************************** -->
+  <!--  RESOURCE FOLDERS CONFIGURATION                                  -->
+  <!--  Dispatcher configuration for serving static resources           -->
+  <!-- **************************************************************** -->
+  <mvc:resources location="/images/" mapping="/images/**" />
+  <mvc:resources location="/css/" mapping="/css/**" />
+		]]>
+		</programlisting>
+	</section>
 	<section id="tomcat">
 		<title>Tomcat</title>
 		<para>web.xml</para>
@@ -123,7 +139,96 @@
 		]]>
 		</screen>
 	</section>
-	<section>
+
+	<section id="thymeleaf">
+		<title>Thymeleaf</title>
+		<para>http://thymeleaf.org/</para>
+		<section>
+			<title>Maven pom.xml</title>
+			<programlisting>
+			<![CDATA[
+			<dependency>  
+	            <groupId>org.springframework.boot</groupId>  
+	            <artifactId>spring-boot-starter-thymeleaf</artifactId>  
+	        </dependency>  		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Spring 配置</title>
+			<programlisting>
+			<![CDATA[
+	<!-- **************************************************************** -->
+	<!-- THYMELEAF-SPECIFIC ARTIFACTS -->
+	<!-- TemplateResolver <- TemplateEngine <- ViewResolver -->
+	<!-- **************************************************************** -->
+
+	<bean id="templateResolver"
+		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/templates/" />
+		<property name="suffix" value=".html" />
+		<property name="templateMode" value="HTML5" />
+	</bean>
+
+	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver" />
+	</bean>
+
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="templateEngine" />
+	</bean>	
+			]]>
+			</programlisting>
+		</section>
+		
+		<section>
+			<title>controller</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/")
+public class HelloController {
+
+	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
+	public String getMovie(@PathVariable String name, ModelMap model) {
+		model.addAttribute("name", name);
+		return "hello";
+	}
+
+}			
+			]]>
+			</programlisting>
+		</section>
+		
+		<section>
+			<title>HTML5 Template</title>
+			<programlisting>
+			<![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Spring MVC + Thymeleaf Example</title>
+</head>
+<body>
+	Hello, <span th:text="${name}" />!
+</body>
+</html>
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+
+	<section id="mybatis">
 		<title>集成 Mybatis</title>
 		<section>
 			<title>pom.xml</title>
@@ -211,26 +316,171 @@ password=passw0rd
 			</programlisting>
 		</section>
 		<section>
-			<title>DAO</title>
-			<para>数据访问DAO，在DAO中使用Mapper来查数据</para>
+			<title>Service</title>
+			<para></para>
 			<programlisting>
 			<![CDATA[
-	<bean id="userDao" class="com.mybatis.demo2.UserDaoImpl">  
-		<property name="userMapper" ref="userMapper"/>  
+	<bean id="userService" class="cn.netkiller.service.UserService">
 	</bean>
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>测试实例</title>
+			<example>
+				<title>MyBatis</title>
+				<para>建立映射</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.mapper;
 
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+
+import cn.netkiller.model.User;
+
+public interface UserMapper {
+	@Select("SELECT * FROM `user` WHERE id = #{id}")
+	public User findById(@Param("id") int id); 
+}
+				]]>
+				</programlisting>
+				<para>建立模型</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.model;
+
+public class User {
+	private String id;
+	private String name;
+	private int age;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", age=" + age + "]";
+	}
+}
+
+				]]>
+				</programlisting>
+				<para>建立 service</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.netkiller.mapper.UserMapper;
+import cn.netkiller.model.User;
+
+@Service
+public class UserService {
+	@Autowired
+	private UserMapper userMapper;
+
+	public UserMapper getUserMapper() {
+		return userMapper;
+	}
+
+	public void setUserMapper(UserMapper userMapper) {
+		this.userMapper = userMapper;
+	}
+
+	public User findById(int id) {
+        return userMapper.findById(id);
+    }
+}
+				
+				]]>
+				</programlisting>
+				<para>建立控制器</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import cn.netkiller.mapper.UserMapper;
+import cn.netkiller.model.User;
+import cn.netkiller.service.UserService;
+
+@Controller
+public class Index {
+
+	@Autowired
+	private UserMapper userMapper;
+	
+	@Autowired
+    private UserService userService;
+	
+	
+	@RequestMapping("/index")
+	// @ResponseBody
+	public ModelAndView index() {
+
+		String message = "Hello";
+		return new ModelAndView("index/index", "variable", message);
+	}
+
+	@RequestMapping("/user")
+	public ModelAndView user() {
+		
+		User user = userService.findById(2);
+		String message = user.toString();
+		return new ModelAndView("index/index", "variable", message);
+	}
+	
+	@RequestMapping("/member")
+	public ModelAndView member() {
+		User user = userMapper.findById(2);
+		String message = user.toString();
+		return new ModelAndView("index/index", "variable", message);
+	}
+}				
+				]]>
+				</programlisting>
+			</example>
+		</section>
 	</section>
-	<section id="spring.framework">
-		<title>Spring Framework</title>
 
 	&section.spring.controller.xml;
 	&section.spring.view.xml;
 
-	</section>
-	<section>
+</section>
+
+	<section id="faq">
 		<title>FAQ</title>
 		<section>
 			<title>o.s.web.servlet.PageNotFound</title>
@@ -255,7 +505,7 @@ password=passw0rd
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="com.cf88.controller" />
+	<context:component-scan base-package="cn.netkiller.controller" />
 	<mvc:annotation-driven />
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -283,6 +533,62 @@ password=passw0rd
 		</dependency>
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>同时使用 Thymeleaf 与 JSP </title>
+			<subtitle>Using both Thymeleaf and JSP</subtitle>
+			<programlisting>
+			<![CDATA[
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<!-- <property name="suffix" value=".jsp" /> -->
+		<property name="viewNames" value="*.jsp" />
+	</bean>
+
+	<bean id="templateResolver"
+		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/templates/" />
+		<!-- <property name="suffix" value=".html" /> -->
+		<property name="templateMode" value="HTML5" />
+	</bean>
+
+	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver" />
+	</bean>
+
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="templateEngine" />
+		<property name="viewNames" value="*.html" />
+	</bean>	
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+@RequestMapping("/thymeleaf")
+public String thymeleafView(){
+    return "thymeleaf.html";
+}
+
+@RequestMapping("/jsp")
+public String jspView(){
+    return "jstl.jsp";
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+			<property name="viewNames" value="*thymeleaf/*" />
+			
+@RequestMapping(value="/test")
+public ModelAndView dboxPrint(Model model){
+    ModelAndView modelAndView = new ModelAndView("thymeleaf/test");
+    return modelAndView;
+}
+			]]>
+			</programlisting>
 		</section>
 	</section>
 </chapter>
