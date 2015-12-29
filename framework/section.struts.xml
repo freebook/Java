@@ -136,10 +136,10 @@
 			
 		</section>
 		<section>
-			<title></title>
+			<title>out</title>
 			<programlisting>
 			<![CDATA[
-
+<c:out value="${variable}"/>
 			]]>
 			</programlisting>	
 		</section>
@@ -187,6 +187,16 @@
 </struts>
 		]]>
 		</programlisting>
+		
+		
+		
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>	
+		
+		
 	</section>
 	<section id="ajax">
 		<title>Ajax + JSON</title>
@@ -378,5 +388,195 @@ public class Captcha extends ActionSupport {
 			]]>
 			</programlisting>		
 		</section>
+	</section>
+	<section id="json">
+		<title>Json 内容展示</title>
+		<para>Struts 配置文件</para>
+		<programlisting>
+		<![CDATA[
+	<package name="information" extends="main" namespace="/inf">
+		<action name="Information" class="com.example.action.Infomation">
+			<result type="tiles">information</result>
+		</action>
+	</package>
+		]]>
+		</programlisting>
+		<para>Action 文件</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.action;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionSupport;
+
+public class Infomation extends ActionSupport{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
+	private JsonObject jsonObject = null;
+	private String jsonString = "";
+
+	@Override
+	public String execute() throws IOException {
+		
+		String URL = "http://inf.example.com/list/json/93/20/0.html";
+		System.out.printf("%s Requeted URL is %s", this.getClass().getName(), URL);
+		
+		StringBuilder sb = new StringBuilder();
+		URLConnection urlConn = null;
+		InputStreamReader in = null;
+		try {
+			URL url = new URL(URL);
+			urlConn = url.openConnection();
+			if (urlConn != null)
+				urlConn.setReadTimeout(60 * 1000);
+			if (urlConn != null && urlConn.getInputStream() != null) {
+				in = new InputStreamReader(urlConn.getInputStream(), Charset.defaultCharset());
+				BufferedReader bufferedReader = new BufferedReader(in);
+				if (bufferedReader != null) {
+					int cp;
+					while ((cp = bufferedReader.read()) != -1) {
+						sb.append((char) cp);
+					}
+					bufferedReader.close();
+				}
+			}
+			in.close();
+
+			jsonString = sb.toString();
+
+			System.out.println(jsonString);
+
+			JsonReader reader = Json.createReader(new StringReader(jsonString));
+
+			JsonObject jsonObject = reader.readObject();
+			this.setJsonObject(jsonObject);
+
+			reader.close();
+
+			// System.out.println(jsonObject.size());
+
+			/*for (int i = 0; i < jsonObject.size() - 2; i++) {
+				JsonObject rowObject = jsonObject.getJsonObject(Integer.toString(i));
+				// System.out.println(rowObject.toString());
+				System.out.printf("%s\t%s\t%s\n", rowObject.getJsonString("id"), rowObject.getJsonString("title"),
+						rowObject.getJsonString("ctime"));
+			}*/
+			
+			
+
+		} catch (Exception e) {
+			throw new RuntimeException("Exception while calling URL:" + URL, e);
+		}
+
+		return Action.SUCCESS;
+	}
+
+	public JsonObject getJsonObject() {
+		return jsonObject;
+	}
+
+	public void setJsonObject(JsonObject jsonObject) {
+		this.jsonObject = jsonObject;
+	}
+
+	public String getJsonString() {
+		return jsonString;
+	}
+
+	public void setJsonString(String jsonString) {
+		this.jsonString = jsonString;
+	}
+}
+		]]>
+		</programlisting>
+		<para>JSP 文件</para>
+		<programlisting>
+		<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<table>
+	<c:forEach items="${jsonObject.entrySet()}" var="json"
+		varStatus="status">
+		<c:if test="${not status.last}">
+			<tr>
+				<td>${json.key+1}</td>
+				<td>${json.value.getJsonString("id")}</td>
+				<td>${json.value.getJsonString("title")}</td>
+				<td>${json.value.getJsonString("ctime")}</td>
+			</tr>
+		</c:if>
+	</c:forEach>
+</table>
+===================
+
+<c:forEach items="${jsonObject.entrySet()}" var="json">
+      ${json.value.toString()}
+</c:forEach>
+
+===========
+
+<s:property value="jsonString" />
+		]]>
+		</programlisting>
+		<para>解决双引号问题</para>
+		<programlisting>
+		<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<table>
+	<c:forEach items="${jsonObject.entrySet()}" var="json"
+		varStatus="status">
+		<c:if test="${not status.last}">
+
+			<c:set var="id"
+				value="${fn:replace(json.value.getJsonString('id'),'\"', '')}" />
+			<c:set var="title" value="${fn:replace(json.value.getJsonString('title'),'\"', '')}" />
+			<c:set var="ctime"
+				value="${fn:replace(json.value.getJsonString('ctime'),'\"', '')}" />
+			<tr>
+				<td><c:out value="${status.count}" /></td>
+				<td><a href="/inf/Detail.do?id=<c:out value="${id}"/>"><c:out
+							value="${title}" /></a></td>
+				<td><c:out value="${ctime}" /></td>
+			</tr>
+		</c:if>
+	</c:forEach>
+</table>
+
+<c:set var="pages" value="${jsonObject.getJsonObject('pages')}" />
+
+
+<a href="${pages.first}">首页</a>
+<a href="${pages.before}">上一页</a>
+<a href="${pages.next}">下一页</a>
+<a href="${pages.last}">尾页</a>
+
+<span>Count: ${pages.count}, Total: ${pages.total}</span>
+		]]>
+		</programlisting>
 	</section>
 </chapter>

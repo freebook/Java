@@ -359,6 +359,44 @@ ${ant.project.name}
 		</section>
 				
 	</section>
+	<section id="javascript">
+		<title>Javascript</title>
+		<screen>
+		<![CDATA[
+
+$ cat build.xml 
+<project name="Attachments" default="print">
+    <property name="numAttachments" value="20" />
+    <target name="generate">
+        <script language="javascript"><![CDATA[
+            var list = '1';
+            var limit = project.getProperty( "numAttachments" );
+            for (var i=2;i<limit;i++)
+            { 
+                list = list + ',' + i;
+            }
+            project.setNewProperty("list", list);            
+		print(list);
+        ]] >
+        </script>    
+    </target>
+</project>
+
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+$ ant generate
+Buildfile: /www/testing/build.xml
+
+generate:
+   [script] 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+		]]>
+		</screen>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
