@@ -10,9 +10,10 @@
 <!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
 <!ENTITY section.struts.xml				SYSTEM "framework/section.struts.xml">
 <!ENTITY section.play.xml				SYSTEM "framework/section.play.xml">
-<!ENTITY chapter.spring.xml				SYSTEM "framework/chapter.spring.xml">
-<!ENTITY section.spring.controller.xml	SYSTEM "framework/section.spring.controller.xml">
-<!ENTITY section.spring.view.xml		SYSTEM "framework/section.spring.view.xml">
+<!ENTITY chapter.spring.xml				SYSTEM "framework/spring/chapter.spring.xml">
+<!ENTITY section.spring.controller.xml	SYSTEM "framework/spring/section.spring.controller.xml">
+<!ENTITY section.spring.view.xml		SYSTEM "framework/spring/section.spring.view.xml">
+<!ENTITY chapter.spring.data.xml		SYSTEM "framework/spring/chapter.spring.data.xml">
 
 <!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
 

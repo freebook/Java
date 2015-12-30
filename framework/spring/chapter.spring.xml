@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="spring" ?>
-	<title>Spring </title>
+	<title>Spring Framework</title>
 	<section id="spring.maven">
 		<title>Maven</title>
 		<screen>
@@ -59,8 +59,6 @@
 		</screen>
 	</section>
 
-<section id="framework">
-	<title>Spring Framework</title>
 	<section id="spring.xml">
 		<title>Spring MVC configuration</title>
 		<programlisting>
@@ -488,11 +486,10 @@ public class Index {
 			</example>
 		</section>
 	</section>
-
+	
+	&chapter.spring.data.xml;
 	&section.spring.controller.xml;
 	&section.spring.view.xml;
-
-</section>
 
 	<section id="faq">
 		<title>FAQ</title>
