@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ampq">
+	<title>AMQP</title>
+	<section>
+		<title>Send and Recv</title>
+		<para>Send</para>
+		<screen>
+package cn.netkiller;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+public class Send {
+
+	private final static String QUEUE_NAME = "hello";
+
+	public static void main(String[] argv) throws Exception {
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost("192.168.6.1");
+		Connection connection = factory.newConnection();
+		Channel channel = connection.createChannel();
+
+		channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+		String message = "Hello World!";
+		channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
+		System.out.println(" [x] Sent '" + message + "'");
+
+		channel.close();
+		connection.close();
+	}
+}
+		</screen>
+		<para>Recv.java</para>
+		<screen>
+package cn.netkiller;
+		
+import com.rabbitmq.client.*;
+import java.io.IOException;
+
+public class Recv {
+
+	private final static String QUEUE_NAME = "hello";
+
+	public static void main(String[] argv) throws Exception {
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost("192.168.6.1");
+		Connection connection = factory.newConnection();
+		Channel channel = connection.createChannel();
+
+		channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+		System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+		Consumer consumer = new DefaultConsumer(channel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+					byte[] body) throws IOException {
+				String message = new String(body, "UTF-8");
+				System.out.println(" [x] Received '" + message + "'");
+			}
+		};
+		channel.basicConsume(QUEUE_NAME, true, consumer);
+	}
+}
+		</screen>
+	</section>
+	<section id="direct">
+		<title>direct</title>
+		<para>Send.java</para>
+		<screen>
+package cn.netkiller;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+public class DirectPush {
+
+	private static final String EXCHANGE_NAME = "cn.netkiller";
+
+	public static void main(String[] args) throws Exception {
+		try {
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost("192.168.6.1");
+			Connection connection = factory.newConnection();
+			Channel channel = connection.createChannel();
+			channel.exchangeDeclare(EXCHANGE_NAME, "direct");
+
+			String routingKey = "demo";
+			String message = "Hello";
+
+			channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes());
+			System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+
+			channel.close();
+			connection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+
+		</screen>
+		<para>Recv.java</para>
+		<screen>
+package cn.netkiller;
+
+import com.rabbitmq.client.*;
+
+import java.io.IOException;
+
+public class DirectReceive {
+
+	private static final String EXCHANGE_NAME = "cn.netkiller";
+	//private final static String QUEUE_NAME = "customer";
+
+	public static void main(String[] args) {
+		try {
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost("192.168.6.1");
+			Connection connection = factory.newConnection();
+			Channel channel = connection.createChannel();
+			channel.exchangeDeclare(EXCHANGE_NAME, "direct");
+
+			String queueName = channel.queueDeclare().getQueue();
+			System.out.println(queueName);
+			channel.queueBind(queueName, EXCHANGE_NAME, "demo");
+			channel.queueBind(queueName, EXCHANGE_NAME, "real");
+
+			System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+			Consumer consumer = new DefaultConsumer(channel) {
+				@Override
+				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+						byte[] body) throws IOException {
+					String message = new String(body, "UTF-8");
+					System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
+				}
+			};
+			channel.basicConsume(queueName, true, consumer);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<para></para>
+		<screen>
+		</screen>
+	</section>	
+	<section id="oracle">
+		<title>Oracle</title>
+		<section>
+			<title>SID</title>
+			<para><![CDATA[  ]]> Example:</para>
+			
+		</section>
+		<section>
+			<title>SERVICE_NAME</title>
+			<para><![CDATA[jdbc:oracle:thin:@//<host>:<port>/<service_name>]]></para>
+			<para>Example:</para>
+			<screen> 
+		
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<para><![CDATA[jdbc:oracle:thin:@<TNSName> ]]> Example:</para>
+			<section>
+
+			</section>
+		</section>
+		
+	</section>
+</chapter>

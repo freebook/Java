@@ -22,3 +22,4 @@
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
 <!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
 <!ENTITY chapter.jsp.xml				SYSTEM "chapter.jsp.xml">
+<!ENTITY chapter.jdbc.xml				SYSTEM "chapter.jdbc.xml">

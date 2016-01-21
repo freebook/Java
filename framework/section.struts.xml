@@ -192,10 +192,66 @@
 		
 		<programlisting>
 		<![CDATA[
-
+<action name="hello" 
+   class="com.tutorialspoint.struts2.HelloWorldAction"
+   method="execute">
+   <result name="success" type="redirect">
+       <param name="location">
+         /NewWorld.jsp
+      </param >
+   </result>
+</action>
 		]]>
 		</programlisting>	
 		
+		<section id="redirectAction">
+			<title>redirectAction</title>
+			<programlisting>
+			<![CDATA[
+<package name="public" extends="struts-default">
+    <action name="login" class="...">
+        <!-- Redirect to another namespace -->
+        <result type="redirectAction">
+            <param name="actionName">dashboard</param>
+            <param name="namespace">/secure</param>
+        </result>
+    </action>
+</package>
+ 
+<package name="secure" extends="struts-default" namespace="/secure">
+    <-- Redirect to an action in the same namespace -->
+    <action name="dashboard" class="...">
+        <result>dashboard.jsp</result>
+        <result name="error" type="redirectAction">error</result>
+    </action>
+ 
+    <action name="error" class="...">
+        <result>error.jsp</result>
+    </action>
+</package>
+ 
+<package name="passingRequestParameters" extends="struts-default" namespace="/passingRequestParameters">
+   <!-- Pass parameters (reportType, width and height) -->
+   <!--
+   The redirectAction url generated will be :
+   /genReport/generateReport.action?reportType=pie&amp;width=100&amp;height=100#summary
+   -->
+   <action name="gatherReportInfo" class="...">
+      <result name="showReportResult" type="redirectAction">
+         <param name="actionName">generateReport</param>
+         <param name="namespace">/genReport</param>
+         <param name="reportType">pie</param>
+         <param name="width">100</param>
+         <param name="height">100</param>
+         <param name="empty"></param>
+         <param name="suppressEmptyParameters">true</param>
+         <param name="anchor">summary</param>
+      </result>
+   </action>
+</package>
+			]]>
+			</programlisting>	
+		</section>		
 		
 	</section>
 	<section id="ajax">

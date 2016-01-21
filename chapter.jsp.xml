@@ -10,6 +10,15 @@
 		</screen>
 	</section>
 	<section>
+		<title>trimDirectiveWhitespaces</title>
+		<para>删除JSP编译产生的空行</para>
+		<screen>
+		<![CDATA[
+<%@ page trimDirectiveWhitespaces="true" %> 		
+		]]>		
+		</screen>
+	</section>
+	<section>
 		<title>include</title>
 		<screen>
 		<![CDATA[
@@ -131,6 +140,23 @@ Number=13322993040
 				]]>
 				</programlisting>
 			</section>
+		</section>
+		<section>
+			<title>choose</title>
+			<screen>
+			<![CDATA[
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:choose>
+	<c:when test="${session.auth eq 'true' }">
+		
+	</c:when>
+	<c:otherwise>
+		
+	</c:otherwise>
+</c:choose>			
+			]]>
+			</screen>
 		</section>
 	</section>	
 	
