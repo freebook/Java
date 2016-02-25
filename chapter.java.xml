@@ -44,6 +44,7 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 	</section>
 </section>
 
+	&java.type.xml;
 </chapter>
 
 <chapter id="jvm">

@@ -189,9 +189,10 @@
 		</programlisting>
 		
 		
-		
-		<programlisting>
-		<![CDATA[
+		<section id="redirect">
+			<title>redirect</title>
+			<programlisting>
+			<![CDATA[
 <action name="hello" 
    class="com.tutorialspoint.struts2.HelloWorldAction"
    method="execute">
@@ -201,9 +202,9 @@
       </param >
    </result>
 </action>
-		]]>
-		</programlisting>	
-		
+			]]>
+			</programlisting>	
+		</section>
 		<section id="redirectAction">
 			<title>redirectAction</title>
 			<programlisting>
@@ -248,11 +249,129 @@
          <param name="anchor">summary</param>
       </result>
    </action>
+   
+   <action name="Auth" class="cn.netkiller.api.action.Auth">
+		<result name="credit" type="redirectAction">
+			<param name="actionName">history</param>
+			<param name="namespace">/api/report</param>
+			<param name="LoginName">${LoginName}</param>
+			<param name="Direction">${Direction}</param>
+			<param name="StartDate">${StartDate}</param>
+			<param name="EndDate">${EndDate}</param>
+		</result>
+	</action>
+   
 </package>
 			]]>
 			</programlisting>	
-		</section>		
-		
+		</section>
+		<section>
+			<title>JSON</title>
+			<para>JSON 拦截器</para>
+			<programlisting>
+			<![CDATA[
+	<action name="withdraw" class="cn.netkiller.api.action.Report" method="getHistory">
+		<interceptor-ref name="defaultStack" />
+		<interceptor-ref name="json">
+			<param name="enableSMD">true</param>
+		</interceptor-ref>
+		<result name="success" type="json">
+			<param name="enableGZIP">true</param>
+			<param name="excludeProperties">.*direction</param>
+		</result>
+	</action>
+			]]>
+			</programlisting>
+			<section>
+				<title>enableGZIP 压缩传输</title>
+				<programlisting>
+				<![CDATA[
+		<result name="success" type="json">
+			<param name="enableGZIP">true</param>
+		</result>
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>excludeProperties 排除 Properties</title>
+				<programlisting>
+				<![CDATA[
+		<result name="success" type="json">
+			<param name="excludeProperties">.*direction</param>
+		</result>
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="timestamp">
+			<title>传递 Timestamp 变量</title>
+			<para>Struts 从URL传递 Timestamp 类型的变量 StartDate</para>
+			<programlisting>
+			<![CDATA[
+http://www.netkiller.cn/api/report/history.do?LoginName=888666&StartDate=2016-01-01&EndDate=2016-02-29
+			]]>
+			</programlisting>
+			<para>解决方法 参考 setStartDate / setEndDate 两个方法，以字符串方式传入，然后转换为Timestamp类型</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.api.action;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import org.apache.struts2.json.annotations.JSON;
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionSupport;
+			
+public class Report extends ActionSupport {
+	private static final long serialVersionUID = 6484202866632836225L;
+
+	private String loginName;
+	private Timestamp startDate = null;
+	private Timestamp endDate = null;
+
+	public Report() {
+
+	}
+
+	public String execute() {
+		return Action.SUCCESS;
+	}
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
+	public Timestamp getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = Timestamp.valueOf(startDate + " 00:00:00");
+	}
+
+	public Timestamp getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = Timestamp.valueOf(endDate + " 00:00:00");
+	}
+	
+}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ajax">
 		<title>Ajax + JSON</title>
@@ -634,5 +753,58 @@ public class Infomation extends ActionSupport{
 <span>Count: ${pages.count}, Total: ${pages.total}</span>
 		]]>
 		</programlisting>
+		<section>
+			<title>禁止方法</title>
+			<programlisting>
+			
+	@JSON(serialize = false)
+	public String getDatas() {
+		return datas;
+	}
+			</programlisting>
+			<para>使用 excludeProperties 在  Action 中排除</para>
+			<programlisting>
+			<![CDATA[
+	<action name="withdraw" class="cn.netkiller.api.action.Report" method="getHistory">
+		<interceptor-ref name="defaultStack" />
+		<interceptor-ref name="json">
+			<param name="enableSMD">true</param>
+		</interceptor-ref>
+		<result name="success" type="json">
+			<param name="enableGZIP">true</param>
+			<param name="excludeProperties">.*direction</param>
+		</result>
+	</action>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>格式化日期</title>
+			<programlisting>
+@JSON(format="yyyy-MM-dd") 
+public Date getDate(){ 
+	return date; 
+}			
+			</programlisting>
+		</section>
+		<section>
+			<title>重命名变量名</title>
+			<programlisting>
+@JSON(name="mypassword") 
+public String getPassword() { 
+	return password; 
+}
+			</programlisting>
+		</section>
+		
+		<section>
+			<title>org.apache.struts2.json</title>
+			<programlisting>
+JSONUtil.serialize(sb.toString());
+JSONUtil.deserialize(sb.toString());			
+
+			</programlisting>
+		</section>
+				
 	</section>
 </chapter>
