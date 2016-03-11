@@ -2,6 +2,33 @@
 <section id="type">
 	<title>类型</title>
 	<section>
+		<title>ArrayList</title>
+		<para>判断元素是否存在</para>
+		<programlisting>
+		<![CDATA[
+import java.util.ArrayList;
+
+public class arraylist {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		ArrayList<String> whitelist = new ArrayList<String>();
+		whitelist.add("Neo");
+		whitelist.add("Jam");
+		whitelist.add("Sam");
+
+		if (whitelist.contains("Neo")) {
+			System.out.println("Found!");
+		}else{
+			System.out.println("Not Found!");
+		}
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>String to Array</title>
 		<programlisting>
 		<![CDATA[
