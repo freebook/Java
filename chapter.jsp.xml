@@ -2,6 +2,24 @@
 <chapter id="jsp">
 	<title>JSP</title>
 	<section>
+		<title>注释</title>
+		<para>JSP页面中的注释有以下几种样式的注释方法：</para>
+		<programlisting>
+		<![CDATA[
+JSP页面中的HTML注释 
+     <!-- 注释内容 -->  
+
+JSP页面中的普通注释,不会再浏览器中输出
+     
+    <% // 注释内容 %>    
+    <% /* 注释内容 */ %> 
+
+JSP页面中的隐藏注释,不会再浏览器中输出 
+<%-- 注释内容 --%>
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>page</title>
 		<screen>
 		<![CDATA[
