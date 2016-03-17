@@ -807,4 +807,12 @@ JSONUtil.deserialize(sb.toString());
 		</section>
 				
 	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title></title>
+			<screen>
+			</screen>
+		</section>
+	</section>
 </chapter>

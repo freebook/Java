@@ -28,11 +28,10 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven.sh |
 			</screen>
 		</section>
 	</section>
-
-
 	<section>
-		<title>包查询</title>
+		<title>Maven 仓库</title>
 		<para>http://search.maven.org/</para>
+		<para>http://mvnrepository.com/</para>
 	</section>
 	<section>
 		<title>properties</title>
