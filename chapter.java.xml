@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="java" ?>
 	<title>Java</title>
-	&java.type.xml;
-</chapter>
-
 	&chapter.jvm.xml;
-
-<chapter id="index"><?dbhtml dir="build" ?>
-	<title>Build Tools</title>
-	&section.ant.xml;
-	&section.maven.xml;
-	&section.gradle.xml;
-</chapter>
-
-<chapter>
+<section>
 	<title>System</title>
 	<section>
 		<title>getProperty</title>
@@ -28,7 +17,19 @@ public class Test {
 		]]>
 		</programlisting>
 	</section>
+</section>
+	
+	&java.type.xml;
+</chapter>
+
+<chapter id="index"><?dbhtml dir="build" ?>
+	<title>Build Tools</title>
+	&section.ant.xml;
+	&section.maven.xml;
+	&section.gradle.xml;
 </chapter>
 
 	&chapter.jsp.xml;
+	&chapter.servlet.xml;
 	&chapter.jdbc.xml;
+	&chapter.json.xml;

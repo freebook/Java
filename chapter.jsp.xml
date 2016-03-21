@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="jsp">
+<chapter id="index"><?dbhtml dir="jsp" ?>
 	<title>JSP</title>
-	<section>
+	<section id="common">
 		<title>注释</title>
 		<para>JSP页面中的注释有以下几种样式的注释方法：</para>
 		<programlisting>
@@ -19,7 +19,7 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="page">
 		<title>page</title>
 		<screen>
 		<![CDATA[
@@ -27,7 +27,7 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="trimDirectiveWhitespaces">
 		<title>trimDirectiveWhitespaces</title>
 		<para>删除JSP编译产生的空行</para>
 		<screen>
@@ -36,7 +36,7 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		]]>		
 		</screen>
 	</section>
-	<section>
+	<section id="include">
 		<title>include</title>
 		<screen>
 		<![CDATA[
@@ -44,7 +44,7 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="jsp">
 		<title>jsp</title>
 		<screen>
 		<![CDATA[

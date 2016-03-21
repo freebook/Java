@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="jvm">
+<section id="jvm">
 	<title>JVM</title>
 	<section id="java">
 		<title>安装 Java 6</title>
@@ -48,7 +48,7 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 # yum install -y java-1.8.0-openjdk		
 		</screen>
 	</section>
-	<section>
+	<section id="verbose">
 		<title>-verbose:class 显示载入jar文件</title>
 		<programlisting>
 		<![CDATA[
@@ -445,4 +445,4 @@ Hello
 		]]>
 		</programlisting>
 	</section>
-</chapter>
+</section>
