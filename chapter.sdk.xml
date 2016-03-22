@@ -34,6 +34,10 @@ log4j.appender.R.MaxFileSize=10KB
 		<title>quartz-scheduler</title>
 		<para>http://quartz-scheduler.org/</para>
 	</section>
+	<section id="openfire">
+		<title>Openfire</title>
+		<para>http://www.igniterealtime.org/index.jsp</para>
+	</section>
 	&chapter.cache.xml;
 </chapter>
 	

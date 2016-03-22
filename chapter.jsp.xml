@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="jsp" ?>
 	<title>JSP</title>
+	<section id="request">
+		<title>request</title>
+		<screen>
+new URL(
+	request.getScheme(), 
+    request.getServerName(), 
+    request.getServerPort(), 
+    request.getContextPath()
+    );		
+		</screen>
+		<para>获取主机名</para>
+		<screen>
+		<![CDATA[
+<%=request.getServerName() %>
+		]]>
+		</screen>
+	</section>
 	<section id="common">
 		<title>注释</title>
 		<para>JSP页面中的注释有以下几种样式的注释方法：</para>

@@ -4,7 +4,7 @@
 	&chapter.jvm.xml;
 <section>
 	<title>System</title>
-	<section>
+	<section id="System">
 		<title>getProperty</title>
 		<programlisting>
 		<![CDATA[
