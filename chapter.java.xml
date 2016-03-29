@@ -2,7 +2,7 @@
 <chapter id="index"><?dbhtml dir="java" ?>
 	<title>Java</title>
 	&chapter.jvm.xml;
-<section>
+<section id="system">
 	<title>System</title>
 	<para>如果你希望修改这个系统属性的话，你可以使用-D这个参数，例如 java -Djava.io.tmpdir=/path/to/tmpdir</para>
 	<section id="System">

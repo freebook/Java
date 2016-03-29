@@ -16,9 +16,8 @@
 <!ENTITY section.spring.controller.xml	SYSTEM "framework/spring/section.spring.controller.xml">
 <!ENTITY section.spring.view.xml		SYSTEM "framework/spring/section.spring.view.xml">
 <!ENTITY chapter.spring.data.xml		SYSTEM "framework/spring/chapter.spring.data.xml">
-
 <!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
-
+<!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
 
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">

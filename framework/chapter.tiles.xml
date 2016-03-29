@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="tiles" ?>
+	<title>Apache Tiles</title>
+	<section id="configure">
+		<title>配置 Tiles</title>
+		<section>
+			<title>Maven</title>
+			<screen>
+			<![CDATA[
+    <dependency>
+      <groupId>org.apache.struts</groupId>
+	  <artifactId>struts-tiles</artifactId>
+      <version>1.3.10</version>
+    </dependency>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>web.xml</title>
+			<para>Tiles 有两种配置方法，选择一种最适合你的方式添加到 web.xml 文件即可</para>
+			<para>第一种方式  Tiles servlet</para>
+			<screen>
+			<![CDATA[
+<servlet>
+    <servlet-name>tiles</servlet-name>
+    <servlet-class>org.apache.tiles.web.startup.TilesServlet</servlet-class>
+    ...
+    <load-on-startup>2</load-on-startup>
+</servlet>
+			]]>
+			</screen>
+			<para>第二种方式 Tiles listener</para>
+			<screen>
+			<![CDATA[
+<listener>
+    <listener-class>org.apache.tiles.web.startup.TilesListener</listener-class>
+</listener>
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="template">
+		<title>Template 配置模板</title>
+		<para>WEB-INF/tiles.xml</para>
+		<screen>
+		<![CDATA[
+<tiles-definitions>
+	<definition name="template_mobile" template="/WEB-INF/jsp/mobile/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/mobile/header.jsp" />
+		<put-attribute name="content" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/mobile/footer.jsp" />
+	</definition>
+</tiles-definitions>
+		]]>
+		</screen>
+		<para>/WEB-INF/jsp/mobile/template.jsp</para>
+		<screen>
+		<![CDATA[
+<%@page pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>www.netkiller.cn</title> 
+</head>
+<body>
+
+<tiles:insertAttribute name="header" ignore="true" />
+
+<tiles:insertAttribute name="content" ignore="true" />
+
+<tiles:insertAttribute name="footer" ignore="true" />
+
+</body>
+</html>
+		]]>
+		</screen>
+	</section>
+	<section id="struts-tiles">
+		<title>Struts tiles</title>
+		<para>/WEB-INF/tiles.xml</para>
+		<screen>
+		<![CDATA[
+	<definition name="Index" extends="template_mobile">
+		<put-attribute name="content" value="/WEB-INF/jsp/mobile/Index.jsp" />
+	</definition>
+		]]>
+		</screen>
+		<para>src/struts.xml</para>
+		<screen>
+		<![CDATA[		
+<struts>
+	<package name="mobile" extends="main" namespace="/mobile">
+		<action name="Index" class="cn.netkiller.mobile.action.Index" method="execute">
+			<result name="success" type="tiles">Index</result>
+		</action>	
+	</package>
+</struts>
+		]]>
+		</screen>		
+	</section>
+</chapter>
