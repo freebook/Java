@@ -39,5 +39,9 @@ log4j.appender.R.MaxFileSize=10KB
 		<para>http://www.igniterealtime.org/index.jsp</para>
 	</section>
 	&chapter.cache.xml;
+	<section>
+		<title>Redisson</title>
+		<para>http://redisson.org/</para>
+	</section>
 </chapter>
 	

@@ -445,4 +445,11 @@ Hello
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>java.io.tmpdir</title>
+		<para>临时文件目录</para>
+		<screen>
+java -Djava.io.tmpdir=/path/to/tmpdir		
+		</screen>
+	</section>
 </section>

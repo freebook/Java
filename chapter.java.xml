@@ -4,8 +4,9 @@
 	&chapter.jvm.xml;
 <section>
 	<title>System</title>
+	<para>如果你希望修改这个系统属性的话，你可以使用-D这个参数，例如 java -Djava.io.tmpdir=/path/to/tmpdir</para>
 	<section id="System">
-		<title>getProperty</title>
+		<title>user.dir</title>
 		<programlisting>
 		<![CDATA[
 public class Test {
@@ -15,6 +16,14 @@ public class Test {
 	}
 }				
 		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>java.io.tmpdir</title>
+		<para>改变java.io.tmpdir的默认值</para>
+		<programlisting>
+System.setProperty("java.io.tmpdir", "/vat/tmp");
+System.out.println(System.getProperty("java.io.tmpdir"));
 		</programlisting>
 	</section>
 </section>
