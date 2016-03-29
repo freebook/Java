@@ -45,6 +45,13 @@
 		<screen>
 		<![CDATA[
 <tiles-definitions>
+	<definition name="index" path="/WEB-INF/jsp/index.jsp">
+	    <put name="title"  value="Tiles Example" />
+	    <put name="header" value="/WEB-INF/jsp/header.jsp" />
+	    <put name="menu"   value="/WEB-INF/jsp/menu.jsp" />
+	    <put name="body"   value="/WEB-INF/jsp/body.jsp" />
+	    <put name="footer" value="/WEB-INF/jsp/footer.jsp" />
+	</definition>
 	<definition name="template_mobile" template="/WEB-INF/jsp/mobile/template.jsp">
 		<put-attribute name="header" value="/WEB-INF/jsp/mobile/header.jsp" />
 		<put-attribute name="content" value="" />
