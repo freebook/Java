@@ -601,5 +601,40 @@ public ModelAndView dboxPrint(Model model){
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>排除静态内容</title>
+			<para>方法一，排除静态内容如 images, css, js 等等</para>
+			<programlisting>
+			<![CDATA[
+	<servlet>
+        <servlet-name>springframework</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+	<servlet-mapping>
+	    <servlet-name>default</servlet-name>
+	    <url-pattern>/images/*</url-pattern>
+	    <url-pattern>*.css</url-pattern>
+	    <url-pattern>/js/*.js</url-pattern>
+	</servlet-mapping>    
+    <servlet-mapping>
+        <servlet-name>springframework</servlet-name>
+        <url-pattern>/welcome.jsp</url-pattern>
+        <url-pattern>/welcome.html</url-pattern>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>			
+			]]>
+			</programlisting>
+			<para>方法二</para>
+			<programlisting>
+			<![CDATA[
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>
