@@ -79,6 +79,14 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		]]>
 		</programlisting>
 		<section>
+			<title>out</title>
+			<programlisting>
+			<![CDATA[
+<c:out value="${variable}"/>
+			]]>
+			</programlisting>	
+		</section>		
+		<section>
 			<title>List 处理</title>
 			<programlisting>
 			<![CDATA[

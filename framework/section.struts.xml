@@ -48,18 +48,55 @@
 		</section>
 	</section>
 
-	<section id="tags">
-		<title>Struts Tags</title>
-		<para>使用Struts Tags 需要在jsp页面中加入下面一行。</para>
+<section id="tags">
+	<title>Struts Tags</title>
+	<para>使用Struts Tags 需要在jsp页面中加入下面一行。</para>
+	<programlisting>
+	<![CDATA[
+<%@ taglib prefix="s" uri="/struts-tags" %>
+	]]>
+	</programlisting>
+	<section id="property">
+		<title>property</title>
 		<programlisting>
 		<![CDATA[
 <%@ taglib prefix="s" uri="/struts-tags" %>
+ 
+<html>
+<head>
+    <title>Hello</title>
+</head>
+<body>
+ 
+Hello, <s:property value="name"/>
+ 
+</body>
+</html>	
 		]]>
 		</programlisting>
-		<section>
-			<title>url</title>
-			<programlisting>
-			<![CDATA[
+		<programlisting>
+		<![CDATA[
+<s:property value="messageStore.message" />
+<s:property value="#session.user.username" />
+		]]>
+		</programlisting>	
+	</section>
+	<section id="set">
+		<title>set</title>
+		<programlisting>
+		<![CDATA[
+<s:set var="personName" value="person.name"/>
+Hello, <s:property value="#personName"/>
+ 
+<s:set var="janesName">Jane Doe</s:set>
+<s:property value="#janesName"/>
+		]]>
+		</programlisting>
+	</section>
+	<section id="url">
+		<title>url</title>
+		<programlisting>
+		<![CDATA[
 <p><a href="<s:url action='hello'/>">Hello World</a></p>
 
 <s:url action="hello" var="helloLink">
@@ -68,17 +105,20 @@
  
 <p><a href="${helloLink}">Hello Bruce Phillips</a></p>
 
-			]]>
-			</programlisting>						
-		</section>
-		<section id="include">
-			<title>include</title>
-			<programlisting>
-			<![CDATA[
+		]]>
+		</programlisting>						
+	</section>
+	<section id="include">
+		<title>include</title>
+		<programlisting>
+		<![CDATA[
 <s:include value="/pages/example.jsp"></s:include>			
-			]]>
-			</programlisting>
-		</section>
+		]]>
+		</programlisting>
+	</section>
+	
+	<section id="form">
+		<title>HTML Form</title>
 		<section>
 			<title>form</title>
 			<programlisting>
@@ -94,16 +134,16 @@
 </s:form>
 			]]>
 			</programlisting>	
-		</section>
+		</section>		
 		
-		<section>
-			<title>property tag</title>
+		<section id="textfield">
+			<title>textfield</title>
 			<programlisting>
 			<![CDATA[
-<s:property value="messageStore.message" />
+<s:textfield name="variable"/>			
 			]]>
-			</programlisting>	
-		</section>
+			</programlisting>
+		</section>		
 		<section id="select">
 			<title>select</title>
 			<programlisting>
@@ -135,23 +175,35 @@
 			</programlisting>
 			
 		</section>
-		<section>
-			<title>out</title>
-			<programlisting>
-			<![CDATA[
-<c:out value="${variable}"/>
-			]]>
-			</programlisting>	
-		</section>
-		<section>
-			<title></title>
-			<programlisting>
-			<![CDATA[
-
-			]]>
-			</programlisting>	
-		</section>
 	</section>
+
+	<section id="iterator">
+		<title>iterator</title>
+		<programlisting>
+		<![CDATA[
+<s:iterator value="people">
+	<s:property value="lastName"/>, <s:property value="firstName"/>
+</s:iterator>
+		]]>
+		</programlisting>	
+	</section>
+	<section id="if">
+		<title>if elseif else</title>
+		<programlisting>
+		<![CDATA[
+<s:if test="%{false}">
+    <div>Will Not Be Executed</div>
+</s:if>
+<s:elseif test="%{true}">
+    <div>Will Be Executed</div>
+</s:elseif>
+<s:else>
+    <div>Will Not Be Executed</div>
+</s:else>		
+		]]>
+		</programlisting>
+	</section>
+</section>
 	
 	<section id="action">
 		<title>Action</title>
