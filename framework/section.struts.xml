@@ -78,6 +78,9 @@ Hello, <s:property value="name"/>
 		<![CDATA[
 <s:property value="messageStore.message" />
 <s:property value="#session.user.username" />
+
+<s:bean name="cn.netkiller.Person" var="personBean" />
+<s:property value="#personBean.name" />
 		]]>
 		</programlisting>	
 	</section>
@@ -91,6 +94,21 @@ Hello, <s:property value="#personName"/>
 <s:set var="janesName">Jane Doe</s:set>
 <s:property value="#janesName"/>
 		]]>
+		</programlisting>
+		<para>禁止HTML转义，如果你的字符串中含有<![CDATA[&, <, >]]> 等字符输出就会出现 <![CDATA[&amp;, &lt;, &gt;]]> escapeHtml="false" 可以禁止这样的转义，原样输出。</para>
+		<programlisting>
+		<![CDATA[
+<s:property value="url" escapeHtml="false"/>		
+		]]>
+		</programlisting>
+		<para>https://struts.apache.org/docs/property.html</para>
+		<programlisting>
+Name	Required	Default	Evaluated	Type	Description
+default	false		false	String	The default value to be used if value attribute is null
+escapeCsv	false	false	false	Boolean	Whether to escape CSV (useful to escape a value for a column)
+escapeHtml	false	true	false	Boolean	Whether to escape HTML
+escapeJavaScript	false	false	false	Boolean	Whether to escape Javascript
+escapeXml	false	false	false	Boolean	Whether to escape XML		
 		</programlisting>
 	</section>
 	<section id="url">

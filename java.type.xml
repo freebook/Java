@@ -2,6 +2,29 @@
 <section id="type">
 	<title>类型</title>
 	<section>
+		<title>String 处理</title>
+		<programlisting>
+{"status":0,"message":"","bankcode":"ABOC;IBC;CCTB;ICBC"}
+转换后
+{\"status\":0,\"message\":\"\",\"bankcode\":\"ABOC;IBC;CCTB;ICBC\"}
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package test;
+
+public class str {
+
+	public static void main(String[] args) {
+		String jsonString = "{\"status\":0,\"message\":\"\",\"bankcode\":\"ABOC;IBC;CCTB;ICBC\"}";
+		System.out.println(jsonString);
+		System.out.println(jsonString.replace("\"", "\\\""));
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>ArrayList</title>
 		<para>判断元素是否存在</para>
 		<programlisting>

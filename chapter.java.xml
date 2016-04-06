@@ -14,7 +14,7 @@ public class Test {
 	public static void main(String[] args) {
 		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 	}
-}				
+}
 		]]>
 		</programlisting>
 	</section>
@@ -29,6 +29,7 @@ System.out.println(System.getProperty("java.io.tmpdir"));
 </section>
 	
 	&java.type.xml;
+	&chapter.java.net.xml;
 </chapter>
 
 <chapter id="index"><?dbhtml dir="build" ?>

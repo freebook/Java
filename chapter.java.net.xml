@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="network">
+	<title>Network</title>
+	<para>Java 网络相关操作</para>
+	<section id="url">
+		<title>URL</title>
+		<programlisting>
+		<![CDATA[
+import java.net.*;
+import java.io.*;
+
+public class URLReader {
+    public static void main(String[] args) throws Exception {
+
+        URL url = new URL("http://www.netkiller.cn/");
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+
+        String inputLine;
+        while ((inputLine = in.readLine()) != null)
+            System.out.println(inputLine);
+        in.close();
+    }
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>java.io.tmpdir</title>
+		<para>改变java.io.tmpdir的默认值</para>
+		<programlisting>
+System.setProperty("java.io.tmpdir", "/vat/tmp");
+System.out.println(System.getProperty("java.io.tmpdir"));
+		</programlisting>
+	</section>
+</section>
