@@ -231,9 +231,11 @@ public class HttpUrl {
 </project>		
 		]]>
 		</programlisting>	
-		
-		<programlisting>
-		<![CDATA[
+		<section id="pojo">
+			<title>map 处理</title>
+			<para>Example</para>
+			<programlisting>
+			<![CDATA[
 package io.github.netkiller;
 
 import java.util.HashMap;
@@ -254,10 +256,9 @@ public class GsonTest {
 	}
 
 }
-		]]>
-		</programlisting>	
-		<section>
-			<title>多层 Map 剥离</title>
+			]]>
+			</programlisting>
+			<para>多层 Map 剥离</para>
 			<programlisting>
 			<![CDATA[
 		Gson gson = new Gson();
@@ -267,6 +268,126 @@ public class GsonTest {
 		map = (Map<String, Map>) gson.fromJson(inf, map.getClass());
 		System.out.println(map.get("1").get("title"));
 		System.out.println(map.get("pages").get("count"));
+			]]>
+			</programlisting>			
+			
+			
+		</section>
+		<section id="pojo">
+			<title>POJO</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.gson;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Personal {
+	private int age = 30;
+	private String name = "neo";
+	private List<String> telphone = new ArrayList<String>() {
+		{
+			add("13113668890");
+			add("13322993040");
+			add("29812080");
+		}
+	};
+
+	// getter and setter methods
+
+	@Override
+	public String toString() {
+		return "Personal [age=" + age + ", name=" + name + ", telphone=" + telphone + "]";
+	}
+}
+			]]>
+			</programlisting>
+		</section>	
+		<section id="toJson">
+			<title>toJson</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.gson;
+
+import com.google.gson.Gson;
+
+public class GsonExampleToJson {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Personal obj = new Personal();
+		Gson gson = new Gson();
+
+		// convert java object to JSON format, and returned as JSON formatted string
+		String json = gson.toJson(obj);
+		System.out.println(json);
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>	
+		<section id="fromJson">
+			<title>fromJson</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.gson;
+
+import com.google.gson.Gson;
+
+public class GsonExampleFromJson {
+	public static void main(String[] args) {
+
+		Personal obj = new Personal();
+		Gson gson = new Gson();
+
+		// convert the json string back to object
+		obj = gson.fromJson("{\"age\":30,\"name\":\"neo\",\"telphone\":[\"13113668890\",\"13322993040\",\"29812080\"]}", Personal.class);
+
+		System.out.println(obj);
+	}
+}
+			]]>
+			</programlisting>
+		</section>	
+		<section>
+			<title>JsonParser</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.gson;
+
+import java.util.Map.Entry;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+
+public class GsonJsonParser {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String jsonString = "{\"age\":30,\"name\":\"neo\",\"telphone\":[\"13113668890\",\"13322993040\",\"29812080\"],\"address\":{\"province\":\"Guangdong\",\"city\":\"Shenzhen\"}}";
+
+		JsonElement root = new JsonParser().parse(jsonString);
+		System.out.println(root.toString());
+		System.out.println(root.getAsJsonObject().get("age").getAsInt());
+		System.out.println(root.getAsJsonObject().get("name").getAsString());
+
+		// Get the content of the first map
+		JsonArray jsonArray = root.getAsJsonObject().get("telphone").getAsJsonArray();
+
+		for (JsonElement tel : jsonArray) {
+			System.out.println(tel);
+		}
+
+		JsonObject object = root.getAsJsonObject().get("address").getAsJsonObject();
+		for (Entry<String, JsonElement> entry : object.entrySet()) {
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+	}
+
+}
 			]]>
 			</programlisting>
 		</section>

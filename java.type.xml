@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="type">
 	<title>类型</title>
-	<section>
+	<section id="string">
 		<title>String 处理</title>
 		<programlisting>
 {"status":0,"message":"","bankcode":"ABOC;IBC;CCTB;ICBC"}
@@ -24,7 +24,7 @@ public class str {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="arraylist">
 		<title>ArrayList</title>
 		<para>判断元素是否存在</para>
 		<programlisting>
@@ -48,6 +48,52 @@ public class arraylist {
 	}
 
 }
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.type;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class ArrayListExample {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		List<String> list = new ArrayList<String>();
+		list.add("Jack");
+		list.add("Jet");
+		list.add("Jack");
+		list.add("Mike");
+		list.add("Kitty");
+		list.add("Tom");
+		
+		/while 循环
+		Iterator<String> it = list.iterator();
+		while (it.hasNext()) {
+			System.out.println(it.next());
+		}
+
+		for (Iterator<String> it1 = list.iterator(); it1.hasNext();) {
+			System.out.println(it1.next());
+		}
+
+		// for 循环
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i));
+		}
+
+		// for 循环加强版
+		for (String i : list) {
+			System.out.println(i);
+		}
+
+	}
+
+}
+	
 		]]>
 		</programlisting>
 	</section>
