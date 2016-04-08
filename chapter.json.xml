@@ -350,7 +350,7 @@ public class GsonExampleFromJson {
 			]]>
 			</programlisting>
 		</section>	
-		<section>
+		<section id="JsonParser">
 			<title>JsonParser</title>
 			<programlisting>
 			<![CDATA[

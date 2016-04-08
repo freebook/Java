@@ -70,7 +70,7 @@ public class ArrayListExample {
 		list.add("Kitty");
 		list.add("Tom");
 		
-		/while 循环
+		//while 循环
 		Iterator<String> it = list.iterator();
 		while (it.hasNext()) {
 			System.out.println(it.next());
