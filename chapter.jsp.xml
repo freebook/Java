@@ -49,7 +49,7 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		<para>删除JSP编译产生的空行</para>
 		<screen>
 		<![CDATA[
-<%@ page trimDirectiveWhitespaces="true" %> 		
+<%@ page trimDirectiveWhitespaces="true" %> 
 		]]>		
 		</screen>
 	</section>
@@ -67,6 +67,8 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		<![CDATA[
 <jsp:include page="telephone.jsp" />
 <jsp:include page="address.jsp" flush="true"/> 
+<jsp:include page="${request.getContentType()}/module/html.body.begin.html" flush="true" />
+
 		]]>
 		</screen>
 	</section>
@@ -85,7 +87,53 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 <c:out value="${variable}"/>
 			]]>
 			</programlisting>	
-		</section>		
+		</section>
+		<section>
+			<title>import</title>
+			<programlisting>
+			<![CDATA[
+<c:import url="http://www.netkiller.cn" />		
+
+<c:import var="html" url="http://www.netkiller.cn"/>
+<c:out value="${html}"/>	
+			]]>
+			</programlisting>
+			<para>传递GET参数</para>
+			<programlisting>
+			<![CDATA[
+<c:import url="http://www.netkiller.cn" > 
+	<c:param name="id" value="10" />
+	<c:param name="name" value="neo" /> 
+</c:import> 			
+			]]>
+			</programlisting>
+			<para>异常处理</para>
+			<programlisting>
+			<![CDATA[
+<c:catch var="exception">
+
+  <c:import url="ftp://ftp.example.com/package/README"/>
+
+</c:catch>
+
+<c:if test="${not empty exception}">
+
+  Sorry, the remote content is not currently available.
+
+</c:if>			
+			]]>
+			</programlisting>
+			<para>在Context间切换</para>
+			<programlisting>
+			<![CDATA[
+server.conf: 
+<Context  reloadable="true" crossContext="true" /> 
+
+<c:import url="/path/to/file.jsp" context=/project1" /> 			
+<c:import url="/path/to/file.jsp" context=/project2" />
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>List 处理</title>
 			<programlisting>
