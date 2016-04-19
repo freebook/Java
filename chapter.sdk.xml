@@ -2,6 +2,10 @@
 
 <chapter id="sdk">
 	<title>Software Development Kit</title>
+	<section id="slf4j">
+		<title>slf4j</title>
+		<para>http://www.slf4j.org/</para>
+	</section>
 <section id="log4j">
 	<title>log4j</title>
 	<link linkend="java">JDK Install</link>

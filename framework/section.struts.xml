@@ -127,14 +127,29 @@ escapeXml	false	false	false	Boolean	Whether to escape XML
 		</programlisting>						
 	</section>
 	<section id="include">
-		<title>include</title>
+		<title>s:include</title>
 		<programlisting>
 		<![CDATA[
 <s:include value="/pages/example.jsp"></s:include>			
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="action">
+		<title>s:action</title>
+		<programlisting>
+		<![CDATA[
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<s:action name="index" namespace="/news" executeResult="true" />
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<s:action name="index" namespace="/member" executeResult="true">
+	<s:param name="name">Neo</s:param>
+</s:action>
+		]]>
+		</programlisting>
+	</section>
 	<section id="form">
 		<title>HTML Form</title>
 		<section>
