@@ -115,6 +115,183 @@ public class Pathinfo {
 			</programlisting>
 		</section>
 	</section>
+	
+	<section id="PathVariable">
+		<title>RequestMapping with Path Variables - @PathVariable</title>
+		<section>
+			<title>URL 参数传递</title>
+			<para>需求，我们需要通过URL传递参数，所传递的值是分类ID与文章ID，例如 /news/1.html, /news/1/1.html。</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class Pathinfo {
+	@RequestMapping("/pathinfo/{id}")
+	public ModelAndView urlTestId(@PathVariable String id) {
+
+		return new ModelAndView("pathinfo/param", "id", id);
+	}
+
+	@RequestMapping("/pathinfo/{cid}/{id}")
+	public ModelAndView urlTestId(@PathVariable String cid, @PathVariable String id) {
+
+		ModelMap model = new ModelMap();
+
+		model.addAttribute("cid", cid);
+		model.addAttribute("id", id);
+
+		return new ModelAndView("pathinfo/param", model);
+	}
+}
+			]]>
+			</programlisting>
+			<para>jsp测试文件</para>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+${ cid } <br>
+${ id } <br>
+</body>
+</html>
+			]]>
+			</programlisting>
+
+		</section>
+
+	</section>
+
+	<section id="RequestParam">
+		<title>RequestMapping with Request Parameters - @RequestParam</title>
+		<programlisting>
+import org.springframework.web.bind.annotation.RequestParam;
+		</programlisting>
+		<section>
+			<title>HTTP GET</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/request/param")
+	@ResponseBody
+	public String getBarBySimplePathWithRequestParam(@RequestParam("id") long id) {
+	    return "Get a specific Bar with id=" + id;
+	}
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+http://localhost:8080/Spring/request/param.html?id=100
+			</screen>
+		</section>
+
+		<section>
+			<title>HTTP POST</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class Http {
+
+	@RequestMapping("/http/form")
+	public ModelAndView createCustomer(){
+		ModelMap model = new ModelMap();
+
+		model.addAttribute("email", "netkiller@msn.com");
+		model.addAttribute("phone", "13113668890");
+
+	    return new ModelAndView("http/form", model);
+	}
+
+	@RequestMapping(value= "/http/post", method = RequestMethod.POST)
+	public ModelAndView saveCustomer(HttpServletRequest request,
+	        @RequestParam(value="Email", required=false) String email,
+	        @RequestParam(value="Password", required=false) String password,
+	        @RequestParam(value="Phone", required=false) String phone){
+
+		ModelMap model = new ModelMap();
+
+		model.addAttribute("email", email);
+		model.addAttribute("password", password);
+		model.addAttribute("phone", phone);
+
+	    return new ModelAndView("http/post", model);
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>http/form.jsp</para>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<form method="POST"
+		action="http://localhost:8080/Spring/http/post.html" id="Register"
+		name="Register">
+		Email: <input class="register" type="text" id="Email" name="Email" value="${email}" /> <br />
+		Password： <input class="register" type="password" id="Password" name="Password" value="" /><br />
+		Phone： <input class="register" type="text" id="Phone" name="Phone" value="${phone}" /> <br />
+		<input type="submit" id="btnRegister" name="btnRegister" value="Register" style="cursor: pointer" />
+	</form>
+
+</body>
+</html>
+			]]>
+			</programlisting>
+			<para>http/post.jsp</para>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	${email}<br>
+	${password}	<br>
+	${phone} <br>
+</body>
+</html>
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="ModelAndView">
 		<title>ModelAndView</title>
 		<section>
@@ -336,182 +513,6 @@ Password: ${user.password}<br>
 			<title></title>
 			<programlisting>
 			<![CDATA[
-			]]>
-			</programlisting>
-		</section>
-	</section>
-	<section id="PathVariable">
-		<title>RequestMapping with Path Variables - @PathVariable</title>
-		<section>
-			<title>URL 参数传递</title>
-			<para>需求，我们需要通过URL传递参数，所传递的值是分类ID与文章ID，例如 /news/1.html, /news/1/1.html。</para>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-@Controller
-public class Pathinfo {
-	@RequestMapping("/pathinfo/{id}")
-	public ModelAndView urlTestId(@PathVariable String id) {
-
-		return new ModelAndView("pathinfo/param", "id", id);
-	}
-
-	@RequestMapping("/pathinfo/{cid}/{id}")
-	public ModelAndView urlTestId(@PathVariable String cid, @PathVariable String id) {
-
-		ModelMap model = new ModelMap();
-
-		model.addAttribute("cid", cid);
-		model.addAttribute("id", id);
-
-		return new ModelAndView("pathinfo/param", model);
-	}
-}
-			]]>
-			</programlisting>
-			<para>jsp测试文件</para>
-			<programlisting>
-			<![CDATA[
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-${ cid } <br>
-${ id } <br>
-</body>
-</html>
-			]]>
-			</programlisting>
-
-		</section>
-
-	</section>
-
-	<section id="RequestParam">
-		<title>RequestMapping with Request Parameters - @RequestParam</title>
-		<programlisting>
-import org.springframework.web.bind.annotation.RequestParam;
-		</programlisting>
-		<section>
-			<title>HTTP GET</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping("/request/param")
-	@ResponseBody
-	public String getBarBySimplePathWithRequestParam(@RequestParam("id") long id) {
-	    return "Get a specific Bar with id=" + id;
-	}
-			]]>
-			</programlisting>
-			<para></para>
-			<screen>
-http://localhost:8080/Spring/request/param.html?id=100
-			</screen>
-		</section>
-
-		<section>
-			<title>HTTP POST</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-@Controller
-public class Http {
-
-	@RequestMapping("/http/form")
-	public ModelAndView createCustomer(){
-		ModelMap model = new ModelMap();
-
-		model.addAttribute("email", "netkiller@msn.com");
-		model.addAttribute("phone", "13113668890");
-
-	    return new ModelAndView("http/form", model);
-	}
-
-	@RequestMapping(value= "/http/post", method = RequestMethod.POST)
-	public ModelAndView saveCustomer(HttpServletRequest request,
-	        @RequestParam(value="Email", required=false) String email,
-	        @RequestParam(value="Password", required=false) String password,
-	        @RequestParam(value="Phone", required=false) String phone){
-
-		ModelMap model = new ModelMap();
-
-		model.addAttribute("email", email);
-		model.addAttribute("password", password);
-		model.addAttribute("phone", phone);
-
-	    return new ModelAndView("http/post", model);
-	}
-
-}
-			]]>
-			</programlisting>
-			<para>http/form.jsp</para>
-			<programlisting>
-			<![CDATA[
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-	<form method="POST"
-		action="http://localhost:8080/Spring/http/post.html" id="Register"
-		name="Register">
-		Email: <input class="register" type="text" id="Email" name="Email" value="${email}" /> <br />
-		Password： <input class="register" type="password" id="Password" name="Password" value="" /><br />
-		Phone： <input class="register" type="text" id="Phone" name="Phone" value="${phone}" /> <br />
-		<input type="submit" id="btnRegister" name="btnRegister" value="Register" style="cursor: pointer" />
-	</form>
-
-</body>
-</html>
-			]]>
-			</programlisting>
-			<para>http/post.jsp</para>
-			<programlisting>
-			<![CDATA[
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	${email}<br>
-	${password}	<br>
-	${phone} <br>
-</body>
-</html>
 			]]>
 			</programlisting>
 		</section>

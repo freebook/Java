@@ -6,7 +6,7 @@
 
 	<section id="json.encode">
 		<title>Json 编码</title>
-		<programlisting>
+		<programlisting language="java">
 package netkiller.json;
 
 import java.io.File;
