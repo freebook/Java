@@ -890,7 +890,75 @@ JSONUtil.deserialize(sb.toString());
 
 			</programlisting>
 		</section>
-				
+	</section>
+	<section id="interceptor">
+		<title>Interceptor</title>
+		<section>
+			<title>Session </title>
+			<para>在 web.xml 文件中定义 Session 超时时间</para>
+			<programlisting>
+			<![CDATA[
+<session-config>  
+    <session-timeout>30</session-timeout>  
+</session-config>			
+			]]>
+			</programlisting>
+			<para>创建拦截器程序</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.interceptor;
+
+import java.util.Map;
+import java.lang.Override;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+
+public class SessionInterceptor extends AbstractInterceptor {
+
+	private static final long serialVersionUID = 8347994918002285514L;
+
+	@Override
+	public String intercept(ActionInvocation invocation) throws Exception {
+		Map<String, Object> session = invocation.getInvocationContext().getSession();
+		if (session.isEmpty())
+			return "nosession"; // session is empty/expired
+		return invocation.invoke();
+	}
+}
+			]]>
+			</programlisting>
+			<para>配置拦截器</para>
+			<programlisting>
+			<![CDATA[
+	<package name="mobile" extends="main" namespace="/mobile">
+		<global-results>
+			<result name="nosession" type="redirectAction">
+				<param name="actionName">Index</param>
+				<param name="namespace">/mobile</param>
+			</result>
+		</global-results>			
+		<interceptor name="session" class="cn.netkiller.SessionInterceptor" />
+		<interceptor-stack name="sessionExpirayStack">
+    		<interceptor-ref name="defaultStack"/>
+    		<interceptor-ref name="session"/>
+   		</interceptor-stack>
+   		<default-interceptor-ref name="sessionExpirayStack" />
+
+		<action name="testAction" class="TestClass">
+    		<interceptor-ref name="sessionExpirayStack" />
+    		<result name="success">success.jsp</result>
+    		<result name="error">error.jsp</result>
+  		</action>
+  	</package>
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>			
+		</section>
 	</section>
 	<section id="faq">
 		<title>FAQ</title>
