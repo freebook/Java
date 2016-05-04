@@ -43,3 +43,4 @@ System.out.println(System.getProperty("java.io.tmpdir"));
 	&chapter.servlet.xml;
 	&chapter.jdbc.xml;
 	&chapter.json.xml;
+	&chapter.websocket.xml;

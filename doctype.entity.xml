@@ -25,3 +25,4 @@
 <!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
 <!ENTITY chapter.jsp.xml				SYSTEM "chapter.jsp.xml">
 <!ENTITY chapter.jdbc.xml				SYSTEM "chapter.jdbc.xml">
+<!ENTITY chapter.websocket.xml			SYSTEM "chapter.websocket.xml">

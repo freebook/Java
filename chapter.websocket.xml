@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="websocket">
+	<title>WebSocket</title>
+	<para>环境：Java8 + Tomcat8</para>
+	<section id="server">
+		<title>Server</title>
+		<programlisting language="java">
+		<![CDATA[
+package websocket;
+
+/**
+ * Websocket Server
+ * 
+ * @author netkiller<netkiller@msn.com>
+ */
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+@ServerEndpoint(value = "/echo")
+public class PriceServer {
+
+	private Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
+
+	/**
+	 * Callback hook for Connection open events. This method will be invoked
+	 * when a client requests for a WebSocket connection.
+	 * 
+	 * @param session
+	 *            the session which is opened.
+	 */
+	@OnOpen
+	public void onOpen(Session session) {
+		sessions.add(session);
+	}
+
+	/**
+	 * Callback hook for Connection close events. This method will be invoked
+	 * when a client closes a WebSocket connection.
+	 * 
+	 * @param session
+	 *            the session which is opened.
+	 */
+	@OnClose
+	public void onClose(Session session) {
+		sessions.remove(session);
+	}
+
+	/**
+	 * Callback hook for Message Events. This method will be invoked when a
+	 * client send a message.
+	 * 
+	 * @param message
+	 *            The text message
+	 * @param session
+	 *            The session of the client
+	 */
+	@OnMessage
+	public void onMessage(String message, Session session) {
+		System.out.println("Message Received: " + message);
+		for (Session remote : sessions) {
+			System.out.println("Sending to " + remote.getId());
+			remote.getAsyncRemote().sendText(message);
+		}
+	}
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section id="client">
+		<title>Client</title>
+		<programlisting language="java">
+		<![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<script language="JavaScript">
+		var wsuri = "ws://localhost:8080/m.example.com/echo";
+		var ws = null;
+
+		function connectEndpoint() {
+			ws = new WebSocket(wsuri);
+			ws.onmessage = function(evt) {
+				//alert(evt.data);
+				document.getElementById("echo").value = evt.data;
+			};
+
+			ws.onclose = function(evt) {
+				//alert("close");
+				document.getElementById("echo").value = "end";
+			};
+
+			ws.onopen = function(evt) {
+				//alert("open");
+				document.getElementById("echo").value = "open";
+			};
+		}
+
+		function sendmsg() {
+			ws.send(document.getElementById("send").value);
+		}
+	</script>
+<body onload="connectEndpoint()">
+	<input type="text" size="20" value="5" id="send">
+	<input type="button" value="send" onclick="sendmsg()">
+	<br>
+	<input type="text" id="echo">
+</body>
+</html>
+		]]>
+		</programlisting>
+	</section>
+</chapter>	
