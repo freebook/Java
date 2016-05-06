@@ -32,6 +32,15 @@ public class PropertiesTest {
 }
 		]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+Properties prop = new Properties();
+
+prop.load(getServletContext().getResourceAsStream("/WEB-INF/properties/sample.properties"));
+
+prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("myprop.properties"));
+		]]>
+		</programlisting>
 	</section>
 	<section id="string">
 		<title>String</title>
