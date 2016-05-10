@@ -27,7 +27,153 @@ System.out.println(System.getProperty("java.io.tmpdir"));
 		</programlisting>
 	</section>
 </section>
-	
+	<section id="properties">
+		<title>Properties</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Properties;
+
+public class Config {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties prop = new Properties();
+		OutputStream output = null;
+
+		try {
+
+			output = new FileOutputStream("config.properties");
+
+			// set the properties value
+			prop.setProperty("host", "localhost");
+			prop.setProperty("port", "8000");
+			prop.setProperty("user", "neo");
+			prop.setProperty("pass", "password");
+
+			// save properties to project root folder
+			prop.store(output, null);
+
+		} catch (IOException io) {
+			io.printStackTrace();
+		} finally {
+			if (output != null) {
+				try {
+					output.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
+}
+		]]>
+		</programlisting>
+		<para>getProperty 取出key的值</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+public class LoadConfig {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties prop = new Properties();
+		InputStream input = null;
+
+		try {
+
+			input = new FileInputStream("config.properties");
+
+			// load a properties file
+			prop.load(input);
+
+			// get the property value and print it out
+			System.out.println(prop.getProperty("host"));
+			System.out.println(prop.getProperty("port"));
+			System.out.println(prop.getProperty("user"));
+			System.out.println(prop.getProperty("pass"));
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+}
+		]]>
+		</programlisting>
+		<para>循环打印所有 Properties 内容</para>
+		<programlisting>
+		<![CDATA[
+package test;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Properties;
+
+public class Application {
+
+	public static void main(String[] args) {
+		Application app = new Application();
+		app.config();
+
+	}
+
+	private void config() {
+		Properties prop = new Properties();
+		InputStream input = null;
+		try {
+
+			String filename = "config.properties";
+
+			prop.load(new FileInputStream(filename));
+
+			Enumeration<?> e = prop.propertyNames();
+			while (e.hasMoreElements()) {
+				String key = (String) e.nextElement();
+				String value = prop.getProperty(key);
+				System.out.println(key + ": " + value);
+			}
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
 	&java.type.xml;
 	&chapter.java.net.xml;
 </chapter>
