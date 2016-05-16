@@ -963,8 +963,53 @@ public class SessionInterceptor extends AbstractInterceptor {
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
-			<title></title>
+			<title>Struts 怎样判断用户来自电脑还是移动设备</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.action;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import javax.servlet.http.HttpServletRequest;
+
+public class Index extends ActionSupport {
+
+	private static final long serialVersionUID = 7782483098148890753L;
+
+	public String execute() {
+		HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(org.apache.struts2.StrutsStatics.HTTP_REQUEST);
+		String userAgent = request.getHeader("User-Agent").toLowerCase();
+		System.out.println(this.getClass().getName() + ": " + userAgent);
+		String[] mobileAgents = { "iphone", "android", "phone", "mobile", "wap", "netfront", "java", "opera mobi", "opera mini", "ucweb", "windows ce", "symbian", "series", "webos", "sony", "blackberry", "dopod", "nokia", "samsung", "palmsource", "xda", "pieplus", "meizu", "midp", "cldc", "motorola", "foma", "docomo", "up.browser", "up.link", "blazer", "helio", "hosin", "huawei", "novarra", "coolpad", "webos", "techfaith", "palmsource", "alcatel", "amoi", "ktouch", "nexian", "ericsson", "philips", "sagem", "wellcom", "bunjalloo", "maui", "smartphone", "iemobile", "spice", "bird", "zte-", "longcos", "pantech", "gionee", "portalmmm", "jig browser", "hiptop", "benq", "haier", "^lct", "320x320", "240x320", "176x220", "w3c ", "acs-", "alav", "alca", "amoi", "audi", "avan", "benq", "bird", "blac", "blaz", "brew", "cell", "cldc", "cmd-", "dang", "doco", "eric", "hipt", "inno", "ipaq", "java", "jigs", "kddi", "keji", "leno", "lg-c", "lg-d", "lg-g", "lge-", "maui", "maxo", "midp", "mits", "mmef", "mobi", "mot-",
+				"moto", "mwbp", "nec-", "newt", "noki", "oper", "palm", "pana", "pant", "phil", "play", "port", "prox", "qwap", "sage", "sams", "sany", "sch-", "sec-", "send", "seri", "sgh-", "shar", "sie-", "siem", "smal", "smar", "sony", "sph-", "symb", "t-mo", "teli", "tim-", "tsm-", "upg1", "upsi", "vk-v", "voda", "wap-", "wapa", "wapi", "wapp", "wapr", "webc", "winw", "winw", "xda", "xda-", "Googlebot-Mobile" };
+		if (userAgent != null) {
+			for (String mobileAgent : mobileAgents) {
+				if (userAgent.indexOf(mobileAgent) >= 0) {
+					return "mobile";
+				}
+			}
+		}
+
+		return "computer";
+	}
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	<action name="Index" class="cn.netkiller.action.Index">
+		<result name="computer" type="redirectAction">
+			<param name="actionName">index</param>
+			<param name="namespace">/computer</param>
+		</result>
+		<result name="mobile" type="redirect">
+			<param name="location">http://m.netkiller.cn/index.html</param>
+		</result>
+	</action>			
+			]]>
+			</programlisting>
 			<screen>
+			
 			</screen>
 		</section>
 	</section>
