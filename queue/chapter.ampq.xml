@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="ampq">
-	<title>AMQP</title>
+	<title>AMQP(Advanced Message Queuing Protocol)</title>
 	<section>
 		<title>Send and Recv</title>
 		<para>Send</para>
@@ -148,34 +148,35 @@ public class DirectReceive {
 }
 		</screen>
 	</section>
+	<!-- 
 	<section>
 		<title></title>
 		<para></para>
 		<screen>
 		</screen>
 	</section>	
-	<section id="oracle">
-		<title>Oracle</title>
+	<section id="">
+		<title></title>
 		<section>
-			<title>SID</title>
-			<para><![CDATA[  ]]> Example:</para>
+			<title></title>
+			<para><![CDATA[  ]]> :</para>
 			
 		</section>
 		<section>
-			<title>SERVICE_NAME</title>
-			<para><![CDATA[jdbc:oracle:thin:@//<host>:<port>/<service_name>]]></para>
-			<para>Example:</para>
+			<title></title>
+			<para><![CDATA[]]></para>
+			<para>:</para>
 			<screen> 
 		
 			</screen>
 		</section>
 		<section>
 			<title></title>
-			<para><![CDATA[jdbc:oracle:thin:@<TNSName> ]]> Example:</para>
+			<para><![CDATA[ ]]> :</para>
 			<section>
 
 			</section>
 		</section>
-		
 	</section>
+	 -->
 </chapter>

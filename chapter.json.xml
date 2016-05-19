@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="json">
-	<title>Json</title>
+	<title>JSON (JavaScript Object Notation)</title>
 	<section id="javax.json">
 		<title>javax.json.*</title>
 

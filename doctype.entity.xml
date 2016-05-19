@@ -20,6 +20,7 @@
 <!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
 <!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
+<!ENTITY chapter.ampq.xml				SYSTEM "queue/chapter.ampq.xml">
 
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
 <!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
