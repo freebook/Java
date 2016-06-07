@@ -43,6 +43,32 @@ new URL(
 response.sendRedirect("/content/test.jsp");			
 			</screen>
 		</section>
+		<section id="request.getParameter">
+			<title>Form</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+<%
+   Enumeration paramNames = request.getParameterNames();
+
+   while(paramNames.hasMoreElements()) {
+      String paramName = (String)paramNames.nextElement();
+      String paramValue = request.getParameter(paramName);
+      out.println(paramName + ": " + paramValue + "<br/>\n");
+   }
+%>			
+			]]>
+			</programlisting>
+			
+			<programlisting>
+			<![CDATA[
+<%= request.getParameter("first_name")%>
+
+<c:set var="UA" value="${param.first_name}" />
+<c:out value="${param.first_name}"/>
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="page">
 		<title>page</title>
@@ -134,12 +160,38 @@ response.sendRedirect("/content/test.jsp");
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 		]]>
 		</programlisting>
+		
+		 
+		<section id="set">
+			<title>c:set</title>
+			<para>设置变量</para>
+			<programlisting>
+			<![CDATA[
+<c:set var="foo" scope="request" value="helloworld">
+
+or
+
+<%request.setAttribute("foo","helloworld") %>
+
+
+<c:out value="${requestScope.foo}"/>
+			]]>
+			</programlisting>	
+		</section>
 		<section id="out">
 			<title>c:out</title>
 			<para>输出变量variable的内容</para>
 			<programlisting>
 			<![CDATA[
 <c:out value="${variable}"/>
+
+
+<%=request.getParameter("UA")%>
+相当于
+<c:out value="${param.UA}"/>
+
+默认值
+<c:out value="${param.UA}" default="UA-69658002-1" />
 			]]>
 			</programlisting>	
 		</section>
@@ -206,7 +258,53 @@ server.conf:
 			]]>
 			</programlisting>
 		</section>
-		<section id="forEach">
+		<section id="if">
+			<title>c:if</title>
+			<programlisting>
+			<![CDATA[
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html>
+<head>
+<title><c:if> Tag Example</title>
+</head>
+<body>
+<c:set var="salary" scope="session" value="${2000*2}"/>
+<c:if test="${salary > 2000}">
+   <p>My salary is: <c:out value="${salary}"/><p>
+</c:if>
+</body>
+</html>	
+			]]>
+			</programlisting>	
+		</section>
+
+		<section id="choose">
+			<title>c:choose</title>
+			<screen>
+			<![CDATA[
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:choose>
+	<c:when test="${session.auth eq 'true' }">
+		
+	</c:when>
+	<c:otherwise>
+		
+	</c:otherwise>
+</c:choose>			
+			]]>
+			</screen>
+			<para>实现 if else/else if / else</para>
+			<programlisting>
+			<![CDATA[
+<c:choose>
+   <c:when test="${..}">...</c:when> <!-- if condition -->
+   <c:when test="${..}">...</c:when> <!-- else if condition -->
+   <c:otherwise>...</c:otherwise>    <!-- else condition -->
+</c:choose>			
+			]]>
+			</programlisting>
+		</section><section id="forEach">
 			<title>c:forEach</title>
 		
 			<section>
@@ -318,23 +416,7 @@ Number=13322993040
 				</programlisting>
 			</section>
 		</section>
-		<section id="choose">
-			<title>c:choose</title>
-			<screen>
-			<![CDATA[
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<c:choose>
-	<c:when test="${session.auth eq 'true' }">
 		
-	</c:when>
-	<c:otherwise>
-		
-	</c:otherwise>
-</c:choose>			
-			]]>
-			</screen>
-		</section>
 	</section>	
 	<section id="error-page">
 		<title>error-page</title>

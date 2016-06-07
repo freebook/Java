@@ -169,14 +169,25 @@ escapeXml	false	false	false	Boolean	Whether to escape XML
 			</programlisting>	
 		</section>		
 		
-		<section id="textfield">
+		<section id="s:textfield">
 			<title>textfield</title>
 			<programlisting>
 			<![CDATA[
 <s:textfield name="variable"/>			
 			]]>
 			</programlisting>
+		</section>
+		
+		<section id="s:hidden">
+			<title>s:hidden</title>
+			<para>隐藏表单</para>
+			<programlisting>
+			<![CDATA[
+<s:hidden id="unique" name="form.unique" value=""/>			
+			]]>
+			</programlisting>
 		</section>		
+			
 		<section id="select">
 			<title>select</title>
 			<programlisting>
