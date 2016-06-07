@@ -524,6 +524,23 @@ Password: ${user.password}<br>
 		]]>
 		</programlisting>
 	</section>
+	<section id="Scheduled">
+		<title>@Scheduled</title>
+		<para>计划任务</para>
+		<screen>
+		<![CDATA[
+@Component
+@EnableScheduling
+public class MyTask {
+
+    @Scheduled(cron="*/3 * * * * *")
+    public void myTaskMethod(){
+        //do something
+    }
+}		
+		]]>
+		</screen>
+	</section>
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>
 		<programlisting>
