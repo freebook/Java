@@ -191,3 +191,4 @@ public class Application {
 	&chapter.json.xml;
 	&chapter.websocket.xml;
 	&chapter.ampq.xml;
+	&chapter.nosql.mongodb.xml;

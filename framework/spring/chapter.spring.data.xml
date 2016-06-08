@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="sprint.data">
 	<title>Spring Data</title>
-	<section>
+	<section id="SpringDataRedis">
 		<title>Redis</title>
 		<section>
 			<title>pom.xml</title>
@@ -190,6 +190,249 @@ redis 127.0.0.1:6379> get key
 			<tip>
 				<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到 "\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过 template.setKeySerializer(new StringRedisSerializer()); 实现 </para>
 			</tip>
+		</section>
+	</section>
+	<section id="SpringDataMongoDB">
+		<title>Spring Data MongoDB</title>
+		<section>
+			<title>pom.xml</title>
+			<para>注意Spring4 与 1.9.1.RELEASE有兼容性问题，日志提示 Error creating bean with name 'mongoTemplate' defined in ServletContext resource</para>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>1.8.1.RELEASE</version>
+		</dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>springframework-servlet.xml</title>
+			<screen>
+			<![CDATA[
+	<mongo:db-factory id="mongoDbFactory" host="${mongo.host}" port="${mongo.port}" dbname="${mongo.database}" />
+	<!-- username="${mongo.username}" password="${mongo.password}" -->
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+    </bean>
+    
+    <mongo:mapping-converter id="converter" db-factory-ref="mongoDbFactory"/>
+    <bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
+      <constructor-arg ref="mongoDbFactory"/>
+      <constructor-arg ref="converter"/>
+    </bean>
+			]]>
+			</screen>
+			<example>
+				<title>Spring Data MongoDB - springframework-servlet.xml</title>
+				<screen>
+				<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/data/mongo
+		http://www.springframework.org/schema/data/mongo/spring-mongo-1.5.xsd        
+        ">
+
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />
+	<mvc:resources location="/zt/" mapping="/zt/**" />
+	<mvc:resources location="/sm/" mapping="/sm/**" />
+	<mvc:resources location="/module/" mapping="/module/**" />
+
+	<context:component-scan base-package="cn.netkiller.controller" />
+	<!-- <context:property-placeholder location="classpath:resources/development.properties" /> -->
+	<mvc:annotation-driven />
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="configuracion" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:resources/development.properties" />
+	</bean>
+	
+	<!-- MongoDB Connection Factory -->
+	<mongo:db-factory id="mongoDbFactory" host="${mongo.host}" port="${mongo.port}" dbname="${mongo.database}" />
+	<!-- username="${mongo.username}" password="${mongo.password}" -->
+	
+	<!-- MongoDB template definition -->
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+    </bean>
+    
+    <!-- MongoDB GridFS template definition -->
+    <mongo:mapping-converter id="converter" db-factory-ref="mongoDbFactory"/>
+    <bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
+      <constructor-arg ref="mongoDbFactory"/>
+      <constructor-arg ref="converter"/>
+    </bean>
+    
+	<!-- Redis Connection Factory -->
+	<bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" p:host-name="192.168.2.1" p:port="6379" p:use-pool="true" />
+
+	<!-- redis template definition -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" p:connection-factory-ref="jedisConnFactory" />
+ 
+</beans>
+				]]>
+				</screen>
+			</example>
+			<para>development.properties 配置内容</para>
+			<screen>
+			<![CDATA[
+mongo.host=192.168.4.1
+mongo.port=27017
+mongo.username=test
+mongo.password=passw0rd
+mongo.database=website
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Controller</title>
+			<screen>
+			<![CDATA[
+package cn.netkiller.repositories;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "tracker")
+public class Tracker {
+	@Id
+	private String id;
+	private String loginname;
+	private String unique;
+	private String hostname;
+	private String referrer;
+	private String href;
+
+	public Tracker() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getLoginname() {
+		return loginname;
+	}
+
+	public void setLoginname(String loginname) {
+		this.loginname = loginname;
+	}
+
+	public String getUnique() {
+		return unique;
+	}
+
+	public void setUnique(String unique) {
+		this.unique = unique;
+	}
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	public String getReferrer() {
+		return referrer;
+	}
+
+	public void setReferrer(String referrer) {
+		this.referrer = referrer;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	@Override
+	public String toString() {
+		return "Tracker [id=" + id + ", loginname=" + loginname + ", unique=" + unique + ", hostname=" + hostname + ", referrer=" + referrer + ", href=" + href + "]";
+	}
+
+}		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Controller</title>
+			<screen>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import cn.netkiller.repositories.Tracker;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.*;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+public class TrackerController {
+
+	@Autowired
+	private MongoTemplate mongoTemplate;
+
+	public TrackerController() {
+
+	}
+
+	@RequestMapping("/tracker/test")
+	@ResponseBody
+	String hello() {
+		return "Hello World!";
+	}
+
+	@RequestMapping("/tracker")
+	@ResponseBody
+	String execute() {
+		Tracker tracker = new Tracker();
+		tracker.setLoginname("test");
+		tracker.setUnique("111223456");
+		tracker.setHostname("www.example.com");
+		tracker.setHref("http://example.com/test.html");
+		tracker.setReferrer("http://example.com/");
+		this.mongoTemplate.insert(tracker);
+		
+		return tracker.toString();
+	}
+
+}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看测试结果</title>
+			<screen>
+			<![CDATA[
+> db.tracker.find();
+{ "_id" : ObjectId("5757c0b92c526a6bda5eea3a"), "_class" : "cn.netkiller.repositories.Tracker", "loginname" : "test", "unique" : "111223456", "hostname" : "www.example.com", "referrer" : "http://example.com/", "href" : "http://example.com/test.html" }
+
+			]]>
+			</screen>
 		</section>
 	</section>
 </section>

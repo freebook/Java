@@ -27,3 +27,5 @@
 <!ENTITY chapter.jsp.xml				SYSTEM "chapter.jsp.xml">
 <!ENTITY chapter.jdbc.xml				SYSTEM "chapter.jdbc.xml">
 <!ENTITY chapter.websocket.xml			SYSTEM "chapter.websocket.xml">
+<!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
+
