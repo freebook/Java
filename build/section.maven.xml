@@ -1,7 +1,7 @@
 <section id="maven">
 	<title>maven</title>
 	<para>http://maven.apache.org/</para>
-	<section>
+	<section id="install">
 		<title>安装</title>
 		<section>
 			<title>Ubuntu</title>
@@ -28,7 +28,7 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/mave
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="mvnrepository">
 		<title>Maven 仓库</title>
 		<para>http://search.maven.org/</para>
 		<para>http://mvnrepository.com/</para>
@@ -37,7 +37,7 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/mave
 $ ls ~/.m2
 		</screen>
 	</section>
-	<section>
+	<section id="properties">
 		<title>properties</title>
 		<para>定义 properties</para>
 		<screen>
@@ -115,7 +115,7 @@ $ ls ~/.m2
 			</screen>
 		</example>
 	</section>
-	<section>
+	<section id="dependencies">
 		<title>dependencies</title>
 		<screen>
 		<![CDATA[
@@ -136,36 +136,39 @@ $ ls ~/.m2
 		</screen>
 	</section>
 	<section>
-		<title>clean</title>
-		<para>清楚</para>
-		<screen>
+		<title>Maven 命令</title>
+		<section id="clean">
+			<title>clean</title>
+			<para>清楚</para>
+			<screen>
 $ mvn clean		
-		</screen>
-	</section>
-	<section>
-		<title>compile</title>
-		<para>编译项目的源代码</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>compile</title>
+			<para>编译项目的源代码</para>
+			<screen>
 $ mvn compile
-		</screen>
-	</section>
-	<section id="package">
-		<title>package</title>
-		<para>将编译后的代码打包</para>
-		<screen>
+			</screen>
+		</section>
+		<section id="package">
+			<title>package</title>
+			<para>将编译后的代码打包</para>
+			<screen>
 $ mvn package
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 $ ls target/*.war
 target/www.netkiller.cn-0.0.1-SNAPSHOT.war
-		</screen>
-	</section>
-	<section>
-		<title>install</title>
-		<para>将项目打包后安装到本地仓库，可以作为其它项目的本地依赖。</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>install</title>
+			<para>将项目打包后安装到本地仓库，可以作为其它项目的本地依赖。</para>
+			<screen>
 $ mvn install		
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>copy-dependencies</title>

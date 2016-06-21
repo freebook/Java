@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="faq">
+	<title>FAQ</title>
+	<section>
+		<title>o.s.web.servlet.PageNotFound</title>
+		<para>解决方法，加入下面代码到 dispatcher-servlet.xml 文件中</para>
+		<screen>
+		<![CDATA[
+<mvc:annotation-driven />			
+		]]>
+		</screen>
+		<para>dispatcher-servlet.xml</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="cn.netkiller.controller" />
+	<mvc:annotation-driven />
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+</beans>
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>HTTP Status 500 - Handler processing failed; nested exception
+			is java.lang.NoClassDefFoundError:
+			javax/servlet/jsp/jstl/core/Config</title>
+		<para>pom.xml 文件中加入依赖包</para>
+		<screen>
+		<![CDATA[
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>同时使用 Thymeleaf 与 JSP </title>
+		<subtitle>Using both Thymeleaf and JSP</subtitle>
+		<programlisting>
+		<![CDATA[
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<!-- <property name="suffix" value=".jsp" /> -->
+		<property name="viewNames" value="*.jsp" />
+	</bean>
+
+	<bean id="templateResolver"
+		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/templates/" />
+		<!-- <property name="suffix" value=".html" /> -->
+		<property name="templateMode" value="HTML5" />
+	</bean>
+
+	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver" />
+	</bean>
+
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="templateEngine" />
+		<property name="viewNames" value="*.html" />
+	</bean>	
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+@RequestMapping("/thymeleaf")
+public String thymeleafView(){
+    return "thymeleaf.html";
+}
+
+@RequestMapping("/jsp")
+public String jspView(){
+    return "jstl.jsp";
+}
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+			<property name="viewNames" value="*thymeleaf/*" />
+			
+@RequestMapping(value="/test")
+public ModelAndView dboxPrint(Model model){
+    ModelAndView modelAndView = new ModelAndView("thymeleaf/test");
+    return modelAndView;
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>排除静态内容</title>
+		<para>方法一，排除静态内容如 images, css, js 等等</para>
+		<programlisting>
+		<![CDATA[
+	<servlet>
+        <servlet-name>springframework</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+	<servlet-mapping>
+	    <servlet-name>default</servlet-name>
+	    <url-pattern>/images/*</url-pattern>
+	    <url-pattern>*.css</url-pattern>
+	    <url-pattern>/js/*.js</url-pattern>
+	</servlet-mapping>    
+    <servlet-mapping>
+        <servlet-name>springframework</servlet-name>
+        <url-pattern>/welcome.jsp</url-pattern>
+        <url-pattern>/welcome.html</url-pattern>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>			
+		]]>
+		</programlisting>
+		<para>方法二</para>
+		<programlisting>
+		<![CDATA[
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />			
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>HTTP Status 406</title>
+		<para>配置 url-pattern 增加需要传递给Spring的扩展名</para>
+		<screen>
+		<![CDATA[
+	<servlet>
+        <servlet-name>springframework</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+   
+    <servlet-mapping>
+        <servlet-name>springframework</servlet-name>
+        <url-pattern>/welcome.jsp</url-pattern>
+        <url-pattern>/welcome.html</url-pattern>
+        <url-pattern>*.json</url-pattern>
+        <url-pattern>*.xml</url-pattern>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>		
+		]]>
+		</screen>
+	</section>
+</section>

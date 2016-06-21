@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="controller">
+	<title>Spring4 Restful</title>
+	<subtitle>@RestController</subtitle>
+	<para>首先我要禁告各位，Spring发展过程中，每个版本都有一定差异。如果你做实验失败后在网上搜索答案，切记看一下版本号还有文章帖子的发布时间。否则你可能按照Spring3配置方法去Spring4。</para>
+	<para>@RestController 默认返回 @ResponseBody， 所以@ResponseBody可加可不加</para>
+	<section>
+		<title>pom.xml</title>
+		<para>Maven 增加 jackson 开发包</para>
+		<programlisting>
+		<![CDATA[
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>web.xml</title>
+		<para>url-pattern匹配中增加*.xml跟*.json</para>
+		<programlisting>
+		<![CDATA[
+	<servlet>
+        <servlet-name>springframework</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+   
+    <servlet-mapping>
+        <servlet-name>springframework</servlet-name>
+        <url-pattern>/welcome.jsp</url-pattern>
+        <url-pattern>/welcome.html</url-pattern>
+        <url-pattern>*.json</url-pattern>
+        <url-pattern>*.xml</url-pattern>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>springframework.xml</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:mongo="http://www.springframework.org/schema/data/mongo" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/data/mongo
+http://www.springframework.org/schema/data/mongo/spring-mongo-1.5.xsd        
+        ">
+
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />
+	<mvc:resources location="/zt/" mapping="/zt/**" />
+	<mvc:resources location="/sm/" mapping="/sm/**" />
+	<mvc:resources location="/module/" mapping="/module/**" />
+
+	<context:component-scan base-package="cn.netkiller.controller">
+
+	</context:component-scan>
+	<context:annotation-config />
+	<mvc:annotation-driven />
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+
+	<bean id="configuracion" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:resources/development.properties" />
+	</bean>
+
+	<!-- Redis Connection Factory -->
+	<bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" p:host-name="192.168.2.1" p:port="6379" p:use-pool="true" />
+
+	<!-- redis template definition -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" p:connection-factory-ref="jedisConnFactory" />
+
+	<mongo:db-factory id="mongoDbFactory" host="${mongo.host}" port="${mongo.port}" dbname="${mongo.database}" />
+	<!-- username="${mongo.username}" password="${mongo.password}" -->
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+	</bean>
+
+	<mongo:mapping-converter id="converter" db-factory-ref="mongoDbFactory" />
+	<bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
+		<constructor-arg ref="mongoDbFactory" />
+		<constructor-arg ref="converter" />
+	</bean>
+
+</beans>
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>RestController</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.netkiller.pojo.Message;
+
+@RestController
+@RequestMapping("/rest")
+public class TestRestController {
+
+	public TrackerRestController() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@RequestMapping("welcome")
+	@ResponseStatus(HttpStatus.OK)
+	public String welcome() {
+		return "Welcome to RestTemplate Example.";
+	}
+
+	@RequestMapping(value = "test", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody Message test(@RequestHeader(value = "accept") String accept) {
+		Message message = new Message();
+		message.setTitle("test");
+		message.setText("Helloworld!!!");
+		System.out.println("accept: " + accept);
+		System.out.println(message.toString());
+		return message;
+	}
+
+	@RequestMapping("message/{name}")
+	public ResponseEntity<Message> message(@PathVariable String name) {
+		Message msg = new Message();
+		msg.setTitle(name);
+		return new ResponseEntity<Message>(msg, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "create", method = RequestMethod.POST, produces = { "application/xml", "application/json" })
+	public ResponseEntity<Tracker> create(@RequestBody Tracker tracker) {
+		this.mongoTemplate.insert(tracker);
+		return new ResponseEntity<Tracker>(tracker, HttpStatus.OK);
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>POJO</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.pojo;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class Message {
+	
+	String title;
+    String text;
+    
+	public Message() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	//@XmlElement
+	@XmlAttribute  
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	//@XmlElement
+	@XmlAttribute
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	@Override
+	public String toString() {
+		return "Message [title=" + title + ", text=" + text + "]";
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>测试</title>
+		<programlisting>
+		<![CDATA[
+neo@netkiller:~/www.netkiller.cn$ curl http://172.16.0.1:8080/spring4/rest/welcome.html
+Welcome to RestTemplate Example.
+
+neo@netkiller:~/www.netkiller.cn$ curl http://172.16.0.1:8080/spring4/rest/test.json
+{"title":"test","text":"Helloworld!!!"}
+
+neo@netkiller:~/www.netkiller.cn$ curl http://172.16.0.1:8080/spring4/rest/test.xml
+<Message xmlns=""><title>test</title><text>Helloworld!!!</text></Message>	
+
+neo@netkiller:~/www.netkiller.cn$ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"login":"neo", "unique":"356770257607079474","hostname":"www.example.com","referrer":"http://www.netkiller.cn","href":"http://www.netkiller.cn"}' http://172.16.0.1:8080/spring4/rest/create.json
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 21 Jun 2016 03:08:26 GMT
+
+{"name":"neo","unique":"356770257607079474","hostname":"www.netkiller.cn","referrer":"http://www.netkiller.cn","href":"http://www.netkiller.cn"}	
+		]]>
+		</programlisting>
+	</section>
+</section>
