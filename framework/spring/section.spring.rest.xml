@@ -171,6 +171,14 @@ public class TestRestController {
 		this.mongoTemplate.insert(tracker);
 		return new ResponseEntity<Tracker>(tracker, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "read", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	@ResponseStatus(HttpStatus.OK)
+	public ArrayList<Tracker> read() {
+
+		ArrayList<Tracker> trackers =  (ArrayList<Tracker>) mongoTemplate.findAll(Tracker.class);
+		return trackers;
+	}	
 }
 		]]>
 		</programlisting>

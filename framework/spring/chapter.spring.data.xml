@@ -306,10 +306,10 @@ mongo.database=website
 			</screen>
 		</section>
 		<section>
-			<title>Controller</title>
+			<title>POJO</title>
 			<screen>
 			<![CDATA[
-package cn.netkiller.repositories;
+package cn.netkiller.pojo;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -318,7 +318,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Tracker {
 	@Id
 	private String id;
-	private String loginname;
+	private String name;
 	private String unique;
 	private String hostname;
 	private String referrer;
@@ -328,12 +328,12 @@ public class Tracker {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getLoginname() {
-		return loginname;
+	public String getName() {
+		return name;
 	}
 
-	public void setLoginname(String loginname) {
-		this.loginname = loginname;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getUnique() {
@@ -370,7 +370,7 @@ public class Tracker {
 
 	@Override
 	public String toString() {
-		return "Tracker [id=" + id + ", loginname=" + loginname + ", unique=" + unique + ", hostname=" + hostname + ", referrer=" + referrer + ", href=" + href + "]";
+		return "Tracker [id=" + id + ", name=" + name + ", unique=" + unique + ", hostname=" + hostname + ", referrer=" + referrer + ", href=" + href + "]";
 	}
 
 }		
@@ -383,7 +383,7 @@ public class Tracker {
 			<![CDATA[
 package cn.netkiller.controller;
 
-import cn.netkiller.repositories.Tracker;
+import cn.netkiller.pojo.Tracker;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -410,7 +410,7 @@ public class TrackerController {
 	@ResponseBody
 	String execute() {
 		Tracker tracker = new Tracker();
-		tracker.setLoginname("test");
+		tracker.setName("test");
 		tracker.setUnique("111223456");
 		tracker.setHostname("www.example.com");
 		tracker.setHref("http://example.com/test.html");
@@ -429,8 +429,23 @@ public class TrackerController {
 			<screen>
 			<![CDATA[
 > db.tracker.find();
-{ "_id" : ObjectId("5757c0b92c526a6bda5eea3a"), "_class" : "cn.netkiller.repositories.Tracker", "loginname" : "test", "unique" : "111223456", "hostname" : "www.example.com", "referrer" : "http://example.com/", "href" : "http://example.com/test.html" }
+{ "_id" : ObjectId("5757c0b92c526a6bda5eea3a"), "_class" : "cn.netkiller.repositories.Tracker", "name" : "test", "unique" : "111223456", "hostname" : "www.example.com", "referrer" : "http://example.com/", "href" : "http://example.com/test.html" }
 
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>条件查询</title>
+			<screen>
+			<![CDATA[
+	@RequestMapping("/read/name/{name}")
+	public ArrayList<Tracker> sort(@PathVariable String name) {
+	
+		Query query = new Query(Criteria.where("name").is(name)); 
+		 
+		ArrayList<Tracker> trackers =  (ArrayList<Tracker>) mongoTemplate.find(query, Tracker.class);
+		return trackers;
+	}			
 			]]>
 			</screen>
 		</section>
