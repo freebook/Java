@@ -63,4 +63,24 @@ public final class HelloWorld extends HttpServlet {
 }
 		</programlisting>
 	</section>
+	<section>
+		<title>Session</title>
+		<para>web.xml 定义默认过期时间</para>
+		<programlisting>
+		<![CDATA[
+<web-app ...>
+	<session-config>
+	    <session-timeout>Minutes</session-timeout>
+	</session-config>
+</web-app>
+		]]>
+		</programlisting>
+		<para>修改Session时间</para>
+		<programlisting>
+		<![CDATA[
+HttpSession session = request.getSession();
+session.setMaxInactiveInterval(20*60);
+		]]>
+		</programlisting>
+	</section>
 </chapter>

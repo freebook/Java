@@ -22,12 +22,12 @@
 <!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
 <!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
+<!ENTITY chapter.jsp.xml				SYSTEM "Servlet/chapter.jsp.xml">
+<!ENTITY chapter.websocket.xml			SYSTEM "Servlet/chapter.websocket.xml">
 <!ENTITY chapter.ampq.xml				SYSTEM "queue/chapter.ampq.xml">
 
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
 <!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
-<!ENTITY chapter.jsp.xml				SYSTEM "chapter.jsp.xml">
 <!ENTITY chapter.jdbc.xml				SYSTEM "chapter.jdbc.xml">
-<!ENTITY chapter.websocket.xml			SYSTEM "chapter.websocket.xml">
 <!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
 
