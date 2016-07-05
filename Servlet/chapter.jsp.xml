@@ -20,6 +20,18 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 		]]>
 		</programlisting>
 	</section>
+	<section id="pageContext">
+		<title>pageContext</title>
+		<section id="queryString">
+			<title>queryString</title>
+			<para>输出？问号后面的变量</para>
+			<programlisting>
+			<![CDATA[
+<c:out value = "${pageContext.request.queryString}" />		
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="request">
 		<title>request</title>
 		<screen>
