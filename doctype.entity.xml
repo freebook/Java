@@ -21,8 +21,10 @@
 <!ENTITY section.spring.faq.xml			SYSTEM "framework/spring/section.spring.faq.xml">
 <!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
 <!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
+
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
 <!ENTITY chapter.jsp.xml				SYSTEM "Servlet/chapter.jsp.xml">
+<!ENTITY chapter.filter.xml				SYSTEM "Servlet/chapter.filter.xml">
 <!ENTITY chapter.websocket.xml			SYSTEM "Servlet/chapter.websocket.xml">
 <!ENTITY chapter.ampq.xml				SYSTEM "queue/chapter.ampq.xml">
 
