@@ -48,13 +48,6 @@ new URL(
 <%=request.getServerName() %>
 		]]>
 		</screen>
-		<section id="response.sendRedirect">
-			<title>sendRedirect</title>
-			<para>页面跳转</para>
-			<screen>
-response.sendRedirect("/content/test.jsp");			
-			</screen>
-		</section>
 		<section id="request.getParameter">
 			<title>Form</title>
 			<para></para>
@@ -82,6 +75,16 @@ response.sendRedirect("/content/test.jsp");
 			</programlisting>
 		</section>
 	</section>
+	<section id="response">
+		<title></title>
+		<section id="response.sendRedirect">
+			<title>sendRedirect</title>
+			<para>页面跳转</para>
+			<screen>
+response.sendRedirect("/content/test.jsp");			
+			</screen>
+		</section>
+	</section>
 	<section id="page">
 		<title>page</title>
 		<screen>
@@ -94,13 +97,13 @@ response.sendRedirect("/content/test.jsp");
 			<para>禁用Session</para>
 			<screen>
 			<![CDATA[
-<% @page session="false" %>			
+<% @page session="false" %>
 			]]>
 			</screen>
 			<para>启用Session</para>
 			<screen>
 			<![CDATA[
-<%@ page session="true" %>			
+<%@ page session="true" %>
 			]]>
 			</screen>
 		</section>

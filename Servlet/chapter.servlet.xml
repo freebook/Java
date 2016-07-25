@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="servlet" ?>
 	<title>Servlet</title>
-	<section>
+	<section id="example">
 		<title>Example</title>
 		<programlisting>
 package cn.netkiller.helloworld;
@@ -63,7 +63,7 @@ public final class HelloWorld extends HttpServlet {
 }
 		</programlisting>
 	</section>
-	<section>
+	<section id="session">
 		<title>Session</title>
 		<para>web.xml 定义默认过期时间</para>
 		<programlisting>
