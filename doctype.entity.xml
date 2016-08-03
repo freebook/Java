@@ -14,11 +14,13 @@
 <!ENTITY section.struts.xml				SYSTEM "framework/section.struts.xml">
 <!ENTITY section.play.xml				SYSTEM "framework/section.play.xml">
 <!ENTITY chapter.spring.xml				SYSTEM "framework/spring/chapter.spring.xml">
-<!ENTITY section.spring.controller.xml	SYSTEM "framework/spring/section.spring.controller.xml">
-<!ENTITY section.spring.rest.xml		SYSTEM "framework/spring/section.spring.rest.xml">
-<!ENTITY section.spring.view.xml		SYSTEM "framework/spring/section.spring.view.xml">
-<!ENTITY chapter.spring.data.xml		SYSTEM "framework/spring/chapter.spring.data.xml">
-<!ENTITY section.spring.faq.xml			SYSTEM "framework/spring/section.spring.faq.xml">
+<!ENTITY chapter.data.xml				SYSTEM "framework/spring/chapter.data.xml">
+<!ENTITY chapter.boot.xml				SYSTEM "framework/spring/chapter.boot.xml">
+<!ENTITY section.mvc.controller.xml		SYSTEM "framework/spring/section.mvc.controller.xml">
+<!ENTITY section.mvc.rest.xml			SYSTEM "framework/spring/section.mvc.rest.xml">
+<!ENTITY section.mvc.view.xml			SYSTEM "framework/spring/section.mvc.view.xml">
+<!ENTITY section.mvc.faq.xml			SYSTEM "framework/spring/section.mvc.faq.xml">
+
 <!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
 <!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
 

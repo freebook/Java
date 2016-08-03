@@ -58,7 +58,7 @@
 		]]>
 		</screen>
 	</section>
-
+	&chapter.boot.xml;
 	<section id="spring.xml">
 		<title>Spring MVC configuration</title>
 		<programlisting>
@@ -487,10 +487,10 @@ public class Index {
 		</section>
 	</section>
 	
-	&chapter.spring.data.xml;
-	&section.spring.controller.xml;
-	&section.spring.rest.xml;
-	&section.spring.view.xml;
-	&section.spring.faq.xml;
+	&chapter.data.xml;
+	&section.mvc.controller.xml;
+	&section.mvc.rest.xml;
+	&section.mvc.view.xml;
+	&section.mvc.faq.xml;
 	
 </chapter>
