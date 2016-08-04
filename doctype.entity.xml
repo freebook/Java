@@ -16,6 +16,7 @@
 <!ENTITY chapter.spring.xml				SYSTEM "framework/spring/chapter.spring.xml">
 <!ENTITY chapter.data.xml				SYSTEM "framework/spring/chapter.data.xml">
 <!ENTITY chapter.boot.xml				SYSTEM "framework/spring/chapter.boot.xml">
+<!ENTITY section.boot.quickstart.xml	SYSTEM "framework/spring/section.boot.quickstart.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "framework/spring/section.mvc.controller.xml">
 <!ENTITY section.mvc.rest.xml			SYSTEM "framework/spring/section.mvc.rest.xml">
 <!ENTITY section.mvc.view.xml			SYSTEM "framework/spring/section.mvc.view.xml">

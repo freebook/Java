@@ -1,0 +1,76 @@
+<section id="spring.boot.quickstart">
+	<title>Spring Boot Quick start</title>
+	<section id="pom">
+		<title>pom.xml</title>
+		<screen>
+		<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>api.netkiller.cn</groupId>
+	<artifactId>api.netkiller.cn</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Skyline</name>
+	<description>skylinechencf@gmail.com</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.0.RELEASE</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source />
+					<target />
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>		
+		]]>
+		</screen>
+	</section>
+	<section id="controller">
+		<title>Controller</title>
+		<programlisting>
+		<![CDATA[
+package hello;
+
+import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.stereotype.*;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@EnableAutoConfiguration
+public class SampleController {
+
+    @RequestMapping("/")
+    @ResponseBody
+    String home() {
+        return "Hello World!";
+    }
+
+    public static void main(String[] args) throws Exception {
+        SpringApplication.run(SampleController.class, args);
+    }
+}
+		]]>
+		</programlisting>
+		<para>测试</para>
+		<screen>
+curl http://127.0.0.1:8080/
+		</screen>
+	</section>
+</section>
