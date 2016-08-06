@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="jsp" ?>
+<section id="index"><?dbhtml dir="jsp" ?>
 	<title>JSP</title>
 	
 	<section id="common">
@@ -494,4 +494,4 @@ rewrite ^(.*)\;jsessionid=(.*)$ $1 break;
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>

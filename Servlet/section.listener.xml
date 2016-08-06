@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="listener">
+	<title>Listener</title>
+	<section>
+		<title>web.xml</title>
+		<para>配置监听器</para>
+		<programlisting>
+		<![CDATA[
+	<listener>
+		<listener-class>cn.netkiller.listener.NewsListener</listener-class>
+	</listener>
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>NewsListener 类</title>
+		<para>实现 ServletContextListener 接口</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.listener;   
+    
+import java.util.Timer;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.apache.log4j.Logger;
+
+public class NewsListener implements ServletContextListener {   
+  
+	private static final Logger log = Logger.getLogger(NewsListener.class);
+	
+	private Timer timer = null;
+	
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		
+		log.info("Listener start");
+      
+		timer = new Timer(true);		
+		timer.schedule(new NewsTask(event.getServletContext()), 3*1000, 5*60*1000);
+	}
+	
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
+		if (timer != null) {
+			timer.cancel();
+		}
+		log.info("Listener end");
+	}   
+} 
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>NewsTask 类</title>
+		<para>继承 TimerTask </para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.listener;
+
+import java.util.List;
+import java.util.TimerTask;
+import javax.servlet.ServletContext;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import cn.netkiller.service.interface.NewsService;
+
+public class NewsTask extends TimerTask{
+	
+	private ServletContext context;
+	private static final Logger log = Logger.getLogger(NewsTask.class);
+	
+	public NewsTask(ServletContext context) {
+		this.context = context;
+	}
+	
+	@Override
+	public void run() {
+		NewsService newsService = (NewsService) WebApplicationContextUtils.getWebApplicationContext(context).getBean("newsService");
+		
+		try {
+			List<cn.netkiller.listener.News> newsList = newsService.getNews();
+			context.setAttribute("newsList", newsList);
+			
+			log.info("Getting News Finished");
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>JSP 中心显示</title>
+		<para>使用c:forEach显示列表</para>
+		<programlisting>
+		<![CDATA[
+	<div class="news">
+       	<c:forEach items="${newsList}" var="news" varStatus="index">
+       		<a href="/news/${news.Id}">${news.title}</a>
+       	</c:forEach>
+	</div>
+		]]>
+		</programlisting>
+	</section>
+	
+</section>

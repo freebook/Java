@@ -3,7 +3,7 @@
 	<title>framework</title>
 </part>	 -->
 	&section.struts.xml;
-	&chapter.spring.xml;
+	&part.spring.xml;
 	&chapter.mybatis.xml;
 	&chapter.tiles.xml;
 	&section.play.xml;

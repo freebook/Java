@@ -184,11 +184,3 @@ public class Application {
 	&section.maven.xml;
 	&section.gradle.xml;
 </chapter>
-
-	&chapter.jsp.xml;
-	&chapter.servlet.xml;
-	&chapter.jdbc.xml;
-	&chapter.json.xml;
-	&chapter.websocket.xml;
-	&chapter.ampq.xml;
-	&chapter.nosql.mongodb.xml;

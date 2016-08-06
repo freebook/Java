@@ -83,4 +83,8 @@ session.setMaxInactiveInterval(20*60);
 		]]>
 		</programlisting>
 	</section>
+	&section.filter.xml;
+	&section.listener.xml;
+	&section.jsp.xml;
+	&section.websocket.xml;
 </chapter>

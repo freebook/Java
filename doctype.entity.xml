@@ -13,6 +13,8 @@
 <!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
 <!ENTITY section.struts.xml				SYSTEM "framework/section.struts.xml">
 <!ENTITY section.play.xml				SYSTEM "framework/section.play.xml">
+
+<!ENTITY part.spring.xml				SYSTEM "framework/spring/part.spring.xml">
 <!ENTITY chapter.spring.xml				SYSTEM "framework/spring/chapter.spring.xml">
 <!ENTITY chapter.data.xml				SYSTEM "framework/spring/chapter.data.xml">
 <!ENTITY chapter.boot.xml				SYSTEM "framework/spring/chapter.boot.xml">
@@ -26,11 +28,12 @@
 <!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
 
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
-<!ENTITY chapter.jsp.xml				SYSTEM "Servlet/chapter.jsp.xml">
-<!ENTITY chapter.filter.xml				SYSTEM "Servlet/chapter.filter.xml">
-<!ENTITY chapter.websocket.xml			SYSTEM "Servlet/chapter.websocket.xml">
-<!ENTITY chapter.ampq.xml				SYSTEM "queue/chapter.ampq.xml">
+<!ENTITY section.jsp.xml				SYSTEM "Servlet/section.jsp.xml">
+<!ENTITY section.filter.xml				SYSTEM "Servlet/section.filter.xml">
+<!ENTITY section.websocket.xml			SYSTEM "Servlet/section.websocket.xml">
+<!ENTITY section.listener.xml			SYSTEM "Servlet/section.listener.xml">
 
+<!ENTITY chapter.ampq.xml				SYSTEM "queue/chapter.ampq.xml">
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
 <!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
 <!ENTITY chapter.jdbc.xml				SYSTEM "chapter.jdbc.xml">

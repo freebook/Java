@@ -56,6 +56,11 @@
 
 <!-- =========================================================================== -->
 	&chapter.java.xml;
+	&chapter.servlet.xml;
+	&chapter.jdbc.xml;
+	&chapter.json.xml;
+	&chapter.ampq.xml;
+	&chapter.nosql.mongodb.xml;
 	&chapter.framework.xml;
 	&chapter.sdk.xml;
 <!-- =========================================================================== -->

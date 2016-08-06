@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="data" ?>
+<chapter id="index"><?dbhtml dir="data" ?>
 	<title>Spring Data</title>
+	<section id="example">
+		<title>Example</title>
+	
 	<section id="SpringDataRedis">
 		<title>Redis</title>
 		<section>
@@ -450,4 +453,75 @@ public class TrackerController {
 			</screen>
 		</section>
 	</section>
-</section>
+	</section>
+	
+	<section id="MongoRepository">
+		<title>MongoRepository</title>
+		<section id="findAll">
+			<title>findAll()</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping(value = "read", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	@ResponseStatus(HttpStatus.OK)
+	public List<Withdraw> read() {
+		return repository.findAll();
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="deleteAll">
+			<title>deleteAll()</title>
+			<programlisting>
+			<![CDATA[
+repository.deleteAll();
+			]]>
+			</programlisting>
+		</section>
+		<section id="save">
+			<title>save()</title>
+			<programlisting>
+			<![CDATA[
+repository.save(new City("Shenzhen", "China"));
+			]]>
+			</programlisting>
+		</section>
+		<section id="count">
+			<title>count()</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("count")
+	public long count() {
+		return repository.count();
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="PageRequest">
+			<title>PageRequest</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping(value = "read/{size}/{page}", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	@ResponseStatus(HttpStatus.OK)
+	public List<Withdraw> readPage(@PathVariable int size, @PathVariable int page){
+		PageRequest pageRequest = new PageRequest(page-1,size);
+		return repository.findAll(pageRequest).getContent();
+	}
+			]]>
+			</programlisting>
+			<para>URL翻页参数，每次返回10条记录</para>
+			<screen>
+第一页 http://localhost:8080/v1/withdraw/read/10/1.json
+第二页 http://localhost:8080/v1/withdraw/read/10/2.json
+...
+第五页 http://localhost:8080/v1/withdraw/read/10/5.json
+			</screen>
+		</section>
+	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>No identifier specified for entity</title>
+			<para></para>
+		</section>
+	</section>
+</chapter>
