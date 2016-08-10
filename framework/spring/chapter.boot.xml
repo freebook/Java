@@ -3,6 +3,50 @@
 	<title>Spring Boot</title>
 	<para>注意 1.4.0 无法正常工作，这里使用 1.3.0</para>
 	&section.boot.quickstart.xml;
+	<section id="maven">
+		<title>运行</title>
+		<programlisting>
+		<![CDATA[
+$ mvn spring-boot:run
+		]]>
+		</programlisting>
+		
+		<section>
+			<title>Linux systemd</title>
+			<screen>
+[Unit]
+Description=Spring Boot Application
+
+[Service]
+ExecStart=/usr/bin/java -jar location_of_jar_file.jar --spring.config.location=location_of_config.properties --spring.profiles.active=profile
+User=www
+
+[Install]
+WantedBy=multi-user.target
+			</screen>
+		</section>
+	</section>
+	<section id="application.properties">
+		<title>application.properties</title>
+		<section>
+			<title>server</title>
+			<screen>
+server.port=8080 # 监听端口
+server.address= # 绑定的地址
+server.session-timeout= #session有效时长
+server.context-path= #默认为/
+server.ssl.* #ssl相关配置
+			</screen>
+			<section>
+				<title>tomcat</title>
+				<screen>
+server.tomcat.basedir=/tmp
+server.tomcat.access-log-pattern= # log pattern of the access log
+server.tomcat.access-log-enabled=false # is access logging enabled
+				</screen>
+			</section>
+		</section>			
+	</section>
 	<section id="SpringApplication">
 		<title>SpringApplication</title>
 		<programlisting>
@@ -92,6 +136,41 @@ public static void main(String[] args) {
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section id="war">
+		<title>编译用于Tomcat的 War</title>
+		<programlisting>
+		<![CDATA[
+package demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+public class Application extends SpringBootServletInitializer {
+
+    private static Class<Application> applicationClass = Application.class;
+    
+    public static void main(String[] args) {
+        SpringApplication.run(applicationClass, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
+    }
+}		
+		]]>
+		</programlisting>
 	</section>
 	<section id="Properties">
 		<title>Properties</title>
@@ -243,6 +322,27 @@ netkiller.home=http://www.netkiller.cn
 		<screen>
 @EnableConfigurationProperties({NetkillerProperties.class, NeoProperties.class})
 		</screen>
+		<section>
+			<title>spring.profiles.active 参数切换配置文件</title>
+			<para>首先我们准备三个配置文件</para>
+			<screen>
+src/main/resource/application-development.properties
+src/main/resource/application-testing.properties
+src/main/resource/application-production.properties
+			</screen>
+			<para>使用下面--spring.profiles.active参数切换运行环境配置文件</para>
+			<screen>
+java -jar application.jar --spring.profiles.active=development
+java -jar application.jar --spring.profiles.active=testing
+java -jar application.jar --spring.profiles.active=production			
+			</screen>
+			<para>分别为三个环境打包</para>
+			<screen>
+mvn clean package -Pdevelopment
+mvn clean package -Ptesting
+mvn clean package -Pproduction			
+			</screen>			
+		</section>
 	</section>
 	<section id="service">
 		<title>Service</title>
@@ -633,6 +733,48 @@ public class IndexController {
 		<section id="Repository">
 			<title>Repository</title>
 			<para>在上一节 MongoTemplate 中，继续添加下面代码。</para>
+			<programlisting>
+			<![CDATA[
+package api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+@SpringBootApplication
+@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
+@ComponentScan({ "api.web", "api.rest","api.service" })
+@EnableMongoRepositories
+public class Application {
+	
+	
+    public @Bean WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");
+            }
+        };
+    }
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>Resource: src/main/resources/application.properties</para>
+			<programlisting>
+			<![CDATA[
+spring.data.mongodb.uri=mongodb://finance:XQ8os82I0pFoZBMd4@mdb.netkiller.cn/finance
+spring.data.mongodb.repositories.enabled=true
+			]]>
+			</programlisting>
 			<para>CityRepository.java</para>
 			<programlisting>
 			<![CDATA[
@@ -1115,28 +1257,511 @@ public class IndexController {
 
 			]]>
 			</programlisting>
-			<programlisting>
-			<![CDATA[
-		
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-		
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-		
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-		
-			]]>
-			</programlisting>
 			
+
 		</section>
+	</section>
+	<section id="oracle">
+		<title>Spring boot with Oracle</title>
+		<section>
+			<title>Maven</title>
+			<para>首先到oracle官网，根据你的Oracle数据库，下载ojdbc6.jar(Oracle 11) 或者 ojdbc7.jar (Oracle 12)</para>
+			<programlisting>
+			<![CDATA[
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>12.1.0.1</version>
+        </dependency>
+			]]>
+			</programlisting>
+			<screen>
+mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar			
+			</screen>
+			<para>另一种方案是在项目根目录下创建一个/lib文件夹，将下载的驱动放入该文件夹中。然后pom.xml 加入下面代码</para>
+			<para>ojdbc6.jar 例子</para>
+			<programlisting>
+			<![CDATA[
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.3</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
+        </dependency>
+			]]>
+			</programlisting>
+			<para>ojdbc7.jar 例子</para>
+			<programlisting>
+			<![CDATA[
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>12.1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/ojdbc7.jar</systemPath>
+        </dependency>
+			]]>
+			</programlisting>
+			<example>
+				<title>Example Spring boot with Oracle </title>
+				<programlisting>
+				<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>netkiller.cn</groupId>
+	<artifactId>api.netkiller.cn</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>api.netkiller.cn</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.3.0.RELEASE</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency> -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-oracle</artifactId>
+			<version>1.0.0.RELEASE</version>
+		</dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <!-- <version>12.1.0.1</version> -->
+            <version>11.2.0.3</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
+        </dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source />
+					<target />
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+				]]>
+				</programlisting>
+			</example>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+			<![CDATA[
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@//192.168.4.9:1521/orcl.example.com
+spring.datasource.username=www
+spring.datasource.password=123123
+spring.jpa.database-platform=org.hibernate.dialect.Oracle10gDialect
+
+spring.jpa.show-sql=true
+#spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=create-drop
+			]]>
+			</programlisting>			
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import api.ApplicationConfiguration;
+
+@SpringBootApplication
+@EnableConfigurationProperties(ApplicationConfiguration.class)
+@EnableAutoConfiguration
+@ComponentScan({ "api.web", "api.rest", "api.service" })
+@EnableMongoRepositories
+@EnableJpaRepositories
+public class Application {
+
+	public @Bean WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurerAdapter() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**");
+			}
+		};
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>CrudRepository</title>
+			<programlisting>
+			<![CDATA[
+package api.repository;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import api.domain.Article;
+
+@Repository
+public interface ArticleRepository extends CrudRepository<Article, Long> {
+
+    Page<Article> findAll(Pageable pageable);
+
+    Article findByTitle(String title);
+    
+    //@Query("select id,title,content from Article where id > ?1")
+    //public List<Article> findBySearch(@Param("id")long id); 
+
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package api.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "article")
+public class Article implements Serializable {
+	private static final long serialVersionUID = 7998903421265538801L;
+
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
+	private Long id;
+	private String title;
+	private String content;
+
+	public Article(){
+		
+	}
+	public Article(String title, String content) {
+		this.title = title;
+		this.content = content;
+	}
+
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	@Override
+	public String toString() {
+		return "Article [id=" + id + ", title=" + title + ", content=" + content + "]";
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JdbcTemplate</title>
+			<programlisting>
+			<![CDATA[
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@RequestMapping(value = "/article")
+	public @ResponseBody String dailyStats(@RequestParam Integer id) {
+		String query = "SELECT id, title, content from article where id = " + id;
+
+		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
+			System.out.println(resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
+			return (resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
+		});
+	}
+			]]>
+			</programlisting>
+		</section>
+		
+		<section>
+			<title>Controller</title>
+			<programlisting>
+			<![CDATA[
+package api.web;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import api.domain.Article;
+import api.repository.ArticleRepository;
+
+@Controller
+public class IndexController {
+
+	@Autowired
+	private ArticleRepository articleRepository;
+	
+	@RequestMapping("/mysql")
+	@ResponseBody
+	public String mysql() {
+		repository.deleteAll();
+		return "Deleted"	
+	}
+	
+	@RequestMapping("/mysql")
+	@ResponseBody
+	public String mysql() {
+		articleRepository.save(new Article("Neo", "Chen"));
+		for (Article article : articleRepository.findAll()) {
+			System.out.println(article);
+		}
+		Article tmp = articleRepository.findByTitle("Neo");
+		return tmp.getTitle();
+	}
+	
+	/*
+	@RequestMapping("/search")
+	@ResponseBody
+	public String search() {
+		
+		/*for (Article article : articleRepository.findBySearch(1)) {
+			System.out.println(article);
+		}*/
+		List<Article> tmp = articleRepository.findBySearch(1L);
+		
+		tmp.forEach((temp) -> {
+			System.out.println(temp.toString());
+		});
+		
+		return tmp.get(0).getTitle();
+	}
+	*/
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@RequestMapping(value = "/article")
+	public @ResponseBody String dailyStats(@RequestParam Integer id) {
+		String query = "SELECT id, title, content from article where id = " + id;
+
+		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
+			System.out.println(resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
+			return (resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
+		});
+
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<!-- 
+		<programlisting>
+		<![CDATA[
+    @Bean
+    DataSource dataSource() throws SQLException {
+ 
+        OracleDataSource dataSource = new OracleDataSource();
+        dataSource.setUser(username);
+        dataSource.setPassword(password);
+        dataSource.setURL(url);
+        dataSource.setImplicitCachingEnabled(true);
+        dataSource.setFastConnectionFailoverEnabled(true);
+        return dataSource;
+    }		
+		]]>
+		</programlisting>
+		
+		<programlisting>
+		<![CDATA[
+import oracle.jdbc.pool.OracleDataSource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+ 
+import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
+import java.sql.SQLException;
+ 
+@Configuration
+@ConfigurationProperties("oracle")
+public class OracleConfiguration {
+    @NotNull
+    private String username;
+ 
+    @NotNull
+    private String password;
+ 
+    @NotNull
+    private String url;
+ 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+ 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+ 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+ 
+    @Bean
+    DataSource dataSource() throws SQLException {
+ 
+        OracleDataSource dataSource = new OracleDataSource();
+        dataSource.setUser(username);
+        dataSource.setPassword(password);
+        dataSource.setURL(url);
+        dataSource.setImplicitCachingEnabled(true);
+        dataSource.setFastConnectionFailoverEnabled(true);
+        return dataSource;
+    }
+}
+		]]>
+		</programlisting>
+		
+		 -->
 	</section>
 	<section id="faq">
 		<title>FAQ</title>
@@ -2256,6 +2881,22 @@ spring.devtools.remote.restart.enabled=true # Enable remote restart.
 spring.devtools.remote.secret= # A shared secret required to establish a connection (required to enable remote support).
 spring.devtools.remote.secret-header-name=X-AUTH-TOKEN # HTTP header used to transfer the shared secret.
 			]]>
+			</screen>
+		</section>
+		<section>
+			<title>org.hibernate.dialect.Oracle10gDialect does not support identity key generation</title>
+			<screen>
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+换成
+@GeneratedValue(strategy=GenerationType.AUTO)
+
+or
+
+@Id
+@Column(name = "ID")
+@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
+private int id;
 			</screen>
 		</section>
 	</section>
