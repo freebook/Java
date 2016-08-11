@@ -21,15 +21,28 @@ $ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
 		<section>
 			<title>Linux systemd</title>
 			<screen>
+			<![CDATA[
+####################################################
+# Homepage: http://netkiller.github.io
+# Author: netkiller<netkiller@msn.com>
+# Script: https://github.com/oscm/shell
+# Date: 2015-11-03
+####################################################
 [Unit]
 Description=Spring Boot Application
+After=network.target
 
 [Service]
-ExecStart=/usr/bin/java -jar location_of_jar_file.jar --spring.config.location=location_of_config.properties --spring.profiles.active=profile
 User=www
+Group=www
+Type=oneshot
+ExecStart=/usr/bin/java -jar location_of_jar_file.jar --spring.config.location=location_of_config.properties --spring.profiles.active=profile
+ExecStop=pkill -9 -f  
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -2436,6 +2449,36 @@ $ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X P
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title>Logging</title>
+		<para>禁止控制台日志输出，同时将日志写入日志文件.</para>
+		<para>src/main/resources/application.properties</para>
+		<screen>
+		<![CDATA[
+logging.path=/tmp
+logging.file=/tmp/spring.log
+logging.level.root=WARN
+logging.level.org.springframework.web=DEBUG
+logging.level.org.hibernate=ERROR		
+		]]>
+		</screen>
+		<para>src/main/resources/logback.xml</para>
+		<screen>
+		<![CDATA[
+$ cat src/main/resources/logback.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+
+  <root level="INFO">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>
+		]]>
+		</screen>
+		<para>使用 java -jar project-version-xxx.jar 启动后控制不会再输出日志</para>
 	</section>
 	<section id="faq">
 		<title>FAQ</title>

@@ -104,7 +104,7 @@ ${ant.project.name}
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="javac">
 		<title>javac</title>
 		<screen>
 		<![CDATA[
@@ -240,6 +240,50 @@ ${ant.project.name}
 	</section>
 	<section id="macrodef">
 		<title>macrodef</title>
+		<para>arg value 与 arg line</para>
+		<para>arg line 可以处理参数的空格， 而arg value则不能. arg line 可以处理空参数， arg value传递空参数会报错.</para>
+		<screen>
+		<![CDATA[
+<exec executable = "sh" dir = "@{dir}">
+	<arg line = "ls -l /var/log" />
+</exec>
+
+
+<exec executable = "ls" dir = "@{dir}">
+	<arg value = "-l" />
+	<arg value = "/var/log" />
+</exec>
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+        <macrodef name="mvn">
+                <attribute name="options" default="" />
+                <attribute name="goal" default="" />
+                <attribute name="phase" default=" " />
+                <attribute name="dir" default="" />
+                <element name="args" optional="false" />
+                <sequential>
+                        <exec executable="mvn" dir="@{dir}" >
+                                <arg value="@{options}" />
+                                <arg value="@{goal}" />
+                                <arg value="@{phase}" />
+                        </exec>
+                </sequential>
+        </macrodef>
+
+<!-- 执行下面宏将会出错，你必须传递options，phase参数 -->
+<mvn goal="package" dir="${project.dir}"/>
+<!-- 将vale改为line后正常 -->
+		<exec executable="mvn" dir="@{dir}" >
+                                <arg line="@{options}" />
+                                <arg line="@{goal}" />
+                                <arg line="@{phase}" />
+        </exec>
+		
+		]]>
+		</screen>
+		<para>运行方式sequential为顺序执行， parallel为并行执行。</para>
 		<section>
 			<title>Git</title>
 			<screen>
@@ -357,7 +401,27 @@ ${ant.project.name}
 			</screen>
 			
 		</section>
-				
+		<section id="maven">
+			<title>maven</title>
+			<screen>
+			<![CDATA[
+        <macrodef name="mvn">
+                <attribute name="options" default="" />
+                <attribute name="goal" default="" />
+                <attribute name="phase" default=" " />
+                <attribute name="dir" default="" />
+                <element name="args" optional="false" />
+                <sequential>
+                        <exec executable="mvn" dir="@{dir}" >
+                                <arg line="@{options}" />
+                                <arg value="@{goal}" />
+                                <arg line="@{phase}" />
+                        </exec>
+                </sequential>
+        </macrodef>			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="javascript">
 		<title>Javascript</title>
