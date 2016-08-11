@@ -37,7 +37,7 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/mave
 $ ls ~/.m2
 		</screen>
 	</section>
-	<section>
+	<section id="pom.xml">
 		<title>pom.xml</title>
 		
 		<section id="properties">
@@ -177,6 +177,29 @@ $ mvn install
 	<section id="dependency">
 		<title>dependency</title>
 		<section>
+			<title>build-classpath</title>
+			<screen>
+$ mvn dependency:build-classpath
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building api.netkiller.cn 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.10:build-classpath (default-cli) @ api.cf88.com ---
+[INFO] Dependencies classpath:
+/www/.m2/repository/org/springframework/boot/spring-boot-starter-web/1.3.0.RELEASE/spring-boot-starter-web-1.3.0.RELEASE.jar:......:/www/.m2/repository/junit/junit/4.12/junit-4.12.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.692 s
+[INFO] Finished at: 2016-08-10T17:32:49+08:00
+[INFO] Final Memory: 25M/162M
+[INFO] ------------------------------------------------------------------------
+			
+			</screen>
+		</section>
+		<section id="tree">
 			<title>dependency:tree 显示包依赖树</title>
 			<screen>
 [www@iZ62yln3rjjZ repository]$ mvn dependency:tree
@@ -282,7 +305,7 @@ $ mvn install
 			</screen>
 		</section>
 
-		<section>
+		<section id="copy-dependencies">
 			<title>copy-dependencies 导出依赖包</title>
 			<screen>
 $ mvn dependency:copy-dependencies
@@ -306,5 +329,24 @@ jackson-databind-2.6.3.jar                     ognl-3.0.8.jar                   
 jandex-1.1.0.Final.jar                         slf4j-api-1.7.13.jar                       spring-boot-starter-validation-1.3.0.RELEASE.jar  spring-web-4.2.3.RELEASE.jar		
 			</screen>
 		</section>
-	</section>			
+		<section id="analyze">
+			<title>analyze 查看未被使用的包</title>
+			<screen>
+$ mvn dependency:analyze			
+			</screen>
+		</section>
+		<section id="sources">
+			<title>sources 下载源码</title>
+			<screen>
+mvn dependency:sources			
+			</screen>
+		</section>
+	</section>
+	<section id="help">
+		<title>help</title>
+		<para>查看可用的pom定义</para>
+		<screen>
+mvn help:effective-pom			
+		</screen>
+	</section>	
 </section>
