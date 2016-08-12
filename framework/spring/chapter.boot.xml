@@ -20,6 +20,7 @@ $ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
 		</programlisting>
 		<section>
 			<title>Linux systemd</title>
+			<para>/etc/systemd/system/spring.service</para>
 			<screen>
 			<![CDATA[
 ####################################################
@@ -36,8 +37,9 @@ After=network.target
 User=www
 Group=www
 Type=oneshot
-ExecStart=/usr/bin/java -jar location_of_jar_file.jar --spring.config.location=location_of_config.properties --spring.profiles.active=profile
-ExecStop=pkill -9 -f  
+WorkingDirectory=/www/netkiller.cn/api.netkiller.cn
+ExecStart=/usr/bin/java -jar your_jar_file.jar --spring.config.location=appliction-production.properties --spring.profiles.active=profile
+#ExecStop=pkill -9 -f  
 RemainAfterExit=yes
 
 [Install]
