@@ -5,5 +5,6 @@
 	&chapter.boot.xml;
 	&chapter.spring.xml;
 	&chapter.data.xml;
+	&chapter.security.xml;
 	
 </part>

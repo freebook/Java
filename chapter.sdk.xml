@@ -143,9 +143,13 @@ log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1
 		<para>http://www.igniterealtime.org/index.jsp</para>
 	</section>
 	&chapter.cache.xml;
-	<section>
+	<section id="Redisson">
 		<title>Redisson</title>
 		<para>http://redisson.org/</para>
+	</section>
+	<section id="Jersey">
+		<title>Jersey - RESTful Web Services in Java.</title>
+		<para>https://jersey.java.net/</para>
 	</section>
 </chapter>
 	
