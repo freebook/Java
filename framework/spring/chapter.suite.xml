@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="suite" ?>
+	<title>Spring Tool Suite</title>
+	<para><ulink url="https://spring.io/tools/sts/" /></para>
+	<section id="install">
+		<title>安装</title>
+		<para>环境 Eclipse Jee Neon</para>
+		<para>进入菜单 Help -&gt; Marketpalce...</para>
+		<para><graphic  format="png" fileref="../../images/spring/suite/marketplace.png" srccredit="neo" width=""/></para>
+		<para>索搜 Spring Tool Suite 注意版本号</para>
+		<para><graphic  format="png" fileref="../../images/spring/suite/confirm.png" srccredit="neo" width=""/></para>
+		<para>点击Confirm按钮</para>
+		<para><graphic  format="png" fileref="../../images/spring/suite/finish.png" srccredit="neo" width=""/></para>
+		<para>点击Finish按钮，等候漫长的下载，同时Progress窗口中显示  Installing Software，安装成功会提示重新启动Eclipse.</para>
+		<para><graphic  format="png" fileref="../../images/spring/suite/restart.png" srccredit="neo" width=""/></para>
+		<para>点击 Yes 按钮重启 Eclipse</para>
+	</section>
+	<section id="dashboard">
+		<title>Dashboard</title>
+		<para>进入菜单 Help -&gt; Dashboard</para>
+	</section>
+</chapter>
