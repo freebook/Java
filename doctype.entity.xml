@@ -39,5 +39,6 @@
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
 <!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
 <!ENTITY chapter.jdbc.xml				SYSTEM "chapter.jdbc.xml">
+<!ENTITY chapter.log.xml				SYSTEM "chapter.log.xml">
 <!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
 

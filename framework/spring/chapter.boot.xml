@@ -8,8 +8,10 @@
 		<programlisting>
 		<![CDATA[
 $ mvn spring-boot:run
+$ mvn -P prod spring-boot:run
 		]]>
 		</programlisting>
+		<para>-P 指定 profile</para>
 		<para>打包后，使用jar包运行</para>
 		<programlisting>
 		<![CDATA[
@@ -67,6 +69,17 @@ server.tomcat.access-log-pattern= # log pattern of the access log
 server.tomcat.access-log-enabled=false # is access logging enabled
 				</screen>
 			</section>
+			<section>
+				<title>charset</title>
+				<para>Spring boot 默认并非UTF-8 所以下面配置必设，否则将会出现</para>
+				<screen>
+spring.messages.encoding=UTF-8
+server.tomcat.uri-encoding=UTF-8
+spring.http.encoding.charset=UTF-8
+spring.http.encoding.enabled=true
+spring.http.encoding.force=true
+				</screen>
+			</section>
 		</section>			
 	</section>
 	<section id="SpringApplication">
@@ -120,7 +133,20 @@ public class Application {
 @ComponentScan({"cn.netkiller.controller", "cn.netkiller.rest"})
 			]]>
 			</programlisting>
-		</section>	
+		</section>
+		<section id="CharacterEncodingFilter">
+			<title>CharacterEncodingFilter</title>
+			<programlisting>
+			<![CDATA[
+	public @Bean Filter characterEncodingFilter() {
+		CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+		characterEncodingFilter.setEncoding("UTF-8");
+		characterEncodingFilter.setForceEncoding(true);
+		return characterEncodingFilter;
+	}			
+			]]>
+			</programlisting>
+		</section>
 		<section id="banner">
 			<title>隐藏 Banner</title>
 			<para>隐藏 Spring Boot Banner</para>
@@ -4017,6 +4043,23 @@ private int id;
 import javax.persistence.Id;
 替换
 import org.springframework.data.annotation.Id;
+			</screen>
+		</section>
+		<section>
+			<title>Could not read document: Invalid UTF-8 middle byte 0xd0</title>
+			<para>Spring 默认不支持 UTF-8</para>
+			<screen>
+2016-08-17 16:04:53.148  WARN 7700 --- [nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: Could not read document: Invalid UTF-8 middle byte 0xd0
+ at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"]); nested exception is com.fasterxml.jackson.databind.JsonMappingException: Invalid UTF-8 middle byte 0xd0
+ at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"])			
+			</screen>
+			<para>解决方案 application.properties 配置文件中加入如下配置：</para>
+			<screen>
+spring.messages.encoding=UTF-8
+server.tomcat.uri-encoding=UTF-8
+spring.http.encoding.charset=UTF-8
+spring.http.encoding.enabled=true
+spring.http.encoding.force=true
 			</screen>
 		</section>
 	</section>

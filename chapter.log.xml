@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="log" ?>
+	<title>Log</title>
+	<section id="logging">
+		<title>Logging</title>
+		<programlisting>
+		<![CDATA[
+import java.util.logging.*;
+public class Main {
+	public static void main(String[] args) {
+		Logger log = Logger.getLogger("test"); 
+        log.setLevel(Level.INFO); 
+        log.info("--------------------------");
+        log.info("Test");
+        log.info("--------------------------");
+        
+	}
+}
+		]]>
+		</programlisting>
+		<para>XML</para>
+		<programlisting>
+		<![CDATA[
+import java.io.IOException;
+import java.util.logging.*;
+
+public class Main {
+	public static void main(String[] args) {
+
+		try {
+			Logger log = Logger.getLogger("test");
+			FileHandler fileHandler = new FileHandler("test.%g.log");
+			fileHandler.setLevel(Level.INFO);
+			log.addHandler(fileHandler);
+			
+			log.setLevel(Level.INFO);
+			log.info("One");
+			log.info("Two");
+			log.info("Three");
+			
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+}		
+		]]>
+		</programlisting>
+		<para>XML 输出结果</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2016-04-19T15:57:19</date>
+  <millis>1461052639360</millis>
+  <sequence>0</sequence>
+  <logger>test</logger>
+  <level>INFO</level>
+  <class>Main</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>One</message>
+</record>
+<record>
+  <date>2016-04-19T15:57:19</date>
+  <millis>1461052639394</millis>
+  <sequence>1</sequence>
+  <logger>test</logger>
+  <level>INFO</level>
+  <class>Main</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>Two</message>
+</record>
+<record>
+  <date>2016-04-19T15:57:19</date>
+  <millis>1461052639395</millis>
+  <sequence>2</sequence>
+  <logger>test</logger>
+  <level>INFO</level>
+  <class>Main</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>Three</message>
+</record>
+</log>
+		]]>
+		</programlisting>
+		<para>Formatter 日志格式化</para>
+		<programlisting>
+		<![CDATA[
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.*;
+
+class LogFormatter extends Formatter {
+	@Override
+	public String format(LogRecord record) {
+		return String.format("%s %s\t%s\n", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) , record.getLevel(), record.getMessage());
+	}
+}
+
+public class Main {
+	public static void main(String[] args) {
+
+		try {
+			Logger log = Logger.getLogger("test");
+			FileHandler fileHandler = new FileHandler("test.%g.log");
+			fileHandler.setLevel(Level.INFO);
+			log.addHandler(fileHandler);
+			fileHandler.setFormatter(new LogFormatter());
+			log.setLevel(Level.INFO);
+			log.info("One");
+			log.info("Two");
+			log.info("Three");
+
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+}		
+		]]>
+		</programlisting>
+		<para>输出样式</para>
+		<programlisting>
+		<![CDATA[
+2016-04-19 16:05:53.324 INFO	One
+2016-04-19 16:05:53.352 INFO	Two
+2016-04-19 16:05:53.353 INFO	Three		
+		]]>
+		</programlisting>
+	</section>
+<section id="slf4j">
+		<title>slf4j</title>
+		<para>http://www.slf4j.org/</para>
+	</section>
+<section id="log4j">
+	<title>log4j</title>
+	<section>
+		<title>安装 Log4j</title>
+		<section>
+			<title>手工安装</title>
+			<para>log4j</para>
+			<para>http://logging.apache.org/</para>
+			<screen>
+wget http://government-grants.org/mirrors/apache.org/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz
+tar zxvf logging-log4j-1.2.14.tar.gz
+cd logging-log4j-1.2.14
+cp dist/lib/log4j-1.2.14.jar /srv/java/lib
+			</screen>
+		</section>
+		<section>
+			<title>Maven</title>
+			<screen>
+			<![CDATA[
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.5</version>
+		</dependency>
+	</dependencies>			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="variable">
+		<title>log4j 环境变量</title>
+		<para>${catalina.home}</para>
+		<screen>
+log4j.appender.R=org.apache.log4j.RollingFileAppender 
+log4j.appender.R.File=${catalina.home}/logs/logs_tomcat.log 
+log4j.appender.R.MaxFileSize=10KB		
+		</screen>
+	</section>
+	<section id="log4j.example">
+		<title>Log4j Example</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="cn.netkiller.Logging" level="trace">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="cn.netkiller" level="debug">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Root level="error">
+			<AppenderRef ref="Console" />
+		</Root>
+	</Loggers>
+</Configuration>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class Logging {
+	private static final Logger logger = LogManager.getLogger("appender");
+
+	public void application() {
+
+		String parameter = "sssssssssssss";
+		if (logger.isDebugEnabled()) {
+			logger.debug("This is debug : " + parameter);
+		}
+
+		if (logger.isInfoEnabled()) {
+			logger.info("This is info : " + parameter);
+		}
+
+		logger.trace("trace");
+		logger.debug("debug");
+		logger.info("info");
+		logger.warn("warn");
+		logger.error("error");
+		logger.fatal("fatal");
+
+	}
+
+	public static void main(String[] args) {
+		Logging log = new Logging();
+		log.application();
+
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="log4j.properties">
+		<title>log4j.properties</title>
+		<para>stdout 标准输出</para>
+		<programlisting>
+# Root logger option
+log4j.rootLogger=INFO, stdout
+
+# Direct log messages to stdout
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
+		</programlisting>
+	</section>
+</section>
+	
+<!-- 	<section>
+		<title></title>
+		<para>XML</para>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section> -->
+</chapter>

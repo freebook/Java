@@ -18,6 +18,9 @@
 
 	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
 	%doctype.entity.xml;
+	
+	<!ENTITY % search.doctype.entity.xml 	SYSTEM "../Database/Search/doctype.entity.xml">
+	%search.doctype.entity.xml;
 
 ]>
 <book xml:base="http://netkiller.sourceforge.net/linux/www"
@@ -62,6 +65,8 @@
 	&chapter.ampq.xml;
 	&chapter.nosql.mongodb.xml;
 	&chapter.framework.xml;
+	&chapter.log.xml;
+	&part.search.xml;
 	&chapter.sdk.xml;
 <!-- =========================================================================== -->
 
