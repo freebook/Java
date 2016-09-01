@@ -138,8 +138,59 @@ $ ls ~/.m2
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>build</title>
+			<section>
+				<title>sourceDirectory</title>
+				<para>编译源码目录</para>
+				<screen>
+				<![CDATA[
+<sourceDirectory>src</sourceDirectory>				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>resources</title>
+				<para>将资源文件编译后复制到 WEB-INF/classes 目录中</para>
+				<screen>
+				<![CDATA[
+		<resources>
+			<resource>
+				<directory>src/resources</directory>
+			</resource>
+		</resources>			
+				]]>
+				</screen>
+				<para>include / exclude</para>
+				<screen>
+				<![CDATA[
+<resources>  
+    <!-- Filter jdbc.properties & mail.properties. NOTE: We don't filter applicationContext-infrastructure.xml,   
+        let it go with spring's resource process mechanism. -->  
+    <resource>  
+        <directory>src/main/resources</directory>  
+        <filtering>true</filtering>  
+        <includes>  
+            <include>jdbc.properties</include>  
+            <include>mail.properties</include>  
+        </includes>  
+    </resource>  
+    <!-- Include other files as resources files. -->  
+    <resource>  
+        <directory>src/main/resources</directory>  
+        <filtering>false</filtering>  
+        <excludes>  
+            <exclude>jdbc.properties</exclude>  
+            <exclude>mail.properties</exclude>  
+        </excludes>  
+    </resource>  
+</resources>
+				]]>
+				</screen>
+			</section>
+		</section>
 	</section>		
-	<section>
+	<section id="cli">
 		<title>Maven 命令</title>
 		<section id="clean">
 			<title>clean</title>

@@ -22,13 +22,42 @@ export CLASSPATH=$CLASSPATH:$ANT_HOME/lib
 <description>project Name</description>
 		]]>
 		</screen>
-		<screen>
-		<![CDATA[
+		
+		<section>
+			<title>property</title>
+			<para>在 build.xml 中定义 property</para>
+			<screen>
+			<![CDATA[
 <property name="src" value="src"/>
 <property name="dest" value="classes"/>
 <property name="hello" value="hello.jar"/>		
-		]]>
-		</screen>
+			]]>
+			</screen>
+			<para>引用 properties 文件</para>
+			<screen>
+			<![CDATA[
+<property file="build.properties" />
+<propety resource="build.properties"/>
+			]]>
+			</screen>
+			<para>设置系统的环境变量为前缀</para>
+			<screen>
+			<![CDATA[
+<property environment="env"/> 
+<property name="tomcat.home" value="${env.CATALINA_HOME}"/> 
+			]]>
+			</screen>
+	 		<para>命令行传值，使用-D参数是会覆盖build.xml中的先前定义的变量</para>
+			<screen>
+			<![CDATA[
+$ ant --help | grep property
+  -D<property>=<value>   use value for given property
+  -propertyfile <name>   load all properties from file with -D
+  
+
+	 		]]>
+			</screen>
+		</section>
 		<section>
 			<title>ant</title>
 			<para>Project name</para>

@@ -548,4 +548,12 @@ public class MyTask {
 		]]>
 		</programlisting>
 	</section>
+	<section id="Properties">
+		<title>Properties</title>
+		<programlisting>
+		<![CDATA[
+Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("/your.properties"));		
+		]]>
+		</programlisting>
+	</section>
 </section>
