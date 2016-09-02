@@ -1086,6 +1086,21 @@ spring.jpa.hibernate.ddl-auto=update
 #spring.jpa.hibernate.ddl-auto=create-drop
 			]]>
 			</screen>
+			<screen>
+spring.datasource.url=jdbc:mysql://localhost:3306/test
+spring.datasource.username=root
+spring.datasource.password=pasword
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.max-idle=10
+spring.datasource.max-wait=10000
+spring.datasource.min-idle=5
+spring.datasource.initial-size=5
+spring.datasource.validation-query=SELECT 1
+spring.datasource.test-on-borrow=false
+spring.datasource.test-while-idle=true
+spring.datasource.time-between-eviction-runs-millis=18800
+spring.datasource.jdbc-interceptors=ConnectionState;SlowQueryReport(threshold=0)			
+			</screen>
 		</section>
 		<section>
 			<title>Application</title>
@@ -1327,7 +1342,8 @@ public class IndexController {
 			]]>
 			</programlisting>
 			<screen>
-mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar			
+mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true
+mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
 			</screen>
 			<para>另一种方案是在项目根目录下创建一个/lib文件夹，将下载的驱动放入该文件夹中。然后pom.xml 加入下面代码</para>
 			<para>ojdbc6.jar 例子</para>
@@ -1501,7 +1517,32 @@ spring.jpa.show-sql=true
 #spring.jpa.hibernate.ddl-auto=update
 spring.jpa.hibernate.ddl-auto=create-drop
 			]]>
-			</programlisting>			
+			</programlisting>
+			<para>其他配置</para>
+			<screen>
+spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
+spring.datasource.test-while-idle=true
+spring.datasource.test-on-borrow=true
+			</screen>
+			<para>Oracle RAC</para>
+			<screen>
+jdbc:oracle:thin@(DESCRIPTION=
+   (LOAD_BALANCE=on)
+   (ADDRESS=(PROTOCOL=TCP)(HOST=racnode1) (PORT=1521))
+   (ADDRESS=(PROTOCOL=TCP)(HOST=racnode2) (PORT=1521))
+   (CONNECT_DATA=(SERVICE_NAME=service_name)))
+   
+jdbc:oracle:thin:@(DESCRIPTION=
+	(ADDRESS=(PROTOCOL=TCP)(HOST=125.22.42.68)(PORT=1521))
+	(LOAD_BALANCE=on)
+	(FAILOVER=ON)
+	(CONNECT_DATA=
+		(SERVER=DEDICATED)
+		(SERVICE_NAME=service_name)
+		(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))
+		)
+	)
+			</screen>			
 		</section>
 		<section>
 			<title>Application</title>
@@ -2898,6 +2939,105 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				]]>
 				</programlisting>
 			</section>
+		</section>
+	</section>
+	<section id="pool">
+		<title>Connection and Statement Pooling</title>
+		<para>注意：下面的实例仅限 Spring boot 1.3.0.RELEASE</para>
+		<section id="tomcat">
+			<title>org.apache.tomcat.jdbc.pool.DataSource</title>
+			<para>默认连接池，可以忽略配置</para>
+			<programlisting>
+spring.datasource.type = org.apache.tomcat.jdbc.pool.DataSource
+			</programlisting>
+		</section>
+		<section id="druid">
+			<title>druid</title>
+			<para>pom.xml</para>
+			<programlisting>
+			<![CDATA[
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.0.24</version>
+		</dependency>
+			]]>
+			</programlisting>
+			<para>application.properties</para>
+			<programlisting>
+			<![CDATA[
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+spring.datasource.initialSize=5
+spring.datasource.minIdle=5
+spring.datasource.maxActive=20
+spring.datasource.maxWait=60000
+spring.datasource.timeBetweenEvictionRunsMillis=60000 
+spring.datasource.minEvictableIdleTimeMillis=300000
+spring.datasource.validationQuery=SELECT 1 FROM DUAL
+spring.datasource.testWhileIdle=true
+spring.datasource.testOnBorrow=false
+spring.datasource.testOnReturn=false 
+spring.datasource.poolPreparedStatements=true
+spring.datasource.maxPoolPreparedStatementPerConnectionSize=20
+spring.datasource.filters=stat,wall,log4j
+spring.datasource.connectionProperties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+#spring.datasource.useGlobalDataSourceStat=true		
+
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql://192.168.6.1:3306/test
+spring.datasource.username=inf
+spring.datasource.password=inf
+spring.jpa.database=MYSQL
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>c3p0 - JDBC3 Connection and Statement Pooling</title>
+			<para>pom.xml</para>
+			<programlisting>
+			<![CDATA[
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-c3p0</artifactId>
+		    <version>4.3.6.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>c3p0</groupId>
+		    <artifactId>c3p0</artifactId>
+		    <version>0.9.1.2</version>
+		</dependency>
+			]]>
+			</programlisting>
+			<para>application.properties</para>
+			<programlisting>
+			<![CDATA[
+spring.datasource.type=com.mchange.v2.c3p0.ComboPooledDataSource
+			]]>
+			</programlisting>
+		</section>
+		<section id="dbcp2">
+			<title>dbcp2</title>
+			<programlisting>
+			<![CDATA[
+spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource			
+			]]>
+			</programlisting>
+		</section>
+		<section id="bonecp">
+			<title>bonecp</title>
+			<programlisting>
+			<![CDATA[
+spring.datasource.type = com.jolbox.bonecp.BoneCPDataSource		
+			]]>
+			</programlisting>
+		</section>
+		<section id="dbcp2">
+			<title>dbcp2</title>
+			<programlisting>
+			<![CDATA[
+spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="faq">

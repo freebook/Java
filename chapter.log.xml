@@ -142,12 +142,41 @@ public class Main {
 		]]>
 		</programlisting>
 	</section>
-<section id="slf4j">
+	
+	<section id="logback">
+		<title>Logback</title>
+		<para>http://logback.qos.ch/index.html</para>
+		<para>Logback 是 log4j 作者开发，目前的趋势Log4j逐步被Logback取代。</para>
+		<programlisting>
+		<![CDATA[
+package com.logs;
+ 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MyApp {
+	final static Logger logger = LoggerFactory.getLogger("MyApp.class");
+	public static void main(String[] args) {
+         
+		logger.trace("trace");
+		logger.debug("debug str");
+		logger.info("info str");
+		logger.warn("warn");
+		logger.error("error");
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	
+	<section id="slf4j">
 		<title>slf4j</title>
 		<para>http://www.slf4j.org/</para>
+		<para>log4j 已经被 Logback</para>
 	</section>
+	
 <section id="log4j">
-	<title>log4j</title>
+	<title>log4j</title>	
 	<section>
 		<title>安装 Log4j</title>
 		<section>
