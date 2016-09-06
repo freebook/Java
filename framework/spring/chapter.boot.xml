@@ -4202,5 +4202,19 @@ spring.http.encoding.enabled=true
 spring.http.encoding.force=true
 			</screen>
 		</section>
+		<section>
+			<title>java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection</title>
+			<para>分析，Oracle 数据库无法连接，确认用户密码正确，日志提示 The Network Adapter could not establish the connection 看上去更像网络故障，同事还有下面两条日志。</para>
+			<screen>
+Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection
+Caused by: java.net.SocketTimeoutException: connect timed out
+			</screen>
+			<para>通过 ss 命令可以看到有tcp操作，可以排除不是网络故障。</para>
+			<screen>
+[root@iZ62m7362hwZ ~]# ss -ant | grep 1521
+TIME-WAIT  0      0      47.90.18.24:45780              15.84.21.59:1521
+			</screen>
+			<para>检查你的用户名与密码是否含有特殊字符。</para>
+		</section>
 	</section>
 </chapter>
