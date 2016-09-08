@@ -42,7 +42,7 @@ prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("my
 		]]>
 		</programlisting>
 	</section>	
-	<section>
+	<section id="base64">
 		<title>BASE64</title>
 		<programlisting>
 		<![CDATA[

@@ -387,7 +387,7 @@ public class ScriptCompile {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="jjs">
 		<title>jjs - Invokes the Nashorn engine.</title>
 		<para>jjs 是一个在命令行运行脚本的命令</para>
 		<para>创建脚本文件</para>
