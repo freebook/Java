@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="jvm">
 	<title>JVM</title>
-	<section id="java">
+	<section id="jdk">
 		<title>安装 Java 6</title>
 		<para>解压</para>
 		<screen>
@@ -48,10 +48,12 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 # yum install -y java-1.8.0-openjdk		
 		</screen>
 	</section>
-	<section id="verbose">
-		<title>-verbose:class 显示载入jar文件</title>
-		<programlisting>
-		<![CDATA[
+	<section id="java">
+		<title>java - Launches a Java application.</title>
+		<section>
+			<title>-verbose:class 显示载入jar文件</title>
+			<programlisting>
+			<![CDATA[
 # java -verbose:class hello
 [Opened /srv/jdk1.8.0_60/jre/lib/rt.jar]
 [Loaded java.lang.Object from /srv/jdk1.8.0_60/jre/lib/rt.jar]
@@ -442,14 +444,112 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 Hello
 [Loaded java.lang.Shutdown from /srv/jdk1.8.0_60/jre/lib/rt.jar]
 [Loaded java.lang.Shutdown$Lock from /srv/jdk1.8.0_60/jre/lib/rt.jar]				
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>java.io.tmpdir</title>
-		<para>临时文件目录</para>
-		<screen>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>java.io.tmpdir</title>
+			<para>临时文件目录</para>
+			<screen>
 java -Djava.io.tmpdir=/path/to/tmpdir		
+			</screen>
+		</section>
+	</section>
+
+	<section id="jdeps">
+		<title>jdeps - Java class dependency analyzer.</title>
+		<para>包类依赖分析器</para>
+		<screen>
+[net@netkiller lib]$ jdeps jersey-client-1.18.1.jar
+jersey-client-1.18.1.jar -> not found
+jersey-client-1.18.1.jar -> /usr/java/jdk1.8.0_73/jre/lib/rt.jar
+   com.sun.jersey.api.client (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.api.client.async                    jersey-client-1.18.1.jar
+      -> com.sun.jersey.api.client.config                   jersey-client-1.18.1.jar
+      -> com.sun.jersey.api.client.filter                   jersey-client-1.18.1.jar
+      -> com.sun.jersey.client.impl                         jersey-client-1.18.1.jar
+      -> com.sun.jersey.client.impl.async                   jersey-client-1.18.1.jar
+      -> com.sun.jersey.client.proxy                        jersey-client-1.18.1.jar
+      -> com.sun.jersey.client.urlconnection                jersey-client-1.18.1.jar
+      -> com.sun.jersey.core.header                         not found
+      -> com.sun.jersey.core.provider                       not found
+      -> com.sun.jersey.core.reflection                     not found
+      -> com.sun.jersey.core.spi.component                  not found
+      -> com.sun.jersey.core.spi.component.ioc              not found
+      -> com.sun.jersey.core.spi.factory                    not found
+      -> com.sun.jersey.core.util                           not found
+      -> com.sun.jersey.spi                                 not found
+      -> com.sun.jersey.spi.inject                          not found
+      -> com.sun.jersey.spi.service                         not found
+      -> java.io                                            
+      -> java.lang                                          
+      -> java.lang.annotation                               
+      -> java.lang.reflect                                  
+      -> java.net                                           
+      -> java.util                                          
+      -> java.util.concurrent                               
+      -> java.util.logging                                  
+      -> javax.ws.rs.core                                   not found
+      -> javax.ws.rs.ext                                    not found
+   com.sun.jersey.api.client.async (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.api.client                          jersey-client-1.18.1.jar
+      -> java.lang                                          
+      -> java.util.concurrent                               
+   com.sun.jersey.api.client.config (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.core.util                           not found
+      -> java.lang                                          
+      -> java.util                                          
+   com.sun.jersey.api.client.filter (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.api.client                          jersey-client-1.18.1.jar
+      -> com.sun.jersey.core.util                           not found
+      -> java.io                                            
+      -> java.lang                                          
+      -> java.net                                           
+      -> java.nio.charset                                   
+      -> java.security                                      
+      -> java.util                                          
+      -> java.util.logging                                  
+      -> java.util.regex                                    
+      -> java.util.zip                                      
+      -> javax.ws.rs                                        not found
+      -> javax.ws.rs.core                                   not found
+   com.sun.jersey.client.impl (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.api.client                          jersey-client-1.18.1.jar
+      -> com.sun.jersey.core.header                         not found
+      -> java.io                                            
+      -> java.lang                                          
+      -> java.net                                           
+      -> java.util                                          
+      -> java.util.concurrent.atomic                        
+      -> javax.ws.rs.core                                   not found
+   com.sun.jersey.client.impl.async (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.api.client                          jersey-client-1.18.1.jar
+      -> com.sun.jersey.api.client.async                    jersey-client-1.18.1.jar
+      -> java.lang                                          
+      -> java.util.concurrent                               
+   com.sun.jersey.client.proxy (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.api.client                          jersey-client-1.18.1.jar
+      -> com.sun.jersey.api.client.async                    jersey-client-1.18.1.jar
+      -> java.lang                                          
+      -> java.util.concurrent                               
+   com.sun.jersey.client.urlconnection (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.api.client                          jersey-client-1.18.1.jar
+      -> com.sun.jersey.core.header                         not found
+      -> com.sun.jersey.spi                                 not found
+      -> java.io                                            
+      -> java.lang                                          
+      -> java.lang.reflect                                  
+      -> java.net                                           
+      -> java.security                                      
+      -> java.util                                          
+      -> java.util.logging                                  
+      -> javax.net.ssl                                      
+      -> javax.ws.rs.core                                   not found
+   com.sun.ws.rs.ext (jersey-client-1.18.1.jar)
+      -> com.sun.jersey.core.spi.factory                    not found
+      -> java.lang                                          
+      -> javax.ws.rs.core                                   not found
+		
 		</screen>
 	</section>
 </section>

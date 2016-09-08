@@ -83,8 +83,20 @@ session.setMaxInactiveInterval(20*60);
 		]]>
 		</programlisting>
 	</section>
+	<section id="httpservletrequest">
+		<title>HttpServletRequest</title>
+		<para>request.getParameter() 获取form参数</para>
+		<programlisting>
+		<![CDATA[
+HttpServletRequest request = ServletActionContext.getRequest();
+String name = request.getParameter("name");
+String age = request.getParameter("age");
+		]]>
+		</programlisting>
+	</section>
 	&section.filter.xml;
 	&section.listener.xml;
 	&section.jsp.xml;
 	&section.websocket.xml;
+	
 </chapter>

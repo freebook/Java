@@ -2,14 +2,32 @@
 <section id="type">
 	<title>类型</title>
 	<section id="string">
-		<title>String 处理</title>
-		<programlisting>
+		<title>String</title>
+		<section>
+			<title>随机字符串</title>
+			<programlisting>
+			<![CDATA[
+	public String randomString(String chars, int length) {
+		Random rand = new Random();
+		StringBuilder buf = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			buf.append(chars.charAt(rand.nextInt(chars.length())));
+		}
+		return buf.toString();
+	}
+			]]>
+			</programlisting>
+		</section>
+	
+		<section id="replace">
+			<title>字符串替换处理</title>
+			<programlisting>
 {"status":0,"message":"","bankcode":"ABOC;IBC;CCTB;ICBC"}
 转换后
 {\"status\":0,\"message\":\"\",\"bankcode\":\"ABOC;IBC;CCTB;ICBC\"}
-		</programlisting>
-		<programlisting>
-		<![CDATA[
+			</programlisting>
+			<programlisting>
+			<![CDATA[
 package test;
 
 public class str {
@@ -21,9 +39,28 @@ public class str {
 	}
 
 }
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
 	</section>
+	<section id="long">
+		<title>类型转换</title>
+		<section>
+			<title>Long to String</title>
+			<programlisting>
+			<![CDATA[
+	public class MainClass {
+
+	  public static void main(String[] arg) {
+	    long b = 12L;
+	    System.out.println(String.valueOf(b));   
+	
+	  }
+	}
+			]]>
+			</programlisting>
+		</section>
+	</section>	
 	<section id="arraylist">
 		<title>ArrayList</title>
 		<para>判断元素是否存在</para>

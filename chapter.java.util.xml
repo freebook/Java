@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="java/util" ?>
+	<title>Util</title>
+	<section id="properties">
+		<title>*.properties</title>
+		<programlisting>
+		<![CDATA[
+package netkiller.test;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.util.Properties;
+
+public class PropertiesTest {
+
+	public static void main(String[] args) {
+
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
+		Properties ps = new Properties();
+		try {
+			ps.load(new FileInputStream("netkiller.properties"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(ps.getProperty("key"));
+	}
+
+}
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Properties prop = new Properties();
+
+prop.load(getServletContext().getResourceAsStream("/WEB-INF/properties/sample.properties"));
+
+prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("myprop.properties"));
+		]]>
+		</programlisting>
+	</section>	
+	<section>
+		<title>BASE64</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+public class Base64Test {
+	public static void main(String[] args) {
+		final String text = "http://www.netkiller.cn/index.html";
+
+		final String encoded = Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
+		System.out.println(encoded);
+
+		final String decoded = new String(Base64.getDecoder().decode(encoded), StandardCharsets.UTF_8);
+		System.out.println(decoded);
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+</chapter>

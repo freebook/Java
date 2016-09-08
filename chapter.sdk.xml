@@ -23,5 +23,61 @@
 		<title>Jersey - RESTful Web Services in Java.</title>
 		<para>https://jersey.java.net/</para>
 	</section>
+	
+<section id="index"><?dbhtml dir="org/apache" ?>
+	<title>Apache HttpComponents</title>
+	<section>
+		<title>Apache HttpClient</title>
+		<section>
+			<title>POST to Restfull</title>
+			<programlisting>
+			<![CDATA[
+import java.io.IOException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
+@SuppressWarnings("deprecation")
+public class HTTPREST {
+
+	public static void main(String[] args) throws ClientProtocolException, IOException {
+		HttpClient httpClient = new DefaultHttpClient();
+
+		try {
+			HttpPost request = new HttpPost("http://test:123456@api.netkiller.cn/v1/test/create.json");
+			StringEntity params = new StringEntity("{\"name\":\"neo\", \"nickname\":\"netkiller\"}", "UTF-8");
+			request.addHeader("content-type", "application/json");
+			request.addHeader("Accept", "application/json");
+			request.setEntity(params);
+			HttpResponse response = httpClient.execute(request);
+			int statusCode = response.getStatusLine().getStatusCode();
+			System.out.println(statusCode);
+
+			if (response != null) {
+
+				String responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+				System.out.println(responseBody.toString());
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			httpClient.getConnectionManager().shutdown();
+		}
+
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</section>
+	
 </chapter>
 	

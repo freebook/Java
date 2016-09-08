@@ -387,4 +387,31 @@ public class ScriptCompile {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>jjs - Invokes the Nashorn engine.</title>
+		<para>jjs 是一个在命令行运行脚本的命令</para>
+		<para>创建脚本文件</para>
+		<programlisting>
+		<![CDATA[
+[neo@netkiller tmp]$ cat test.js 
+function f() { 
+     return 1; 
+}; 
+
+print( f() + 1 );
+
+		
+		]]>
+		</programlisting>
+		<para>运行结果</para>
+		<programlisting>
+		<![CDATA[
+[neo@netkiller tmp]$ jjs test.js 
+2		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[]]>
+		</programlisting>
+	</section>
 </chapter>

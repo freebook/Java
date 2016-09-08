@@ -62,6 +62,7 @@
 	&chapter.build.xml;
 	&chapter.servlet.xml;
 	&chapter.java.sql.xml;
+	&chapter.java.util.xml;
 	&chapter.json.xml;
 	&chapter.ampq.xml;
 	&chapter.nosql.mongodb.xml;

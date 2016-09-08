@@ -1,82 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="code">
 	<title>使用实例</title>
-	<section id="properties">
-		<title>*.properties</title>
-		<programlisting>
-		<![CDATA[
-package netkiller.test;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.FileInputStream;
-import java.util.Properties;
-
-public class PropertiesTest {
-
-	public static void main(String[] args) {
-
-		System.out.println("Working Directory = " + System.getProperty("user.dir"));
-
-		Properties ps = new Properties();
-		try {
-			ps.load(new FileInputStream("netkiller.properties"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println(ps.getProperty("key"));
-	}
-
-}
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-Properties prop = new Properties();
-
-prop.load(getServletContext().getResourceAsStream("/WEB-INF/properties/sample.properties"));
-
-prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("myprop.properties"));
-		]]>
-		</programlisting>
-	</section>
-	<section id="string">
-		<title>String</title>
-		<section>
-			<title>随机字符串</title>
-			<programlisting>
-			<![CDATA[
-	public String randomString(String chars, int length) {
-		Random rand = new Random();
-		StringBuilder buf = new StringBuilder();
-		for (int i = 0; i < length; i++) {
-			buf.append(chars.charAt(rand.nextInt(chars.length())));
-		}
-		return buf.toString();
-	}
-			]]>
-			</programlisting>
-		</section>
-	</section>
-	<section id="long">
-		<title>类型转换</title>
-		<section>
-			<title>Long to String</title>
-			<programlisting>
-			<![CDATA[
-	public class MainClass {
-
-	  public static void main(String[] arg) {
-	    long b = 12L;
-	    System.out.println(String.valueOf(b));   
 	
-	  }
-	}
-			]]>
-			</programlisting>
-		</section>
-	</section>	
+	
+	
 
 </chapter>
