@@ -69,8 +69,10 @@
 	&chapter.framework.xml;
 	&chapter.log.xml;
 	&chapter.javax.script.xml;
-	&part.search.xml;
+	&chapter.jersey.xml;
+	&chapter.apache.xml;
 	&chapter.sdk.xml;
+	&part.search.xml;
 <!-- =========================================================================== -->
 
 </book>

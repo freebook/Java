@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="org/apache" ?>
+	<title>Apache HttpComponents</title>
+	<section id="httpclient">
+		<title>Apache HttpClient</title>
+		<section>
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>JavaLang</groupId>
+	<artifactId>JavaLang</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.2</version>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>POST to Restfull</title>
+			<programlisting>
+			<![CDATA[
+import java.io.IOException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
+@SuppressWarnings("deprecation")
+public class HTTPREST {
+
+	public static void main(String[] args) throws ClientProtocolException, IOException {
+		HttpClient httpClient = new DefaultHttpClient();
+
+		try {
+			HttpPost request = new HttpPost("http://test:123456@api.netkiller.cn/v1/test/create.json");
+			StringEntity params = new StringEntity("{\"name\":\"neo\", \"nickname\":\"netkiller\"}", "UTF-8");
+			request.addHeader("content-type", "application/json");
+			request.addHeader("Accept", "application/json");
+			request.setEntity(params);
+			HttpResponse response = httpClient.execute(request);
+			int statusCode = response.getStatusLine().getStatusCode();
+			System.out.println(statusCode);
+
+			if (response != null) {
+
+				String responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+				System.out.println(responseBody.toString());
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			httpClient.getConnectionManager().shutdown();
+		}
+
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</chapter>
