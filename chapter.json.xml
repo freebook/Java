@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="json">
+<chapter id="index"><?dbhtml dir="javax/json" ?>
 	<title>JSON (JavaScript Object Notation)</title>
 	<section id="javax.json">
 		<title>javax.json.*</title>

@@ -59,13 +59,15 @@
 
 <!-- =========================================================================== -->
 	&chapter.java.xml;
+	&chapter.build.xml;
 	&chapter.servlet.xml;
-	&chapter.jdbc.xml;
+	&chapter.java.sql.xml;
 	&chapter.json.xml;
 	&chapter.ampq.xml;
 	&chapter.nosql.mongodb.xml;
 	&chapter.framework.xml;
 	&chapter.log.xml;
+	&chapter.javax.script.xml;
 	&part.search.xml;
 	&chapter.sdk.xml;
 <!-- =========================================================================== -->

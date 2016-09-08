@@ -3,6 +3,8 @@
 <!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">
 <!ENTITY java.type.xml		 			SYSTEM "java.type.xml">
 <!ENTITY chapter.java.net.xml 			SYSTEM "chapter.java.net.xml">
+<!ENTITY chapter.java.sql.xml			SYSTEM "chapter.java.sql.xml">
+<!ENTITY chapter.javax.script.xml		SYSTEM "chapter.javax.script.xml">
 <!ENTITY chapter.build.xml				SYSTEM "chapter.build.xml">
 <!ENTITY section.ant.xml				SYSTEM "build/section.ant.xml">
 <!ENTITY section.gradle.xml				SYSTEM "build/section.gradle.xml">
@@ -38,7 +40,7 @@
 <!ENTITY chapter.ampq.xml				SYSTEM "queue/chapter.ampq.xml">
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
 <!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
-<!ENTITY chapter.jdbc.xml				SYSTEM "chapter.jdbc.xml">
 <!ENTITY chapter.log.xml				SYSTEM "chapter.log.xml">
 <!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
+
 

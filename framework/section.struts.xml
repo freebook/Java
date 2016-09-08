@@ -361,7 +361,7 @@ escapeXml	false	false	false	Boolean	Whether to escape XML
 			]]>
 			</programlisting>	
 		</section>
-		<section>
+		<section id="interceptor-ref-json">
 			<title>JSON</title>
 			<para>JSON 拦截器</para>
 			<programlisting>

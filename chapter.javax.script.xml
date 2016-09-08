@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="javax/script" ?>
+	<title>java 脚本引擎</title>
+	<para>什么是脚本引擎，脚本引擎是指在程序运行期间嵌入另一种脚本语言，并与其交互，产生最终运行结果</para>
+	<para>脚本引擎存在的意义是什么？脚本引擎可以改变编译语言的内部运行逻辑，弥补编译语言的不足，使编译语言具备动态语言的一部分特性。</para>
+	<para>是否有成功案例？最成功的案例就是基于C++和Lua语言开发的端游（网游一种，需要按照客户端），编译语言最大的缺点就是客户端升级需要重新安装并且安装之后重启应用程序才能生效。脚本引擎弥补了这项致命的缺点，用户只需升级剧情脚本，而不需要退出整个游戏然后重新进入。</para>
+	<section id="maven">
+		<title>Maven</title>
+		<programlisting>
+		<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>script</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Java Script</name>
+	<description>Java Script Engine</description>
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+		]]>
+		</programlisting>
+	</section>
+	<section id="helloworld">
+		<title>Helloworld</title>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+package javascript;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+public class Helloworld {
+
+	public Helloworld() {
+		ScriptEngineManager manager = new ScriptEngineManager();
+		List<ScriptEngineFactory> factories = manager.getEngineFactories();
+		for (ScriptEngineFactory f : factories) {
+			System.out.println("egine name:" + f.getEngineName());
+			System.out.println("engine version:" + f.getEngineVersion());
+			System.out.println("language name:" + f.getLanguageName());
+			System.out.println("language version:" + f.getLanguageVersion());
+			System.out.println("names:" + f.getNames());
+			System.out.println("mime:" + f.getMimeTypes());
+			System.out.println("extension:" + f.getExtensions());
+			System.out.println("-----------------------------------------------");
+		}
+	}
+
+	public void hello() throws ScriptException {
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine engine = manager.getEngineByName("JavaScript");
+		// ScriptEngine engine = manager.getEngineByExtension("js");
+		// ScriptEngine engine = manager.getEngineByMimeType("text/javascript");
+		engine.eval("print('Hello, World')");
+	}
+
+	public static void main(String[] args) {
+		try {
+			new Helloworld().hello();
+		} catch (ScriptException ex) {
+			Logger.getLogger(Helloworld.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="file">
+		<title>运行脚本文件</title>
+		<para>将脚本放入外部文件</para>
+		<programlisting>
+		<![CDATA[
+package javascript;
+
+import java.io.FileNotFoundException;
+import java.net.URL;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+public class EvalFile {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine engine = manager.getEngineByExtension("js");
+		// ScriptEngine engine = manager.getEngineByMimeType("text/javascript");
+
+		try {
+
+			URL location = EvalFile.class.getProtectionDomain().getCodeSource().getLocation();
+			String file = location.getFile() + "test.js";
+			System.out.println(file);
+
+			engine.eval(new java.io.FileReader(file));
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+}
+		]]>
+		</programlisting>
+		<para>test.js</para>
+		<programlisting>
+print("This is hello from test.js");		
+		</programlisting>
+	</section>
+	<section id="variable">
+		<title>变量传递</title>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+package javascript;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+
+public class ScriptVars {
+
+	ScriptEngine engine = null;
+
+	public ScriptVars() {
+		ScriptEngineManager manager = new ScriptEngineManager();
+		engine = manager.getEngineByMimeType("text/javascript");
+	}
+
+	public void variable() throws ScriptException {
+		engine.put("name", "Neo");
+		engine.eval("var message = 'Hello, ' + name;");
+		engine.eval("print(message);");
+		Object obj = engine.get("message");
+		System.out.println(obj);
+	}
+
+	public void simpleBindings() throws ScriptException {
+		Bindings bindings = new SimpleBindings();
+		bindings.put("name", "Neo");
+		engine.eval("print('I am ' + name);", bindings);
+	}
+
+	public void function() throws ScriptException {
+		engine.put("a", 4);
+		engine.put("b", 6);
+		Object maxNum = engine.eval("function max_num(a,b){return (a>b)?a:b;}max_num(a,b);");
+		System.out.println("max_num:" + maxNum + ", (class = " + maxNum.getClass() + ")");
+
+		Map<String, Integer> m = new HashMap<String, Integer>();
+		m.put("c", 10);
+		engine.put("m", m);
+		engine.eval("var x= max_num(a,m.get('c'));");
+		System.out.println("max_num:" + engine.get("x"));
+	}
+
+	public void object() throws ScriptException {
+		File f = new File("test.txt");
+		// expose File object as variable to script
+		engine.put("file", f);
+
+		// evaluate a script string. The script accesses "file"
+		// variable and calls method on it
+		engine.eval("print(file.getAbsolutePath())");
+	}
+
+	public void outputToFile() throws IOException, ScriptException {
+		ScriptContext context = engine.getContext();
+		context.setWriter(new FileWriter("script.log"));
+		engine.eval("print('Hello World!');");
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		try {
+			ScriptVars sv = new ScriptVars();
+			sv.variable();
+			sv.simpleBindings();
+			sv.outputToFile();
+			sv.function();
+			sv.object();
+			sv.outputToFile();
+
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+}
+
+		]]>
+		</programlisting>
+	</section>
+	<section id="global">
+		<title>全局变量与局部变量定义</title>
+		<para>ScriptContext.GLOBAL_SCOPE 作用于 ScriptEngineManager， ScriptContext.ENGINE_SCOPE 作用于 ScriptEngine</para>
+		<programlisting>
+		<![CDATA[
+package javascript;
+
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+public class ContextVariable {
+
+	public static void main(String[] args) throws ScriptException {
+		// TODO Auto-generated method stub
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine engine = manager.getEngineByName("JavaScript");
+		ScriptContext context = engine.getContext();  
+	    context.setAttribute("name", "Netkiller", ScriptContext.GLOBAL_SCOPE);  
+	    context.setAttribute("name", "Neo", ScriptContext.ENGINE_SCOPE);  
+	    //context.getAttribute("name"); 
+	    engine.eval("print('I am ' + name);", context);
+	    
+	    // engine1,context1 并没有定义 name 但输出结果却显示 Netkiller，所以ScriptContext.GLOBAL_SCOPE定义的变量是全局的。 
+	    ScriptEngine engine1 = manager.getEngineByName("JavaScript");
+	    ScriptContext context1 = engine1.getContext();  
+	    engine.eval("print('I am ' + name);", context1);
+	    
+	}
+
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+import javax.script.*;
+
+public class MultiScopes {
+    public static void main(String[] args) throws Exception {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("JavaScript");
+
+        engine.put("x", "hello");
+        // print global variable "x"
+        engine.eval("print(x);");
+        // the above line prints "hello"
+
+        // Now, pass a different script context
+        ScriptContext newContext = new SimpleScriptContext();
+        Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
+
+        // add new variable "x" to the new engineScope
+        engineScope.put("x", "world");
+
+        // execute the same script - but this time pass a different script context
+        engine.eval("print(x);", newContext);
+        // the above line prints "world"
+    }
+}
+		]]>
+		</programlisting>
+	</section>	
+	<section id="fun">
+		<title>调用脚本中的函数或方法</title>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+package javascript;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+public class InvokeScriptFunction {
+
+	public static void main(String[] args) throws ScriptException, NoSuchMethodException {
+		// TODO Auto-generated method stub
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine engine = manager.getEngineByName("JavaScript");
+
+		// JavaScript code in a String
+		String script = "function hello(name) { print('Hello, ' + name); }";
+		// evaluate script
+		engine.eval(script);
+
+		// javax.script.Invocable is an optional interface.
+		// Check whether your script engine implements or not!
+		// Note that the JavaScript engine implements Invocable interface.
+		Invocable inv = (Invocable) engine;
+
+		// invoke the global function named "hello"
+		inv.invokeFunction("hello", "Scripting!!");
+
+		// JavaScript code in a String. This code defines a script object 'obj'
+		// with one method called 'hello'.
+		script = "var obj = new Object(); obj.hello = function(name) { print('Hello, ' + name); }";
+		// evaluate script
+		engine.eval(script);
+		// get script object on which we want to call the method
+		Object obj = engine.get("obj");
+
+		// invoke the method named "hello" on the script object "obj"
+		inv.invokeMethod(obj, "hello", "Script Method !!");
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	
+	<section id="compile">
+		<title>脚本编译</title>
+		<para>只有重复执行脚本时才需要编译。只运行一次不建议编译运行。</para>
+		<programlisting>
+		<![CDATA[
+package javascript;
+
+import javax.script.*;
+
+public class ScriptCompile {
+	public CompiledScript compile(String script) throws ScriptException {
+
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine engine = manager.getEngineByName("JavaScript");
+
+		return ((Compilable) engine).compile(script);
+
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		ScriptCompile sc = new ScriptCompile();
+		try {
+
+			CompiledScript script = sc.compile("print('Helloworld!!!');");
+
+			for (int i = 0; i < 100; i++) {
+				script.eval();
+			}
+
+		} catch (ScriptException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
+</chapter>

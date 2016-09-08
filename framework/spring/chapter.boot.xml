@@ -3040,13 +3040,11 @@ spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource
 			</programlisting>
 		</section>
 	</section>
-	<section id="faq">
-		<title>FAQ</title>
-		<section>
-			<title>properties</title>
-			<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>
-			<screen>
-			<![CDATA[
+	<section id="application.properties">
+		<title>application.properties</title>
+		<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>
+		<screen>
+		<![CDATA[
 # ===================================================================
 # COMMON SPRING BOOT PROPERTIES
 #
@@ -4160,6 +4158,8 @@ spring.devtools.remote.secret-header-name=X-AUTH-TOKEN # HTTP header used to tra
 			]]>
 			</screen>
 		</section>
+	<section id="faq">
+		<title>FAQ</title>
 		<section>
 			<title>org.hibernate.dialect.Oracle10gDialect does not support identity key generation</title>
 			<screen>
@@ -4214,7 +4214,13 @@ Caused by: java.net.SocketTimeoutException: connect timed out
 [root@iZ62m7362hwZ ~]# ss -ant | grep 1521
 TIME-WAIT  0      0      47.90.18.24:45780              15.84.21.59:1521
 			</screen>
-			<para>检查你的用户名与密码是否含有特殊字符。</para>
+			<para>检查你的用户名与密码是否含有特殊字符，特殊字符需要使用转义字符"\".</para>
+			<screen>
+spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=215.184.211.50)(PORT=1521))(LOAD_BALANCE=YES)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))
+#spring.datasource.username=neo
+#spring.datasource.password=[y7$ghM~3b
+			</screen>
+			<para>将用户名写入spring.datasource.url中，格式jdbc:oracle:thin:用户名/密码@(......)，禁用spring.datasource.username和spring.datasource.password两个配置项。</para>
 		</section>
 	</section>
 </chapter>

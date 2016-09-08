@@ -177,10 +177,3 @@ public class Application {
 	&java.type.xml;
 	&chapter.java.net.xml;
 </chapter>
-
-<chapter id="index"><?dbhtml dir="build" ?>
-	<title>Build Tools</title>
-	&section.ant.xml;
-	&section.maven.xml;
-	&section.gradle.xml;
-</chapter>

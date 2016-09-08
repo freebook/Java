@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="network">
+<section id="index"><?dbhtml dir="java/net" ?>
 	<title>Network</title>
 	<para>Java 网络相关操作</para>
 	<section id="url">
