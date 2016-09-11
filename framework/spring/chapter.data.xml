@@ -517,11 +517,94 @@ repository.save(new City("Shenzhen", "China"));
 			</screen>
 		</section>
 	</section>
+	<section id="entity">
+		<title>@Entity</title>
+		<section>
+			<title>@NotNull 不能为空声明</title>
+			<programlisting>
+@NotNull
+public String username;			
+			</programlisting>
+		</section>
+		<section>
+			<title>处理日期时间</title>
+			<programlisting>
+public java.sql.Date createdate; 创建日期 YYYY-MM-DD 
+public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
+			</programlisting>
+			<para>Json默认为 yyyy-MM-ddTHH:mm:ss 注意日期与时间中间的T，修改日期格式将T去掉</para>
+			<screen>
+@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
+			</screen>
+		</section>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
 			<title>No identifier specified for entity</title>
 			<para></para>
+		</section>
+		<section>
+			<title>Oracle Date 类型显示日期和时间</title>
+			<programlisting>
+			<![CDATA[
+package api.domain.oracle;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name = "test")
+public class Test {
+
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_id_Sequence")
+	@SequenceGenerator(name = "test_id_Sequence", sequenceName = "test")
+	private Long id;
+
+	@NotNull
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	public Date createdate;
+
+	public Withdraw() {
+
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getCreatedate() {
+		return createdate;
+	}
+
+	public void setCreatedate(Date createdate) {
+		this.createdate = createdate;
+	}
+
+}
+			]]>
+			</programlisting>
 		</section>
 	</section>
 </chapter>

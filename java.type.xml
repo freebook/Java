@@ -22,6 +22,22 @@
 		<section id="replace">
 			<title>字符串替换处理</title>
 			<programlisting>
+			<![CDATA[
+public class Test {
+
+	public Test() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.out.println("2010-09-11T20:00:30".replace("T", " "));
+	}
+}
+			
+			]]>
+			</programlisting>
+			<programlisting>
 {"status":0,"message":"","bankcode":"ABOC;IBC;CCTB;ICBC"}
 转换后
 {\"status\":0,\"message\":\"\",\"bankcode\":\"ABOC;IBC;CCTB;ICBC\"}

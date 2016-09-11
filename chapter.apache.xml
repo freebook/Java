@@ -3,14 +3,14 @@
 	<title>Apache HttpComponents</title>
 	<section id="httpclient">
 		<title>Apache HttpClient</title>
-		<section>
+		<section id="maven">
 			<title>Maven</title>
 			<programlisting>
 			<![CDATA[
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>JavaLang</groupId>
-	<artifactId>JavaLang</artifactId>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>example</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
@@ -38,7 +38,7 @@
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="post">
 			<title>POST to Restfull</title>
 			<programlisting>
 			<![CDATA[
@@ -85,6 +85,188 @@ public class HTTPREST {
 }
 			]]>
 			</programlisting>
+		</section>
+		<section id="ssl">
+			<title>HTTPS</title>
+			<section>
+				<title>Get https 接口</title>
+				<para>环境 Nginx SSL(openssl自颁发)，nginx 通过proxy_pass连接  Tomcat</para>
+				<para>下面是 nginx 配置</para>
+				<screen>
+server {
+    listen 443 ssl spdy;
+    server_name api.netkiller.cn;
+
+    ssl_certificate /etc/nginx/ssl/api.netkiller.cn.crt;
+    ssl_certificate_key /etc/nginx/ssl/api.netkiller.cn.key;
+    ssl_session_cache shared:SSL:20m;
+    ssl_session_timeout 60m;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    charset utf-8;
+    access_log  /var/log/nginx/api.netkiller.cn.access.log;
+    error_log  /var/log/nginx/api.netkiller.cn.error.log;
+
+    location / {
+        proxy_pass      http://127.0.0.1:7000;
+        proxy_http_version 1.1;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+}
+				</screen>
+				<para>下面是 Java 程序</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.example;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.ParseException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
+
+public class NginxAndOpenSSLAndTomcatAndHttpclient {
+	public static void main(String[] args) throws ParseException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+		SSLContextBuilder builder = new SSLContextBuilder();
+		builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+		SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(builder.build());
+		CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslFactory).build();
+
+		HttpGet httpGet = new HttpGet("https://neo:netkiller@api.netkiller.cn/v1/news/today.json");
+		CloseableHttpResponse response = httpclient.execute(httpGet);
+		try {
+			System.out.println(response.getStatusLine());
+			HttpEntity entity = response.getEntity();
+			String responseBody = EntityUtils.toString(entity, "UTF-8");
+			System.out.println(responseBody.toString());
+		} finally {
+			response.close();
+		}
+	}
+}
+				]]>
+				</programlisting>
+				<para>如果遇到配置问题，可以看一下<ulink url="/www/index.html">《Netkiller Linux Web 手札》</ulink></para>
+			<!-- 
+/*
+    static
+    {
+       System.setProperty("javax.net.ssl.trustStore","/www/nginx/client1.jks");
+       System.setProperty("javax.net.ssl.trustStorePassword", "password");
+       System.setProperty("javax.net.ssl.keyStore", "/www/nginx/client1.jks");
+       System.setProperty("javax.net.ssl.keyStorePassword", "password");
+    }
+*/
+			 -->
+			 </section>
+			 <section>
+			 	<title>POST json 数据</title>
+			 	<programlisting>
+			 	<![CDATA[
+package cn.netkiller.example;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
+
+public class HttpClientSSLPost {
+
+	public HttpClientSSLPost() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		SSLContextBuilder builder = new SSLContextBuilder();
+		try {
+			builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+
+			SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(builder.build());
+			CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslFactory).build();
+
+			HttpPost httpPost = new HttpPost("https://neo:YruuUCNXKe@api.netkiller.cn/v1/member/create.json");
+			httpPost.addHeader("content-type", "application/json");
+			httpPost.addHeader("Accept", "application/json");
+
+			HttpEntity httpEntity = new StringEntity("{\"name\":\"neo\", \"nickname\":\"netkiler\",\"age\":\"18\"}", "UTF-8");
+			
+			httpPost.setEntity(httpEntity);
+
+			CloseableHttpResponse response = httpclient.execute(httpPost);
+
+			System.out.println(response.getStatusLine());
+			HttpEntity entity = response.getEntity();
+			String responseBody = EntityUtils.toString(entity, "UTF-8");
+			System.out.println(responseBody.toString());
+			response.close();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		finally {
+
+		}
+	}
+
+}
+			 	]]>
+			 	</programlisting>
+			 </section>
+		</section>
+		<section id="httpclient.faq">
+			<title>Host name 'api.netkiller.cn' does not match the certificate subject provided</title>
+			<para>这个问题是CN不匹配造成的，日志如下</para>
+			<screen>
+Exception in thread "main" javax.net.ssl.SSLPeerUnverifiedException: Host name 'api.netkiller.cn' does not match the certificate subject provided by the peer (EMAILADDRESS=netkiller@msn.com, CN=netkiller.cn, OU=CF, O=CF, L=Shenzhen, ST=Guangdong, C=CN)
+			</screen>
+			<para>解决方案一：重新做证书</para>
+			<screen>
+Country Name (2 letter code) [XX]:CN
+State or Province Name (full name) []:Guangdong
+Locality Name (eg, city) [Default City]:Shenzhen
+Organization Name (eg, company) [Default Company Ltd]:CF
+Organizational Unit Name (eg, section) []:CF
+Common Name (eg, your name or your server's hostname) []:api.netkiller.cn
+Email Address []:netkiller@msn.com
+			</screen>
+			<para>解决方案二：是用CN上的域名链接</para>
 		</section>
 	</section>
 </chapter>

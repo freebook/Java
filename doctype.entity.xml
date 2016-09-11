@@ -34,6 +34,7 @@
 
 <!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
 <!ENTITY section.jsp.xml				SYSTEM "Servlet/section.jsp.xml">
+<!ENTITY section.jstl.xml				SYSTEM "Servlet/section.jstl.xml">
 <!ENTITY section.filter.xml				SYSTEM "Servlet/section.filter.xml">
 <!ENTITY section.websocket.xml			SYSTEM "Servlet/section.websocket.xml">
 <!ENTITY section.listener.xml			SYSTEM "Servlet/section.listener.xml">

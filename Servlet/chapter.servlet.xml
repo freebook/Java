@@ -97,6 +97,7 @@ String age = request.getParameter("age");
 	&section.filter.xml;
 	&section.listener.xml;
 	&section.jsp.xml;
+	&section.jstl.xml;
 	&section.websocket.xml;
 	
 </chapter>

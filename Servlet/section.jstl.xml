@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="jstl">
+	<title>JSTL(JavaServer Pages Standard Tag Library)</title>
+	<programlisting>
+	<![CDATA[
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+	]]>
+	</programlisting>
+	
+	 
+	<section id="set">
+		<title>c:set</title>
+		<para>设置变量</para>
+		<programlisting>
+		<![CDATA[
+<c:set var="foo" scope="request" value="helloworld">
+
+or
+
+<%request.setAttribute("foo","helloworld") %>
+
+
+<c:out value="${requestScope.foo}"/>
+		]]>
+		</programlisting>	
+	</section>
+	<section id="out">
+		<title>c:out</title>
+		<para>输出变量variable的内容</para>
+		<programlisting>
+		<![CDATA[
+<c:out value="${variable}"/>
+
+
+<%=request.getParameter("UA")%>
+相当于
+<c:out value="${param.UA}"/>
+
+默认值
+<c:out value="${param.UA}" default="UA-69658002-1" />
+		]]>
+		</programlisting>	
+	</section>
+	<section id="url">
+		<title>c:url</title>
+		<para>生成URL</para>
+		<programlisting>
+		<![CDATA[
+<c:url value="/news/china/"/>
+		]]>
+		</programlisting>	
+	</section>
+	<section id="remove">
+		<title>c:remove</title>
+		<programlisting>
+		<![CDATA[
+<c:remove var="message" scope="session" />
+		]]>
+		</programlisting>	
+	</section>
+	<section id="import">
+		<title>c:import</title>
+		<programlisting>
+		<![CDATA[
+<c:import url="http://www.netkiller.cn" />		
+
+<c:import var="html" url="http://www.netkiller.cn"/>
+<c:out value="${html}"/>	
+		]]>
+		</programlisting>
+		<para>传递GET参数</para>
+		<programlisting>
+		<![CDATA[
+<c:import url="http://www.netkiller.cn" > 
+	<c:param name="id" value="10" />
+	<c:param name="name" value="neo" /> 
+</c:import> 			
+		]]>
+		</programlisting>
+		<para>异常处理</para>
+		<programlisting>
+		<![CDATA[
+<c:catch var="exception">
+
+  <c:import url="ftp://ftp.example.com/package/README"/>
+
+</c:catch>
+
+<c:if test="${not empty exception}">
+
+  Sorry, the remote content is not currently available.
+
+</c:if>			
+		]]>
+		</programlisting>
+		<para>在Context间切换</para>
+		<programlisting>
+		<![CDATA[
+server.conf: 
+<Context  reloadable="true" crossContext="true" /> 
+
+<c:import url="/path/to/file.jsp" context=/project1" /> 			
+<c:import url="/path/to/file.jsp" context=/project2" />
+		]]>
+		</programlisting>
+	</section>
+	<section id="if">
+		<title>c:if</title>
+		<programlisting>
+		<![CDATA[
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html>
+<head>
+<title><c:if> Tag Example</title>
+</head>
+<body>
+<c:set var="salary" scope="session" value="${2000*2}"/>
+<c:if test="${salary > 2000}">
+   <p>My salary is: <c:out value="${salary}"/><p>
+</c:if>
+</body>
+</html>	
+		]]>
+		</programlisting>	
+	</section>
+
+	<section id="choose">
+		<title>c:choose</title>
+		<screen>
+		<![CDATA[
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:choose>
+	<c:when test="${session.auth eq 'true' }">
+		
+	</c:when>
+	<c:otherwise>
+		
+	</c:otherwise>
+</c:choose>			
+		]]>
+		</screen>
+		<para>实现 if else/else if / else</para>
+		<programlisting>
+		<![CDATA[
+<c:choose>
+   <c:when test="${..}">...</c:when> <!-- if condition -->
+   <c:when test="${..}">...</c:when> <!-- else if condition -->
+   <c:otherwise>...</c:otherwise>    <!-- else condition -->
+</c:choose>			
+		]]>
+		</programlisting>
+	</section><section id="forEach">
+		<title>c:forEach</title>
+	
+		<section>
+			<title>List 处理</title>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	${bookList}
+	<br>
+
+	<c:forEach items="${bookList}" var="node">
+		<c:out value="${node}"></c:out><br>
+	</c:forEach>
+
+</body>
+</html>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Map 处理</title>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<c:forEach items="${channel}" var="node">
+		<a href="<c:out value="${node.value}"></c:out>"><c:out value="${node.key}"></c:out></a>
+        <br/>
+	</c:forEach>
+</body>
+</html>
+			]]>
+			</programlisting>
+		</section>
+	
+	</section>
+	<section id="fmt">
+		<title>JSTL fmt Tag setBundle Example</title>
+		<section>
+			<title>fmt:message</title>
+			<para>src/resources/config.properties</para>
+			<programlisting>
+			<![CDATA[
+Name=Neo
+Address=Shenzhen
+Number=13322993040
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JSTL fmt:setBundle Tag</title>
+</head>
+<body>
+	<fmt:setBundle basename="resources.config" var="config" />
+	<fmt:message key="Name" bundle="${config}" />
+
+	<fmt:message key="Address" bundle="${config}" />
+
+	<fmt:message key="Number" bundle="${config}" />
+</body>
+</html>
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	<fmt:bundle basename="lang">
+		<fmt:message key="Name" />
+		<fmt:message key="Address" />
+	</fmt:bundle>			
+			]]>
+			</programlisting>
+			<section id="fmt:setLocale">
+				<title>Language Package</title>
+				<programlisting>
+				<![CDATA[
+<fmt:setLocale value="en" />				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>fmt:message 变量</title>
+				<programlisting>
+				<![CDATA[
+<fmt:message key="js" bundle="${config}" var="val" />
+<c:out value="${val}"/>				
+					]]>
+					</programlisting>
+				</section>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+<fmt:setTimeZone value="Europe/London" scope="session"/>			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+<fmt:formatDate value="${isoDate}" type="both"/>
+2004-5-31 23:59:59
+
+<fmt:formatDate value="${date}" type="date"/>
+2004-4-1
+
+<fmt:formatDate value="${isoDate}" type="time"/>
+23:59:59
+
+<fmt:formatDate value="${isoDate}" type="date" dateStyle="default"/>
+2004-5-31
+
+<fmt:formatDate value="${isoDate}" type="date" dateStyle="short"/>
+04-5-31
+
+<fmt:formatDate value="${isoDate}" type="date" dateStyle="medium"/>
+2004-5-31
+
+<fmt:formatDate value="${isoDate}" type="date" dateStyle="long"/>
+2004年5月31日
+
+<fmt:formatDate value="${isoDate}" type="date" dateStyle="full"/>
+2004年5月31日 星期一
+
+<fmt:formatDate value="${isoDate}" type="time" timeStyle="default"/>
+23:59:59
+
+<fmt:formatDate value="${isoDate}" type="time" timeStyle="short"/>
+下午11:59
+
+<fmt:formatDate value="${isoDate}" type="time" timeStyle="medium"/>
+23:59:59
+
+<fmt:formatDate value="${isoDate}" type="time" timeStyle="long"/>
+下午11时59分59秒
+
+<fmt:formatDate value="${isoDate}" type="time" timeStyle="full"/>
+下午11时59分59秒 CDT
+
+<fmt:formatDate value="${date}" type="both" pattern="EEEE, MMMM d, yyyy HH:mm:ss Z"/>
+星期四, 四月 1, 2004 13:30:00 -0600
+
+<fmt:formatDate value="${isoDate}" type="both" pattern="d MMM yy, h:m:s a zzzz/>
+31 五月 04, 11:59:59 下午 中央夏令时 
+
+格式模式：
+  d   月中的某一天。一位数的日期没有前导零。    
+  dd   月中的某一天。一位数的日期有一个前导零。    
+  ddd   周中某天的缩写名称，在   AbbreviatedDayNames   中定义。    
+  dddd   周中某天的完整名称，在   DayNames   中定义。    
+  M   月份数字。一位数的月份没有前导零。    
+  MM   月份数字。一位数的月份有一个前导零。    
+  MMM   月份的缩写名称，在   AbbreviatedMonthNames   中定义。    
+  MMMM   月份的完整名称，在   MonthNames   中定义。    
+  y   不包含纪元的年份。如果不包含纪元的年份小于   10，则显示不具有前导零的年份。    
+  yy   不包含纪元的年份。如果不包含纪元的年份小于   10，则显示具有前导零的年份。    
+  yyyy   包括纪元的四位数的年份。    
+  gg   时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。    
+  h   12   小时制的小时。一位数的小时数没有前导零。    
+  hh   12   小时制的小时。一位数的小时数有前导零。    
+  H   24   小时制的小时。一位数的小时数没有前导零。    
+  HH   24   小时制的小时。一位数的小时数有前导零。     
+  m   分钟。一位数的分钟数没有前导零。    
+  mm   分钟。一位数的分钟数有一个前导零。    
+  s   秒。一位数的秒数没有前导零。    
+  ss   秒。一位数的秒数有一个前导零。
+
+<fmt:formatDate value="${xx}" pattern="dd/MM/yyyy HH:mm aa"/>和
+
+<fmt:formatDate value="${xx}" pattern="dd/MM/yyyy hh:mm aa"/>  对于0点显示的结果不一样
+
+
+<fmt:formatDate value="${dateValue}" pattern="yyyy-MM-dd HH:mm:ss z" timeZone="GMT"/>
+
+<fmt:formatDate value="${dateValue}" pattern="yyyy-MM-dd HH:mm:ss z" timeZone="US/Eastern"/>
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>	

@@ -400,6 +400,30 @@ mvn dependency:sources
 mvn help:effective-pom			
 		</screen>
 	</section>
+	<section id="resources">
+		<title>resources 文件处理</title>
+		<screen>
+		<![CDATA[
+		
+		<resources>
+			<resource>
+				<directory>src/resources</directory>
+				<excludes>
+					<exclude>development.properties</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/resources</directory>
+				<includes>
+					<include>development.properties</include>
+				</includes>
+				<targetPath>resources</targetPath>
+			</resource>
+		</resources>
+				
+		]]>
+		</screen>
+	</section>
 	<section id="plugins">
 		<title>plugins</title>
 		<section>
