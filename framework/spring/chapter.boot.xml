@@ -3043,7 +3043,7 @@ spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource
 	<section id="scheduling">
 		<title>Spring boot with Scheduling</title>
 		<section>
-			<title></title>
+			<title>Application.java</title>
 			<para>Application.java</para>
 			<programlisting>
 package api;
@@ -3078,7 +3078,7 @@ public class Application {
 			<para>确保你的计划任务在 @ComponentScan 包中。</para>
 		</section>
 		<section>
-			<title></title>
+			<title>Component</title>
 			<programlisting>
 package api.schedule;
 
