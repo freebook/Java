@@ -3,7 +3,7 @@
 	<title>类型</title>
 	<section id="string">
 		<title>String</title>
-		<section>
+		<section id="random">
 			<title>随机字符串</title>
 			<programlisting>
 			<![CDATA[
@@ -55,6 +55,29 @@ public class str {
 	}
 
 }
+			]]>
+			</programlisting>
+		</section>
+		<section id="substring">
+			<title>substring</title>
+			<programlisting>
+			<![CDATA[
+例如：
+String str = "helloword!!!";
+
+System.out.println(str.substring(1,4));
+
+System.out.println(str.substring(3,5));
+
+System.out.println(str.substring(0,4));
+
+将得到结果为：
+
+ell
+
+lo 
+
+hell
 			]]>
 			</programlisting>
 		</section>

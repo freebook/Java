@@ -517,7 +517,7 @@ repository.save(new City("Shenzhen", "China"));
 			</screen>
 		</section>
 	</section>
-	<section id="entity">
+	<section id="Entity">
 		<title>@Entity</title>
 		<section>
 			<title>@NotNull 不能为空声明</title>
@@ -538,6 +538,36 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
 			</screen>
 		</section>
+	</section>
+	<section id="Query">
+		<title>Query</title>
+		<programlisting>
+		<![CDATA[
+package api.repository.oracle;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import api.domain.oracle.Member;
+
+@Repository
+public interface MemberRepository extends CrudRepository<Member, Long> {
+	public Page<Member> findAll(Pageable pageable);
+
+	// public Member findByBillno(String billno);
+
+	public Member findById(String id);
+
+	@Query("SELECT m FROM Member m WHERE m.status = 'Y' AND m.id = :id")
+	public Member findFinishById(@Param("id") String id);
+
+}
+		]]>
+		</programlisting>
 	</section>
 	<section id="faq">
 		<title>FAQ</title>
@@ -582,7 +612,7 @@ public class Test {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date createdate;
 
-	public Withdraw() {
+	public Member() {
 
 	}
 

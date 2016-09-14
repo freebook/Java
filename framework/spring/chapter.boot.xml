@@ -3040,6 +3040,103 @@ spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource
 			</programlisting>
 		</section>
 	</section>
+	<section id="scheduling">
+		<title>Spring boot with Scheduling</title>
+		<section>
+			<title></title>
+			<para>Application.java</para>
+			<programlisting>
+package api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan({ "api.config", "api.web", "api.rest", "api.service","api.schedule" })
+@EnableMongoRepositories
+@EnableJpaRepositories
+@EnableScheduling
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}			
+			</programlisting>
+			<para>开启计划任务 @EnableScheduling</para>
+			<para>确保你的计划任务在 @ComponentScan 包中。</para>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+package api.schedule;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ScheduledTasks {
+
+	private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	public final static long ONE_DAY = 24 * 60 * 60 * 1000;
+	public final static long ONE_HOUR = 60 * 60 * 1000;
+
+	public ScheduledTasks() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Scheduled(fixedRate = 5000) //5秒运行一次调度任务
+	public void echoCurrentTime() {
+		log.info("The time is now {}", dateFormat.format(new Date()));
+	}
+
+	@Scheduled(fixedRate = ONE_DAY)
+	public void scheduledTask() {
+		System.out.println("每隔一天执行一次调度任务");
+	}
+
+	@Scheduled(fixedDelay = ONE_HOUR)
+	public void scheduleTask2() {
+		System.out.println("运行完后隔一小时就执行任务");
+	}
+
+	@Scheduled(initialDelay = 1000, fixedRate = 5000)
+	public void doSomething() {
+		// something that should execute periodically
+	}
+
+	@Scheduled(cron = "0 0/1 * * * ? ")
+	public void ScheduledTask3() {
+		System.out.println(" 每隔一分钟执行一次任务");
+	}
+
+}
+			</programlisting>
+		</section>
+		<section>
+			<title>查看日志</title>
+			<programlisting>
+tail -f spring.log			
+			</programlisting>
+		</section>
+	</section>
 	<section id="application.properties">
 		<title>application.properties</title>
 		<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>
