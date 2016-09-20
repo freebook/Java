@@ -552,7 +552,20 @@ public class MyTask {
 		<title>Properties</title>
 		<programlisting>
 		<![CDATA[
-Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("/your.properties"));		
+	@RequestMapping("/config")
+	@ResponseBody
+	public void config() {
+		try {
+			Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("/config.properties"));
+			for(String key : properties.stringPropertyNames()) {
+				  String value = properties.getProperty(key);
+				  System.out.println(key + " => " + value);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}	
 		]]>
 		</programlisting>
 	</section>

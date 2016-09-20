@@ -105,7 +105,7 @@ public class Application {
 		]]>
 		</programlisting>
 		
-		<section>
+		<section id="SpringBootApplication">
 			<title>@SpringBootApplication</title>
 			<para>@SpringBootApplication 是 @Configuration, @EnableAutoConfiguration 跟 @ComponentScan 的集合。</para>
 			<programlisting>
@@ -114,7 +114,7 @@ public class Application {
 			]]>
 			</programlisting>
 		</section>		
-		<section>
+		<section id="EnableAutoConfiguration">
 			<title>@EnableAutoConfiguration</title>
 			<para>exclude 排除配置，下面例子是排除 DataSource配置</para>
 			<programlisting>
@@ -123,7 +123,7 @@ public class Application {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="ComponentScan">
 			<title>@ComponentScan</title>
 			<para>@ComponentScan 注入会扫描 @Controller 与 @RestController</para>
 			<programlisting>
@@ -181,6 +181,49 @@ public static void main(String[] args) {
             }
         };
     }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>列出 Beans</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import java.util.Arrays;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan
+@EnableMongoRepositories
+@EnableJpaRepositories
+@EnableScheduling
+public class Application {
+
+	public static void main(String[] args) {
+		//SpringApplication.run(Application.class, args);
+
+		ApplicationContext ctx = SpringApplication.run(Application.class, args);
+
+		System.out.println("Let's inspect the beans provided by Spring Boot:");
+
+		String[] beanNames = ctx.getBeanDefinitionNames();
+		Arrays.sort(beanNames);
+		for (String beanName : beanNames) {
+			System.out.println(beanName);
+		}
+
+	}
+}
 			]]>
 			</programlisting>
 		</section>
@@ -532,27 +575,130 @@ public class IndexController {
 	</section>
 	<section id="ViewResolver">
 		<title>ViewResolver</title>
-		<programlisting>
-		<![CDATA[
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp			
+			</programlisting>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan
+@EnableScheduling
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+}
+			]]>			
+			</programlisting>
+		</section>
+		<section>
+			<title>IndexController</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.web;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class IndexController {
+
+	@RequestMapping("/welcome")
+	@ResponseBody
+	public String welcome() {
+		String message = "Welcome";
+		return message;
+	}
+	
+	@RequestMapping("/index")
+	public ModelAndView index() {
+		String message = "Helloworld";
+		return new ModelAndView("index").addObject("message", message);
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>src/main/webapp/WEB-INF/jsp/index.jsp</title>
+			<programlisting>
+			<![CDATA[
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Home</title>
+</head>
+<body>
+${message}
+</body>
+</html>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>集成模板引擎</title>
+			<para>如果你需要使用其他模板引擎可以采用 Bean 注解方式。</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "hello")
-@EnableAutoConfiguration
-@EnableConfigurationProperties(ApplicationConfiguration.class)
-public class WebConfiguration {
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
-    @Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/views/");
-        viewResolver.setSuffix(".jsp");
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
 
-        return viewResolver;
-    }
-}		
-		]]>
-		</programlisting>
+	@Bean
+	public InternalResourceViewResolver viewResolver() {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("WEB-INF/jsp/");
+		resolver.setSuffix(".jsp");
+		return resolver;
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+				
 	</section>
 	<section id="mongodb">
 		<title>Spring boot mongodb</title>

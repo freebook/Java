@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="java" ?>
+<chapter id="index"><?dbhtml dir="lang" ?>
 	<title>Java</title>
 	&chapter.jvm.xml;
 <section id="system">
@@ -173,6 +173,40 @@ public class Application {
 }
 		]]>
 		</programlisting>
+	</section>
+	<section id="Runtime">
+		<title>exec 运行shell</title>
+		<screen>
+exec(String[] cmdarray, String[] envp, File dir)
+Executes the specified command and arguments in a separate process with the specified environment and working directory.
+
+那个dir就是调用的程序的工作目录，这句其实还是很有用的。
+
+Windows下调用程序
+Process proc =Runtime.getRuntime().exec("file.exe");
+
+Linux下调用程序就要改成下面的格式
+Process proc =Runtime.getRuntime().exec("./file");
+
+Windows下调用系统命令
+String [] cmd={"cmd","/C","copy file1.txt file2.txt"};
+Process proc =Runtime.getRuntime().exec(cmd);
+
+Linux下调用系统命令就要改成下面的格式
+String [] cmd={"/bin/sh","-c","ln -s file1 file2"};
+Process proc =Runtime.getRuntime().exec(cmd);
+
+Windows下调用系统命令并弹出命令行窗口
+String [] cmd={"cmd","/C","start copy file1.txt file2.txt"};
+Process proc =Runtime.getRuntime().exec(cmd);
+
+Linux下调用系统命令并弹出终端窗口就要改成下面的格式
+String [] cmd={"/bin/sh","-c","xterm -e ln -s file1 file2"};
+Process proc =Runtime.getRuntime().exec(cmd);
+
+还有要设置调用程序的工作目录就要
+Process proc =Runtime.getRuntime().exec("ls",null, new File("/bin"));
+		</screen>
 	</section>
 	&java.type.xml;
 	&chapter.java.net.xml;

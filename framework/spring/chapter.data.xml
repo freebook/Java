@@ -1,6 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="data" ?>
 	<title>Spring Data</title>
+	<section id="JdbcTemplate">
+		<title>JdbcTemplate</title>
+		<section id="execute">
+			<title>execute</title>
+			<programlisting>
+jdbcTemplate.execute("CREATE TABLE USER (id integer, name varchar(100))");  			
+			</programlisting>
+		</section>
+		<section id="queryForInt">
+			<title>queryForInt</title>
+			<programlisting>
+int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");			
+			</programlisting>
+		</section>
+		
+		<section id="queryForObject">
+			<title>queryForObject</title>
+			<programlisting>
+	private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Scheduled(initialDelay = 1000, fixedRate = 60000)
+	public void currentDate() {
+		Date date = jdbcTemplate.queryForObject("select sysdate from dual", Date.class);
+		log.info("The oracle sysdate is {}", dateFormat.format(date));
+	}			
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@RequestMapping(value = "/article")
+	public @ResponseBody String dailyStats(@RequestParam Integer id) {
+		String query = "SELECT id, title, content from article where id = " + id;
+
+		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
+			System.out.println(resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
+			return (resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
+		});
+
+	}			
+			]]>
+			</programlisting>
+			<programlisting>
+Integer age = queryForObject("select age from emp", Integer.class);
+String name = queryForObject("select name from emp",String.class);
+			</programlisting>
+		</section>
+		<section id="queryForList">
+			<title>queryForList</title>
+			<programlisting>
+			<![CDATA[
+List rows = jdbcTemplate.queryForList("SELECT * FROM USER");  
+Iterator it = rows.iterator();  
+while(it.hasNext()) {  
+    Map userMap = (Map) it.next();  
+    System.out.print(userMap.get("id") + "\t");  
+    System.out.print(userMap.get("name") + "\t");  
+    System.out.print(userMap.get("sex") + "\t");  
+    System.out.println(userMap.get("age") + "\t");  
+}  			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	
 	<section id="example">
 		<title>Example</title>
 	
@@ -569,6 +639,7 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
 		]]>
 		</programlisting>
 	</section>
+	
 	<section id="faq">
 		<title>FAQ</title>
 		<section>

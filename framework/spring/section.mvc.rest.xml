@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="controller">
+<section id="restful">
 	<title>Spring4 Restful</title>
 	<subtitle>@RestController</subtitle>
 	<para>首先我要禁告各位，Spring发展过程中，每个版本都有一定差异。如果你做实验失败后在网上搜索答案，切记看一下版本号还有文章帖子的发布时间。否则你可能按照Spring3配置方法去Spring4。</para>

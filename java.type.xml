@@ -81,6 +81,21 @@ hell
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>string to timestamp</title>
+			<para>Timestamp转化为String:</para>
+			<programlisting>
+SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	//定义格式，不显示毫秒
+Timestamp now = new Timestamp(System.currentTimeMillis());			//获取系统当前时间
+String str = df.format(now);
+			</programlisting>
+			<para>String转化为Timestamp:</para>
+			<programlisting>
+SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+String time = df.format(new Date());
+Timestamp ts = Timestamp.valueOf(time);
+			</programlisting>
+		</section>
 	</section>
 	<section id="long">
 		<title>类型转换</title>
@@ -100,11 +115,154 @@ hell
 			</programlisting>
 		</section>
 	</section>	
-	<section id="arraylist">
-		<title>ArrayList</title>
-		<para>判断元素是否存在</para>
+	
+	<section id="date">
+		<title>Date</title>
+		<section>
+			<title>SimpleDateFormat</title>
+			<programlisting>
+public static void main(String[] args) {
+
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    //get current date time with Date()
+    Date date = new Date();
+    System.out.println(dateFormat.format(date));
+
+    //get current date time with Calendar()
+    Calendar cal = Calendar.getInstance();
+    System.out.println(dateFormat.format(cal.getTime()));
+
+}			
+			</programlisting>
+		</section>
+	</section>
+	<section id="array">
+		<title>Array</title>
+		<para>String to Array</para>
 		<programlisting>
 		<![CDATA[
+package cn.netkiller.java;
+
+public class StringToArray {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String str="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+		String[] array = null;   
+		array = str.split(",");
+		for(int i=0; i<array.length; i++){
+			System.out.println(array[i]);
+		 
+		}
+	}
+
+}		
+		]]>
+		</programlisting>
+		<section>
+			<title>Array to String</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.java;
+
+import java.util.Arrays;
+
+public class ArrayToString {
+
+	public static void main(String[] args) {
+		String[] array = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+		System.out.println(Arrays.toString(array));
+		System.out.println(Arrays.toString(array).replaceAll(", |\\[|\\]", ""));
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</section>	
+
+	<section id="data.structure">
+		<title>数据结构</title>
+		<section id="Collection">
+			<title>Collection</title>
+		
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.example;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.TreeSet;
+
+public class Test {
+
+	public Test() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		// A A B E F G C D
+		String[] array = { "A", "A", "B", "E", "F", "G", "C", "D" };
+		Collection<String> list = new ArrayList<String>(Arrays.asList(array));
+		for (String str : list) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+
+		// A A B E F G C D
+		Collection<String> linkedList = new LinkedList<String>(Arrays.asList(array));
+		for (String str : linkedList) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+
+		// 无重复，无序 D E F G A B C
+		Collection<String> hashSet = new HashSet<String>(Arrays.asList(array));
+		for (String str : hashSet) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+
+		// 无重复 A B C D E F G
+		Collection<String> treeSet = new TreeSet<String>(Arrays.asList(array));
+		for (String str : treeSet) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+
+		// 无重复 A B E F G C D
+		Collection<String> linkedHashSet = new LinkedHashSet<String>(Arrays.asList(array));
+		for (String str : linkedHashSet) {
+			System.out.print(str + " ");
+
+		}
+
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+A A B E F G C D 
+A A B E F G C D 
+A B C D E F G 
+A B C D E F G 
+A B E F G C D 
+			</screen>
+		</section>
+		<section id="arraylist">
+			<title>ArrayList</title>
+			<para>判断元素是否存在</para>
+			<programlisting>
+			<![CDATA[
 import java.util.ArrayList;
 
 public class arraylist {
@@ -124,10 +282,10 @@ public class arraylist {
 	}
 
 }
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
 package cn.netkiller.type;
 
 import java.util.ArrayList;
@@ -169,66 +327,39 @@ public class ArrayListExample {
 	}
 
 }
-	
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+			<para>ArrayList 转为 Array</para>
+			<programlisting>
+			<![CDATA[
+		String[] array = {"/bin/sh","-c"};
+		List<String> list = new ArrayList<String>(Arrays.asList(array));
+	    list.add("command");
+	    list.add("param");
+	   
+	    String[] command = (String[]) list.toArray(new String[0]);
+	    System.out.println(Arrays.toString(command));
+			]]>
+			</programlisting>
+			<section>
+				<title>ArrayList to String</title>
+				<programlisting>
+				<![CDATA[
+		List<String> list = new ArrayList<String>();
+	    list.add("command");
+	    list.add("param");
+	   
+	    String listString = String.join(", ", list);
+	    
+	    System.out.println(listString);
+		    	]]>			
+				</programlisting>
+			</section>
+			<section>
+				<title>Array to List</title>
+				<programlisting>
+Arrays.asList(array)			
+				</programlisting>
+			</section>
+		</section>
 	</section>
-	<section>
-		<title>String to Array</title>
-		<programlisting>
-		<![CDATA[
-package cn.netkiller.java;
-
-public class StringToArray {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String str="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
-		String[] array = null;   
-		array = str.split(",");
-		for(int i=0; i<array.length; i++){
-			System.out.println(array[i]);
-		 
-		}
-	}
-
-}		
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Array to String</title>
-		<programlisting>
-		<![CDATA[
-package cn.netkiller.java;
-
-import java.util.Arrays;
-
-public class ArrayToString {
-
-	public static void main(String[] args) {
-		String[] array = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-		System.out.println(Arrays.toString(array));
-		System.out.println(Arrays.toString(array).replaceAll(", |\\[|\\]", ""));
-	}
-
-}		
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>string to timestamp</title>
-		<para>Timestamp转化为String:</para>
-		<programlisting>
-SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	//定义格式，不显示毫秒
-Timestamp now = new Timestamp(System.currentTimeMillis());			//获取系统当前时间
-String str = df.format(now);
-		</programlisting>
-		<para>String转化为Timestamp:</para>
-		<programlisting>
-SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-String time = df.format(new Date());
-Timestamp ts = Timestamp.valueOf(time);
-		</programlisting>
-	</section>
-</section>
