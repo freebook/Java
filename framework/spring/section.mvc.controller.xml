@@ -292,6 +292,42 @@ public class Http {
 			</programlisting>
 		</section>
 	</section>
+	
+	<section id="ModelAttribute">
+		<title>@ModelAttribute</title>
+		<para>@ModelAttribute 处理 HTML FORM POST 提交</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.pojo;
+
+import java.util.List;
+
+public class Deploy {
+
+	private String group;
+	private String envionment;
+	private String project;
+	private List<String> arguments;
+	public Deploy() {
+		// TODO Auto-generated constructor stub
+	}
+	// Getters & Setters
+}
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping(value="/deploy/post",  method = RequestMethod.POST)
+	public ModelAndView post(@ModelAttribute("deploy")Deploy deploy, BindingResult result) {
+		if (result.hasErrors()) {
+			System.out.println(result.toString());
+        }
+		System.out.println(deploy.toString());
+		return new ModelAndView("output").addObject("output", deploy.toString());
+	}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="ModelAndView">
 		<title>ModelAndView</title>
 		<section>
@@ -516,15 +552,7 @@ Password: ${user.password}<br>
 			]]>
 			</programlisting>
 		</section>
-	</section>
-	<section id="ModelAttribute">
-		<title>@ModelAttribute</title>
-		<programlisting>
-		<![CDATA[
-		]]>
-		</programlisting>
-	</section>
-	<section id="Scheduled">
+	</section><section id="Scheduled">
 		<title>@Scheduled</title>
 		<para>计划任务</para>
 		<screen>
