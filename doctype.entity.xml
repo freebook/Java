@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.java.xml		 		SYSTEM "chapter.java.xml">
 <!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">
-<!ENTITY java.type.xml		 			SYSTEM "java.type.xml">
+<!ENTITY chapter.java.type.xml		 	SYSTEM "chapter.java.type.xml">
 <!ENTITY chapter.java.net.xml 			SYSTEM "chapter.java.net.xml">
 <!ENTITY chapter.java.sql.xml			SYSTEM "chapter.java.sql.xml">
 <!ENTITY chapter.java.util.xml			SYSTEM "chapter.java.util.xml">
@@ -46,5 +46,3 @@
 <!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
 <!ENTITY chapter.jersey.xml				SYSTEM "chapter.jersey.xml">
 <!ENTITY chapter.apache.xml				SYSTEM "chapter.apache.xml">
-
-
