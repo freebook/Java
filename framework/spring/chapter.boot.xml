@@ -3283,6 +3283,61 @@ tail -f spring.log
 			</programlisting>
 		</section>
 	</section>
+	<section id="redis">
+		<title>Spring boot with Redis</title>
+		<section>
+			<title>maven</title>
+			<programlisting>
+			<![CDATA[
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-redis</artifactId>
+</dependency>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+			<![CDATA[
+spring.redis.database=10
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.password=
+spring.redis.pool.max-active=8
+spring.redis.pool.max-wait=-1
+spring.redis.pool.max-idle=8
+spring.redis.pool.min-idle=0
+spring.redis.timeout=0
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Controller</title>
+			<programlisting>
+			<![CDATA[
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	
+	@RequestMapping("/test")
+	@ResponseBody
+	public String test() {
+		String message = "";
+		stringRedisTemplate.opsForValue().set("hello", "world");
+		message = stringRedisTemplate.opsForValue().get("hello");
+		return message;
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="application.properties">
 		<title>application.properties</title>
 		<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>

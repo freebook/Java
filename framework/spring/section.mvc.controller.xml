@@ -172,7 +172,21 @@ ${ id } <br>
 			</programlisting>
 
 		</section>
+		<section>
+			<title>URL 传递 Date 类型</title>
+			<para>http://localhost:7000/history/2016-09-28%2000:00:00/</para>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/history/{datetime}")
+	public String history(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date datetime) throws Exception {
 
+		System.out.println(datetime)
+
+		return null;
+	}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="RequestParam">
