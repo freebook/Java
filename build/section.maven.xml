@@ -206,6 +206,21 @@ $ mvn clean
 $ mvn compile
 			</screen>
 		</section>
+		<section id="test">
+			<title>test</title>
+			<para>编译测试的源代码</para>
+			<screen>
+mvn test-compile			
+			</screen>
+			<para>运行测试</para>
+			<screen>
+$ mvn test
+			</screen>
+			<para>打包但不测试</para>
+			<screen>
+mvn -D maven.test.skip=true package
+			</screen>
+		</section>
 		<section id="package">
 			<title>package</title>
 			<para>将编译后的代码打包</para>
@@ -222,6 +237,18 @@ target/www.netkiller.cn-0.0.1-SNAPSHOT.war
 			<para>将项目打包后安装到本地仓库，可以作为其它项目的本地依赖。</para>
 			<screen>
 $ mvn install		
+			</screen>
+		</section>
+		<section>
+			<title>war</title>
+			<screen>
+mvn compile war:war			
+			</screen>
+			<screen>
+mvn compile war:exploded			
+			</screen>
+			<screen>
+mvn compile war:inplace
 			</screen>
 		</section>
 	</section>
