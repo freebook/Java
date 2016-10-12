@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cache.xml 474 2012-10-29 11:01:51Z netkiller $ -->
-<section id="cache">
+<chapter id="index"><?dbhtml dir="cache" ?>
 	<title>Cache</title>
 	
 <section id="memcache">
@@ -89,7 +89,7 @@ java memcached
 			</screen>
 		</example>
 	</section>	
-	<section>
+	<section id="jedis">
 		<title>Jedis</title>
 		<para></para>
 		<programlisting>
@@ -185,4 +185,4 @@ public class RedisKeys {
 	<section id="ehcache">
 		<title>Ehcache</title>
 	</section>
-</section>
+</chapter>

@@ -590,25 +590,5 @@ public class MyTask {
 		]]>
 		</programlisting>
 	</section>
-	<section id="Properties">
-		<title>Properties</title>
-		<programlisting>
-		<![CDATA[
-	@RequestMapping("/config")
-	@ResponseBody
-	public void config() {
-		try {
-			Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("/config.properties"));
-			for(String key : properties.stringPropertyNames()) {
-				  String value = properties.getProperty(key);
-				  System.out.println(key + " => " + value);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}	
-		]]>
-		</programlisting>
-	</section>
+	
 </section>

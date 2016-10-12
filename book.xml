@@ -71,6 +71,7 @@
 	&chapter.javax.script.xml;
 	&chapter.jersey.xml;
 	&chapter.apache.xml;
+	&chapter.cache.xml;
 	&chapter.sdk.xml;
 	&part.search.xml;
 <!-- =========================================================================== -->

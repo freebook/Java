@@ -14,7 +14,6 @@
 		<title>Openfire</title>
 		<para>http://www.igniterealtime.org/index.jsp</para>
 	</section>
-	&chapter.cache.xml;
 	<section id="Redisson">
 		<title>Redisson</title>
 		<para>http://redisson.org/</para>

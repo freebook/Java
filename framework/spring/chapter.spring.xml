@@ -488,7 +488,130 @@ public class Index {
 			</example>
 		</section>
 	</section>
+	<section id="properties">
+		<title>Properties</title>
+		<section>
+			<title>载入*.properties文件</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/config")
+	@ResponseBody
+	public void config() {
+		try {
+			Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("/config.properties"));
+			for(String key : properties.stringPropertyNames()) {
+				  String value = properties.getProperty(key);
+				  System.out.println(key + " => " + value);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>@Value 注解</title>
+			<para>application.properties</para>
+			<screen>
+server.name=Linux
+server.host=192.168.0.1,172.16.0.1
+			</screen>
+			<screen>
+			<![CDATA[
+	@Value("${server.name}")
+	private String name;
+	
+	@Value("${server.name:Windows}") 如果application.properties没有配置server.name那么默认值将是 Windows
+	private String name;
+	
+	@Value("${app.name:@null}") // app.name = null
+ 	private String name;
+ 	
+ 	@Value("#{'${server.host}'.split(',')}") 
+ 	private List<String> host;
+ 			]]>
+			</screen>
+		</section>
+		<section>
+			<title>@PropertySource 注解</title>
+			<programlisting>
+			<![CDATA[
+@PropertySource("classpath:/config.properties}")	
 
+忽略FileNotFoundException，当配置文件不存在系统抛出FileNotFoundException并终止程序运行，ignoreResourceNotFound=true 会跳过使程序能够正常运行
+@PropertySource(value="classpath:config.properties", ignoreResourceNotFound=true)		
+
+
+
+			]]>
+			</programlisting>
+			<para>载入多个配置文件</para>
+			<programlisting>
+			<![CDATA[
+@PropertySources({  
+        @PropertySource("classpath:config.properties"),  
+        @PropertySource("classpath:db.properties")  
+})
+			]]>
+			</programlisting>
+			<para>test.properties</para>
+			<programlisting>
+name=Neo
+age=30
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.web;
+
+import java.util.Date;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@PropertySource("classpath:test.properties")
+public class TestController {
+	
+	@Autowired
+	Environment environment;
+	
+	@Value("${age}")
+	private String age;
+
+	public TestController() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	// 环境变量方式
+	@RequestMapping("/test/env")
+	@ResponseBody
+	public String env() {
+		String message = environment.getProperty("name");
+		return message;
+	}
+	
+	@RequestMapping("/test/age")
+	@ResponseBody
+	public String age() {
+		String message = age;
+		return message;
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	
 	&section.mvc.controller.xml;
 	&section.mvc.rest.xml;
 	&section.mvc.view.xml;
