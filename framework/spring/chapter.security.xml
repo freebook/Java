@@ -2,6 +2,76 @@
 <chapter id="index"><?dbhtml dir="security" ?>
 	<title>Spring Security</title>
 	<section>
+		<title>访问控制列表（Access Control List，ACL）</title>
+		<para>放行所有请求</para>
+		<programlisting>
+http.authorizeRequests().antMatchers("/**" ).permitAll();		
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	public WebSecurityConfig() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http
+	        .authorizeRequests()
+	            .antMatchers("/", "/about.html", "/doc/**").permitAll()
+	            .anyRequest().authenticated()
+	            .and()
+	        .formLogin()
+	            .loginPage("/login.html")
+	            .permitAll()
+	            .and()
+	        .logout()
+	            .permitAll();
+           
+	}
+	
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER")
+                .and()
+                .withUser("admin").password("admin").roles("ADMIN");
+
+    }
+}
+
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>HTTP Auth</title>		
+		<programlisting>
+		<![CDATA[
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/ping","/v1/*/ping","/v1/public/**" ).permitAll()
+		.anyRequest().authenticated()
+		.and().rememberMe().and().httpBasic()
+		.and().csrf().disable();
+	}
+		]]>
+		</programlisting>	
+	</section>
+	<section>
 		<title>Rest</title>		
 		<programlisting>
 		<![CDATA[
@@ -19,5 +89,34 @@ protected void configure(HttpSecurity http) throws Exception {
 }
 		]]>
 		</programlisting>	
+	</section>
+	<section>
+		<title>Add User</title>
+		<programlisting>
+		<![CDATA[
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER");
+
+    }		
+		]]>
+		</programlisting>
+		<para>添加多个用户</para>
+		<programlisting>
+		<![CDATA[
+	
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER")
+                .and()
+                .withUser("admin").password("admin").roles("ADMIN");
+
+    }
+		]]>
+		</programlisting>
 	</section>
 </chapter>	

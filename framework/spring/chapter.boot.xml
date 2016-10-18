@@ -3337,23 +3337,25 @@ tail -f spring.log
 			</programlisting>
 		</section>
 	</section>
-	<section id="redis">
-		<title>Spring boot with Redis</title>
-		<section>
-			<title>maven</title>
-			<programlisting>
-			<![CDATA[
+	<section id="cache">
+		<title>Spring boot with Cache</title>	
+		<section id="redis">
+			<title>Spring boot with Redis</title>
+			<section>
+				<title>maven</title>
+				<programlisting>
+				<![CDATA[
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-redis</artifactId>
 </dependency>			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>application.properties</title>
-			<programlisting>
-			<![CDATA[
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>application.properties</title>
+				<programlisting>
+				<![CDATA[
 spring.redis.database=10
 spring.redis.host=localhost
 spring.redis.port=6379
@@ -3363,13 +3365,14 @@ spring.redis.pool.max-wait=-1
 spring.redis.pool.max-idle=8
 spring.redis.pool.min-idle=0
 spring.redis.timeout=0
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Controller</title>
-			<programlisting>
-			<![CDATA[
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Controller</title>
+				<para>stringRedisTemplate模板用于存储key,value为字符串的数据</para>
+				<programlisting>
+				<![CDATA[
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
 	
@@ -3381,10 +3384,98 @@ spring.redis.timeout=0
 		message = stringRedisTemplate.opsForValue().get("hello");
 		return message;
 	}
-			]]>
-			</programlisting>
+				]]>
+				</programlisting>
+				<para>等同于</para>
+				<programlisting>
+				<![CDATA[
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+				]]>
+				</programlisting>
+				<example>
+					<title>RedisTemplate</title>
+					<programlisting>
+					<![CDATA[
+@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+	
+	public List<Protocol> getProtocol() {
+		List<Protocol> protocols = new ArrayList<Protocol>();
+		Gson gson = new Gson();
+		Type type = new TypeToken<List<Protocol>>(){}.getType();
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
+		
+		String cacheKey = String.format("%s:%s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName());
+		long expireTime = 5;
+		
+		if(redisTemplate.hasKey(cacheKey)){
+			String cacheValue = redisTemplate.opsForValue().get(cacheKey);
+			System.out.println(cacheValue);
+			protocols = gson.fromJson(cacheValue, type);
+		}else{
+			Protocol protocol = new Protocol();
+			protocol.setRequest(new Date().toString());
+			protocols.add(protocol);
+			
+			String jsonString = gson.toJson(protocols, type);
+	        System.out.println( jsonString );
+			
+			redisTemplate.opsForValue().set(cacheKey, jsonString);
+			redisTemplate.expire(cacheKey, expireTime, TimeUnit.SECONDS);
+		}
+		return protocols;
+	}
+					]]>
+					</programlisting>
+				</example>
+			</section>
+		</section>
+		<section>
+			<title>@Cacheable</title>
+			<section>
+				<title>maven</title>
+				<programlisting>
+				<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>			
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Controller</title>
+				<para>缓存返回结果</para>
+				<programlisting>
+				<![CDATA[
+	@Cacheable("cacheable")
+	@RequestMapping("/test/cacheable")
+	@ResponseBody
+	public String cacheable() {
+		Date date = new Date();
+		String message = date.toString();
+		return message;
+	}
+				]]>
+				</programlisting>
+				<para>5秒钟清楚一次缓存</para>
+				<programlisting>
+				<![CDATA[
+	@Scheduled(fixedDelay = 5000)
+	@CacheEvict(allEntries = true, value = "cacheable")	
+	public void expire() {
+		Date date = new Date();
+		String message = date.toString();
+		System.out.println(message);
+	}
+				]]>
+				</programlisting>
+			</section>
 		</section>
 	</section>
+	
 	<section id="session">
 		<title>Session</title>
 		<section>
