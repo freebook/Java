@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="jvm">
+<section id="index"><?dbhtml dir="jvm" ?>
 	<title>JVM</title>
 	<section id="jdk">
 		<title>安装 Java 6</title>

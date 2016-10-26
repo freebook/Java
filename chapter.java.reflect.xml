@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="index"><?dbhtml dir="java/lang/reflect" ?>
+	<title>Reflection 反射</title>
+	<screen>
+this.getClass().getName() //当前Class名字
+Thread.currentThread().getStackTrace()[1].getMethodName()); //当前方法名
+	</screen>
+		<section>
+			<title>获得所有变量</title>
+			<programlisting>
+			<![CDATA[
+			
+	Field[] fields = objClass.getFields();
+	for (Field field : fields) {
+		System.out.println(field.getName());
+	}
+			]]>
+			</programlisting>
+			<para>注意：只能去除 public变量</para>
+		</section>
+
+		<section>
+			<title>批量赋值</title>
+		</section>
+		
+	<section>
+		<title>方法操作</title>
+		<para>JAVA反射调用方法的步骤有三步</para>
+		<screen>
+得到要调用类的class
+得到要调用的类中的方法(Method)
+方法调用(invoke)
+		</screen>
+		<section>
+			<title>获得所有方法</title>
+			<programlisting>
+			<![CDATA[
+	Class<?> objClass = a.getClass();
+	Method[] methods =  objClass.getDeclaredMethods();
+	for (Method method : methods) {
+		System.out.println(method);
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>set/get 方法</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.reflect;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+public class Member {
+	public String name;
+	private int age;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	@Override
+	public String toString() {
+		return "ClassA [name=" + name + ", age=" + age + "]";
+	}
+
+	public Member() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
+		Class<?> cls = Class.forName("cn.netkiller.reflect.Member");
+		Object member = cls.newInstance();
+		Method setMethod = cls.getDeclaredMethod("setAge", int.class);
+		setMethod.invoke(member, 15);
+
+		Method getMethod = cls.getDeclaredMethod("getAge");
+		System.out.println(getMethod.invoke(member));
+
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>下面做一个稍微复杂点的例子，ClassB继承ClassA，取出ClassA的成员变量赋值到ClassA。</para>
+			<screen>
+			<![CDATA[
+package cn.netkiller.reflect;
+
+public class ClassA {
+	public String name;
+	private int age;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+	
+	public ClassA() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "ClassA [name=" + name + ", age=" + age + "]";
+	}
+}
+
+package cn.netkiller.reflect;
+
+public class ClassB extends ClassA{
+
+	public ClassB() {
+		// TODO Auto-generated constructor stub
+	}
+	private String address;
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	@Override
+	public String toString() {
+		return "ClassB [address=" + address + "]";
+	}
+	
+}
+
+
+package cn.netkiller.reflect;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+public class ReflectionTest {
+
+	public ReflectionTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public void testSetMethod() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+
+		// ClassA a = new ClassA();
+
+		ClassB b = new ClassB();
+		b.setAddress("Shenzhen");
+
+		Class<ClassA> classA = ClassA.class;
+		ClassA a = classA.newInstance();
+		a.setName("Neo");
+		a.setAge(30);
+
+		System.out.println(classA.getDeclaredMethod("getAge").invoke(a));
+
+		Method m = classA.getDeclaredMethod("setAge", int.class);
+		m.setAccessible(true); // 因为写成private 所以这里必须设置
+		m.invoke(b, 26);
+
+		System.out.println(a.toString());
+		System.out.println(b.toString());
+
+		System.out.println(b.getName());
+		System.out.println(b.getAge());
+	}
+
+	public static void main(String[] args) throws InvocationTargetException {
+
+		ReflectionTest rt = new ReflectionTest();
+		try {
+			rt.testSetMethod();
+			
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+}
+
+
+
+			]]>
+			</screen>
+			<para>set 方法</para>
+			<programlisting>
+			<![CDATA[
+System.out.println(classA.getDeclaredMethod("getAge").invoke(a));	
+			]]>
+			</programlisting>
+			<para>get 方法</para>
+			<programlisting>
+			<![CDATA[
+	Method m = classA.getDeclaredMethod("setAge", int.class);
+	m.setAccessible(true);	//因为写成private 所以这里必须设置
+	m.invoke(b, 26);	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>static 方法调用</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+Class cls = Class.forName("cn.netkiller.reflect.Student");
+Method setMethod = cls.getDeclaredMethod("setAge",int.class);
+setMethod.invoke(cls.newInstance(), 15);
+			]]>
+			</programlisting>
+			<para>static 方法调用时，不必得实例化对象</para>
+			<programlisting>
+			<![CDATA[
+Class cls = Class.forName("cn.netkiller.reflect.Student");
+Method staticMethod = cls.getDeclaredMethod("setAge",int.class);
+staticMethod.invoke(cls,20); //这里不需要newInstance
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</section>

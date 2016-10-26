@@ -69,18 +69,37 @@ server.tomcat.access-log-pattern= # log pattern of the access log
 server.tomcat.access-log-enabled=false # is access logging enabled
 				</screen>
 			</section>
-			<section>
-				<title>charset</title>
-				<para>Spring boot 默认并非UTF-8 所以下面配置必设，否则将会出现</para>
-				<screen>
+		</section>
+		<section>
+			<title>charset</title>
+			<para>Spring boot 默认并非UTF-8 所以下面配置必设，否则将会出现</para>
+			<screen>
 spring.messages.encoding=UTF-8
 server.tomcat.uri-encoding=UTF-8
 spring.http.encoding.charset=UTF-8
 spring.http.encoding.enabled=true
 spring.http.encoding.force=true
-				</screen>
-			</section>
-		</section>			
+			</screen>
+		</section>
+		<section>
+			<title>JSON</title>
+			<screen>
+# Pretty-print JSON responses
+spring.jackson.serialization.indent_output=true
+			</screen>
+		</section>
+		<section>
+			<title>SMTP 相关配置</title>
+			<screen>
+spring.mail.host=smtp.netkiller.cn
+#spring.mail.username=
+#spring.mail.password=
+#spring.mail.properties.mail.smtp.auth=true
+#spring.mail.properties.mail.smtp.starttls.enable=true
+#spring.mail.properties.mail.smtp.starttls.required=true		
+mail.smtp.debug=true
+			</screen>
+		</section>	
 	</section>
 	<section id="SpringApplication">
 		<title>SpringApplication</title>
@@ -101,7 +120,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-}		
+}
 		]]>
 		</programlisting>
 		
@@ -2308,7 +2327,27 @@ public class EmailRestController extends CommonRestController {
 
 		return new ResponseEntity<Email>(email, HttpStatus.OK);
 	}
+	
+	// 如果你不想使用 application.properties 中的 spring.mail.host 配置，想自行配置SMTP主机可以参考下面例子
+	@RequestMapping(value = "sendmail", method = RequestMethod.POST, produces = { "application/xml", "application/json" })
+	public ResponseEntity<Email> sendmail(@RequestBody Email email) {
+		JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+		javaMailSender.setHost(email.getHost());
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom(email.getFrom());
+		message.setTo(email.getTo());
+		message.setSubject(email.getSubject());
+		message.setText(email.getText());
+		try{
+			javaMailSender.send(message);
+			email.setStatus(true);
+		}catch(Exception e){
+			email.setText(e.getMessage());
+			email.setStatus(false);
+		}
 
+		return new ResponseEntity<Email>(email, HttpStatus.OK);
+	}	
 }
 			]]>
 			</programlisting>
@@ -3800,8 +3839,11 @@ spring.session.jdbc.table-name=SESSIONS
 			</programlisting>
 		</section>
 	</section>
-	<section id="application.properties">
-		<title>application.properties</title>
+	
+	<section id="faq">
+		<title>FAQ</title>
+		<section id="faq.application.properties">
+		<title>application.properties 参考</title>
 		<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>
 		<screen>
 		<![CDATA[
@@ -4917,10 +4959,7 @@ spring.devtools.remote.secret= # A shared secret required to establish a connect
 spring.devtools.remote.secret-header-name=X-AUTH-TOKEN # HTTP header used to transfer the shared secret.
 			]]>
 			</screen>
-		</section>
-	<section id="faq">
-		<title>FAQ</title>
-		<section>
+		</section><section>
 			<title>org.hibernate.dialect.Oracle10gDialect does not support identity key generation</title>
 			<screen>
 @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -4981,6 +5020,26 @@ spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(
 #spring.datasource.password=[y7$ghM~3b
 			</screen>
 			<para>将用户名写入spring.datasource.url中，格式jdbc:oracle:thin:用户名/密码@(......)，禁用spring.datasource.username和spring.datasource.password两个配置项。</para>
+		</section>
+		<section>
+			<title>Field javaMailSender in cn.netkiller.rest.EmailRestController required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.</title>
+			<para>启动提示 'org.springframework.mail.javamail.JavaMailSender' that could not be found 这句话很误导人。实际上是 (spring.mail.host) did not find property 'host'</para>
+			<screen>
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field javaMailSender in cn.netkiller.rest.EmailRestController required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.
+	- Bean method 'mailSender' not loaded because AnyNestedCondition 0 matched 2 did not; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty @ConditionalOnProperty (spring.mail.jndi-name) did not find property 'jndi-name'; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.HostProperty @ConditionalOnProperty (spring.mail.host) did not find property 'host'
+
+
+Action:
+
+Consider revisiting the conditions above or defining a bean of type 'org.springframework.mail.javamail.JavaMailSender' in your configuration.
+			</screen>
+			<para>解决方案，application.properties 增加 spring.mail.host=localhost</para>
 		</section>
 	</section>
 </chapter>

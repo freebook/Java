@@ -489,13 +489,13 @@ public class Math {
 	</section>
 </section>	
 
-	<section id="data.structure">
-		<title>数据结构</title>
-		<section id="Collection">
-			<title>Collection</title>
-		
-			<programlisting>
-			<![CDATA[
+<section id="data.structure">
+	<title>数据结构</title>
+	<section id="Collection">
+		<title>Collection</title>
+	
+		<programlisting>
+		<![CDATA[
 package cn.netkiller.example;
 
 import java.util.ArrayList;
@@ -554,22 +554,22 @@ public class Test {
 	}
 
 }
-			]]>
-			</programlisting>
-			<para>输出结果</para>
-			<screen>
+		]]>
+		</programlisting>
+		<para>输出结果</para>
+		<screen>
 A A B E F G C D 
 A A B E F G C D 
 A B C D E F G 
 A B C D E F G 
 A B E F G C D 
-			</screen>
-		</section>
-		<section id="arraylist">
-			<title>ArrayList</title>
-			<para>判断元素是否存在</para>
-			<programlisting>
-			<![CDATA[
+		</screen>
+	</section>
+	<section id="arraylist">
+		<title>ArrayList</title>
+		<para>判断元素是否存在</para>
+		<programlisting>
+		<![CDATA[
 import java.util.ArrayList;
 
 public class arraylist {
@@ -589,10 +589,10 @@ public class arraylist {
 	}
 
 }
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
 package cn.netkiller.type;
 
 import java.util.ArrayList;
@@ -634,11 +634,11 @@ public class ArrayListExample {
 	}
 
 }
-			]]>
-			</programlisting>
-			<para>ArrayList 转为 Array</para>
-			<programlisting>
-			<![CDATA[
+		]]>
+		</programlisting>
+		<para>ArrayList 转为 Array</para>
+		<programlisting>
+		<![CDATA[
 		String[] array = {"/bin/sh","-c"};
 		List<String> list = new ArrayList<String>(Arrays.asList(array));
 	    list.add("command");
@@ -646,12 +646,12 @@ public class ArrayListExample {
 	   
 	    String[] command = (String[]) list.toArray(new String[0]);
 	    System.out.println(Arrays.toString(command));
-			]]>
-			</programlisting>
-			<section>
-				<title>ArrayList to String</title>
-				<programlisting>
-				<![CDATA[
+		]]>
+		</programlisting>
+		<section>
+			<title>ArrayList to String</title>
+			<programlisting>
+			<![CDATA[
 		List<String> list = new ArrayList<String>();
 	    list.add("command");
 	    list.add("param");
@@ -659,14 +659,28 @@ public class ArrayListExample {
 	    String listString = String.join(", ", list);
 	    
 	    System.out.println(listString);
-		    	]]>			
-				</programlisting>
-			</section>
-			<section>
-				<title>Array to List</title>
-				<programlisting>
+	    	]]>			
+			</programlisting>
+		</section>
+		<section>
+			<title>Array to List</title>
+			<programlisting>
 Arrays.asList(array)			
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
 	</section>
+	<section>
+		<title>HashMap</title>
+		<programlisting>
+		<![CDATA[
+	private static final Map<String, String> point;
+	static {
+		point = new HashMap<String, String>();
+		point.put("CN", "China");
+		point.put("HK", "Hongkong");
+		point.put("TW", "Taiwan");
+	};
+		]]>
+		</programlisting>
+	</section>
+</section>
