@@ -32,8 +32,44 @@ public class PropertiesTest {
 }
 		]]>
 		</programlisting>
-		<section>
+		<section id="propertyNames">
 			<title>propertyNames()</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.properties;
+
+import java.util.Enumeration;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+public class PropertiesTest {
+
+	public PropertiesTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties properties = new Properties();
+
+		properties.put("K1", "V1");
+		properties.put("K2", "V2");
+
+		for (Entry<Object, Object> x : properties.entrySet()) {
+			System.out.println(x.getKey() + " " + x.getValue());
+		}
+		
+		Enumeration<?> e = properties.propertyNames();
+		while (e.hasMoreElements()) {
+			String key = (String) e.nextElement();
+			String value = properties.getProperty(key);
+			System.out.println(key + ": " + value);
+		}
+	}
+
+}
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
 import java.io.FileInputStream;
@@ -53,9 +89,108 @@ public class MainClass {
   }
 }			
 			]]>
+			</programlisting>			
+		</section>
+		<section>
+			<title>keySet()</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.properties;
+
+import java.util.Properties;
+import java.util.Set;
+
+public class PropertiesTest {
+
+	public PropertiesTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties properties = new Properties();
+
+		properties.put("K1", "V1");
+		properties.put("K2", "V2");
+
+		Set<Object> states = properties.keySet();
+
+		for (Object name : states)
+			System.out.println("The value of " + name + " is " + properties.getProperty((String) name) + ".");
+	}
+
+}
+
+			]]>
 			</programlisting>
 		</section>
 		<section>
+			<title>entrySet()</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.properties;
+
+import java.util.Map.Entry;
+import java.util.Properties;
+
+public class PropertiesTest {
+
+	public PropertiesTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties properties = new Properties();
+
+		properties.put("K1", "V1");
+		properties.put("K2", "V2");
+
+		for (Entry<Object, Object> x : properties.entrySet()) {
+			System.out.println(x.getKey() + " " + x.getValue());
+		}
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>方法中返回 Properties</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/host")
+	public Enumeration<Object> host() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "host")));
+		return properties.keys();
+	}
+
+	@RequestMapping("/mail")
+	public Collection<Object> mail() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "mail")));
+		return properties.values();
+	}
+	@RequestMapping("/nameserver")
+	public Set<Entry<Object, Object>> nameserver() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "dns")));
+		return properties.entrySet();
+	}
+	@RequestMapping("/dns")
+	public Properties dns() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "dns")));
+		return properties;
+	}	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="getResourceAsStream">
 			<title>getResourceAsStream()</title>
 			<programlisting>
 			<![CDATA[

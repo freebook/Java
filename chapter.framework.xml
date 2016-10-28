@@ -2,9 +2,10 @@
 <!-- <part id="index"><?dbhtml dir="framework" ?>
 	<title>framework</title>
 </part>	 -->
-	&section.struts.xml;
+
 	&part.spring.xml;
 	&chapter.mybatis.xml;
+	&section.struts.xml;
 	&chapter.tiles.xml;
 	&section.play.xml;
 	
