@@ -307,6 +307,19 @@ public class DateCompare {
 			]]>
 			</programlisting>
 		</section>
+		
+		<section id="date.calendar">
+			<title>Calendar</title>
+			<programlisting>
+			<![CDATA[	
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH )+1;
+		
+		System.out.println(year + "年 " + month + "月");
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="array">
 		<title>Array</title>

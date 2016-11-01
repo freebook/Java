@@ -187,6 +187,25 @@ ${ id } <br>
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>处理特殊字符</title>
+			<para>http://www.netkiller.cn/release/1.0.1</para>
+			<programlisting>
+@RequestMapping(value = "/release/{version:[a-zA-Z0-9\\.]+}", method = RequestMethod.GET)  
+public @ResponseBody  
+String release(@PathVariable String version) {  
+    log.debug("version: ", version);  
+    return version;  
+}
+			</programlisting>
+			<para>http://www.netkiller.cn/release/1.0.1/other</para>
+			<programlisting>
+@RequestMapping(value="/release/{version:.+}",method=RequestMethod.GET)
+public void download(HttpSession session,@PathVariable("version")String version){
+	return version;
+}
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="RequestParam">
