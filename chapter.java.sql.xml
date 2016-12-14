@@ -56,6 +56,91 @@ jdbc:oracle:thin:@(DESCRIPTION =
 jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=16.50.26.29)(PORT=1521))(LOAD_BALANCE=yes)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl.example.com)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))			
 			</screen>
 		</section>
+		<section>
+			<title>Oracle JDBC Demo</title>
+			<screen>
+			<![CDATA[
+package cn.netkiller.zabbix;
+
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+/**
+ * Java JDBC Oracle Demo!
+ *
+ */
+public class Oracle {
+
+	String url = null; // 数据库链接地址
+	String username = null;// 用户名,系统默认的账户名
+	String password = null;// 你安装时选设置的密码
+
+	public void openConfig() {
+		String connectionfig = "jdbc.properties";
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream(connectionfig));
+			this.url = properties.getProperty("jdbc.url");
+			this.username = properties.getProperty("jdbc.username");
+			this.password = properties.getProperty("jdbc.password");
+		} catch (FileNotFoundException e) {
+			System.out.println(
+					e.getMessage() + " Working Directory = " + System.getProperty("user.dir") + "/" + connectionfig);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		if (this.url == null || this.username == null || this.password == null) {
+			System.out.println("This Propertie file is invalid");
+			// throw new Exception("");
+		}
+
+	}
+
+	public void testOracle() {
+		Connection connection = null;// 创建一个数据库连接
+		ResultSet result = null;// 创建一个结果集对象
+		Statement statement = null;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");// 加载Oracle驱动程序
+			connection = DriverManager.getConnection(this.url, this.username, this.password);
+			String sql = "select current_date from dual";
+			statement = connection.createStatement();
+			result = statement.executeQuery(sql);
+			result.next();
+			System.out.printf("%s %s", result.getDate(1), result.getTime(1));
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			try {
+				if (result != null)
+					result.close();
+				if (connection != null)
+					connection.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		Oracle oracle = new Oracle();
+		oracle.openConfig();
+		oracle.testOracle();
+	}
+}			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="faq">
 		<title>FAQ</title>
