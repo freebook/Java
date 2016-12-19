@@ -343,6 +343,23 @@ public class StringToArray {
 		]]>
 		</programlisting>
 		<section>
+			<title>for each</title>
+			<programlisting>
+			<![CDATA[
+	public static void main(String[] args) {
+		try {
+			
+			for (String arg : args) {
+				System.out.println(arg);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>Array to String</title>
 			<programlisting>
 			<![CDATA[

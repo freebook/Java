@@ -138,7 +138,7 @@ $ ls ~/.m2
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="build">
 			<title>build</title>
 			<section>
 				<title>sourceDirectory</title>
@@ -189,6 +189,60 @@ $ ls ~/.m2
 				</screen>
 			</section>
 		</section>
+		<section id="plugins">
+			<title>plugins</title>
+			<section>
+				<title>跳过Unit test</title>
+			
+			<screen>
+			<![CDATA[
+<project>
+  [...]
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  [...]
+</project>			
+			]]>
+			</screen>
+			
+			</section>
+			<section>
+				<title>maven-shade-plugin</title>
+				<screen>
+				<![CDATA[
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>cn.netkiller.Oracle</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>				
+				]]>
+				</screen>
+			</section>
+		</section>
 	</section>		
 	<section id="cli">
 		<title>Maven 命令</title>
@@ -199,7 +253,7 @@ $ ls ~/.m2
 $ mvn clean		
 			</screen>
 		</section>
-		<section>
+		<section id="compile">
 			<title>compile</title>
 			<para>编译项目的源代码</para>
 			<screen>
@@ -232,14 +286,18 @@ $ ls target/*.war
 target/www.netkiller.cn-0.0.1-SNAPSHOT.war
 			</screen>
 		</section>
-		<section>
+		<section id="install">
 			<title>install</title>
 			<para>将项目打包后安装到本地仓库，可以作为其它项目的本地依赖。</para>
 			<screen>
 $ mvn install		
 			</screen>
+			<para>跳过测试</para>
+			<screen>
+mvn install -Dmaven.test.skip=true			
+			</screen>
 		</section>
-		<section>
+		<section id="war">
 			<title>war</title>
 			<screen>
 mvn compile war:war			
@@ -249,6 +307,12 @@ mvn compile war:exploded
 			</screen>
 			<screen>
 mvn compile war:inplace
+			</screen>
+		</section>
+		<section id="exec">
+			<title>exec</title>
+			<screen>
+$ mvn exec:java -Dexec.mainClass="cn.netkiller.Test"			
 			</screen>
 		</section>
 	</section>

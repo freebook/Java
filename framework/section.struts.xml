@@ -963,13 +963,50 @@ public class SessionInterceptor extends AbstractInterceptor {
   		</action>
   	</package>
 			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-
-			]]>
-			</programlisting>			
+			</programlisting>		
 		</section>
+	</section>
+	<section id="thread">
+		<title>Action 中使用线程</title>
+		<para>背景，在Action中发送邮件，阻塞程序继续执行并返回500，使用 Thread 实现异步发送，因为我们并不关心邮件是否到达,只需正常发送即可。</para>
+		<programlisting>
+		<![CDATA[
+	public String execute(){
+	
+		...
+		...
+		
+			try {
+				// Send email
+				
+				Thread sendmail = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							log.info("sendEmail Begin");
+							sender.sendEmail(form.getEmail(), form.getText());
+							log.info("sendEmail End");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				sendmail.setName("sendmail" + sendmail.getId() + "logingName:" + form.getLoginname());
+				sendmail.start();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.info("sendEmail Error");
+			}
+
+			...
+			...
+			
+			log.info("CreateTrialAccount:" + form.toString());
+			return Action.SUCCESS;
+	}
+		]]>
+		</programlisting>	
 	</section>
 	<section id="faq">
 		<title>FAQ</title>
