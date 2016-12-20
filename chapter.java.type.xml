@@ -710,7 +710,7 @@ Arrays.asList(array)
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="map">
 		<title>HashMap</title>
 		<programlisting>
 		<![CDATA[
@@ -723,5 +723,22 @@ Arrays.asList(array)
 	};
 		]]>
 		</programlisting>
+		<section>
+			<title>foreach hashmap</title>
+			<programlisting>
+			<![CDATA[
+Map<String, Integer> session = new HashMap<String, Integer>();
+
+session.put("A",1);
+...
+...
+session.put("Z",26)
+
+for (Map.Entry<String, Integer> entry : session.entrySet()) {
+	System.out.println(String.format("%s:%d", entry.getKey(), entry.getValue()));
+}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>
