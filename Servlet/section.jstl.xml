@@ -121,7 +121,7 @@ server.conf:
 </body>
 </html>	
 		]]>
-		</programlisting>	
+		</programlisting>
 	</section>
 
 	<section id="choose">
@@ -152,7 +152,6 @@ server.conf:
 		</programlisting>
 	</section><section id="forEach">
 		<title>c:forEach</title>
-	
 		<section>
 			<title>List 处理</title>
 			<programlisting>
@@ -204,6 +203,16 @@ server.conf:
 		</section>
 	
 	</section>
+		<section id="empty">
+			<title>empty 判断是否为空</title>
+			<programlisting>
+			<![CDATA[
+	<c:if test="${empty session.member }">
+
+	</c:if>
+			]]>
+			</programlisting>
+		</section>
 	<section id="fmt">
 		<title>JSTL fmt Tag setBundle Example</title>
 		<section>
