@@ -7,5 +7,6 @@
 	&chapter.spring.xml;
 	&chapter.data.xml;
 	&chapter.security.xml;
+	&chapter.interceptor.xml;
 	
 </part>

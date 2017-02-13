@@ -142,6 +142,13 @@ exit $?
 		<screen>
 java -jar demo.jar --spring.config.location=/opt/config/application.properties
 		</screen>
+		<section id="spring.pid">
+			<title>PID FILE</title>
+			<screen>
+spring.pid.fail-on-write-error= # Fail if ApplicationPidFileWriter is used but it cannot write the PID file.
+spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWriter is used).
+			</screen>
+		</section>
 		<section id="tomcat">
 			<title>内嵌 tomcat server</title>
 			<screen>
@@ -3188,49 +3195,67 @@ curl http://user:password@172.16.0.20:8080/index.html
 				<title>Account</title>
 				<programlisting>
 				<![CDATA[
-import org.springframework.data.annotation.Id;
+package mis.domain;
 
-public class Account {
-  
-  @Id
-  private String id;
-  
-  @Indexed(unique = true)
-  private String username;
-  private String password;
-  private String authority;
-  
-  public Account(){}
-  
-  public Account(String username, String password) {
-    this.username = username;
-    this.password = password;
-  }
-  public String getId() {
-    return id;
-  }
-  public void setId(String id) {
-    this.id = id;
-  }
-  public String getUsername() {
-    return username;
-  }
-  public void setUsername(String username) {
-    this.username = username;
-  }
-  public String getPassword() {
-    return password;
-  }
-  public void setPassword(String password) {
-    this.password = password;
-  }
-  public String getAuthority() {
-    return authority;
-  }
-  public void setAuthority(String authority) {
-    this.authority = authority;
-  }
-}				
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+
+public class Administrator {
+	@Id
+	private String id;
+
+	@Indexed(unique = true)
+	private String username;
+	private String password;
+	private String authority;
+
+	public Administrator() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Administrator(String username, String password) {
+	    this.username = username;
+	    this.password = password;
+	  }
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", authority=" + authority + "]";
+	}
+}
+			
 				]]>
 				</programlisting>
 			</section>
@@ -3238,11 +3263,15 @@ public class Account {
 				<title>AccountRepository</title>
 				<programlisting>
 				<![CDATA[
+package mis.repository;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface AccountRepository extends MongoRepository<Account, String> {
-  
-  public Account findByUsername(String username);
+import mis.domain.Administrator;
+
+public interface AdministratorRepository extends MongoRepository<Administrator, String> {
+
+	public Administrator findByUsername(String username);
 
 }
 				]]>
@@ -3252,48 +3281,76 @@ public interface AccountRepository extends MongoRepository<Account, String> {
 				<title>WebSecurityConfiguration</title>
 				<programlisting>
 				<![CDATA[
+package mis.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import mis.domain.Administrator;
+import mis.repository.AdministratorRepository;
+
 @Configuration
-class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+class GlobalAuthenticationConfigurer extends GlobalAuthenticationConfigurerAdapter {
 
-  @Autowired
-  AccountRepository accountRepository;
+	@Autowired
+	AdministratorRepository administratorRepository;
 
-  @Override
-  public void init(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userDetailsService());
-  }
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService());
+	}
 
-  @Bean
-  UserDetailsService userDetailsService() {
-    return new UserDetailsService() {
+	@Bean
+	UserDetailsService userDetailsService() {
+		return new UserDetailsService() {
 
-      @Override
-      public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountRepository.findByUsername(username);
-        if(account != null) {
-        return new User(account.getUsername(), account.getPassword(), true, true, true, true,
-                AuthorityUtils.createAuthorityList(account.getAuthority());
-        } else {
-          throw new UsernameNotFoundException("could not find the user '" + username + "'");
-        }
-      }
-      
-    };
-  }
+			@Override
+			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+				Administrator administrator = administratorRepository.findByUsername(username);
+				if (administrator != null) {
+					return new User(administrator.getUsername(), administrator.getPassword(), AuthorityUtils.createAuthorityList(administrator.getAuthority()));
+				} else {
+					throw new UsernameNotFoundException("could not find the administrator '" + username + "'");
+				}
+			}
+
+		};
+	}
 }
 
-@EnableWebSecurity
 @Configuration
-class WebSecurityConfig extends WebSecurityConfigurerAdapter {
- 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests().anyRequest().fullyAuthenticated().and().
-    httpBasic().and().
-    csrf().disable();
-  }
-  
-}				
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	public WebSecurityConfigurer() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
+		
+		// http.authorizeRequests().antMatchers("/", "/index.html", "/css/**",
+		// "/js/**","/static/**","/setup.html").permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login.html").permitAll().and().logout().permitAll().and().httpBasic();
+		// http.authorizeRequests().antMatchers("/**"
+		// ).permitAll().and().httpBasic();
+
+		http.authorizeRequests().antMatchers("/ping", "/v1/*/ping", "/v1/public/**").permitAll().anyRequest().authenticated().and().rememberMe().and().httpBasic().and().csrf().disable();
+
+	}
+}
+
 				]]>
 				</programlisting>
 			</section>

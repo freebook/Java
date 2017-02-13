@@ -85,6 +85,15 @@ response.sendRedirect("/content/test.jsp");
 			</screen>
 		</section>
 	</section>
+	<section id="session">
+		<title>session</title>
+		<para>获取 Session 值</para>
+		<screen>
+		<![CDATA[
+<% out.print(session.getAttribute("random")); %>
+ 		]]>
+		</screen>
+	</section>
 	<section id="page">
 		<title>page</title>
 		<screen>
