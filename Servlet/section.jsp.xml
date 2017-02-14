@@ -27,6 +27,7 @@ JSP页面中的隐藏注释,不会再浏览器中输出
 			<para>输出？问号后面的变量</para>
 			<programlisting>
 			<![CDATA[
+${pageContext.request.queryString}
 <c:out value = "${pageContext.request.queryString}" />		
 			]]>
 			</programlisting>
