@@ -1008,6 +1008,26 @@ public class SessionInterceptor extends AbstractInterceptor {
 		]]>
 		</programlisting>	
 	</section>
+	<section id="log4j.properties">
+		<title>日志</title>
+		<para>WEB-INF/classes/log4j.properties</para>
+		<screen>
+## # Struts2
+log4j.logger.freemarker=INFO
+log4j.logger.org.apache.struts2=DEBUG
+log4j.logger.org.apache.struts2.components=INFO
+log4j.logger.org.apache.struts2.dispatcher=INFO
+log4j.logger.org.apache.struts2.convention=INFO
+log4j.logger.org.apache.struts2.util=DEBUG
+log4j.logger.org.apache.tiles.access.TilesAccess=DEBUG
+log4j.logger.org.apache.struts2.interceptor=DEBUG
+
+## # OpenSymphony Stuff
+log4j.logger.com.opensymphony=INFO
+log4j.logger.com.opensymphony.xwork2.ognl=INFO
+log4j.logger.com.opensymphony.xwork2.util=INFO		
+		</screen>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
