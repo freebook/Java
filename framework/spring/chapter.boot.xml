@@ -4229,6 +4229,374 @@ public class TestRestController {
 			</programlisting>
 		</section>
 	</section>
+	<section id="kafka">
+		<title>Spring boot with Apache Kafka</title>
+		<para>Spring boot 1.5.1</para>
+		<section>
+			<title>安装 kafka</title>
+			<para>一下安装仅仅适合开发环境，生产环境请使用这个脚本安装 https://github.com/oscm/shell/tree/master/mq/kafka</para>
+			<screen>
+cd /usr/local/src
+wget http://apache.communilink.net/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz
+tar zxvf kafka_2.12-0.10.2.0.tgz
+mv kafka_2.12-0.10.2.0 /srv/
+cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
+echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
+ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka		
+			</screen>
+			<para>启动 Kafka 服务</para>
+			<screen>
+/srv/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties
+/srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties
+			</screen>
+			<para>-daemon 表示守护进程方式在后台启动</para>
+			<screen>
+/srv/kafka/bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+/srv/kafka/bin/kafka-server-start.sh -daemon /srv/kafka/config/server.properties
+			</screen>
+			<para>停止 Kafka 服务</para>
+			<screen>
+/srv/kafka/bin/kafka-server-stop.sh
+/srv/kafka/bin/zookeeper-server-stop.sh
+			</screen>
+		</section>
+		<section id="maven">
+			<title>maven</title>
+			<programlisting>
+			<![CDATA[
+		<dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.netkiller</groupId>
+	<artifactId>deploy</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>deploy.netkiller.cn</name>
+	<description>Deploy project for Spring Boot</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.1.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-actuator</artifactId> </dependency> -->
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-jpa</artifactId> </dependency> -->
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-mongodb</artifactId> </dependency> -->
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-redis</artifactId> </dependency> -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>sockjs-client</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>stomp-websocket</artifactId>
+			<version>2.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>3.3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<!-- <version>2.7</version> -->
+		</dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.38</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>cn.netkiller.Application</mainClass>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
+			
+			]]>
+			</programlisting>
+		</section>
+		<section id="application">
+			<title>Spring boot Application</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan
+@EnableScheduling
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+		<section id="EnableKafka">
+			<title>EnableKafka</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.kafka;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.IntegerDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.config.KafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Configuration
+@EnableKafka
+public class KafkaConsumerConfig {
+
+	public KafkaConsumerConfig() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Bean
+	KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<String, String>();
+		factory.setConsumerFactory(consumerFactory());
+		// factory.setConcurrency(1);
+		// factory.getContainerProperties().setPollTimeout(3000);
+		return factory;
+	}
+
+	@Bean
+	public ConsumerFactory<String, String> consumerFactory() {
+		return new DefaultKafkaConsumerFactory<String, String>(consumerConfigs());
+	}
+
+	@Bean
+	public Map<String, Object> consumerConfigs() {
+		Map<String, Object> propsMap = new HashMap<String, Object>();
+		propsMap.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "www.netkiller.cn:9092");
+		propsMap.put(ConsumerConfig.GROUP_ID_CONFIG, "test-consumer-group");
+		propsMap.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+		propsMap.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+		propsMap.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
+		propsMap.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
+		propsMap.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+		propsMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		return propsMap;
+	}
+
+	@Bean
+	public Listener listener() {
+		return new Listener();
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section id="KafkaListener">
+			<title>KafkaListener</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.kafka;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Logger;
+
+public class Listener {
+
+	public Listener() {
+		// TODO Auto-generated constructor stub
+	}
+
+	protected Logger logger = Logger.getLogger(Listener.class.getName());
+
+	public CountDownLatch getCountDownLatch1() {
+		return countDownLatch1;
+	}
+
+	private CountDownLatch countDownLatch1 = new CountDownLatch(1);
+
+	@KafkaListener(topics = "test")
+	public void listen(ConsumerRecord<?, ?> record) {
+		logger.info("Received message: " + record.toString());
+		System.out.println("Received message: " + record);
+		countDownLatch1.countDown();
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<programlisting>
+			<![CDATA[
+$ cd /srv/kafka
+$ bin/kafka-console-producer.sh --broker-list 47.89.35.55:9092 --topic test
+This is test message.
+			]]>
+			</programlisting>
+			<para>每输入一行回车后发送到你的Spring boot kafka 程序</para>
+		</section>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section id="faq.application.properties">
