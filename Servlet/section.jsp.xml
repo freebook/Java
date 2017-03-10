@@ -252,6 +252,17 @@ response.sendRedirect("/content/test.jsp");
 		]]>
 		</programlisting>
 	</section>
+	<section id="program">
+		<title>JSP 编程</title>
+		<section>
+			<title>随机数</title>
+			<programlisting>
+			<![CDATA[
+<%= (int) (Math.random() * 1000) %>			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
