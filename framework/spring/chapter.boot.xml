@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="boot" ?>
 	<title>Spring Boot</title>
-	<para>注意 1.4.0 无法正常工作，这里使用 1.3.0</para>
+	<para>注意以下使用 Spring boot 1.5.2</para>
 	&section.boot.quickstart.xml;
 	<section id="maven">
 		<title>运行</title>
@@ -151,22 +151,35 @@ spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWrite
 		</section>
 		<section id="tomcat">
 			<title>内嵌 tomcat server</title>
-			<screen>
+			<section id="server">
+				<title>server</title>
+				<screen>
 server.port=8080 	# 监听端口
 server.address= 	# 绑定的地址
-server.session-timeout= #session有效时长
 server.context-path= #默认为/
-			</screen>
-			<section>
-				<title>tomcat</title>
+				</screen>
+				<para>连接数配置</para>
 				<screen>
-server.tomcat.basedir=/tmp
-server.tomcat.access-log-pattern= # log pattern of the access log
-server.tomcat.access-log-enabled=false # is access logging enabled
+server.tomcat.max-threads=2048 # 最大线程数
 				</screen>
 			</section>
-			<section>
+			<section id="access.log">
+				<title>tomcat</title>
+				<para>如果前端有 nginx 代理这个配置可以禁用</para>
+				<screen>
+server.tomcat.accesslog.enabled=true
+server.tomcat.accesslog.directory=/tmp/logs
+server.tomcat.accesslog.pattern=common
+server.tomcat.accesslog.prefix=www.netkiller.cn.access
+server.tomcat.accesslog.suffix=.log
+				</screen>
+			</section>
+			<section id="logging">
 				<title>logging</title>
+				<screen>
+logging.path=/tmp # 日志目录默认为 /tmp
+logging.file=your.log # 日志文件名称，默认为spring.log
+				</screen>
 				<screen>
 java -jar spring-boot-app.jar --logging.file=/tmp/spring-boot-app.log				
 				</screen>
@@ -182,7 +195,29 @@ spring.http.encoding.enabled=true
 spring.http.encoding.force=true
 				</screen>
 			</section>
-			<section>
+			<section id="session">
+				<title>Session 配置</title>
+				<screen>
+server.session.cookie.name=PHPSESSID
+server.session-timeout= #session有效时长
+				</screen>
+			</section>
+			<section id="error">
+				<title>error 路径</title>
+				<screen>
+server.error.path=/error				
+				</screen>
+			</section>
+			<section id="compression">
+				<title>压缩传输</title>
+				<screen>
+server.compression.enabled=true			#是否开启压缩，默认为false.
+server.compression.excluded-user-agents	#指定不压缩的user-agent，多个以逗号分隔，默认值为:text/html,text/xml,text/plain,text/css
+server.compression.mime-types			#指定要压缩的MIME type，多个以逗号分隔.
+server.compression.min-response-size	#执行压缩的阈值，默认为2048
+				</screen>
+			</section>
+			<section id="ssl">
 				<title>ssl</title>
 				<para>生成证书</para>
 				<para>server.ssl.* #ssl相关配置</para>
@@ -248,6 +283,62 @@ spring.redis.pool.max-idle=8
 spring.redis.pool.min-idle=0
 # 连接超时时间（毫秒）
 spring.redis.timeout=0
+			</screen>
+		</section>
+		<section id="mongodb">
+			<title>MongoDB</title>
+			<para>格式：mongodb://用户名:密码@主机地址/数据库</para>
+			<screen>
+spring.data.mongodb.uri=mongodb://user:passw0rd@mdb.netkiller.cn/test
+spring.data.mongodb.repositories.enabled=true
+			</screen>
+		</section>
+		<section id="mysql">
+			<title>MySQL</title>
+			<screen>
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql://主机地址:端口号/数据库
+spring.datasource.username=用户名
+spring.datasource.password=密码
+spring.jpa.database=MYSQL	# 启用JPA支持	
+			</screen>
+		</section>
+		<section id="oracle">
+			<title>Oracle</title>
+			<screen>
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@//odb.netkiller.cn:1521/orcl
+spring.datasource.username=orcl
+spring.datasource.password=passw0rd
+spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
+spring.jpa.database-platform=org.hibernate.dialect.Oracle10gDialect
+
+spring.jpa.show-sql=true
+#spring.jpa.hibernate.ddl-auto=none
+#spring.jpa.hibernate.ddl-auto=create-drop
+spring.datasource.max-active=50
+spring.datasource.initial-size=5
+spring.datasource.max-idle=10
+spring.datasource.min-idle=5
+spring.datasource.test-while-idle=true
+spring.datasource.test-on-borrow=false
+spring.datasource.validation-query=SELECT 1 FROM DUAL
+spring.datasource.time-between-eviction-runs-millis=5000
+spring.datasource.min-evictable-idle-time-millis=60000
+			</screen>
+		</section>
+		<section id="velocity">
+			<title>velocity</title>
+			<screen>
+spring.velocity.resourceLoaderPath=classpath:/templates/
+spring.velocity.prefix=
+spring.velocity.suffix=.vm
+spring.velocity.cache=false
+spring.velocity.check-template-location=true
+spring.velocity.content-type=text/html
+spring.velocity.charset=UTF-8
+spring.velocity.properties.input.encoding=UTF-8
+spring.velocity.properties.output.encoding=UTF-8			
 			</screen>
 		</section>
 	</section>
