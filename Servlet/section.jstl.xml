@@ -23,6 +23,14 @@ or
 <c:out value="${requestScope.foo}"/>
 		]]>
 		</programlisting>	
+		<section id="remove">
+			<title>c:remove</title>
+			<programlisting>
+			<![CDATA[
+<c:remove var="message" scope="session" />
+			]]>
+			</programlisting>	
+		</section>
 	</section>
 	<section id="out">
 		<title>c:out</title>
@@ -50,14 +58,16 @@ or
 		]]>
 		</programlisting>	
 	</section>
-	<section id="remove">
-		<title>c:remove</title>
+	<section>
+		<title>c:redirect</title>
 		<programlisting>
 		<![CDATA[
-<c:remove var="message" scope="session" />
+<c:redirect url="/index.html"/>
+<c:redirect url="http://www.netkiller.cn"/>		
 		]]>
-		</programlisting>	
+		</programlisting>
 	</section>
+	
 	<section id="import">
 		<title>c:import</title>
 		<programlisting>
