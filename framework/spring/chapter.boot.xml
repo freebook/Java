@@ -1177,7 +1177,16 @@ $ cat src/main/resources/logback.xml
 			]]>
 			</screen>
 		</section>
-	</section><section id="session">
+		<section>
+			<title>日志写入 MongoDB</title>
+			<screen>
+			<![CDATA[
+
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="session">
 		<title>Session share</title>
 		<section>
 			<title>Redis</title>
