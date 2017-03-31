@@ -198,8 +198,11 @@ spring.http.encoding.force=true
 			<section id="session">
 				<title>Session 配置</title>
 				<screen>
-server.session.cookie.name=PHPSESSID
 server.session-timeout= #session有效时长
+server.session.cookie.name=PHPSESSID
+server.session.cookie.domain=.example.com
+server.session.cookie.http-only=true
+server.session.cookie.path=/
 				</screen>
 			</section>
 			<section id="error">
