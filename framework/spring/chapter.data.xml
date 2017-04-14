@@ -1,80 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="data" ?>
 	<title>Spring Data</title>
-	<section id="JdbcTemplate">
-		<title>JdbcTemplate</title>
-		<section id="execute">
-			<title>execute</title>
-			<programlisting>
-jdbcTemplate.execute("CREATE TABLE USER (id integer, name varchar(100))");  			
-			</programlisting>
-		</section>
-		<section id="queryForInt">
-			<title>queryForInt</title>
-			<programlisting>
-int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");			
-			</programlisting>
-		</section>
-		
-		<section id="queryForObject">
-			<title>queryForObject</title>
-			<programlisting>
-	private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
-	
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Scheduled(initialDelay = 1000, fixedRate = 60000)
-	public void currentDate() {
-		Date date = jdbcTemplate.queryForObject("select sysdate from dual", Date.class);
-		log.info("The oracle sysdate is {}", dateFormat.format(date));
-	}			
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@RequestMapping(value = "/article")
-	public @ResponseBody String dailyStats(@RequestParam Integer id) {
-		String query = "SELECT id, title, content from article where id = " + id;
-
-		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
-			System.out.println(resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
-			return (resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
-		});
-
-	}			
-			]]>
-			</programlisting>
-			<programlisting>
-Integer age = queryForObject("select age from emp", Integer.class);
-String name = queryForObject("select name from emp",String.class);
-			</programlisting>
-		</section>
-		<section id="queryForList">
-			<title>queryForList</title>
-			<programlisting>
-			<![CDATA[
-List rows = jdbcTemplate.queryForList("SELECT * FROM USER");  
-Iterator it = rows.iterator();  
-while(it.hasNext()) {  
-    Map userMap = (Map) it.next();  
-    System.out.print(userMap.get("id") + "\t");  
-    System.out.print(userMap.get("name") + "\t");  
-    System.out.print(userMap.get("sex") + "\t");  
-    System.out.println(userMap.get("age") + "\t");  
-}  			
-			]]>
-			</programlisting>
-		</section>
-	</section>
-	
-	<section id="example">
-		<title>Example</title>
-	
-	<section id="SpringDataRedis">
+	<section id="spring-data-redis">
 		<title>Redis</title>
 		<section>
 			<title>pom.xml</title>
@@ -265,8 +192,12 @@ redis 127.0.0.1:6379> get key
 			</tip>
 		</section>
 	</section>
-	<section id="SpringDataMongoDB">
+	<section id="spring-data-mongodb">
 		<title>Spring Data MongoDB</title>
+	
+	
+	<section id="SpringDataMongoDB">
+		<title>Example Spring Data MongoDB</title>
 		<section>
 			<title>pom.xml</title>
 			<para>注意Spring4 与 1.9.1.RELEASE有兼容性问题，日志提示 Error creating bean with name 'mongoTemplate' defined in ServletContext resource</para>
@@ -523,8 +454,111 @@ public class TrackerController {
 			</screen>
 		</section>
 	</section>
+	<section id="document">
+		<title>@Document</title>
+		<para>复杂的 @Document 数据类型定义</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.domain;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class MultilevelDirectSellingTradingRebate {
+
+	public enum Type {
+		POINT, CASH, GIFT
+	}
+
+	public enum Rebate {
+		DIRECT, INDIRECT
+	}
+
+	public enum Status {
+		New, Rejected, Approved
+	}
+
+	@Id
+	private String id;
+	public String name;
+	public Date beginDate;
+	public Date endDate;
+	public double lowAmount;
+	public double highAmount;
+	public Type type;
+	public Status status = Status.New;
+	public List<Map<String, Map<?, ?>>> product;
+
+	@Override
+	public String toString() {
+		return "MultilevelDirectSellingTradingRebate [id=" + id + ", name=" + name + ", beginDate=" + beginDate
+				+ ", endDate=" + endDate + ", lowAmount=" + lowAmount + ", highAmount=" + highAmount + ", type=" + type
+				+ ", status=" + status + ", product=" + product + "]";
+	}
+
+}
+		]]>
+		</programlisting>
+		<section>
+			<title>在 @Document 中使用 Enum 类型</title>
+			<programlisting>
+			<![CDATA[
+	public enum Type {
+		POINT, CASH, GIFT
+	}
+
+	public enum Rebate {
+		DIRECT, INDIRECT
+	}
+
+	public enum Status {
+		New, Rejected, Approved
+	}
+			]]>
+			</programlisting>
+			<para>枚举类型的赋值方法</para>
+			<programlisting>
+			<![CDATA[
+		MultilevelDirectSellingTradingRebate multilevelDirectSellingTradingRebate = new MultilevelDirectSellingTradingRebate();
+		multilevelDirectSellingTradingRebate.name = "TEST";
+		multilevelDirectSellingTradingRebate.beginDate = new Date();
+		multilevelDirectSellingTradingRebate.endDate = new Date();
+		multilevelDirectSellingTradingRebate.lowAmount = 1.5d;
+		multilevelDirectSellingTradingRebate.highAmount = 100d;
+		multilevelDirectSellingTradingRebate.type = Type.CASH;			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>在 @Document 中定义数据结构 List/Map</title>
+			<programlisting>
+			<![CDATA[
+	public List<Map<String, Map<?, ?>>> product;
+			]]>
+			</programlisting>
+			<para>下面是数据集结构的赋值例子</para>
+			<programlisting>
+			<![CDATA[
+	Map<Enum<Rebate>, Double> rebate = new HashMap<Enum<Rebate>, Double>();
+
+	rebate.put(Rebate.DIRECT, 10.05d);
+	rebate.put(Rebate.INDIRECT, 6.05d);
+
+	Map<String, Map<?, ?>> prod1 = new HashMap<String, Map<?, ?>>();
+	prod1.put("USDRMB", rebate);
+
+	List<Map<String, Map<?, ?>>> products = new ArrayList<Map<String, Map<?, ?>>>();
+	products.add(prod1);
+	multilevelDirectSellingTradingRebate.product = products;
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	
 	<section id="MongoRepository">
 		<title>MongoRepository</title>
 		<section id="findAll">
@@ -587,6 +621,14 @@ repository.save(new City("Shenzhen", "China"));
 			</screen>
 		</section>
 	</section>
+	</section>
+	
+	
+	
+	
+	<section id="spring-data-jpa">
+		<title>Spring Data JPA</title>
+
 	<section id="Entity">
 		<title>@Entity</title>
 		<section>
@@ -608,8 +650,7 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
 			</screen>
 		</section>
-	</section>
-	<section id="Query">
+	</section><section id="Query">
 		<title>Query</title>
 		<programlisting>
 		<![CDATA[
@@ -639,10 +680,75 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
 		]]>
 		</programlisting>
 	</section>
-<!-- 	<section>
-		<title></title>
+	<section id="JdbcTemplate">
+		<title>JdbcTemplate</title>
+		<section id="execute">
+			<title>execute</title>
+			<programlisting>
+jdbcTemplate.execute("CREATE TABLE USER (id integer, name varchar(100))");  			
+			</programlisting>
+		</section>
+		<section id="queryForInt">
+			<title>queryForInt</title>
+			<programlisting>
+int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");			
+			</programlisting>
+		</section>
+		
+		<section id="queryForObject">
+			<title>queryForObject</title>
+			<programlisting>
+	private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
-	</section> -->
+	@Scheduled(initialDelay = 1000, fixedRate = 60000)
+	public void currentDate() {
+		Date date = jdbcTemplate.queryForObject("select sysdate from dual", Date.class);
+		log.info("The oracle sysdate is {}", dateFormat.format(date));
+	}			
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@RequestMapping(value = "/article")
+	public @ResponseBody String dailyStats(@RequestParam Integer id) {
+		String query = "SELECT id, title, content from article where id = " + id;
+
+		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
+			System.out.println(resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
+			return (resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
+		});
+
+	}			
+			]]>
+			</programlisting>
+			<programlisting>
+Integer age = queryForObject("select age from emp", Integer.class);
+String name = queryForObject("select name from emp",String.class);
+			</programlisting>
+		</section>
+		<section id="queryForList">
+			<title>queryForList</title>
+			<programlisting>
+			<![CDATA[
+List rows = jdbcTemplate.queryForList("SELECT * FROM USER");  
+Iterator it = rows.iterator();  
+while(it.hasNext()) {  
+    Map userMap = (Map) it.next();  
+    System.out.print(userMap.get("id") + "\t");  
+    System.out.print(userMap.get("name") + "\t");  
+    System.out.print(userMap.get("sex") + "\t");  
+    System.out.println(userMap.get("age") + "\t");  
+}  			
+			]]>
+			</programlisting>
+		</section>
+	</section></section> -->
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
