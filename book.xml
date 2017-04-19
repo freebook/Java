@@ -62,6 +62,7 @@
 	&chapter.framework.xml;
 	&chapter.log.xml;
 	&chapter.javax.script.xml;
+	&chapter.javax.crypto.xml;
 	&chapter.json.xml;
 	&chapter.ampq.xml;
 	&chapter.nosql.mongodb.xml;

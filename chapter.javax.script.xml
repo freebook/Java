@@ -45,7 +45,7 @@
 		<para></para>
 		<programlisting>
 		<![CDATA[
-package javascript;
+package cn.netkiller.javascript;
 
 import java.util.List;
 import java.util.logging.Level;

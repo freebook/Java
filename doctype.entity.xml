@@ -6,6 +6,7 @@
 <!ENTITY chapter.java.sql.xml			SYSTEM "chapter.java.sql.xml">
 <!ENTITY chapter.java.util.xml			SYSTEM "chapter.java.util.xml">
 <!ENTITY chapter.javax.script.xml		SYSTEM "chapter.javax.script.xml">
+<!ENTITY chapter.javax.crypto.xml		SYSTEM "chapter.javax.crypto.xml">
 <!ENTITY chapter.java.reflect.xml 		SYSTEM "chapter.java.reflect.xml">
 <!ENTITY chapter.build.xml				SYSTEM "chapter.build.xml">
 <!ENTITY section.ant.xml				SYSTEM "build/section.ant.xml">
