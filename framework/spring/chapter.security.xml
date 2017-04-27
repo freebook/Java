@@ -55,7 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 }
-
 			]]>
 			</programlisting>
 		</section>
@@ -142,9 +141,11 @@ protected void configure(HttpSecurity http) throws Exception {
 		</section>
 	</section>
 	<section>
-		<title></title>
+		<title>获取当前用户</title>
 		<programlisting>
 		<![CDATA[
+Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+String currentPrincipalName = authentication.getName();
 		]]>
 		</programlisting>
 	</section>

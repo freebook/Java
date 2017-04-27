@@ -534,7 +534,7 @@ public class MultilevelDirectSellingTradingRebate {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="document">
 			<title>在 @Document 中定义数据结构 List/Map</title>
 			<programlisting>
 			<![CDATA[
@@ -558,6 +558,27 @@ public class MultilevelDirectSellingTradingRebate {
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section id="index">
+		<title>@Indexed</title>
+		<para>索引</para>
+		<section>
+			<title>普通索引</title>
+			<programlisting>
+			<![CDATA[
+@Indexed		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>唯一索引</title>
+			<programlisting>
+			<![CDATA[
+@Indexed(unique=true)	
+			]]>
+			</programlisting>
+		</section>
+
 	</section>
 	<section id="MongoRepository">
 		<title>MongoRepository</title>
