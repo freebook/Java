@@ -151,6 +151,13 @@ spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWrite
 		</section>
 		<section id="tomcat">
 			<title>内嵌 tomcat server</title>
+			<section id="server.tomcat.basedir">
+				<title>server.tomcat.basedir</title>
+				<para>设置 Tomcat 工作目录，默认 /tmp/tomcat-docbase.7057591687859485145.7000 通过下面配置修改</para>
+				<screen>
+server.tomcat.basedir=/tmp/your_project
+				</screen>
+			</section>			
 			<section id="server">
 				<title>server</title>
 				<screen>
@@ -218,6 +225,12 @@ server.compression.enabled=true			#是否开启压缩，默认为false.
 server.compression.excluded-user-agents	#指定不压缩的user-agent，多个以逗号分隔，默认值为:text/html,text/xml,text/plain,text/css
 server.compression.mime-types			#指定要压缩的MIME type，多个以逗号分隔.
 server.compression.min-response-size	#执行压缩的阈值，默认为2048
+				</screen>
+			</section>
+			<section>
+				<title>server.servlet.context-path</title>
+				<screen>
+server.servlet.context-path=/your
 				</screen>
 			</section>
 			<section id="ssl">
@@ -328,6 +341,12 @@ spring.datasource.test-on-borrow=false
 spring.datasource.validation-query=SELECT 1 FROM DUAL
 spring.datasource.time-between-eviction-runs-millis=5000
 spring.datasource.min-evictable-idle-time-millis=60000
+			</screen>
+		</section>
+		<section id="default_schema">
+			<title>default_schema</title>
+			<screen>
+spring.jpa.properties.hibernate.default_schema=schema
 			</screen>
 		</section>
 		<section id="velocity">
