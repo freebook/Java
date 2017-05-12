@@ -362,6 +362,11 @@ spring.velocity.charset=UTF-8
 spring.velocity.properties.input.encoding=UTF-8
 spring.velocity.properties.output.encoding=UTF-8			
 			</screen>
+			<para>禁用 velocity 模板引擎</para>
+			<screen>
+spring.velocity.enabled=false
+spring.velocity.check-template-location=false
+			</screen>
 		</section>
 	</section>
 	<section id="SpringApplication">
@@ -744,9 +749,11 @@ mvn clean package -Pproduction
 	</section>
 	<section id="service">
 		<title>Service</title>
-		<para>@ComponentScan({ "web", "rest","service" }) 一定要包含 Service 目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。</para>
-		<programlisting>
-		<![CDATA[
+		<section>
+			<title>Application</title>
+			<para>@ComponentScan({ "web", "rest","service" }) 一定要包含 Service 目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。</para>
+			<programlisting>
+			<![CDATA[
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -788,11 +795,14 @@ public class Application {
 	}
 
 }
-		]]>
-		</programlisting>
-		<para>TestService 接口</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>定义接口</title>
+			<para>TestService 接口</para>
+			<programlisting>
+			<![CDATA[
 package service;
 
 public interface TestService {
@@ -802,11 +812,14 @@ public interface TestService {
 	public String helloUser(String user);
 }
 
-		]]>
-		</programlisting>
-		<para>实现 TestService 接口</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>实现接口</title>
+			<para>实现 TestService 接口</para>
+			<programlisting>
+			<![CDATA[
 package service.impl;
 
 import org.springframework.stereotype.Component;
@@ -838,11 +851,14 @@ public class TestServiceImpl implements TestService {
 
 }
 
-		]]>
-		</programlisting>
-		<para>控制器中调用 Service</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>调用 Service</title>
+			<para>控制器中调用 Service</para>
+			<programlisting>
+			<![CDATA[
 package web;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -859,13 +875,7 @@ import service.TestService;
 public class IndexController {
 	
 	@Autowired
-	private CityRepository repository;
-
-	@Autowired
     private TestService testService;
-	
-	@Autowired
-	private ApplicationConfiguration propertie;
 	
 	@RequestMapping("/service")
 	@ResponseBody
@@ -874,8 +884,9 @@ public class IndexController {
 	}
 
 }
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ViewResolver">
 		<title>ViewResolver</title>

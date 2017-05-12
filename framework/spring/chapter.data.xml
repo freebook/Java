@@ -772,8 +772,36 @@ query.with(pageableRequest);
 			]]>
 			</programlisting>
 		</section>
-	
-	
+		<section>
+			<title>newAggregation</title>
+			
+			<programlisting>
+			<![CDATA[
+		MultilevelDirectSellingAccountRewardsSettlementDetails multilevelDirectSellingAccountRewardsSettlementDetails = new MultilevelDirectSellingAccountRewardsSettlementDetails();
+		multilevelDirectSellingAccountRewardsSettlementDetails.setLoginname("111");
+		multilevelDirectSellingAccountRewardsSettlementDetails.setPhone("111");
+		multilevelDirectSellingAccountRewardsSettlementDetails.setRecommenderLoginname("111");
+		multilevelDirectSellingAccountRewardsSettlementDetails.setRecommenderPhone("111");
+		multilevelDirectSellingAccountRewardsSettlementDetails.setRecommenderName("Neo");
+		multilevelDirectSellingAccountRewardsSettlementDetails.setRecommenderType("客户");
+		multilevelDirectSellingAccountRewardsSettlementDetails.setAmount(5.02);
+		multilevelDirectSellingAccountRewardsSettlementDetails.setCreatedDate(new Date());
+		multilevelDirectSellingAccountRewardsSettlementDetailsRepository.save(multilevelDirectSellingAccountRewardsSettlementDetails);
+		
+		Date beginDate = this.getToday("00:00:00");
+		Date endDate = this.getToday("23:59:59");
+		log.info(beginDate.toString() + " ~ " + endDate.toString());
+		
+		GroupOperation groupOperation = group("loginname").sum("amount").as("amount");
+		MatchOperation matchOperation = match(new Criteria("createdDate").gte(beginDate).lte(endDate));
+		SortOperation sortOperation = sort(new Sort(Direction.ASC, "loginname"));
+
+		Aggregation aggregation = newAggregation(matchOperation, groupOperation, sortOperation);
+		AggregationResults<MultilevelDirectSellingAccountRewardsSettlementDetails> results = mongoTemplate.aggregate(aggregation, MultilevelDirectSellingAccountRewardsSettlementDetails.class, MultilevelDirectSellingAccountRewardsSettlementDetails.class);		
+		System.out.println(results.getRawResults().get("result").toString());
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	
 </section>
@@ -829,6 +857,42 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
 	public Member findFinishById(@Param("id") String id);
 
 }
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+	@Autowired
+	private ArticleRepository articleRepository;
+
+	@RequestMapping("/mysql")
+	@ResponseBody
+	public String mysql() {
+		articleRepository.save(new Article("Neo", "Chen"));
+		for (Article article : articleRepository.findAll()) {
+			System.out.println(article);
+		}
+		Article tmp = articleRepository.findByTitle("Neo");
+		return tmp.getTitle();
+	}
+
+	@RequestMapping("/search")
+	@ResponseBody
+	public String search() {
+
+		
+		for (Article article : articleRepository.findBySearch(1)) { System.out.println(article); }
+		 
+		List<Article> tmp = articleRepository.findBySearch(1L);
+
+		tmp.forEach((temp) -> {
+			System.out.println(temp.toString());
+		});
+
+		return tmp.get(0).getTitle();
+	}
 		]]>
 		</programlisting>
 	</section>
