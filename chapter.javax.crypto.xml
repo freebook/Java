@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="javax/crypto" ?>
 	<title>Crypto</title>
+	<section>
+		<title>MD5</title>
+		<para>JDK 1.8</para>
+		<programlisting>
+String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("SOMESTRING".getBytes("UTF-8")));		
+		</programlisting>
+	</section>
 	<section id="aes">
 		<title>AES</title>
 		<programlisting>

@@ -91,8 +91,8 @@ protected void configure(HttpSecurity http) throws Exception {
 			]]>
 			</programlisting>	
 		</section>
-		<section>
-			<title></title>
+		<section id="hasRole">
+			<title>hasRole</title>
 			<programlisting>
 			<![CDATA[
 		
@@ -150,9 +150,53 @@ String currentPrincipalName = authentication.getName();
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>HTTP 安全</title>
+		<para>X-Frame-Options: SAMEORIGIN</para>
 		<programlisting>
 		<![CDATA[
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+			// ...
+			.headers()
+				.frameOptions().sameOrigin()
+				.httpStrictTransportSecurity().disable();
+	}
+}		
+		]]>
+		</programlisting>
+		
+		<para>安全配置 X-FRAME-OPTIONS 指定允许iframe访问的域名</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.api.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http.headers().frameOptions().disable().addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM netkiller.cn")).and().
+			csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/","/ping","/v1/*/ping","/public/**","/your/**" ).permitAll()
+			.antMatchers("/v1/**").authenticated().
+			anyRequest().permitAll().and().
+			httpBasic();
+	}
+
+}
 		]]>
 		</programlisting>
 	</section>

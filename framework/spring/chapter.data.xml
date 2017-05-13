@@ -947,6 +947,23 @@ int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");
 Integer age = queryForObject("select age from emp", Integer.class);
 String name = queryForObject("select name from emp",String.class);
 			</programlisting>
+			<section>
+				<title>查询 Double 类型数据库</title>
+				<programlisting>
+				<![CDATA[
+	private double getSumByMemberId(int memberId) {
+		double result = 0.0d;
+		String sql = "SELECT sum(o.price::NUMERIC) as total FROM public.order o group by member_id ="+ memberId;
+		try {
+			result = jdbcTemplate.queryForObject(sql, Double.class);
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			log.info("{} {}", MemberId, e.toString());
+		}
+		return result;
+	}
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="queryForList">
 			<title>queryForList</title>

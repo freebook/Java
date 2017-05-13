@@ -368,6 +368,25 @@ spring.velocity.enabled=false
 spring.velocity.check-template-location=false
 			</screen>
 		</section>
+		<section>
+			<title></title>
+			<screen>
+security.user.name=user
+security.user.password=password
+security.user.role=USER
+			</screen>
+			<para>Web 安全</para>
+			<screen>
+# X-Frame-Options: DENY
+security.headers.frame=false		
+
+security.headers.cache
+security.headers.content-type
+security.headers.hsts
+security.headers.xss
+			</screen>
+			<para> 参考 https://github.com/spring-projects/spring-boot/blob/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java#L171</para>
+		</section>
 	</section>
 	<section id="SpringApplication">
 		<title>SpringApplication</title>
