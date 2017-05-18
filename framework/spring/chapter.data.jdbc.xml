@@ -1,0 +1,176 @@
+<section id="spring-data-jpa">
+	<title>Spring Data JPA</title>
+	<section id="Entity">
+		<title>@Entity</title>
+		<section>
+			<title>@NotNull 不能为空声明</title>
+			<programlisting>
+@NotNull
+public String username;			
+			</programlisting>
+		</section>
+		<section>
+			<title>处理日期时间</title>
+			<programlisting>
+public java.sql.Date createdate; 创建日期 YYYY-MM-DD 
+public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
+			</programlisting>
+			<para>Json默认为 yyyy-MM-ddTHH:mm:ss 注意日期与时间中间的T，修改日期格式将T去掉</para>
+			<screen>
+@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
+			</screen>
+		</section>
+	</section><section id="Query">
+		<title>Query</title>
+		<programlisting>
+		<![CDATA[
+package api.repository.oracle;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import api.domain.oracle.Member;
+
+@Repository
+public interface MemberRepository extends CrudRepository<Member, Long> {
+	public Page<Member> findAll(Pageable pageable);
+
+	// public Member findByBillno(String billno);
+
+	public Member findById(String id);
+
+	@Query("SELECT m FROM Member m WHERE m.status = 'Y' AND m.id = :id")
+	public Member findFinishById(@Param("id") String id);
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="Repository">
+		<title>Repository</title>
+		<programlisting>
+		<![CDATA[
+	@Autowired
+	private ArticleRepository articleRepository;
+
+	@RequestMapping("/mysql")
+	@ResponseBody
+	public String mysql() {
+		articleRepository.save(new Article("Neo", "Chen"));
+		for (Article article : articleRepository.findAll()) {
+			System.out.println(article);
+		}
+		Article tmp = articleRepository.findByTitle("Neo");
+		return tmp.getTitle();
+	}
+
+	@RequestMapping("/search")
+	@ResponseBody
+	public String search() {
+
+		
+		for (Article article : articleRepository.findBySearch(1)) { System.out.println(article); }
+		 
+		List<Article> tmp = articleRepository.findBySearch(1L);
+
+		tmp.forEach((temp) -> {
+			System.out.println(temp.toString());
+		});
+
+		return tmp.get(0).getTitle();
+	}
+		]]>
+		</programlisting>
+	</section>
+	<section id="JdbcTemplate">
+		<title>JdbcTemplate</title>
+		<section id="execute">
+			<title>execute</title>
+			<programlisting>
+jdbcTemplate.execute("CREATE TABLE USER (id integer, name varchar(100))");  			
+			</programlisting>
+		</section>
+		<section id="queryForInt">
+			<title>queryForInt</title>
+			<programlisting>
+int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");			
+			</programlisting>
+		</section>
+		
+		<section id="queryForObject">
+			<title>queryForObject</title>
+			<programlisting>
+	private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Scheduled(initialDelay = 1000, fixedRate = 60000)
+	public void currentDate() {
+		Date date = jdbcTemplate.queryForObject("select sysdate from dual", Date.class);
+		log.info("The oracle sysdate is {}", dateFormat.format(date));
+	}			
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@RequestMapping(value = "/article")
+	public @ResponseBody String dailyStats(@RequestParam Integer id) {
+		String query = "SELECT id, title, content from article where id = " + id;
+
+		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
+			System.out.println(resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
+			return (resultSet.getLong(1) + "," + resultSet.getString(2) + "," + resultSet.getString(3));
+		});
+
+	}			
+			]]>
+			</programlisting>
+			<programlisting>
+Integer age = queryForObject("select age from emp", Integer.class);
+String name = queryForObject("select name from emp",String.class);
+			</programlisting>
+			<section>
+				<title>查询 Double 类型数据库</title>
+				<programlisting>
+				<![CDATA[
+	private double getSumByMemberId(int memberId) {
+		double result = 0.0d;
+		String sql = "SELECT sum(o.price::NUMERIC) as total FROM public.order o group by member_id ="+ memberId;
+		try {
+			result = jdbcTemplate.queryForObject(sql, Double.class);
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			log.info("{} {}", MemberId, e.toString());
+		}
+		return result;
+	}
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="queryForList">
+			<title>queryForList</title>
+			<programlisting>
+			<![CDATA[
+List rows = jdbcTemplate.queryForList("SELECT * FROM USER");  
+Iterator it = rows.iterator();  
+while(it.hasNext()) {  
+    Map userMap = (Map) it.next();  
+    System.out.print(userMap.get("id") + "\t");  
+    System.out.print(userMap.get("name") + "\t");  
+    System.out.print(userMap.get("sex") + "\t");  
+    System.out.println(userMap.get("age") + "\t");  
+}  			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</section>
