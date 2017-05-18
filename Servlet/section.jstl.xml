@@ -132,6 +132,15 @@ server.conf:
 </html>	
 		]]>
 		</programlisting>
+		<section>
+			<title>boolean</title>
+			<programlisting>
+			<![CDATA[
+<c:if test="${theBooleanVariable}">It's true!</c:if>
+<c:if test="${not theBooleanVariable}">It's false!</c:if>
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="choose">
