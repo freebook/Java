@@ -1,53 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="tag">
-	<title>Using Spring’s form tag library</title>
-	<section>
-		<title>css</title>
-		<programlisting>
-		<![CDATA[
+<section id="view">
+	<title>View</title>
 
-		]]>
-		</programlisting>
+
+	<section id="tag">
+		<title>Using Spring’s form tag library</title>
+		<section>
+			<title>css</title>
+			<programlisting>
+			<![CDATA[
+	
+			]]>
+			</programlisting>
+			<section>
+				<title>cssClass</title>
+				<para>cssClass 使用该属性指定表单元素CSS样式名，相当于HTML元素的class属性</para>
+				<programlisting>
+				<![CDATA[
+<form:input path="userName" cssClass="inputStyle"/>
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>cssStyle</title>
+				<para>cssStyle 直接通过该属性指定样式，相当于HTML元素的style属性</para>
+				<programlisting>
+				<![CDATA[
+<form:input path="userName" cssStyle="width:100px"/>
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>cssErrorClass</title>
+				<para>cssError Class表示表单元素发生错误时对应的样式</para>
+				<programlisting>
+				<![CDATA[
+<form:input path="userName" cssClass="userNameClass" cssErrorClass= "userNameClassError"/>
+				]]>
+				</programlisting>
+			</section>
+		</section>
 		<section>
 			<title>cssClass</title>
-			<para>cssClass 使用该属性指定表单元素CSS样式名，相当于HTML元素的class属性</para>
 			<programlisting>
 			<![CDATA[
-<form:input path="userName" cssClass="inputStyle"/>
+	
+			]]>
+			</programlisting>
+		</section>
+	
+	</section>
+
+	<section id="thymeleaf">
+		<title>Thymeleaf</title>
+		<para>http://thymeleaf.org/</para>
+		<section>
+			<title>Maven pom.xml</title>
+			<programlisting>
+			<![CDATA[
+			<dependency>  
+	            <groupId>org.springframework.boot</groupId>  
+	            <artifactId>spring-boot-starter-thymeleaf</artifactId>  
+	        </dependency>  		
 			]]>
 			</programlisting>
 		</section>
 		<section>
-			<title>cssStyle</title>
-			<para>cssStyle 直接通过该属性指定样式，相当于HTML元素的style属性</para>
+			<title>Spring 配置</title>
 			<programlisting>
 			<![CDATA[
-<form:input path="userName" cssStyle="width:100px"/>
+	<!-- **************************************************************** -->
+	<!-- THYMELEAF-SPECIFIC ARTIFACTS -->
+	<!-- TemplateResolver <- TemplateEngine <- ViewResolver -->
+	<!-- **************************************************************** -->
+
+	<bean id="templateResolver"
+		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/templates/" />
+		<property name="suffix" value=".html" />
+		<property name="templateMode" value="HTML5" />
+	</bean>
+
+	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver" />
+	</bean>
+
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="templateEngine" />
+	</bean>	
 			]]>
 			</programlisting>
 		</section>
+		
 		<section>
-			<title>cssErrorClass</title>
-			<para>cssError Class表示表单元素发生错误时对应的样式</para>
+			<title>controller</title>
 			<programlisting>
 			<![CDATA[
-<form:input path="userName" cssClass="userNameClass" cssErrorClass= "userNameClassError"/>
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/")
+public class HelloController {
+
+	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
+	public String getMovie(@PathVariable String name, ModelMap model) {
+		model.addAttribute("name", name);
+		return "hello";
+	}
+
+}			
 			]]>
 			</programlisting>
 		</section>
+		
+		<section>
+			<title>HTML5 Template</title>
+			<programlisting>
+			<![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Spring MVC + Thymeleaf Example</title>
+</head>
+<body>
+	Hello, <span th:text="${name}" />!
+</body>
+</html>
+			]]>
+			</programlisting>
+		</section>
+
 	</section>
-	<section>
-		<title>cssClass</title>
-		<programlisting>
-		<![CDATA[
 
-		]]>
-		</programlisting>
+	<section id="freemarker">
+		<title>FreeMarker</title>
+		<para>http://freemarker.org/</para>
 	</section>
-
-</section>
-
-<section id="freemarker">
-	<title>FreeMarker</title>
-	<para>http://freemarker.org/</para>
 </section>

@@ -140,7 +140,7 @@ protected void configure(HttpSecurity http) throws Exception {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="getAuthentication">
 		<title>获取当前用户</title>
 		<programlisting>
 		<![CDATA[
@@ -149,7 +149,7 @@ String currentPrincipalName = authentication.getName();
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="frameOptions">
 		<title>HTTP 安全</title>
 		<para>X-Frame-Options: SAMEORIGIN</para>
 		<programlisting>

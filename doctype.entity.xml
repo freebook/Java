@@ -21,7 +21,7 @@
 
 <!ENTITY part.spring.xml				SYSTEM "framework/spring/part.spring.xml">
 <!ENTITY chapter.suite.xml				SYSTEM "framework/spring/chapter.suite.xml">
-<!ENTITY chapter.spring.xml				SYSTEM "framework/spring/chapter.spring.xml">
+<!ENTITY chapter.tomcat.xml				SYSTEM "framework/spring/chapter.tomcat.xml">
 <!ENTITY chapter.data.xml				SYSTEM "framework/spring/chapter.data.xml">
 <!ENTITY chapter.security.xml			SYSTEM "framework/spring/chapter.security.xml">
 <!ENTITY chapter.boot.xml				SYSTEM "framework/spring/chapter.boot.xml">
@@ -30,7 +30,7 @@
 <!ENTITY section.mvc.controller.xml		SYSTEM "framework/spring/section.mvc.controller.xml">
 <!ENTITY section.rest.xml				SYSTEM "framework/spring/section.rest.xml">
 <!ENTITY section.mvc.view.xml			SYSTEM "framework/spring/section.mvc.view.xml">
-<!ENTITY section.mvc.faq.xml			SYSTEM "framework/spring/section.mvc.faq.xml">
+<!ENTITY section.mvc.xml				SYSTEM "framework/spring/section.mvc.xml">
 <!ENTITY chapter.cloud.xml				SYSTEM "framework/spring/chapter.cloud.xml">
 
 <!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
