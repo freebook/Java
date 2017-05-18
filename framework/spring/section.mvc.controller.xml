@@ -206,6 +206,19 @@ public void download(HttpSession session,@PathVariable("version")String version)
 }
 			</programlisting>
 		</section>
+		<section>
+			<title>@PathVariable 注意事项</title>
+			<para>@PathVariable 参数传统需要注意，参数中不能携带 “/”,斜杠会被视为目录。</para>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/PathVariable/{code}.html")
+	@ResponseBody
+	public String urlTestId(@PathVariable String code) {
+		return code;
+	}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="@RequestParam">
@@ -321,6 +334,22 @@ public class Http {
 	${phone} <br>
 </body>
 </html>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>@RequestParam 传递特殊字符串</title>
+			<para>URL 中 “+” 有特殊意义，表示空格。</para>
+			<para>如果 @RequestParam 传递参数含有空格可以这样处理。</para>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/RequestParam")
+	@ResponseBody
+	public String query(@RequestParam("code") String code) {
+
+		return code.replace(" ", "+");
+
+	}
 			]]>
 			</programlisting>
 		</section>
@@ -612,6 +641,18 @@ public class MyTask {
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 		</screen>
+	</section>
+	<section id="@SessionAttributes">
+		<title>@SessionAttributes</title>
+		<programlisting>
+		<![CDATA[
+@Controller
+@SessionAttributes("myRequestObject")
+public class MyController {
+  ...
+}
+		]]>
+		</programlisting>
 	</section>
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>

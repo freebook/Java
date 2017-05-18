@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="restful">
-	<title>Spring4 Restful</title>
+<chapter id="index"><?dbhtml dir="restful" ?>
+	<title>RestTemplate - Spring4 Restful</title>
 	<subtitle>@RestController</subtitle>
 	<para>首先我要禁告各位，Spring发展过程中，每个版本都有一定差异。如果你做实验失败后在网上搜索答案，切记看一下版本号还有文章帖子的发布时间。否则你可能按照Spring3配置方法去Spring4。</para>
 	<para>@RestController 默认返回 @ResponseBody， 所以@ResponseBody可加可不加</para>
 	<section>
-		<title>pom.xml</title>
-		<para>Maven 增加 jackson 开发包</para>
-		<programlisting>
-		<![CDATA[
+		<title>RestTemplate Example</title>
+		<section id="rest.pom.xml">
+			<title>pom.xml</title>
+			<para>Maven 增加 jackson 开发包</para>
+			<programlisting>
+			<![CDATA[
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
@@ -25,14 +27,14 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
 		</dependency>		
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>web.xml</title>
-		<para>url-pattern匹配中增加*.xml跟*.json</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="rest.web.xml">
+			<title>web.xml</title>
+			<para>url-pattern匹配中增加*.xml跟*.json</para>
+			<programlisting>
+			<![CDATA[
 	<servlet>
         <servlet-name>springframework</servlet-name>
         <servlet-class>
@@ -49,13 +51,13 @@
         <url-pattern>*.xml</url-pattern>
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>		
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>springframework.xml</title>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="rest.springframework.xml">
+			<title>springframework.xml</title>
+			<programlisting>
+			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:mongo="http://www.springframework.org/schema/data/mongo" xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
@@ -113,13 +115,13 @@ http://www.springframework.org/schema/data/mongo/spring-mongo-1.5.xsd
 	</bean>
 
 </beans>
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>RestController</title>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="rest.controller">
+			<title>RestController</title>
+			<programlisting>
+			<![CDATA[
 package cn.netkiller.controller;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -180,13 +182,13 @@ public class TestRestController {
 		return trackers;
 	}	
 }
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>POJO</title>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="rest.pojo">
+			<title>POJO</title>
+			<programlisting>
+			<![CDATA[
 package cn.netkiller.pojo;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -226,13 +228,13 @@ public class Message {
 	}
 
 }
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>测试</title>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="rest.test">
+			<title>测试</title>
+			<programlisting>
+			<![CDATA[
 neo@netkiller:~/www.netkiller.cn$ curl http://172.16.0.1:8080/spring4/rest/welcome.html
 Welcome to RestTemplate Example.
 
@@ -250,109 +252,14 @@ Transfer-Encoding: chunked
 Date: Tue, 21 Jun 2016 03:08:26 GMT
 
 {"name":"neo","unique":"356770257607079474","hostname":"www.netkiller.cn","referrer":"http://www.netkiller.cn","href":"http://www.netkiller.cn"}	
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	<section id="RestTemplate">
-		<title>RestTemplate</title>
+	
+	<section id="rest.boot">
+		<title>String boot with RestTemplate</title>
 		<para>RestTemplate 是 Spring Restful Client 用于调用restful接口</para>
-		<section>
-			<title>GET</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping("/restful/get")
-	@ResponseBody
-	public String restfulGet() {
-		RestTemplate restTemplate = new RestTemplate();
-		String text = restTemplate.getForObject("http://inf.netkiller.cn/detail/html/2/2/42564.html", String.class);
-		return text;
-	}			
-			]]>
-			</programlisting>
-			<section>
-				<title>传递 GET 参数</title>
-				<programlisting>
-				<![CDATA[
-	@RequestMapping("/restful/get/{id}")
-	@ResponseBody
-	private static String restfulGetId(@PathVariable String id) {
-		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
-
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("tid", "2");
-		params.put("cid", "2");
-		params.put("id", id);
-		RestTemplate restTemplate = new RestTemplate();
-		String result = restTemplate.getForObject(uri, String.class, params);
-
-		return (result);
-	}			
-				]]>
-				</programlisting>
-			</section>
-
-		</section>
-
-		<section>
-			<title>POST</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping("/restful/post/{id}")
-	@ResponseBody
-	private static String restfullPost(@PathVariable String id) {
-
-		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
-
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("tid", "2");
-		params.put("cid", "2");
-		params.put("id", id);
-
-		City city = new City("Shenzhen", "Guangdong");
-
-		RestTemplate restTemplate = new RestTemplate();
-		String result = restTemplate.postForObject(uri, city, String.class, params);
-		return result;
-	}			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>PUT</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping("/restful/put/{id}")
-	private static void restfulPut(@PathVariable String id) {
-		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
-
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("id", id);
-
-		City city = new City("Shenzhen", "Guangdong");
-
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.put(uri, city, params);
-	}			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Delete</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping("/restful/delete/{id}")
-	private static void restfulDelete(@PathVariable String id) {
-		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
-
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("id", id);
-
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.delete(uri, params);
-	}			
-			]]>
-			</programlisting>
-		</section>
 		<section>
 			<title>在控制器中完整实例</title>
 			<programlisting>
@@ -451,8 +358,174 @@ public class IndexController {
 			]]>
 			</programlisting>
 		</section>
+
 	</section>
-	<section>
+	
+	<section id="getForObject">
+		<title>getForObject</title>
+		<section>
+			<title>返回字符串</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/restful/get")
+	@ResponseBody
+	public String restfulGet() {
+		RestTemplate restTemplate = new RestTemplate();
+		String text = restTemplate.getForObject("http://inf.netkiller.cn/detail/html/2/2/42564.html", String.class);
+		return text;
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>传递 GET 参数</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/restful/get/{id}")
+	@ResponseBody
+	private static String restfulGetId(@PathVariable String id) {
+		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("tid", "2");
+		params.put("cid", "2");
+		params.put("id", id);
+		RestTemplate restTemplate = new RestTemplate();
+		String result = restTemplate.getForObject(uri, String.class, params);
+
+		return (result);
+	}			
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+	<section id="postForObject">
+		<title>postForObject</title>
+		<section>
+			<title>传递对象</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/restful/post/{id}")
+	@ResponseBody
+	private static String restfullPost(@PathVariable String id) {
+
+		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("tid", "2");
+		params.put("cid", "2");
+		params.put("id", id);
+
+		City city = new City("Shenzhen", "Guangdong");
+
+		RestTemplate restTemplate = new RestTemplate();
+		String result = restTemplate.postForObject(uri, city, String.class, params);
+		return result;
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>传递数据结构 MultiValueMap</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/findByMobile")
+	public String findByMobile() {
+		System.out.println("****************************findByMobile******************************");
+
+		final String uri = "http://www.netkiller.cn/account/getMemberByMobile.json";
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		try {
+
+			map.add("prefix", "86");
+			map.add("mobile", "13698041116");
+			map.add("_pretty_", "false");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		RestTemplate restTemplate = new RestTemplate();
+		String result = restTemplate.postForObject(uri, map, String.class);
+
+		System.out.println(map.toString());
+		System.out.println(result);
+
+		return result;
+	}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="postForEntity">
+		<title>postForEntity</title>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping("/findByMobile")
+	@ResponseBody
+	public String findByMobile() {
+		System.out.println("****************************findByMobile******************************");
+
+		final String uri = "https://www.netkiller.cn/account/getMemberByMobile";
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		try {
+
+			map.add("prefix", "86");
+			map.add("mobile", "13698041116");
+			map.add("args", "[]");
+			map.add("_pretty_", "false");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<String> response = restTemplate.postForEntity(uri, map, String.class);
+		System.out.println(map.toString());
+		System.out.println();
+		return response.getBody();
+	}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="put">
+		<title>PUT</title>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping("/restful/put/{id}")
+	private static void restfulPut(@PathVariable String id) {
+		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("id", id);
+
+		City city = new City("Shenzhen", "Guangdong");
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.put(uri, city, params);
+	}			
+		]]>
+		</programlisting>
+	</section>
+	<section id="delete">
+		<title>Delete</title>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping("/restful/delete/{id}")
+	private static void restfulDelete(@PathVariable String id) {
+		final String uri = "http://inf.netkiller.cn/detail/html/{tid}/{cid}/{id}.html";
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("id", id);
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.delete(uri, params);
+	}			
+		]]>
+		</programlisting>
+	</section>
+	<section id="rest.auth">
 		<title>HTTP Auth</title>
 		<section>
 			<title>Client</title>
@@ -469,4 +542,4 @@ Example results = template.getForObject("http://www.netkiller.cn:9090/foo.json",
 			</programlisting>
 		</section>
 	</section>
-</section>
+</chapter>

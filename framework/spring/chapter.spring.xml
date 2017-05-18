@@ -612,10 +612,8 @@ public class TestController {
 		</section>
 	</section>
 	
-	&section.mvc.controller.xml;
-	&section.mvc.rest.xml;
+	&section.mvc.controller.xml;	
 	&section.mvc.view.xml;
-	
 	&section.mvc.faq.xml;
 	
 </chapter>
