@@ -57,6 +57,34 @@ public class str {
 }
 			]]>
 			</programlisting>
+			<section>
+				<title>正则表达式查找与替换</title>
+				<para>查找特定字符并替换为找到的内容</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.type;
+
+public class ragexTest {
+
+	public ragexTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		String str = "<html>Netkiller</html>";
+		String regex = "<html>|</html>";
+		//运行结果返回 Netkiller
+		System.out.println(str.replaceAll(regex, ""));
+		
+		// 运行结果返回 Neo
+		System.out.println("CN/NETKILLER/WWW/Neo_Chen".replaceAll(".*/(.+)_Chen", "$1"));
+	}
+}
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="substring">
 			<title>substring</title>
@@ -81,7 +109,7 @@ hell
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="string2tempstamp">
 			<title>string to timestamp</title>
 			<para>Timestamp转化为String:</para>
 			<programlisting>
@@ -642,6 +670,14 @@ public class BigDecimalTest {
 }
 
 		]]>
+		<section>
+			<title>Convert BigDecimal Object to double value</title>
+			<programlisting>
+			<![CDATA[
+BigDecimal.doubleValue()
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="enum">
 		<title>enum</title>

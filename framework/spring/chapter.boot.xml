@@ -5454,6 +5454,49 @@ public class SpringKafkaApplicationTests {
 			</example>
 		</section>
 	</section>
+	<section id="docker">
+		<title>Spring boot with Docker</title>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section id="faq.application.properties">
