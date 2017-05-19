@@ -259,113 +259,6 @@ public class TrackerController {
 			</screen>
 		</section>
 	</section>
-	<section id="MongoRepository">
-		<title>MongoRepository</title>
-		<section id="findAll">
-			<title>findAll()</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping(value = "read", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
-	@ResponseStatus(HttpStatus.OK)
-	public List<Withdraw> read() {
-		return repository.findAll();
-	}
-			]]>
-			</programlisting>
-		</section>
-		<section id="deleteAll">
-			<title>deleteAll()</title>
-			<programlisting>
-			<![CDATA[
-repository.deleteAll();
-			]]>
-			</programlisting>
-		</section>
-		<section id="save">
-			<title>save()</title>
-			<programlisting>
-			<![CDATA[
-repository.save(new City("Shenzhen", "China"));
-			]]>
-			</programlisting>
-		</section>
-		<section id="count">
-			<title>count()</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping("count")
-	public long count() {
-		return repository.count();
-	}
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>findByXXXX</title>
-			<programlisting>
-			<![CDATA[
-List<User> findByName(String name);
-
-List<User> users = userRepository.findByName("Eric");
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>StartingWith 和 EndingWith</title>
-			<programlisting>
-			<![CDATA[
-List<User> findByNameStartingWith(String regexp);
-List<User> findByNameEndingWith(String regexp);
-
-List<User> users = userRepository.findByNameStartingWith("N");
-List<User> users = userRepository.findByNameEndingWith("o");
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Between</title>
-			<programlisting>
-			<![CDATA[
-List<User> findByAgeBetween(int ageGT, int ageLT);
-
-List<User> users = userRepository.findByAgeBetween(20, 50);
-			]]>
-			</programlisting>
-		</section>
-		<section id="PageRequest">
-			<title>PageRequest</title>
-			<programlisting>
-			<![CDATA[
-Page<User> findByLastname(String lastname, Pageable pageable);			
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping(value = "read/{size}/{page}", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
-	@ResponseStatus(HttpStatus.OK)
-	public List<Withdraw> readPage(@PathVariable int size, @PathVariable int page){
-		PageRequest pageRequest = new PageRequest(page-1,size);
-		return repository.findAll(pageRequest).getContent();
-	}
-			]]>
-			</programlisting>
-			<para>URL翻页参数，每次返回10条记录</para>
-			<screen>
-第一页 http://localhost:8080/v1/withdraw/read/10/1.json
-第二页 http://localhost:8080/v1/withdraw/read/10/2.json
-...
-第五页 http://localhost:8080/v1/withdraw/read/10/5.json
-			</screen>
-		</section>
-		<section>
-			<title>@Query</title>
-			<programlisting>
-			<![CDATA[
-
-			]]>
-			</programlisting>
-		</section>		
-	</section>
 	<section id="document">
 		<title>@Document</title>
 		<para>复杂的 @Document 数据类型定义</para>
@@ -436,7 +329,7 @@ public class MultilevelDirectSellingTradingRebate {
 				</programlisting>
 			</section>
 		</section>
-		<section>
+		<section id="DateTimeFormat">
 			<title>@DateTimeFormat</title>
 			<programlisting>
 @DateTimeFormat( pattern = "yyyy-MM-dd" )
@@ -449,7 +342,7 @@ private final Calendar datetime;
 private Date date;
 			</programlisting>
 		</section>
-		<section>
+		<section id="NumberFormat">
 			<title>@NumberFormat</title>
 			<programlisting>
 @NumberFormat(style=Style.CURRENCY)
@@ -511,6 +404,114 @@ private double money;
 			</programlisting>
 		</section>
 	</section>
+	<section id="MongoRepository">
+		<title>MongoRepository</title>
+		<section id="findAll">
+			<title>findAll()</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping(value = "read", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	@ResponseStatus(HttpStatus.OK)
+	public List<Withdraw> read() {
+		return repository.findAll();
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="deleteAll">
+			<title>deleteAll()</title>
+			<programlisting>
+			<![CDATA[
+repository.deleteAll();
+			]]>
+			</programlisting>
+		</section>
+		<section id="save">
+			<title>save()</title>
+			<programlisting>
+			<![CDATA[
+repository.save(new City("Shenzhen", "China"));
+			]]>
+			</programlisting>
+		</section>
+		<section id="count">
+			<title>count()</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("count")
+	public long count() {
+		return repository.count();
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="findByXXXX">
+			<title>findByXXXX</title>
+			<programlisting>
+			<![CDATA[
+List<User> findByName(String name);
+
+List<User> users = userRepository.findByName("Eric");
+			]]>
+			</programlisting>
+		</section>
+		<section id="StartingWith">
+			<title>StartingWith 和 EndingWith</title>
+			<programlisting>
+			<![CDATA[
+List<User> findByNameStartingWith(String regexp);
+List<User> findByNameEndingWith(String regexp);
+
+List<User> users = userRepository.findByNameStartingWith("N");
+List<User> users = userRepository.findByNameEndingWith("o");
+			]]>
+			</programlisting>
+		</section>
+		<section id="Between">
+			<title>Between</title>
+			<programlisting>
+			<![CDATA[
+List<User> findByAgeBetween(int ageGT, int ageLT);
+
+List<User> users = userRepository.findByAgeBetween(20, 50);
+			]]>
+			</programlisting>
+		</section>
+		<section id="PageRequest">
+			<title>PageRequest</title>
+			<programlisting>
+			<![CDATA[
+Page<User> findByLastname(String lastname, Pageable pageable);			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping(value = "read/{size}/{page}", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	@ResponseStatus(HttpStatus.OK)
+	public List<Withdraw> readPage(@PathVariable int size, @PathVariable int page){
+		PageRequest pageRequest = new PageRequest(page-1,size);
+		return repository.findAll(pageRequest).getContent();
+	}
+			]]>
+			</programlisting>
+			<para>URL翻页参数，每次返回10条记录</para>
+			<screen>
+第一页 http://localhost:8080/v1/withdraw/read/10/1.json
+第二页 http://localhost:8080/v1/withdraw/read/10/2.json
+...
+第五页 http://localhost:8080/v1/withdraw/read/10/5.json
+			</screen>
+		</section>
+		<section id="@Query">
+			<title>@Query</title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</section>		
+	</section>
+	
 	
 	<section id="mongoTemplate.Query">
 		<title>mongoTemplate</title>
@@ -578,6 +579,27 @@ List<User> users = mongoTemplate.find(query,User.class);
 		}
 		return true;
 	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="Criteria">
+			<title>Criteria</title>
+			<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(
+    new Criteria().andOperator(
+        Criteria.where("field1").exists(true),
+        Criteria.where("field1").ne(false)
+    )
+);
+
+List<Foo> result = mongoTemplate.find(query, Foo.class);
+System.out.println("query - " + query.toString());
+
+for (Foo foo : result) {
+    System.out.println("result - " + foo);
+}			
 			]]>
 			</programlisting>
 		</section>
