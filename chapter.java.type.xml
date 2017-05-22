@@ -348,7 +348,32 @@ public class DateCompare {
 			]]>
 			</programlisting>
 		</section>
-		
+		<section id="date.today">
+			<title>getToday</title>
+			<programlisting>
+			<![CDATA[
+	public Date getToday(String time) {
+		final Calendar cal = Calendar.getInstance();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd " + time);
+		DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = null;
+		try {
+			date = fmt.parse(dateFormat.format(cal.getTime()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+
+	private Date addOneDay(Date date, int day) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, day);
+		return cal.getTime();
+	}
+			]]>
+			</programlisting>
+		</section>
 		<section id="date.Yesterday">
 			<title>Yesterday</title>
 			<programlisting>

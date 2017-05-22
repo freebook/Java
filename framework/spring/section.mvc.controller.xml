@@ -353,6 +353,22 @@ public class Http {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>传递日期参数</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/range")
+	public ModelAndView range(@RequestParam("beginDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date beginDate, @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+		log.info("===== Begin ===== {}", beginDate);
+
+		// 你的逻辑
+
+		log.info("===== End ===== {}", endDate);
+		return new ModelAndView("activity/index", "message", "操作成功");
+	}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	
 	<section id="ModelAttribute">
