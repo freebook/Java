@@ -471,7 +471,7 @@ public static void main(String[] args) {
     SpringApplication app = new SpringApplication(Application.class);
     app.setShowBanner(false);
     app.run(args);
-}			
+}
 			]]>
 			</programlisting>
 		</section>
@@ -1102,7 +1102,7 @@ logging.level.cn.netkiller.web.TestController=DEBUG
 			<![CDATA[
 logging.path=/tmp
 logging.file=/tmp/spring.log
-logging.level.root=WARN
+logging.level.root=INFO
 logging.level.org.springframework.web=DEBUG
 logging.level.org.hibernate=ERROR
 			]]>
