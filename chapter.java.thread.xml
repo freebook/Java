@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="index"><?dbhtml dir="thread" ?>
+	<title>Thread 线程</title>
+	<para></para>
+	
+	<section>
+		<title>实现异步执行</title>
+		<programlisting>
+		<![CDATA[
+	public void testThread() throws Exception {
+		try {
+			Thread sendmail = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// Sendmail
+					log.info("Sendmail OK");
+				}
+			});
+			sendmail.setName("sendmail");
+			sendmail.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+	}				
+		]]>
+		</programlisting>
+		<para></para>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		]]>
+		</programlisting>
+		<para></para>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		]]>
+		</programlisting>
+	</section>
+</section>

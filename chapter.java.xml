@@ -152,4 +152,7 @@ Process proc =Runtime.getRuntime().exec("ls",null, new File("/bin"));
 	&chapter.java.sql.xml;
 	&chapter.java.util.xml;
 	&chapter.java.reflect.xml;
+	&chapter.java.thread.xml;
+	&chapter.javax.script.xml;
+	&chapter.javax.crypto.xml;
 </chapter>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="javax/script" ?>
+<section id="index"><?dbhtml dir="javax/script" ?>
 	<title>java 脚本引擎</title>
 	<para>什么是脚本引擎，脚本引擎是指在程序运行期间嵌入另一种脚本语言，并与其交互，产生最终运行结果</para>
 	<para>脚本引擎存在的意义是什么？脚本引擎可以改变编译语言的内部运行逻辑，弥补编译语言的不足，使编译语言具备动态语言的一部分特性。</para>
@@ -414,4 +414,4 @@ print( f() + 1 );
 		<![CDATA[]]>
 		</programlisting>
 	</section>
-</chapter>
+</section>
