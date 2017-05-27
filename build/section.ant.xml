@@ -266,6 +266,33 @@ ${ant.project.name}
 		
 		]]>
 		</screen>
+		<para>Ant 1.9.x 新增 xmlns:if="ant:if"</para>
+		<screen>
+		<![CDATA[
+<project name="tryit"
+ xmlns:if="ant:if"
+ xmlns:unless="ant:unless"
+>
+ <exec executable="java">
+   <arg line="-X" if:true="${showextendedparams}"/>
+   <arg line="-version" unless:true="${showextendedparams}"/>
+ </exec>
+ <condition property="onmac">
+   <os family="mac"/>
+ </condition>
+ <echo if:set="onmac">running on MacOS</echo>
+ <echo unless:set="onmac">not running on MacOS</echo>
+</project>
+
+
+<!DOCTYPE project>
+<project xmlns:if="ant:if" xmlns:unless="ant:unless">
+  <property unless:set="property" name="property.is.set" value="false"/>
+  <property if:set="property" name="property.is.set" value="true"/>
+  <echo>${property.is.set}</echo>
+</project>
+		]]>
+		</screen>
 	</section>
 	<section id="macrodef">
 		<title>macrodef</title>
@@ -506,6 +533,29 @@ Total time: 0 seconds
 			<screen>
 			<![CDATA[
 <property name="build.sysclasspath" value="last"/>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>调试 exec</title>
+			<para>将 executable="echo" 设置成 echo 是一种不错的调试手段</para>
+			<screen>
+			<![CDATA[
+        <macrodef name="gulp">
+                <attribute name="stage" default=""/>
+                <attribute name="src" default=""/>
+                <attribute name="dir" default="" />
+                <sequential>
+                        <exec vmlauncher="false" executable="echo" dir="@{dir}" osfamily="unix">
+                                <arg line="--stage @{stage} --src @{src}"/>
+                                <!-- arg value="stage @{stage}" / -->
+                        </exec>
+                </sequential>
+        </macrodef>
+
+        <target name="gulp">
+                <gulp stage="${git.branch}" src="cn" dir="."/>
+        </target>
 			]]>
 			</screen>
 		</section>
