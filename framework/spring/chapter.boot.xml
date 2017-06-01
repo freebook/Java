@@ -5454,16 +5454,146 @@ public class SpringKafkaApplicationTests {
 			</example>
 		</section>
 	</section>
-	<section id="docker">
-		<title>Spring boot with Docker</title>
+	<section id="git">
+		<title>Spring boot with Git version</title>
+		<para>Spring boot 每次升级打包发给运维操作，常常运维操作不当致使升级失败，开发怎样确认线上的jar/war包与升级包一致呢？</para>
+		<para>请看下面的解决方案</para>
 		<section>
-			<title></title>
+			<title>CommonRestController 公共控制器</title>
+			<para>所有 RestController将会集成 CommonRestController</para>
 			<programlisting>
 			<![CDATA[
+package cn.netkiller.api.rest;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+public class CommonRestController {
+
+	@RequestMapping("ping")
+	@ResponseStatus(HttpStatus.OK)
+	public String welcome() {
+		return "PONG";
+	}
+
+	@RequestMapping("commit")
+	public String commit() {
+		return "$Id$";
+	}
+
+	@RequestMapping("auth")
+	@ResponseStatus(HttpStatus.OK)
+	public String auth(@AuthenticationPrincipal final UserDetails user) {
+		return String.format("%s: %s %s", user.getUsername(), user.getPassword(), user.getAuthorities());
+	}
+}
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>VersionRestController 测试控制器</title>
+			<para>我们创建一个RestController并继承CommonRestController用来测试</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.api.rest;
+
+@RestController
+@RequestMapping("/public/version")
+public class VersionRestController extends CommonRestController {
+	private static final Logger logger = LoggerFactory.getLogger(VersionRestController.class);
+
+	public VersionRestController() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@RequestMapping("welcome")
+	@ResponseStatus(HttpStatus.OK)
+	public String welcome() {
+		return "Welcome to RestTemplate version 1.0.";
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>创建 .gitattributes 文件</title>
+			<programlisting>
+			<![CDATA[
+# vim .gitattributes
+src/main/java/cn/netkiller/api/rest/CommonRestController.java ident
+			]]>
+			</programlisting>
+			<para>使用curl命令调用commit接口可以显示当前war/jar最后一次提交的版本号码（你同样可以使用IE浏览器）</para>
+			<programlisting>
+			<![CDATA[
+curl https://api.netkiller.cn/public/version/commit.json
+$Id: 929bc9e4c90b4d68c25dc693618f23b33fd6ba0f $
+			]]>
+			</programlisting>
+		</section>
+	</section>		
+	<section id="https">
+		<title>Spring boot with HTTPS SSL</title>
+		<section>
+			<title>生成自签名证书</title>
+			<programlisting>
+			<![CDATA[
+keytool -genkey -alias www.netkiller.cn -keyalg RSA -keystore /www/netkiller.cn/www.netkiller.cn.keystore
+			]]>
+			</programlisting>
+			<para>导入证书（Windows）</para>
+			<programlisting>
+			<![CDATA[
+keytool -selfcert -alias www.netkiller.cn -keystore www.netkiller.cn.keystore
+keytool -export -alias www.netkiller.cn -keystore www.netkiller.cn.keystore -storepass passw0rd -rfc -file www.netkiller.cn.cer
+			]]>
+			</programlisting>
+			<para>导入证书（JVM）</para>
+			<programlisting>
+			<![CDATA[
+keytool -importcert -alias www.netkiller.cn -file www.netkiller.cn.cer -keystore /srv/java/jre/lib/security/cacerts
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application..properties 配置文件</title>
+			<para>配置Tomcat HTTPS 端口 8443（由于JVM不能fork和setuid，所以无法向nginx,apache httpd 那样设置 80 端口，除非你使用root用户运行，但这样做是不安全的。）</para>
+			<programlisting>
+			<![CDATA[
+server.port=8443
+server.ssl.enabled=true
+server.ssl.key-store=/www/netkiller.cn/www.netkiller.cn.keystore
+server.ssl.key-store-password=passw0rd
+server.ssl.key-store-type=JKS
+server.ssl.key-alias=www.netkiller.cn
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>启动 Spring boot</title>
+			<screen>
+			<![CDATA[
+/srv/java/bin/java -server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom -jar /www/netkiller.cn/www.netkiller.cn/www.netkiller.cn-0.0.1.war
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>restTemplate 调用实例</title>
+			<programlisting>
+			<![CDATA[
+String url = "https://www.netkiller.cn:8443/public/test/version.json";
+ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponse<String>>() {});
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="docker">
+		<title>Spring boot with Docker</title>
+		
 		<section>
 			<title></title>
 			<programlisting>
