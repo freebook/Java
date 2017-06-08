@@ -4451,6 +4451,67 @@ public class ScheduledTasks {
 tail -f spring.log			
 			</programlisting>
 		</section>
+		<section>
+			<title>计划任务控制</title>
+			<para>matchIfMissing = true， 如果改属性条目不存在返回 true</para>
+			<programlisting>
+@ConditionalOnProperty("batch.metrics.export.influxdb.enabled")
+			
+# mybean.enabled = true
+@ConditionalOnProperty(value='mybean.enabled')
+@ConditionalOnProperty(value = "endpoints.hal.enabled", matchIfMissing = true)
+
+# server.host = localhost
+@ConditionalOnProperty(name="server.host", havingValue="localhost")
+@ConditionalOnExpression("'${server.host}'=='localhost'")
+
+# spring.rabbitmq.dynamic = true
+@ConditionalOnProperty(prefix = "spring.rabbitmq", name = "dynamic", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "extension.security.cors", name = "enabled", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "camunda.bpm.job-execution", name = "enabled", havingValue = "true", matchIfMissing = true)
+
+# spring.social.auto-connection-views = true
+@ConditionalOnProperty(prefix = "spring.social.", value = "auto-connection-views")
+			</programlisting>
+			<para>使用案例</para>
+			<programlisting>
+			<![CDATA[
+package mis.schedule;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+@ConditionalOnProperty("mis.schedule.enabled")
+@Component
+public class ScheduledTasks {
+	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+	public final static long ONE_DAY = 24 * 60 * 60 * 1000;
+	public final static long ONE_HOUR = 60 * 60 * 1000;
+	public final static long ONE_SECOND = 1000;
+
+	public ScheduledTasks() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Scheduled(fixedDelay = ONE_SECOND)
+	public void scheduleTaskSplitLine() {
+		logger.info("==================== {} ====================", dateFormat.format(new Date()));
+	}
+}
+			]]>
+			</programlisting>
+			<para>application.properties 配置如下</para>
+			<screen>
+mis.schedule.enabled=true
+			</screen>
+		</section>
 	</section>
 	<section id="cache">
 		<title>Spring boot with Cache</title>	

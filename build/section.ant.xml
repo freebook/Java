@@ -517,6 +517,38 @@ Total time: 0 seconds
 		]]>
 		</screen>
 	</section>
+	<section id="mail">
+		<title>mail</title>
+		<para>https://ant.apache.org/manual/Tasks/mail.html</para>
+		<screen>
+		<![CDATA[
+cp ~/.m2/repository/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar /srv/apache-ant-1.9.6/lib
+cp /www/.m2/repository/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar /srv/apache-ant-1.10.1/lib/
+		]]>
+		</screen>
+		<para>Examples</para>
+		<screen>
+		<![CDATA[
+<mail from="me"
+      tolist="you"
+      subject="Results of nightly build"
+      files="build.log"/>
+Sends an email from me to you with a subject of Results of nightly build and includes the contents of the file build.log in the body of the message.
+
+<mail mailhost="smtp.myisp.com" mailport="1025" subject="Test build">
+  <from address="config@myisp.com"/>
+  <replyto address="me@myisp.com"/>
+  <to address="all@xyz.com"/>
+  <message>The ${buildname} nightly build has completed</message>
+  <attachments>
+    <fileset dir="dist">
+      <include name="**/*.zip"/>
+    </fileset>
+  </attachments>
+</mail>
+		]]>
+		</screen>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
