@@ -259,7 +259,7 @@ Hello world
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="auth">
 		<title>Config server 用户认证</title>
 		<section>
 			<title>Server 配置</title>
@@ -282,5 +282,45 @@ spring.cloud.config.username=cfg
 spring.cloud.config.password=s3cr3t
 			</screen>
 		</section>
+	</section>
+	<section id="encrypt">
+		<title>加密敏感数据</title>
+		<para>Config server 创建证书</para>
+		<programlisting>
+		<![CDATA[
+keytool -genkeypair -alias config-server-key \
+       -keyalg RSA -keysize 4096 -sigalg SHA512withRSA \
+       -dname 'CN=Config Server,OU=Spring Cloud,O=Netkiller' \
+       -keypass s3cr3t -keystore config-server.jks \
+       -storepass passw0rd		
+		]]>
+		</programlisting>
+		<para>application.properties 中配置证书</para>
+		<programlisting>
+		<![CDATA[
+# spring.cloud.config.server.encrypt.enabled=true
+encrypt.key-store.location=classpath:/config-server.jks
+encrypt.key-store.alias=config-server-key
+encrypt.key-store.secret=s3cr3t
+encrypt.key-store.password=passw0rd
+		]]>
+		</programlisting>
+		<para>测试加密</para>
+		<programlisting>
+		<![CDATA[
+curl -X POST --data-urlencode mypassword http://localhost:8888/encrypt
+		]]>
+		</programlisting>
+		
+		<programlisting>
+		<![CDATA[
+$ PASSWORD=$(curl -X POST --data-urlencode passw0rd http://cfg:s3cr3t@localhost:8888/encrypt)
+$ echo "user.password=$PASSWORD" >> api-interface-development.properties
+$ git commit -am 'Added encrypted password'
+
+# 刷新配置
+$ curl -X POST http://cfg:s3cr3t@localhost:8888/refresh		
+		]]>
+		</programlisting>
 	</section>
 </section>
