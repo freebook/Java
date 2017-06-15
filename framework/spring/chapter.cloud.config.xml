@@ -1,0 +1,286 @@
+<section id="spring.cloud.config">
+	<title>Spring Cloud Config</title>
+	<section id="git">
+		<title>Git 仓库</title>
+		<para>克隆仓库</para>
+		<screen>
+git clone https://github.com/netkiller/config.git
+		</screen>
+		<para>创建配置文件 server-development.properties</para>
+		<screen>
+vim server-development.properties
+
+test.a=KKOOKK
+message=Hello world
+		</screen>
+		<para>提交配置文件</para>
+		<screen>
+git commit -a
+git push
+		</screen>
+		<para>配置文件格式</para>
+		<screen>
+		<![CDATA[
+/{application}/{profile}[/{label}]
+/{application}-{profile}.yml
+/{label}/{application}-{profile}.yml
+/{application}-{profile}.properties
+/{label}/{application}-{profile}.properties		
+		]]>
+		</screen>
+	</section>
+	<section id="server">
+		<title>Server</title>
+		<section>
+			<title>Maven pom.xml</title>
+			<screen>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>netkiller.cn</groupId>
+	<artifactId>cloud</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Neo</name>
+	<description>http://www.netkiller.cn</description>
+	<packaging>jar</packaging>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Camden.SR5</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Client</title>
+			<para>Application</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.cloud;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.config.server.EnableConfigServer;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@EnableAutoConfiguration
+@EnableDiscoveryClient
+@EnableConfigServer
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<screen>
+server.port=8888
+spring.cloud.config.server.git.uri=https://github.com/netkiller/config.git
+			</screen>
+		</section>
+		<section>
+			<title>测试服务器</title>
+			<screen>
+neo@netkiller $ curl http://localhost:8888/server-development.json
+{"message":"Hello world","test":{"a":"KKOOKK"}}
+			</screen>
+		</section>
+	</section>
+	<section id="client">
+		<title>Client</title>
+		<section>
+			<title>Maven pom.xml</title>
+			<programlisting>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>netkiller.cn</groupId>
+	<artifactId>cloud</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.2.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Camden.SR5</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.cloud.client;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+}
+
+@RefreshScope
+@RestController
+class MessageRestController {
+
+	@Value("${message:Hello default}")
+	private String message;
+
+	@RequestMapping("/message")
+	String getMessage() {
+		return this.message;
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>bootstrap.properties</title>
+			<programlisting>
+			<![CDATA[
+spring.application.name=server-development
+spring.cloud.config.uri=http://localhost:8888
+management.security.enabled=false			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试 client</title>
+			<screen>
+neo@netkiller $ curl http://localhost:8080/message.json             
+Hello world
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Config server 用户认证</title>
+		<section>
+			<title>Server 配置</title>
+			<screen>
+server.port=8888
+spring.cloud.config.server.git.uri=ssh://localhost/config-repo
+spring.cloud.config.server.git.clone-on-start=true
+security.user.name=cfg
+security.user.password=s3cr3t
+			</screen>
+		</section>
+		<section>
+			<title>Client 配置</title>
+			<para>bootstrap.properties:</para>
+			<screen>
+spring.application.name=project
+spring.profiles.active=development
+spring.cloud.config.uri=http://localhost:8888
+spring.cloud.config.username=cfg
+spring.cloud.config.password=s3cr3t
+			</screen>
+		</section>
+	</section>
+</section>
