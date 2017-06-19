@@ -3,6 +3,7 @@
 	<title>Spring Cloud</title>
 	
 	&chapter.cloud.config.xml;
+	&chapter.cloud.netflix.xml;
 	
 </chapter>
 

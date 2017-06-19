@@ -93,7 +93,7 @@ git push
 			</screen>
 		</section>
 		<section>
-			<title>Client</title>
+			<title>Application</title>
 			<para>Application</para>
 			<programlisting>
 			<![CDATA[
