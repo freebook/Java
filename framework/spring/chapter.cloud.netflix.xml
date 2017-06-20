@@ -1,9 +1,478 @@
-<section id="spring.cloud.netflix">
+<section id="netflix">
 	<title>Spring Cloud Netflix</title>
-	<section>
+	<section id="eureka.server">
 		<title>Eureka Server</title>
+		<section id="maven">
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.netkiller.spring.cloud</groupId>
+	<artifactId>netflix.eureka.server</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>eureka.server</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-netflix</artifactId>
+				<version>1.3.1.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka-server</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.spring.cloud.netflix.eureka.server;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+
+@SpringBootApplication
+@EnableEurekaServer
+public class Application {
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		// new SpringApplicationBuilder(Application.class).web(true).run(args);
+		SpringApplication.run(Application.class, args);
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+			<![CDATA[
+server.port=8761
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+eureka.client.serviceUrl.defaultZone=http://localhost:${server.port}/eureka/
+
+logging.level.com.netflix.eureka=OFF
+logging.level.com.netflix.discovery=OFF
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>检查注册服务器</title>
+			<para>http://localhost:8761</para>
+			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka.png" srccredit="neo" width=""/></para>
+		</section>
 	</section>
-	<section>
-		<title>Eureka Clients</title>
+	<section id="eureka.client">
+		<title>Eureka Client</title>
+		<section id="maven">
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.netkiller.spring.cloud</groupId>
+	<artifactId>eureka.client</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>eureka.client</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Dalston.SR1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+			]]>
+			</programlisting>
+		</section>
+		<section id="application">
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.spring.cloud.eureka.client;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class Application {
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>RestController</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.spring.cloud.eureka.client;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestRestController {
+	private static final Logger logger = LoggerFactory.getLogger(TestRestController.class);
+
+	@RequestMapping("/")
+	public String home() {
+		logger.info("Hello!!!");
+		return "Hello World";
+	}
+
+	@Autowired
+	private DiscoveryClient discoveryClient;
+
+	@RequestMapping("/service-instances/{applicationName}")
+	public List<ServiceInstance> serviceInstancesByApplicationName(@PathVariable String applicationName) {
+		return this.discoveryClient.getInstances(applicationName);
+	}
+
+	@RequestMapping(value = "/add", method = RequestMethod.GET)
+	public Integer add(@RequestParam Integer a, @RequestParam Integer b) {
+		@SuppressWarnings("deprecation")
+		ServiceInstance instance = discoveryClient.getLocalServiceInstance();
+		Integer r = a + b;
+		logger.info("/add, host:" + instance.getHost() + ", service_id:" + instance.getServiceId() + ", result:" + r);
+		return r;
+	}
+	
+	@RequestMapping("/greeting")
+	public String greeting() {
+		return "GREETING";
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+			<![CDATA[
+spring.application.name=test-service
+server.port=8080
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<para>首先确认客户端已经注册到 http://localhost:8761/</para>
+			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka-registered.png" srccredit="neo" width=""/></para>
+			<programlisting>
+			<![CDATA[
+$ curl http://localhost:8080/service-instances/test-service
+
+[
+	{
+		"host": "Neo-Desktop",
+		"port": 8080,
+		"secure": false,
+		"uri": "http://Neo-Desktop:8080",
+		"serviceId": "TEST-SERVICE",
+		"metadata": {},
+		"instanceInfo": {
+			"instanceId": "Neo-Desktop:test-service:8080",
+			"app": "TEST-SERVICE",
+			"appGroupName": null,
+			"ipAddr": "172.25.10.150",
+			"sid": "na",
+			"homePageUrl": "http://Neo-Desktop:8080/",
+			"statusPageUrl": "http://Neo-Desktop:8080/info",
+			"healthCheckUrl": "http://Neo-Desktop:8080/health",
+			"secureHealthCheckUrl": null,
+			"vipAddress": "test-service",
+			"secureVipAddress": "test-service",
+			"countryId": 1,
+			"dataCenterInfo": {
+			"@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+			"name": "MyOwn"
+		},
+		"hostName": "Neo-Desktop",
+		"status": "UP",
+		"leaseInfo": {
+			"renewalIntervalInSecs": 30,
+			"durationInSecs": 90,
+			"registrationTimestamp": 1497922681680,
+			"lastRenewalTimestamp": 1497922681680,
+			"evictionTimestamp": 0,
+			"serviceUpTimestamp": 1497922003783
+		},
+		"isCoordinatingDiscoveryServer": false,
+		"metadata": {},
+		"lastUpdatedTimestamp": 1497922681680,
+		"lastDirtyTimestamp": 1497922681025,
+		"actionType": "ADDED",
+		"asgName": null,
+		"overriddenStatus": "UNKNOWN"
+		}
+	}
+]
+			]]>
+			</programlisting>
+			<para>add 接口测试</para>
+			<programlisting>
+			<![CDATA[
+curl http://localhost:8080/add.json?a=5&b=3
+
+8			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="feign.client">
+		<title>Feign client</title>
+		<section>
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.netkiller.spring.cloud.netflix</groupId>
+	<artifactId>feign.client</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>feign.client</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+			<version>1.3.1.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+			<version>1.3.1.RELEASE</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.spring.cloud.netflix.feign.client;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+@EnableEurekaClient
+@EnableFeignClients
+@RestController
+public class Application {
+	@Autowired
+	private GreetingClient greetingClient;
+
+	@RequestMapping("/get-greeting")
+	public String greeting() {
+		return greetingClient.greeting();
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+		System.out.println("Hello World!");
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>interface</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.spring.cloud.netflix.feign.client;
+
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@FeignClient("test-service")
+public interface GreetingClient {
+	@RequestMapping("/greeting")
+	String greeting();
+}
+			]]>
+			</programlisting>
+			<para>@FeignClient("test-service") 是 Eureka Client application.properties 中的 spring.application.name 配置项</para>
+			<para>@RequestMapping("/greeting") 是 Eureka Client RestController 中的 @RequestMapping</para>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+			<![CDATA[
+spring.application.name=spring-cloud-eureka-feign-client
+server.port=8088
+#eureka.client.register-with-eureka=false
+#eureka.client.fetch-registry=false
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+feign.compression.response.enabled=true
+feign.compression.request.enabled=true
+feign.compression.request.mime-types=text/xml,application/xml,application/json
+feign.compression.request.min-request-size=2048
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<programlisting>
+			<![CDATA[
+$ curl -s http://localhost:8088/get-greeting.json
+
+GREETING
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>

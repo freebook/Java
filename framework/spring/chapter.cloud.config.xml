@@ -1,4 +1,4 @@
-<section id="spring.cloud.config">
+<section id="config">
 	<title>Spring Cloud Config</title>
 	<section id="git">
 		<title>Git 仓库</title>
