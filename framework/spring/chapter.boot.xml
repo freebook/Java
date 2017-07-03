@@ -5912,7 +5912,7 @@ public class HiveDataSource {
 			</programlisting>
 		</section>
 		<section>
-			<title></title>
+			<title>application.properties</title>
 			<para>phoenix 数据源配置项</para>
 			<programlisting>
 			<![CDATA[
@@ -5928,7 +5928,7 @@ phoenix:
 			</programlisting>
 		</section>
 		<section>
-			<title></title>
+			<title>Configuration</title>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.api.config; 
