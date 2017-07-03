@@ -5656,6 +5656,134 @@ ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMet
 			</programlisting>
 		</section>
 	</section>
+	<section id="elasticsearch">
+		<title>Spring boot with Elasticsearch</title>
+		<section>
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/ma ... gt%3B
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.netkiller.springboot</groupId>
+    <artifactId>elasticsearch</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>elasticsearch</name>
+    
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.3.RELEASE</version>
+    </parent>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+    </dependencies>
+</project>
+               ]]>
+               </programlisting>
+	       </section>
+	       <section>
+               <title>Application</title>
+               <programlisting>
+               <![CDATA[
+package cn.netkiller;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan
+@EnableMongoRepositories
+@EnableJpaRepositories
+@EnableScheduling
+public class Application {
+
+       public static void main(String[] args) {
+               SpringApplication.run(Application.class, args);
+       }
+}
+               ]]>
+               </programlisting>
+           </section>
+           <section>
+               <title>application.properties</title>
+               <programlisting>
+               <![CDATA[
+spring.data.elasticsearch.repositories.enabled=true
+spring.data.elasticsearch.cluster-nodes=127.0.0.1:9300
+               ]]>
+               </programlisting>
+           </section>
+           <section>
+               <title>Domain</title>
+               <programlisting>
+               <![CDATA[
+@Document(indexName = "province", type = "city")
+public class City implements Serializable {
+    private static final long serialVersionUID = -1L;
+    private Long id;
+    private String name;
+    private String description;
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+}
+            ]]>
+            </programlisting>
+        </section>
+        <section>
+            <title>ElasticsearchRepository</title>
+            <programlisting>
+            <![CDATA[
+public interface CityRepository extends ElasticsearchRepository<City, Long> {
+    List<City> findByNameLike(String name);
+    Page<City> findByDescription(String description, Pageable page);
+    Page<City> findByDescriptionNot(String description, Pageable page);
+    Page<City> findByDescriptionLike(String description, Pageable page);
+}
+	        ]]>
+	        </programlisting>
+	    </section>
+    </section>
+
 	<section id="hive">
 		<title>Spring boot with Apache Hive</title>
 		<section>
@@ -5748,7 +5876,7 @@ public class HiveDataSource {
 			</programlisting>
 		</section>
 	</section>
-	<section id="docker">
+	<section id="phoenix">
 		<title>Spring boot with Phoenix</title>
 		<section>
 			<title>Maven</title>
