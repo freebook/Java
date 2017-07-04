@@ -517,7 +517,7 @@ mvn help:effective-pom
 	</section>
 	<section id="plugins">
 		<title>plugins</title>
-		<section>
+		<section id="maven-antrun-plugin">
 			<title>maven-antrun-plugin</title>
 			<para>查看可用的pom定义</para>
 			<screen>
@@ -584,6 +584,37 @@ The build.xml:
 
 </project>
 			]]>	
+			</screen>
+		</section>
+		<section id="maven-install-plugin">
+			<title>maven-install-plugin</title>
+			<screen>
+			<![CDATA[
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-install-plugin</artifactId>
+			<version>2.5.2</version>
+			<inherited>false</inherited>
+			<executions>
+				<execution>
+					<id>install:com.oracle:ojdbc6:11g</id>
+					<phase>validate</phase>
+					<goals>
+						<goal>install-file</goal>
+					</goals>
+					<configuration>
+						<file>${project.basedir}/lib/ojdbc6.jar</file>
+						<groupId>com.oracle</groupId>
+						<artifactId>ojdbc6</artifactId>
+						<version>11.2.0.3</version>
+						<packaging>jar</packaging>
+						<createChecksum>true</createChecksum>
+						<generatePom>true</generatePom>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+			]]>
 			</screen>
 		</section>
 	</section>	
