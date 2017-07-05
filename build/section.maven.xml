@@ -117,6 +117,17 @@ $ ls ~/.m2
 				]]>
 				</screen>
 			</example>
+			<section id="java.version">
+				<title>java.version</title>
+				<screen>
+				<![CDATA[
+	<properties>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <java.version>1.8</java.version>
+    </properties>
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="dependencies">
 			<title>dependencies</title>
@@ -296,6 +307,15 @@ $ mvn install
 			<screen>
 mvn install -Dmaven.test.skip=true			
 			</screen>
+			<section>
+				<title>install-file</title>
+				<para>安装本地jar文件到Maven的.m2库中。</para>
+				<screen>
+				<![CDATA[
+mvn install:install-file -Dfile=Path/to/your.jar} -DgroupId=com.example -DartifactId=project -Dversion=1.2.0 -Dpackaging=jar
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="war">
 			<title>war</title>
@@ -614,6 +634,20 @@ The build.xml:
 				</execution>
 			</executions>
 		</plugin>
+			]]>
+			</screen>
+		</section>
+		<section id="maven-surefire-plugin">
+			<title>maven-surefire-plugin</title>
+			<screen>
+			<![CDATA[
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-surefire-plugin</artifactId>
+		<configuration>
+			<skip>true</skip>
+		</configuration>
+	</plugin>		
 			]]>
 			</screen>
 		</section>
