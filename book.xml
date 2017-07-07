@@ -47,6 +47,7 @@
 		<abstract id="abstract">
 			<title>关于《Netkiller Java 手札》</title>
 			<para>作者2002年开始在项目中使用Java，各种原因没有留下Java文档，2015因工作需要重新拾起Java并整理本文档。</para>
+			<para>本电子书重点内容是Spring boot, Spring cloud, Spring data, Spring security</para>
 		</abstract>
 		&book.info.abstract.xml;
 
@@ -68,7 +69,7 @@
 	&chapter.apache.xml;
 	&chapter.cache.xml;
 	&chapter.sdk.xml;
-	&part.search.xml;
+	<!-- &part.search.xml; -->
 <!-- =========================================================================== -->
 
 </book>

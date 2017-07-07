@@ -550,8 +550,8 @@ mvn dependency:sources
 	</section>
 	<section id="plugins">
 		<title>plugins</title>
-		<section>
-			<title></title>
+		<section id="maven-compiler-plugin">
+			<title>maven-compiler-plugin</title>
 			<screen>
 			<![CDATA[
 			<plugin>
@@ -575,6 +575,7 @@ mvn dependency:sources
 			</plugin>
 			]]>
 			</screen>
+			<para>compilerArgs可以实现编译参数的传递</para>
 		</section>
 		<section id="maven-antrun-plugin">
 			<title>maven-antrun-plugin</title>
