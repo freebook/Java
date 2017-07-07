@@ -257,7 +257,13 @@ $ ls ~/.m2
 	</section>		
 	<section id="cli">
 		<title>Maven 命令</title>
-		<section id="clean">
+		<section id="help">
+		<title>help</title>
+		<para>查看可用的pom定义</para>
+		<screen>
+mvn help:effective-pom			
+		</screen>
+	</section><section id="clean">
 			<title>clean</title>
 			<para>清楚</para>
 			<screen>
@@ -334,9 +340,7 @@ mvn compile war:inplace
 			<screen>
 $ mvn exec:java -Dexec.mainClass="cn.netkiller.Test"			
 			</screen>
-		</section>
-	</section>
-	<section id="dependency">
+		</section><section id="dependency">
 		<title>dependency</title>
 		<section>
 			<title>build-classpath</title>
@@ -504,13 +508,9 @@ mvn dependency:sources
 			</screen>
 		</section>
 	</section>
-	<section id="help">
-		<title>help</title>
-		<para>查看可用的pom定义</para>
-		<screen>
-mvn help:effective-pom			
-		</screen>
 	</section>
+	
+	
 	<section id="resources">
 		<title>resources 文件处理</title>
 		<screen>
@@ -518,17 +518,30 @@ mvn help:effective-pom
 		
 		<resources>
 			<resource>
-				<directory>src/resources</directory>
+				<directory>src/main/resources</directory>
+				<targetPath>${project.build.directory}/conf</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
 				<excludes>
 					<exclude>development.properties</exclude>
 				</excludes>
 			</resource>
 			<resource>
-				<directory>src/resources</directory>
+				<directory>src/main/resources</directory>
 				<includes>
 					<include>development.properties</include>
 				</includes>
 				<targetPath>resources</targetPath>
+			</resource>
+			
+			<resource>
+				<directory>lib</directory>
+				<includes>
+					<include>**/*.sh</include>
+					<include>**/*.bat</include>
+				</includes>
+				<targetPath>${project.build.directory}/lib</targetPath>
 			</resource>
 		</resources>
 				
@@ -537,6 +550,32 @@ mvn help:effective-pom
 	</section>
 	<section id="plugins">
 		<title>plugins</title>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					<compilerArgs>
+						<arg>-verbose</arg>
+						<arg>-Xlint:unchecked</arg>
+						<arg>-Xlint:deprecation</arg>
+						<arg>-bootclasspath</arg>
+						<arg>${env.JAVA_HOME}/jre/lib/rt.jar</arg>
+						<arg>-extdirs</arg>
+						<arg>${project.basedir}/libs</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			]]>
+			</screen>
+		</section>
 		<section id="maven-antrun-plugin">
 			<title>maven-antrun-plugin</title>
 			<para>查看可用的pom定义</para>
@@ -644,10 +683,39 @@ The build.xml:
 	<plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-surefire-plugin</artifactId>
+		<version>2.20</version>
 		<configuration>
 			<skip>true</skip>
 		</configuration>
 	</plugin>		
+			]]>
+			</screen>
+		</section>
+		<section id="maven-dependency-plugin">
+			<title>maven-dependency-plugin</title>
+			<screen>
+			<![CDATA[
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<!-- <version>2.10</version> -->
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<!-- 把依赖的所有maven jar包拷贝到lib目录中（这样所有的jar包都在lib目录中） -->
+							<outputDirectory>${project.build.directory}/project/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			]]>
 			</screen>
 		</section>
