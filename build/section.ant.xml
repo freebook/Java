@@ -2,19 +2,32 @@
 <section id="ant">
 	<title>Apache Ant</title>
 	<para><ulink url="http://ant.apache.org/">http://ant.apache.org/</ulink></para>
-	<screen>
+	<section>
+		<title>安装 ant</title>
+		<section>
+			<title>1.8</title>
+			<screen>
 cd /usr/local/src
 wget http://mirror.bjtu.edu.cn/apache//ant/binaries/apache-ant-1.8.1-bin.tar.gz
 tar zxvf apache-ant-1.8.1-bin.tar.gz
 mv apache-ant-1.8.1 /usr/local/
 cd ..
 ln -s apache-ant-1.8.1 apache-ant
-	</screen>
-	<screen>
+			</screen>
+			<screen>
 ANT_HOME=/usr/local/apache-ant
 export CLASSPATH=$CLASSPATH:$ANT_HOME/lib
-	</screen>
-	<section>
+			</screen>
+		</section>
+		<section>
+			<title>1.10.1</title>
+			<para>Netkiller OSCM 一键安装</para>
+			<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/ant/apache-ant-1.10.1.sh | bash
+			</screen>
+		</section>
+	</section>
+	<section id="project">
 		<title>Project</title>
 		<para></para>
 		<screen>

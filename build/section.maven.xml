@@ -552,6 +552,26 @@ mvn dependency:sources
 		<title>plugins</title>
 		<section id="maven-compiler-plugin">
 			<title>maven-compiler-plugin</title>
+			<para>禁止编译警告 -Xlint:unchecked，-Xlint:deprecation</para>
+			<screen>
+			<![CDATA[
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					<compilerArgs>
+						<arg>-verbose</arg>
+						<arg>-Xlint:unchecked</arg>
+						<arg>-Xlint:deprecation</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			]]>
+			</screen>
 			<screen>
 			<![CDATA[
 			<plugin>
@@ -689,6 +709,28 @@ The build.xml:
 			<skip>true</skip>
 		</configuration>
 	</plugin>		
+			]]>
+			</screen>
+		</section>
+		<section id="maven-jar-plugin">
+			<title>maven-jar-plugin</title>
+			<screen>
+			<![CDATA[
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/project/lib</outputDirectory>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>cn.netkiller.web.App</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 			]]>
 			</screen>
 		</section>
