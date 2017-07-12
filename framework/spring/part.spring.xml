@@ -5,9 +5,9 @@
 	&chapter.boot.xml;
 	&chapter.tomcat.xml;
 	&section.mvc.xml;
+	&section.rest.xml;
 	&chapter.data.xml;
 	&chapter.security.xml;
-	&section.rest.xml;
 	&chapter.interceptor.xml;
 	&chapter.cloud.xml;
 </part>

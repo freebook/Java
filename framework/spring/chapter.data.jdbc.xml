@@ -2,14 +2,14 @@
 	<title>Spring Data JPA</title>
 	<section id="Entity">
 		<title>@Entity</title>
-		<section>
+		<section id="NotNull">
 			<title>@NotNull 不能为空声明</title>
 			<programlisting>
 @NotNull
 public String username;			
 			</programlisting>
 		</section>
-		<section>
+		<section id="DateTimeFormat">
 			<title>处理日期时间</title>
 			<programlisting>
 public java.sql.Date createdate; 创建日期 YYYY-MM-DD 
@@ -21,36 +21,114 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
 			</screen>
 		</section>
-	</section><section id="Query">
-		<title>Query</title>
-		<programlisting>
-		<![CDATA[
-package api.repository.oracle;
+		<section id="enum">
+			<title>实体中使用 enum 类型</title>
+			<programlisting>
+package com.example.api.domain;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import java.io.Serializable;
 
-import api.domain.oracle.Member;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Repository
-public interface MemberRepository extends CrudRepository<Member, Long> {
-	public Page<Member> findAll(Pageable pageable);
+@Entity
+@Table(name = "statistics_history")
+public class StatisticsHistory implements Serializable {
 
-	// public Member findByBillno(String billno);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+	private long id;
+	private long memberId;
+	private long statisticsId;
 
-	public Member findById(String id);
+	public enum StatisticsType {
+		LIKE, COMMENT, BROWSE;
+	}
 
-	@Query("SELECT m FROM Member m WHERE m.status = 'Y' AND m.id = :id")
-	public Member findFinishById(@Param("id") String id);
+	private StatisticsType type;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public long getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(long memberId) {
+		this.memberId = memberId;
+	}
+
+	public long getStatisticsId() {
+		return statisticsId;
+	}
+
+	public void setStatisticsId(long statisticsId) {
+		this.statisticsId = statisticsId;
+	}
+
+	public StatisticsType getType() {
+		return type;
+	}
+
+	public void setType(StatisticsType type) {
+		this.type = type;
+	}
 
 }
-		]]>
-		</programlisting>
+		
+			</programlisting>
+			<para>默认 enum 类型创建数据库等效 int(11)</para>
+			<programlisting>
+			<![CDATA[
+CREATE TABLE `statistics_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_id` bigint(20) NOT NULL,
+  `statistics_id` bigint(20) NOT NULL,
+  `type` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+SELECT * FROM test.statistics;
+			]]>
+			</programlisting>
+			<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
+			<programlisting>
+	public enum StatisticsType {
+		LIKE, COMMENT, BROWSE;
+	}
+
+	@Enumerated(EnumType.STRING)
+	private StatisticsType type;
+			</programlisting>
+			<para>SQL</para>
+			<programlisting>
+			<![CDATA[
+CREATE TABLE `statistics_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_id` bigint(20) NOT NULL,
+  `statistics_id` bigint(20) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
+	
 	<section id="Repository">
 		<title>Repository</title>
 		<programlisting>
@@ -86,6 +164,150 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
 	}
 		]]>
 		</programlisting>
+		<section id="eunm">
+			<title>传递枚举参数</title>
+			<programlisting>
+			<![CDATA[
+package com.example.api.repository;
+
+import org.springframework.data.repository.CrudRepository;
+
+import com.example.api.domain.StatisticsHistory;
+
+public interface StatisticsHistoryRepostitory extends CrudRepository<StatisticsHistory, Long> {
+
+	public StatisticsHistory findByMemberIdAndStatisticsIdAndType(long member_id, long statistics_id,
+			StatisticsHistory.StatisticsType type);
+
+}
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+	@Autowired
+	private StatisticsHistoryRepostitory statisticsHistoryRepostitory;			
+			
+	statisticsHistoryRepostitory.findByMemberIdAndStatisticsIdAndType(uid, id, type);
+			]]>
+			</programlisting>
+		</section>
+		<section id="pageable">
+			<title>翻页操作</title>
+			<programlisting>
+			<![CDATA[
+package com.example.api.repository;
+
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
+
+import com.example.api.domain.RecentRead;
+
+public interface RecentReadRepostitory extends CrudRepository<RecentRead, Long> {
+
+	List<RecentRead> findByMemberId(long id, Pageable pageable);
+
+}
+			]]>
+			</programlisting>
+			<para>Top 10 实例</para>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/recent/read/list/{id}")
+	public List<RecentRead> recentList(@PathVariable long id) {
+		int page = 0;
+		int limit = 10;
+		List<RecentRead> recentRead = recentReadRepostitory.findByMemberId(id, new PageRequest(page, limit));
+		return recentRead;
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="sort">
+			<title>排序操作操作</title>
+			<programlisting>
+			<![CDATA[
+List<UserModel> findByName(String name, Sort sort);
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+Sort sort = new Sort(Direction.DESC, "id"); 
+repostitory.findByName("Neo", sort);
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="Query">
+		<title>Query</title>
+		<section>
+			<title>参数传递</title>
+			<programlisting>
+			<![CDATA[
+package api.repository.oracle;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import api.domain.oracle.Member;
+
+@Repository
+public interface MemberRepository extends CrudRepository<Member, Long> {
+	public Page<Member> findAll(Pageable pageable);
+
+	// public Member findByBillno(String billno);
+
+	public Member findById(String id);
+
+	@Query("SELECT m FROM Member m WHERE m.status = 'Y' AND m.id = :id")
+	public Member findFinishById(@Param("id") String id);
+
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface PersonRepository extends JpaRepository<Person, Long> {
+    @Query("SELECT p FROM Person p WHERE LOWER(p.lastName) = LOWER(:lastName)")
+    public List<Person> find(@Param("lastName") String lastName);
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>@Transactional</title>
+		<section>
+			<title>回滚操作</title>
+			<programlisting>
+			<![CDATA[
+	// 指定Exception回滚
+	@Transactional(rollbackFor=Exception.class)
+    public void methodName() {
+       // 不会回滚
+       throw new Exception("...");
+    }
+
+	//指定Exception回滚，但其他异常不回滚
+	@Transactional(noRollbackFor=Exception.class)
+    public ItimDaoImpl getItemDaoImpl() {
+        // 会回滚
+        throw new RuntimeException("注释");
+    }
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="JdbcTemplate">
 		<title>JdbcTemplate</title>
