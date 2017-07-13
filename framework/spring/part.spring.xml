@@ -3,11 +3,11 @@
 	<title>Spring Framework</title>
 	&chapter.suite.xml;
 	&chapter.boot.xml;
-	&chapter.tomcat.xml;
 	&section.mvc.xml;
 	&section.rest.xml;
 	&chapter.data.xml;
 	&chapter.security.xml;
 	&chapter.interceptor.xml;
 	&chapter.cloud.xml;
+	&chapter.tomcat.xml;
 </part>

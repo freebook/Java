@@ -744,3 +744,101 @@ public class QRCodeController {
 		</section>
 	</section>
 </section>
+<section id="RestController">
+	<title>@RestController</title>
+	<para></para>
+	<section>
+		<title>返回实体</title>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping("/get/{id}")
+	public Member getStatistics(@PathVariable long id) {
+		Member statistics = memberRepostitory.findOne(id);
+		if (statistics == null) {
+			statistics = new Member();
+		}
+		return statistics;
+	}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>JSON</title>
+		<para>MediaType.APPLICATION_JSON_VALUE 执行结果反馈json数据</para>
+		<programlisting>
+		<![CDATA[
+@RestController
+@RequestMapping("/api/persons")
+public class MainController {
+
+    @RequestMapping(
+            value = "/detail/{id}", 
+            method = RequestMethod.GET, 
+            produces = MediaType.APPLICATION_JSON_VALUE
+            )
+    public ResponseEntity<Persons> getUserDetail(@PathVariable Long id) {
+
+        Persons user = personsRepository.findById(id);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>XML</title>
+		<para>restful 将同时支持 json 和 xml 数据传递</para>
+		<programlisting>
+		<![CDATA[
+package com.example.api.restful;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.api.domain.RecentRead;
+import com.example.api.repository.RecentReadRepostitory;
+
+@RestController
+@RequestMapping("/restful/article")
+public class ArticleRestController {
+
+	@Autowired
+	private RecentReadRepostitory recentReadRepostitory;
+
+	@RequestMapping(value = "/recent/read/add/{memberId}/{articleId}", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	public ResponseEntity<RecentRead> recentAdd(@PathVariable long memberId, @PathVariable long articleId) {
+		RecentRead recentRead = new RecentRead();
+		recentRead.setMemberId(memberId);
+		recentRead.setArticleId(articleId);
+		recentReadRepostitory.save(recentRead);
+		return new ResponseEntity<RecentRead>(recentRead, HttpStatus.OK);
+	}
+
+	@RequestMapping(value="/recent/read/list/{id}", produces = { "application/xml", "application/json" })
+	public List<RecentRead> recentList(@PathVariable long id) {
+		int page = 0;
+		int limit = 20;
+		List<RecentRead> recentRead = recentReadRepostitory.findByMemberId(id, new PageRequest(page, limit));
+		return recentRead;
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[]]>
+		</programlisting>
+	</section>
+</section>

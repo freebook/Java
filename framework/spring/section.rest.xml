@@ -256,39 +256,6 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 			</programlisting>
 		</section>
 	</section>
-	
-
-	<section id="RestController">
-		<title>@RestController</title>
-		<para></para>
-		<section>
-			<title>返回实体</title>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping("/get/{id}")
-	public Member getStatistics(@PathVariable long id) {
-		Member statistics = memberRepostitory.findOne(id);
-		if (statistics == null) {
-			statistics = new Member();
-		}
-		return statistics;
-	}
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title></title>
-			<programlisting>
-			<![CDATA[]]>
-			</programlisting>
-		</section>
-		<section>
-			<title></title>
-			<programlisting>
-			<![CDATA[]]>
-			</programlisting>
-		</section>
-	</section>
 	<section id="getForObject">
 		<title>getForObject</title>
 		<section>
