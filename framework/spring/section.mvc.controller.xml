@@ -673,7 +673,7 @@ public class MyController {
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>
 		<section>
-			<title>HttpServletResponse</title>		
+			<title>用于方法参数</title>		
 			<para>HttpServletResponse 实例</para>
 			<programlisting>
 			<![CDATA[
@@ -739,6 +739,14 @@ public class QRCodeController {
         return new ModelAndView("/qrcode/qrcode");
     }
 }		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>注入方式</title>
+			<programlisting>
+			<![CDATA[
+
 			]]>
 			</programlisting>
 		</section>
