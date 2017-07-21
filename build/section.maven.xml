@@ -5,7 +5,7 @@
 		<title>安装</title>
 		<section>
 			<title>Ubuntu</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo apt-get install maven2
 
 $ mvn -version
@@ -15,17 +15,273 @@ Java home: /usr/lib/jvm/java-6-openjdk/jre
 Default locale: en_US, platform encoding: UTF-8
 OS name: "linux" version: "2.6.38-8-generic" arch: "amd64" Family: "unix"
 
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 JAVA_HOME="/usr/lib/jvm/java-6-openjdk/jre"
 MAVEN_HOME="/usr/share/maven2/"
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>源码安装</title>
-			<screen>
+			<screen><![CDATA[
 curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/maven.sh | bash
-			</screen>
+			]]></screen>
+		</section>
+	</section>
+	<section id="cli">
+		<title>Maven 命令</title>
+		<section id="help">
+			<title>help</title>
+			<para>查看可用的pom定义</para>
+			<screen><![CDATA[
+mvn help:effective-pom			
+		]]></screen>
+		</section>
+		<section id="clean">
+			<title>clean</title>
+			<para>清楚</para>
+			<screen><![CDATA[
+$ mvn clean		
+			]]></screen>
+		</section>
+		<section id="compile">
+			<title>compile</title>
+			<para>编译项目的源代码</para>
+			<screen><![CDATA[
+$ mvn compile
+			]]></screen>
+		</section>
+		<section id="test">
+			<title>test</title>
+			<para>编译测试的源代码</para>
+			<screen><![CDATA[
+mvn test-compile			
+			]]></screen>
+			<para>运行测试</para>
+			<screen><![CDATA[
+$ mvn test
+			]]></screen>
+			<para>打包但不测试</para>
+			<screen><![CDATA[
+mvn -D maven.test.skip=true package
+			]]></screen>
+		</section>
+		<section id="package">
+			<title>package</title>
+			<para>将编译后的代码打包</para>
+			<screen><![CDATA[
+$ mvn package
+			]]></screen>
+			<screen><![CDATA[
+$ ls target/*.war
+target/www.netkiller.cn-0.0.1-SNAPSHOT.war
+			]]></screen>
+		</section>
+		<section id="install">
+			<title>install</title>
+			<para>将项目打包后安装到本地仓库，可以作为其它项目的本地依赖。</para>
+			<screen><![CDATA[
+$ mvn install		
+			]]></screen>
+			<para>跳过测试</para>
+			<screen><![CDATA[
+mvn install -Dmaven.test.skip=true			
+			]]></screen>
+			<section>
+				<title>install-file</title>
+				<para>安装本地jar文件到Maven的.m2库中。</para>
+				<screen>
+				<![CDATA[
+mvn install:install-file -Dfile=Path/to/your.jar} -DgroupId=com.example -DartifactId=project -Dversion=1.2.0 -Dpackaging=jar
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="war">
+			<title>war</title>
+			<screen><![CDATA[
+mvn compile war:war			
+			]]></screen>
+			<screen><![CDATA[
+mvn compile war:exploded			
+			]]></screen>
+			<screen><![CDATA[
+mvn compile war:inplace
+			]]></screen>
+		</section>
+		<section id="exec">
+			<title>exec</title>
+			<screen><![CDATA[
+$ mvn exec:java -Dexec.mainClass="cn.netkiller.Test"			
+			]]></screen>
+		</section>
+		<section id="dependency">
+			<title>dependency</title>
+			<section>
+				<title>build-classpath</title>
+				<screen><![CDATA[
+$ mvn dependency:build-classpath
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building api.netkiller.cn 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.10:build-classpath (default-cli) @ api.cf88.com ---
+[INFO] Dependencies classpath:
+/www/.m2/repository/org/springframework/boot/spring-boot-starter-web/1.3.0.RELEASE/spring-boot-starter-web-1.3.0.RELEASE.jar:......:/www/.m2/repository/junit/junit/4.12/junit-4.12.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.692 s
+[INFO] Finished at: 2016-08-10T17:32:49+08:00
+[INFO] Final Memory: 25M/162M
+[INFO] ------------------------------------------------------------------------
+			
+			]]></screen>
+			</section>
+			<section id="tree">
+				<title>dependency:tree 显示包依赖树</title>
+				<screen><![CDATA[
+[www@iZ62yln3rjjZ repository]$ mvn dependency:tree
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building api.example.com 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ api.cf88.com ---
+[INFO] cf88.com:api.cf88.com:jar:0.0.1-SNAPSHOT
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:1.3.0.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:1.3.0.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:1.3.0.RELEASE:compile
+[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.1.3:compile
+[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.1.3:compile
+[INFO] |  |  |  +- org.slf4j:jul-to-slf4j:jar:1.7.13:compile
+[INFO] |  |  |  \- org.slf4j:log4j-over-slf4j:jar:1.7.13:compile
+[INFO] |  |  \- org.yaml:snakeyaml:jar:1.16:runtime
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:1.3.0.RELEASE:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.0.28:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.0.28:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-logging-juli:jar:8.0.28:compile
+[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.0.28:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-validation:jar:1.3.0.RELEASE:compile
+[INFO] |  |  \- org.hibernate:hibernate-validator:jar:5.2.2.Final:compile
+[INFO] |  |     +- javax.validation:validation-api:jar:1.1.0.Final:compile
+[INFO] |  |     \- com.fasterxml:classmate:jar:1.1.0:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.3:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.3:compile
+[INFO] |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.6.3:compile
+[INFO] |  +- org.springframework:spring-web:jar:4.2.3.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-aop:jar:4.2.3.RELEASE:compile
+[INFO] |  |     \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  \- org.springframework:spring-webmvc:jar:4.2.3.RELEASE:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-data-jpa:jar:1.3.0.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-aop:jar:1.3.0.RELEASE:compile
+[INFO] |  |  \- org.aspectj:aspectjweaver:jar:1.8.7:compile
+[INFO] |  +- org.hibernate:hibernate-entitymanager:jar:4.3.11.Final:compile
+[INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.3.0.Final:compile
+[INFO] |  |  +- org.jboss.logging:jboss-logging-annotations:jar:1.2.0.Beta1:compile
+[INFO] |  |  +- org.hibernate:hibernate-core:jar:4.3.11.Final:compile
+[INFO] |  |  |  +- antlr:antlr:jar:2.7.7:compile
+[INFO] |  |  |  \- org.jboss:jandex:jar:1.1.0.Final:compile
+[INFO] |  |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |  |  \- xml-apis:xml-apis:jar:1.0.b2:compile
+[INFO] |  |  +- org.hibernate.common:hibernate-commons-annotations:jar:4.0.5.Final:compile
+[INFO] |  |  +- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final:compile
+[INFO] |  |  \- org.javassist:javassist:jar:3.18.1-GA:compile
+[INFO] |  +- javax.transaction:javax.transaction-api:jar:1.2:compile
+[INFO] |  +- org.springframework.data:spring-data-jpa:jar:1.9.1.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-orm:jar:4.2.3.RELEASE:compile
+[INFO] |  \- org.springframework:spring-aspects:jar:4.2.3.RELEASE:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-jdbc:jar:1.3.0.RELEASE:compile
+[INFO] |  +- org.apache.tomcat:tomcat-jdbc:jar:8.0.28:compile
+[INFO] |  |  \- org.apache.tomcat:tomcat-juli:jar:8.0.28:compile
+[INFO] |  \- org.springframework:spring-jdbc:jar:4.2.3.RELEASE:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-redis:jar:1.3.0.RELEASE:compile
+[INFO] |  +- org.springframework.data:spring-data-redis:jar:1.6.1.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-context-support:jar:4.2.3.RELEASE:compile
+[INFO] |  \- redis.clients:jedis:jar:2.7.3:compile
+[INFO] |     \- org.apache.commons:commons-pool2:jar:2.4.2:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-data-mongodb:jar:1.3.0.RELEASE:compile
+[INFO] |  \- org.mongodb:mongo-java-driver:jar:2.13.3:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-amqp:jar:1.3.0.RELEASE:compile
+[INFO] |  +- org.springframework:spring-messaging:jar:4.2.3.RELEASE:compile
+[INFO] |  \- org.springframework.amqp:spring-rabbit:jar:1.5.2.RELEASE:compile
+[INFO] |     +- org.springframework.retry:spring-retry:jar:1.1.2.RELEASE:compile
+[INFO] |     +- org.springframework.amqp:spring-amqp:jar:1.5.2.RELEASE:compile
+[INFO] |     +- com.rabbitmq:http-client:jar:1.0.0.RELEASE:compile
+[INFO] |     |  \- org.apache.httpcomponents:httpclient:jar:4.5.1:compile
+[INFO] |     |     +- org.apache.httpcomponents:httpcore:jar:4.4.4:compile
+[INFO] |     |     \- commons-codec:commons-codec:jar:1.9:compile
+[INFO] |     \- com.rabbitmq:amqp-client:jar:3.5.6:compile
+[INFO] +- org.springframework.boot:spring-boot-devtools:jar:1.3.0.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot:jar:1.3.0.RELEASE:compile
+[INFO] |  \- org.springframework.boot:spring-boot-autoconfigure:jar:1.3.0.RELEASE:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-test:jar:1.3.0.RELEASE:test
+[INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
+[INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
+[INFO] |  +- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] |  +- org.hamcrest:hamcrest-library:jar:1.3:test
+[INFO] |  +- org.springframework:spring-core:jar:4.2.3.RELEASE:compile
+[INFO] |  \- org.springframework:spring-test:jar:4.2.3.RELEASE:test
+[INFO] +- org.springframework.data:spring-data-mongodb:jar:1.8.1.RELEASE:compile
+[INFO] |  +- org.springframework:spring-tx:jar:4.2.3.RELEASE:compile
+[INFO] |  +- org.springframework:spring-context:jar:4.2.3.RELEASE:compile
+[INFO] |  +- org.springframework:spring-beans:jar:4.2.3.RELEASE:compile
+[INFO] |  +- org.springframework:spring-expression:jar:4.2.3.RELEASE:compile
+[INFO] |  +- org.springframework.data:spring-data-commons:jar:1.11.1.RELEASE:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.13:compile
+[INFO] |  \- org.slf4j:jcl-over-slf4j:jar:1.7.13:compile
+[INFO] +- mysql:mysql-connector-java:jar:5.1.37:compile
+[INFO] +- com.google.code.gson:gson:jar:2.3.1:compile
+[INFO] \- junit:junit:jar:4.12:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 4.400 s
+[INFO] Finished at: 2016-08-09T10:25:07+08:00
+[INFO] Final Memory: 23M/163M
+[INFO] ------------------------------------------------------------------------		
+			]]></screen>
+			</section>
+
+			<section id="copy-dependencies">
+				<title>copy-dependencies 导出依赖包</title>
+				<screen><![CDATA[
+$ mvn dependency:copy-dependencies
+			]]></screen>
+				<screen><![CDATA[
+$ ls target/dependency/
+antlr-2.7.7.jar                                javassist-3.18.1-GA.jar                    snakeyaml-1.16.jar                                spring-boot-starter-web-1.3.0.RELEASE.jar        spring-webmvc-4.2.3.RELEASE.jar
+aopalliance-1.0.jar                            javax.transaction-api-1.2.jar              spring-aop-4.2.3.RELEASE.jar                      spring-boot-starter-websocket-1.3.0.RELEASE.jar  spring-websocket-4.2.3.RELEASE.jar
+aspectjweaver-1.8.7.jar                        jboss-logging-3.3.0.Final.jar              spring-aspects-4.2.3.RELEASE.jar                  spring-context-4.2.3.RELEASE.jar                 thymeleaf-2.1.4.RELEASE.jar
+classmate-1.1.0.jar                            jboss-logging-annotations-1.2.0.Beta1.jar  spring-beans-4.2.3.RELEASE.jar                    spring-core-4.2.3.RELEASE.jar                    thymeleaf-layout-dialect-1.3.1.jar
+dom4j-1.6.1.jar                                jcl-over-slf4j-1.7.13.jar                  spring-boot-1.3.0.RELEASE.jar                     spring-data-commons-1.11.1.RELEASE.jar           thymeleaf-spring4-2.1.4.RELEASE.jar
+groovy-2.4.4.jar                               jstl-1.2.jar                               spring-boot-autoconfigure-1.3.0.RELEASE.jar       spring-data-jpa-1.9.1.RELEASE.jar                tomcat-embed-core-8.0.28.jar
+hibernate-commons-annotations-4.0.5.Final.jar  jul-to-slf4j-1.7.13.jar                    spring-boot-starter-1.3.0.RELEASE.jar             spring-expression-4.2.3.RELEASE.jar              tomcat-embed-el-8.0.28.jar
+hibernate-core-4.3.11.Final.jar                log4j-over-slf4j-1.7.13.jar                spring-boot-starter-aop-1.3.0.RELEASE.jar         spring-jdbc-4.2.3.RELEASE.jar                    tomcat-embed-logging-juli-8.0.28.jar
+hibernate-entitymanager-4.3.11.Final.jar       logback-classic-1.1.3.jar                  spring-boot-starter-data-jpa-1.3.0.RELEASE.jar    spring-messaging-4.2.3.RELEASE.jar               tomcat-embed-websocket-8.0.28.jar
+hibernate-jpa-2.1-api-1.0.0.Final.jar          logback-core-1.1.3.jar                     spring-boot-starter-jdbc-1.3.0.RELEASE.jar        spring-orm-4.2.3.RELEASE.jar                     tomcat-jdbc-8.0.28.jar
+hibernate-validator-5.2.2.Final.jar            mybatis-3.3.0.jar                          spring-boot-starter-logging-1.3.0.RELEASE.jar     spring-security-config-4.0.3.RELEASE.jar         tomcat-juli-8.0.28.jar
+jackson-annotations-2.6.3.jar                  mybatis-spring-1.2.3.jar                   spring-boot-starter-security-1.3.0.RELEASE.jar    spring-security-core-4.0.3.RELEASE.jar           unbescape-1.1.0.RELEASE.jar
+jackson-core-2.6.3.jar                         mysql-connector-java-5.1.37.jar            spring-boot-starter-thymeleaf-1.3.0.RELEASE.jar   spring-security-web-4.0.3.RELEASE.jar            validation-api-1.1.0.Final.jar
+jackson-databind-2.6.3.jar                     ognl-3.0.8.jar                             spring-boot-starter-tomcat-1.3.0.RELEASE.jar      spring-tx-4.2.3.RELEASE.jar                      xml-apis-1.0.b2.jar
+jandex-1.1.0.Final.jar                         slf4j-api-1.7.13.jar                       spring-boot-starter-validation-1.3.0.RELEASE.jar  spring-web-4.2.3.RELEASE.jar		
+			]]></screen>
+			</section>
+			<section id="analyze">
+				<title>analyze 查看未被使用的包</title>
+				<screen><![CDATA[
+$ mvn dependency:analyze			
+			]]></screen>
+			</section>
+			<section id="sources">
+				<title>sources 下载源码</title>
+				<screen><![CDATA[
+mvn dependency:sources			
+			]]></screen>
+			</section>
 		</section>
 	</section>
 	<section id="mvnrepository">
@@ -33,13 +289,13 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/mave
 		<para>http://search.maven.org/</para>
 		<para>http://mvnrepository.com/</para>
 		<para>本地下载目录</para>
-		<screen>
+		<screen><![CDATA[
 $ ls ~/.m2
-		</screen>
+		]]></screen>
 	</section>
 	<section id="pom.xml">
 		<title>pom.xml</title>
-		
+
 		<section id="properties">
 			<title>properties</title>
 			<para>定义 properties</para>
@@ -151,7 +407,22 @@ $ ls ~/.m2
 		</section>
 		<section id="build">
 			<title>build</title>
-			<section>
+			
+			
+		</section>
+		<section id="build">
+		<title>build</title>
+		<section>
+			<title>finalName</title>
+			<para>最终 jar 包得名字</para>
+			<screen>
+			<![CDATA[
+<build>
+		<finalName>crawler</finalName>
+</build>
+			]]>
+			</screen>
+		</section><section>
 				<title>sourceDirectory</title>
 				<para>编译源码目录</para>
 				<screen>
@@ -159,8 +430,42 @@ $ ls ~/.m2
 <sourceDirectory>src</sourceDirectory>				
 				]]>
 				</screen>
-			</section>
-			<section>
+			</section><section id="resources">
+			<title>resources 文件处理</title>
+			<para>resources 用来处理 src/main/resources 目录中得内容</para>
+			<screen>
+			<![CDATA[
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>${project.build.directory}/conf</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>development.properties</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>development.properties</include>
+				</includes>
+				<targetPath>resources</targetPath>
+			</resource>
+			
+			<resource>
+				<directory>lib</directory>
+				<includes>
+					<include>**/*.sh</include>
+					<include>**/*.bat</include>
+				</includes>
+				<targetPath>${project.build.directory}/lib</targetPath>
+			</resource>
+		</resources>
+				
+			]]>
+			</screen><section>
 				<title>resources</title>
 				<para>将资源文件编译后复制到 WEB-INF/classes 目录中</para>
 				<screen>
@@ -200,7 +505,7 @@ $ ls ~/.m2
 				</screen>
 			</section>
 		</section>
-		<section id="plugins">
+	</section><section id="plugins">
 			<title>plugins</title>
 			<section>
 				<title>跳过Unit test</title>
@@ -255,311 +560,9 @@ $ ls ~/.m2
 			</section>
 		</section>
 	</section>		
-	<section id="cli">
-		<title>Maven 命令</title>
-		<section id="help">
-		<title>help</title>
-		<para>查看可用的pom定义</para>
-		<screen>
-mvn help:effective-pom			
-		</screen>
-	</section><section id="clean">
-			<title>clean</title>
-			<para>清楚</para>
-			<screen>
-$ mvn clean		
-			</screen>
-		</section>
-		<section id="compile">
-			<title>compile</title>
-			<para>编译项目的源代码</para>
-			<screen>
-$ mvn compile
-			</screen>
-		</section>
-		<section id="test">
-			<title>test</title>
-			<para>编译测试的源代码</para>
-			<screen>
-mvn test-compile			
-			</screen>
-			<para>运行测试</para>
-			<screen>
-$ mvn test
-			</screen>
-			<para>打包但不测试</para>
-			<screen>
-mvn -D maven.test.skip=true package
-			</screen>
-		</section>
-		<section id="package">
-			<title>package</title>
-			<para>将编译后的代码打包</para>
-			<screen>
-$ mvn package
-			</screen>
-			<screen>
-$ ls target/*.war
-target/www.netkiller.cn-0.0.1-SNAPSHOT.war
-			</screen>
-		</section>
-		<section id="install">
-			<title>install</title>
-			<para>将项目打包后安装到本地仓库，可以作为其它项目的本地依赖。</para>
-			<screen>
-$ mvn install		
-			</screen>
-			<para>跳过测试</para>
-			<screen>
-mvn install -Dmaven.test.skip=true			
-			</screen>
-			<section>
-				<title>install-file</title>
-				<para>安装本地jar文件到Maven的.m2库中。</para>
-				<screen>
-				<![CDATA[
-mvn install:install-file -Dfile=Path/to/your.jar} -DgroupId=com.example -DartifactId=project -Dversion=1.2.0 -Dpackaging=jar
-				]]>
-				</screen>
-			</section>
-		</section>
-		<section id="war">
-			<title>war</title>
-			<screen>
-mvn compile war:war			
-			</screen>
-			<screen>
-mvn compile war:exploded			
-			</screen>
-			<screen>
-mvn compile war:inplace
-			</screen>
-		</section>
-		<section id="exec">
-			<title>exec</title>
-			<screen>
-$ mvn exec:java -Dexec.mainClass="cn.netkiller.Test"			
-			</screen>
-		</section><section id="dependency">
-		<title>dependency</title>
-		<section>
-			<title>build-classpath</title>
-			<screen>
-$ mvn dependency:build-classpath
-[INFO] Scanning for projects...
-[INFO]                                                                         
-[INFO] ------------------------------------------------------------------------
-[INFO] Building api.netkiller.cn 0.0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-[INFO] 
-[INFO] --- maven-dependency-plugin:2.10:build-classpath (default-cli) @ api.cf88.com ---
-[INFO] Dependencies classpath:
-/www/.m2/repository/org/springframework/boot/spring-boot-starter-web/1.3.0.RELEASE/spring-boot-starter-web-1.3.0.RELEASE.jar:......:/www/.m2/repository/junit/junit/4.12/junit-4.12.jar
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 2.692 s
-[INFO] Finished at: 2016-08-10T17:32:49+08:00
-[INFO] Final Memory: 25M/162M
-[INFO] ------------------------------------------------------------------------
-			
-			</screen>
-		</section>
-		<section id="tree">
-			<title>dependency:tree 显示包依赖树</title>
-			<screen>
-[www@iZ62yln3rjjZ repository]$ mvn dependency:tree
-[INFO] Scanning for projects...
-[INFO]                                                                         
-[INFO] ------------------------------------------------------------------------
-[INFO] Building api.example.com 0.0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-[INFO] 
-[INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ api.cf88.com ---
-[INFO] cf88.com:api.cf88.com:jar:0.0.1-SNAPSHOT
-[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:1.3.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:1.3.0.RELEASE:compile
-[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:1.3.0.RELEASE:compile
-[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.1.3:compile
-[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.1.3:compile
-[INFO] |  |  |  +- org.slf4j:jul-to-slf4j:jar:1.7.13:compile
-[INFO] |  |  |  \- org.slf4j:log4j-over-slf4j:jar:1.7.13:compile
-[INFO] |  |  \- org.yaml:snakeyaml:jar:1.16:runtime
-[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:1.3.0.RELEASE:compile
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.0.28:compile
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.0.28:compile
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-logging-juli:jar:8.0.28:compile
-[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.0.28:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter-validation:jar:1.3.0.RELEASE:compile
-[INFO] |  |  \- org.hibernate:hibernate-validator:jar:5.2.2.Final:compile
-[INFO] |  |     +- javax.validation:validation-api:jar:1.1.0.Final:compile
-[INFO] |  |     \- com.fasterxml:classmate:jar:1.1.0:compile
-[INFO] |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.3:compile
-[INFO] |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.3:compile
-[INFO] |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.6.3:compile
-[INFO] |  +- org.springframework:spring-web:jar:4.2.3.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-aop:jar:4.2.3.RELEASE:compile
-[INFO] |  |     \- aopalliance:aopalliance:jar:1.0:compile
-[INFO] |  \- org.springframework:spring-webmvc:jar:4.2.3.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-data-jpa:jar:1.3.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter-aop:jar:1.3.0.RELEASE:compile
-[INFO] |  |  \- org.aspectj:aspectjweaver:jar:1.8.7:compile
-[INFO] |  +- org.hibernate:hibernate-entitymanager:jar:4.3.11.Final:compile
-[INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.3.0.Final:compile
-[INFO] |  |  +- org.jboss.logging:jboss-logging-annotations:jar:1.2.0.Beta1:compile
-[INFO] |  |  +- org.hibernate:hibernate-core:jar:4.3.11.Final:compile
-[INFO] |  |  |  +- antlr:antlr:jar:2.7.7:compile
-[INFO] |  |  |  \- org.jboss:jandex:jar:1.1.0.Final:compile
-[INFO] |  |  +- dom4j:dom4j:jar:1.6.1:compile
-[INFO] |  |  |  \- xml-apis:xml-apis:jar:1.0.b2:compile
-[INFO] |  |  +- org.hibernate.common:hibernate-commons-annotations:jar:4.0.5.Final:compile
-[INFO] |  |  +- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final:compile
-[INFO] |  |  \- org.javassist:javassist:jar:3.18.1-GA:compile
-[INFO] |  +- javax.transaction:javax.transaction-api:jar:1.2:compile
-[INFO] |  +- org.springframework.data:spring-data-jpa:jar:1.9.1.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-orm:jar:4.2.3.RELEASE:compile
-[INFO] |  \- org.springframework:spring-aspects:jar:4.2.3.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-jdbc:jar:1.3.0.RELEASE:compile
-[INFO] |  +- org.apache.tomcat:tomcat-jdbc:jar:8.0.28:compile
-[INFO] |  |  \- org.apache.tomcat:tomcat-juli:jar:8.0.28:compile
-[INFO] |  \- org.springframework:spring-jdbc:jar:4.2.3.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-redis:jar:1.3.0.RELEASE:compile
-[INFO] |  +- org.springframework.data:spring-data-redis:jar:1.6.1.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-context-support:jar:4.2.3.RELEASE:compile
-[INFO] |  \- redis.clients:jedis:jar:2.7.3:compile
-[INFO] |     \- org.apache.commons:commons-pool2:jar:2.4.2:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-data-mongodb:jar:1.3.0.RELEASE:compile
-[INFO] |  \- org.mongodb:mongo-java-driver:jar:2.13.3:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-amqp:jar:1.3.0.RELEASE:compile
-[INFO] |  +- org.springframework:spring-messaging:jar:4.2.3.RELEASE:compile
-[INFO] |  \- org.springframework.amqp:spring-rabbit:jar:1.5.2.RELEASE:compile
-[INFO] |     +- org.springframework.retry:spring-retry:jar:1.1.2.RELEASE:compile
-[INFO] |     +- org.springframework.amqp:spring-amqp:jar:1.5.2.RELEASE:compile
-[INFO] |     +- com.rabbitmq:http-client:jar:1.0.0.RELEASE:compile
-[INFO] |     |  \- org.apache.httpcomponents:httpclient:jar:4.5.1:compile
-[INFO] |     |     +- org.apache.httpcomponents:httpcore:jar:4.4.4:compile
-[INFO] |     |     \- commons-codec:commons-codec:jar:1.9:compile
-[INFO] |     \- com.rabbitmq:amqp-client:jar:3.5.6:compile
-[INFO] +- org.springframework.boot:spring-boot-devtools:jar:1.3.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot:jar:1.3.0.RELEASE:compile
-[INFO] |  \- org.springframework.boot:spring-boot-autoconfigure:jar:1.3.0.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-test:jar:1.3.0.RELEASE:test
-[INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
-[INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
-[INFO] |  +- org.hamcrest:hamcrest-core:jar:1.3:test
-[INFO] |  +- org.hamcrest:hamcrest-library:jar:1.3:test
-[INFO] |  +- org.springframework:spring-core:jar:4.2.3.RELEASE:compile
-[INFO] |  \- org.springframework:spring-test:jar:4.2.3.RELEASE:test
-[INFO] +- org.springframework.data:spring-data-mongodb:jar:1.8.1.RELEASE:compile
-[INFO] |  +- org.springframework:spring-tx:jar:4.2.3.RELEASE:compile
-[INFO] |  +- org.springframework:spring-context:jar:4.2.3.RELEASE:compile
-[INFO] |  +- org.springframework:spring-beans:jar:4.2.3.RELEASE:compile
-[INFO] |  +- org.springframework:spring-expression:jar:4.2.3.RELEASE:compile
-[INFO] |  +- org.springframework.data:spring-data-commons:jar:1.11.1.RELEASE:compile
-[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.13:compile
-[INFO] |  \- org.slf4j:jcl-over-slf4j:jar:1.7.13:compile
-[INFO] +- mysql:mysql-connector-java:jar:5.1.37:compile
-[INFO] +- com.google.code.gson:gson:jar:2.3.1:compile
-[INFO] \- junit:junit:jar:4.12:test
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 4.400 s
-[INFO] Finished at: 2016-08-09T10:25:07+08:00
-[INFO] Final Memory: 23M/163M
-[INFO] ------------------------------------------------------------------------		
-			</screen>
-		</section>
-
-		<section id="copy-dependencies">
-			<title>copy-dependencies 导出依赖包</title>
-			<screen>
-$ mvn dependency:copy-dependencies
-			</screen>
-			<screen>
-$ ls target/dependency/
-antlr-2.7.7.jar                                javassist-3.18.1-GA.jar                    snakeyaml-1.16.jar                                spring-boot-starter-web-1.3.0.RELEASE.jar        spring-webmvc-4.2.3.RELEASE.jar
-aopalliance-1.0.jar                            javax.transaction-api-1.2.jar              spring-aop-4.2.3.RELEASE.jar                      spring-boot-starter-websocket-1.3.0.RELEASE.jar  spring-websocket-4.2.3.RELEASE.jar
-aspectjweaver-1.8.7.jar                        jboss-logging-3.3.0.Final.jar              spring-aspects-4.2.3.RELEASE.jar                  spring-context-4.2.3.RELEASE.jar                 thymeleaf-2.1.4.RELEASE.jar
-classmate-1.1.0.jar                            jboss-logging-annotations-1.2.0.Beta1.jar  spring-beans-4.2.3.RELEASE.jar                    spring-core-4.2.3.RELEASE.jar                    thymeleaf-layout-dialect-1.3.1.jar
-dom4j-1.6.1.jar                                jcl-over-slf4j-1.7.13.jar                  spring-boot-1.3.0.RELEASE.jar                     spring-data-commons-1.11.1.RELEASE.jar           thymeleaf-spring4-2.1.4.RELEASE.jar
-groovy-2.4.4.jar                               jstl-1.2.jar                               spring-boot-autoconfigure-1.3.0.RELEASE.jar       spring-data-jpa-1.9.1.RELEASE.jar                tomcat-embed-core-8.0.28.jar
-hibernate-commons-annotations-4.0.5.Final.jar  jul-to-slf4j-1.7.13.jar                    spring-boot-starter-1.3.0.RELEASE.jar             spring-expression-4.2.3.RELEASE.jar              tomcat-embed-el-8.0.28.jar
-hibernate-core-4.3.11.Final.jar                log4j-over-slf4j-1.7.13.jar                spring-boot-starter-aop-1.3.0.RELEASE.jar         spring-jdbc-4.2.3.RELEASE.jar                    tomcat-embed-logging-juli-8.0.28.jar
-hibernate-entitymanager-4.3.11.Final.jar       logback-classic-1.1.3.jar                  spring-boot-starter-data-jpa-1.3.0.RELEASE.jar    spring-messaging-4.2.3.RELEASE.jar               tomcat-embed-websocket-8.0.28.jar
-hibernate-jpa-2.1-api-1.0.0.Final.jar          logback-core-1.1.3.jar                     spring-boot-starter-jdbc-1.3.0.RELEASE.jar        spring-orm-4.2.3.RELEASE.jar                     tomcat-jdbc-8.0.28.jar
-hibernate-validator-5.2.2.Final.jar            mybatis-3.3.0.jar                          spring-boot-starter-logging-1.3.0.RELEASE.jar     spring-security-config-4.0.3.RELEASE.jar         tomcat-juli-8.0.28.jar
-jackson-annotations-2.6.3.jar                  mybatis-spring-1.2.3.jar                   spring-boot-starter-security-1.3.0.RELEASE.jar    spring-security-core-4.0.3.RELEASE.jar           unbescape-1.1.0.RELEASE.jar
-jackson-core-2.6.3.jar                         mysql-connector-java-5.1.37.jar            spring-boot-starter-thymeleaf-1.3.0.RELEASE.jar   spring-security-web-4.0.3.RELEASE.jar            validation-api-1.1.0.Final.jar
-jackson-databind-2.6.3.jar                     ognl-3.0.8.jar                             spring-boot-starter-tomcat-1.3.0.RELEASE.jar      spring-tx-4.2.3.RELEASE.jar                      xml-apis-1.0.b2.jar
-jandex-1.1.0.Final.jar                         slf4j-api-1.7.13.jar                       spring-boot-starter-validation-1.3.0.RELEASE.jar  spring-web-4.2.3.RELEASE.jar		
-			</screen>
-		</section>
-		<section id="analyze">
-			<title>analyze 查看未被使用的包</title>
-			<screen>
-$ mvn dependency:analyze			
-			</screen>
-		</section>
-		<section id="sources">
-			<title>sources 下载源码</title>
-			<screen>
-mvn dependency:sources			
-			</screen>
-		</section>
-	</section>
-	</section>
-	<section>
-		<title>build</title>
-		<section>
-			<title>finalName</title>
-			<para>最终 jar 包得名字</para>
-			<screen>
-			<![CDATA[
-<build>
-		<finalName>crawler</finalName>
-</build>
-			]]>
-			</screen>
-		</section>
-	</section>
-	<section id="resources">
-		<title>resources 文件处理</title>
-		<para>resources 用来处理 src/main/resources 目录中得内容</para>
-		<screen>
-		<![CDATA[
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<targetPath>${project.build.directory}/conf</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<excludes>
-					<exclude>development.properties</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>development.properties</include>
-				</includes>
-				<targetPath>resources</targetPath>
-			</resource>
-			
-			<resource>
-				<directory>lib</directory>
-				<includes>
-					<include>**/*.sh</include>
-					<include>**/*.bat</include>
-				</includes>
-				<targetPath>${project.build.directory}/lib</targetPath>
-			</resource>
-		</resources>
-				
-		]]>
-		</screen>
-	</section>
+	
+	
+	
 	<section id="plugins">
 		<title>plugins</title>
 		<section id="maven-compiler-plugin">
