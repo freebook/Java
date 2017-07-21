@@ -240,8 +240,16 @@ repostitory.findByName("Neo", sort);
 			]]>
 			</programlisting>
 		</section>
-	</section>
-	<section id="Query">
+		<section>
+			<title>OrderBy</title>
+			<programlisting>
+			<![CDATA[
+public List<StudentEntity> findAllByOrderByIdAsc();
+public List<StudentEntity> findAllByOrderByIdDesc();
+List<RecentRead> findByMemberIdOrderByIdDesc(int memberId, Pageable pageable);
+			]]>
+			</programlisting>
+		</section><section id="Query">
 		<title>Query</title>
 		<section>
 			<title>参数传递</title>
@@ -286,7 +294,9 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	</section>
+	
+	<section id="Transactional">
 		<title>@Transactional</title>
 		<section>
 			<title>回滚操作</title>

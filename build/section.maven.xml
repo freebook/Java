@@ -509,13 +509,25 @@ mvn dependency:sources
 		</section>
 	</section>
 	</section>
-	
-	
+	<section>
+		<title>build</title>
+		<section>
+			<title>finalName</title>
+			<para>最终 jar 包得名字</para>
+			<screen>
+			<![CDATA[
+<build>
+		<finalName>crawler</finalName>
+</build>
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="resources">
 		<title>resources 文件处理</title>
+		<para>resources 用来处理 src/main/resources 目录中得内容</para>
 		<screen>
 		<![CDATA[
-		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -714,6 +726,20 @@ The build.xml:
 		</section>
 		<section id="maven-jar-plugin">
 			<title>maven-jar-plugin</title>
+			<para>指定jar创建目录，下面配置运行 mvn package 后将在 target 目录下创建一个 project 目录。</para>
+			<screen>
+			<![CDATA[
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-jar-plugin</artifactId>
+		<version>2.3.1</version>
+		<configuration>
+			<outputDirectory>${project.build.directory}/project</outputDirectory>
+		</configuration>
+	</plugin>
+			]]>
+			</screen>
+			<para>知道 jar 文件的默认 mainClass</para>
 			<screen>
 			<![CDATA[
 			<plugin>

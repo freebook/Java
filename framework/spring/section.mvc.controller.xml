@@ -844,9 +844,112 @@ public class ArticleRestController {
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>兼容传统 json 接口</title>
+		<para>开发中发现很多人不适应新的接口方式，有时候只能妥协，这些顽固不化的人需要这样的数据库格式</para>
 		<programlisting>
-		<![CDATA[]]>
+		<![CDATA[
+{  
+   "status":true,
+   "reason":"登录成功",
+   "code":1,
+   "data":{
+      "id":2,
+      "name":null,
+      "sex":null,
+      "age":0,
+      "wechat":null,
+      "mobile":"13113668890",
+      "picture":null,
+      "ipAddress":"0:0:0:0:0:0:0:1"
+   }
+}
+		]]>
+		</programlisting>
+		<para>返回数据必须放在 data 字典中, 而我通常是采用 http status code 来返回状态，返回结果是对象。实现上面的需求我们需要加入一个data成员变量，因为我们不清楚最终要返回什么对象。所以声明为 java.lang.Object</para>
+		<programlisting>
+		<![CDATA[
+package com.example.api.pojo;
+
+import java.io.Serializable;
+
+public class RestfulResponse implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4045645995352698349L;
+
+	private boolean status;
+	private String reason;
+	private int code;
+	private Object data;
+
+	public RestfulResponse(boolean status, int code, String reason, Object data) {
+		this.status = status;
+		this.code = code;
+		this.reason = reason;
+		this.data = data;
+
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public int getCode() {
+		return code;
+	}
+
+	public void setCode(int code) {
+		this.code = code;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	@Override
+	public String toString() {
+		return "RestfulResponse [status=" + status + ", reason=" + reason + ", code=" + code + ", data=" + data + "]";
+	}
+
+}
+		]]>
+		</programlisting>
+		<para>Service</para>
+		<programlisting>
+		<![CDATA[
+	public RestfulResponse bindWechat(String mobile, String wechat) {
+		Member member = memberRepository.findByMobile(mobile);
+		member.setWechat(wechat);
+		memberRepository.save(member);
+		return new RestfulResponse(true, 1, "微信绑定成功", member);
+	}
+		]]>
+		</programlisting>
+		<para>Controller</para>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping("/login/sms/{mobile}/{code}")
+	public RestfulResponse sms(@PathVariable String mobile, @PathVariable String wechat) {
+		return memberService.bindWechat(mobile, wechat);
+	}
+		]]>
 		</programlisting>
 	</section>
 </section>
