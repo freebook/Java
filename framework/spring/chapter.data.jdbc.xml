@@ -572,8 +572,186 @@ ENGINE=InnoDB;
 			]]>
 			</programlisting>
 		</section>
-		<section>
-			<title>其他</title>
+		<section id="ManyToMany">
+			<title>ManyToMany 多对多</title>
+			<para>用户与角色就是一个多对多的关系，多对多是需要中间表做关联的。所以我方需要一个 user_has_role 表。</para>
+			<programlisting>
+			<![CDATA[
+    +----------+          +---------------+            +--------+
+    | users    |          | user_has_role |            | role   |
+    +----------+          +---------------+            +--------+
+    | id       | <------o | user_id       |      /---> | id     |
+    | name     |          | role_id       | o---+      | name   |
+    | password |          |               |            |        |
+    +----------+          +---------------+            +--------+
+			]]>
+			</programlisting>
+			<para>创建 User 表</para>
+			<programlisting>
+			<![CDATA[
+package com.example.api.domain.test;
+
+import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+
+@Entity
+@Table(name = "users")
+public class Users implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2480194112597046349L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	private String name;
+	private String password;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_has_role", joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
+	private Set<Roles> roles;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Set<Roles> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Roles> roles) {
+		this.roles = roles;
+	}
+
+	@Override
+	public String toString() {
+		return "Users [id=" + id + ", name=" + name + ", password=" + password + ", roles=" + roles + "]";
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>创建 Role 表</para>
+			<programlisting>
+			<![CDATA[
+package com.example.api.domain.test;
+
+import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "roles")
+public class Roles implements Serializable {
+	private static final long serialVersionUID = 6737037465677800326L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	private String name;
+	@ManyToMany(mappedBy = "roles")
+	private Set<Users> users;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Set<Users> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<Users> users) {
+		this.users = users;
+	}
+
+	@Override
+	public String toString() {
+		return "Roles [id=" + id + ", name=" + name + ", users=" + users + "]";
+	}
+
+}
+
+			]]>
+			</programlisting>
+			<para>最终产生数据库表如下</para>
+			<programlisting>
+			<![CDATA[
+CREATE TABLE `users` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255) NULL DEFAULT NULL,
+	`password` VARCHAR(255) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB;	
+
+CREATE TABLE `roles` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB;
+			
+CREATE TABLE `user_has_role` (
+	`user_id` INT(11) NOT NULL,
+	`role_id` INT(11) NOT NULL,
+	PRIMARY KEY (`user_id`, `role_id`),
+	INDEX `FKsvvq61v3koh04fycopbjx72hj` (`role_id`),
+	CONSTRAINT `FK2dl1ftxlkldulcp934i3125qo` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+	CONSTRAINT `FKsvvq61v3koh04fycopbjx72hj` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB;
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
 			]]>
