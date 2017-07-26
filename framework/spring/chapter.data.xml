@@ -264,5 +264,14 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query</title>
+			<para>Internal Server Error","exception":"org.springframework.dao.InvalidDataAccessApiUsageException","message":"Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query"</para>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>
