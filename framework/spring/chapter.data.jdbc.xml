@@ -1,4 +1,4 @@
-<section id="spring-data-jpa">
+<chapter id="spring-data-jpa"><?dbhtml dir="data/jpa" ?>
 	<title>Spring Data JPA</title>
 	<section id="Entity">
 		<title>@Entity</title>
@@ -9,12 +9,30 @@
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
-	private int id;	
+	private int id;
+			</screen>
+		</section>
+		<section id="Table">
+			<title>@Table</title>
+			<para>配置Schema</para>
+			<screen>
+			<![CDATA[
+@Table(name="tabname", schema="public")
+			]]>
 			</screen>
 		</section>
 		<section id="Column">
 			<title>@Column</title>
 			<para>@Column(name="name", length=80, nullable=true) //较详细定义 </para>
+			<section>
+				<title></title>
+				<screen>
+				<![CDATA[
+	@Column(precision=18, scale=5)  
+    private BigDecimal principal; 				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="JoinColumn">
 			<title>@JoinColumn</title>
@@ -41,7 +59,7 @@ String columnDefinition() default "";
 
 String table() default ""; 
 
-} 			
+}
 			]]>
 			</screen>
 		</section>
@@ -49,7 +67,7 @@ String table() default "";
 			<title>@NotNull 不能为空声明</title>
 			<programlisting>
 @NotNull
-public String username;			
+public String username;
 			</programlisting>
 		</section>
 		<section id="DateTimeFormat">
@@ -61,7 +79,7 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 			<para>Json默认为 yyyy-MM-ddTHH:mm:ss 注意日期与时间中间的T，修改日期格式将T去掉</para>
 			<screen>
 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
+@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 			</screen>
 		</section>
 		<section id="time">
@@ -70,12 +88,12 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 				<title>设置默认时间</title>
 				<programlisting>
 				<![CDATA[
-protected Date lastModified;  
-@Column(insertable = false)  
-@org.hibernate.annotations.ColumnDefault("1.00")  
-@org.hibernate.annotations.Generated(  
-org.hibernate.annotations.GenerationTime.INSERT  
+@Column(insertable = false) 
+@org.hibernate.annotations.ColumnDefault("1.00") 
+@org.hibernate.annotations.Generated(
+org.hibernate.annotations.GenerationTime.INSERT
 ) 
+protected Date lastModified; 
 				]]>
 				</programlisting>
 			</section>
@@ -113,8 +131,114 @@ org.hibernate.annotations.GenerationTime.ALWAYS
 		</section>
 		<section id="index">
 			<title>唯一索引</title>
+			<para>针对字段做唯一索引</para>
 			<screen>
 @Column(unique = true)			
+			</screen>
+			<para>创建复合索引</para>
+			<programlisting>
+			<![CDATA[
+package com.example.api.domain;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name = "comment", uniqueConstraints = { @UniqueConstraint(columnNames = { "member_id", "articleId" }) })
+public class Comment implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1484408775034277681L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+	private int id;
+
+	@ManyToOne(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "member_id")
+	private Member member;
+
+	private int articleId;
+
+	private String message;
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(updatable = false)
+	@org.hibernate.annotations.CreationTimestamp
+	protected Date createDate;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	public int getArticleId() {
+		return articleId;
+	}
+
+	public void setArticleId(int articleId) {
+		this.articleId = articleId;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+}
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+CREATE TABLE `comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article_id` int(11) NOT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `member_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK5qxfiu92nwlvgli7bl3evl11m` (`member_id`,`article_id`),
+  CONSTRAINT `FKmrrrpi513ssu63i2783jyiv9m` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			]]>
 			</screen>
 		</section>
 		<section id="enum">
@@ -1076,6 +1200,21 @@ void delete(Iterable<? extends T> entities);		//删除一个实体的集合
 void deleteAll();								//删除所有实体,不用或慎用! 		
 		]]>
 		</screen>
+		<programlisting>
+		<![CDATA[
+public interface UserRepository extends CrudRepository<User, Long> {
+
+    Long countByFirstName(String firstName);
+
+    @Transactional
+    Long deleteByFirstName(String firstName);
+
+    @Transactional
+    List<User> removeByFirstName(String firstName);
+
+}
+		]]>
+		</programlisting>
 	</section>
 	<section id="JpaRepository">
 		<title>JpaRepository</title>
@@ -1169,4 +1308,128 @@ while(it.hasNext()) {
 			</programlisting>
 		</section>
 	</section>
-</section>
+	<section id="EntityManager">
+		<title>EntityManager</title>
+		<programlisting>
+		<![CDATA[
+@Repository 
+@Transactional(readOnly = true)  
+class AccountServiceImpl implements AccountService {  
+ 
+  @PersistenceContext 
+  private EntityManager em;  
+ 
+  @Override 
+  @Transactional 
+  public Account save(Account account) {  
+ 
+    if (account.getId() == null) {  
+      em.persist(account);  
+      return account;  
+    } else {  
+      return em.merge(account);  
+    }  
+  }  
+ 
+  @Override 
+  public List<Account> findByCustomer(Customer customer) {  
+ 
+    TypedQuery query = em.createQuery("select a from Account a where a.customer = ?1", Account.class);  
+    query.setParameter(1, customer);  
+ 
+    return query.getResultList();  
+  }  
+  
+  @Override 
+  public List<Customer> findAll(int page, int pageSize) {  
+ 
+    TypedQuery query = em.createQuery("select c from Customer c", Customer.class);  
+ 
+    query.setFirstResult(page * pageSize);  
+    query.setMaxResults(pageSize);  
+ 
+    return query.getResultList();  
+  }  
+   
+} 
+		]]>
+		</programlisting>
+	</section>
+	<section id="faq">
+		<title>Spring Data FAQ</title>
+		<section>
+			<title>No identifier specified for entity</title>
+			<para></para>
+		</section>
+		<section>
+			<title>Oracle Date 类型显示日期和时间</title>
+			<programlisting>
+			<![CDATA[
+package api.domain.oracle;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name = "test")
+public class Test {
+
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_id_Sequence")
+	@SequenceGenerator(name = "test_id_Sequence", sequenceName = "test")
+	private Long id;
+
+	@NotNull
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	public Date createdate;
+
+	public Member() {
+
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getCreatedate() {
+		return createdate;
+	}
+
+	public void setCreatedate(Date createdate) {
+		this.createdate = createdate;
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query</title>
+			<para>Internal Server Error","exception":"org.springframework.dao.InvalidDataAccessApiUsageException","message":"Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query"</para>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</chapter>

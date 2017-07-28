@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="data" ?>
-	<title>Spring Data</title>
+<!-- <chapter id="index"><?dbhtml dir="data" ?>
+	<title>Spring Data</title> -->
 	
-	<section id="spring-data-redis">
-		<title>Redis</title>
+	<chapter id="spring-data-redis"><?dbhtml dir="data/redis" ?>
+		<title>Spring Data Redis</title>
 		<section>
 			<title>pom.xml</title>
 			<screen>
@@ -192,86 +192,8 @@ redis 127.0.0.1:6379> get key
 				<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到 "\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过 template.setKeySerializer(new StringRedisSerializer()); 实现 </para>
 			</tip>
 		</section>
-	</section>
+	</chapter>
 	
 	&chapter.data.mongodb.xml;
 	&chapter.data.jdbc.xml;
-
-	<section id="faq">
-		<title>FAQ</title>
-		<section>
-			<title>No identifier specified for entity</title>
-			<para></para>
-		</section>
-		<section>
-			<title>Oracle Date 类型显示日期和时间</title>
-			<programlisting>
-			<![CDATA[
-package api.domain.oracle;
-
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-@Entity
-@Table(name = "test")
-public class Test {
-
-	@Id
-	@Column(name = "ID")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_id_Sequence")
-	@SequenceGenerator(name = "test_id_Sequence", sequenceName = "test")
-	private Long id;
-
-	@NotNull
-	@DateTimeFormat(iso = ISO.DATE_TIME)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	public Date createdate;
-
-	public Member() {
-
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Date getCreatedate() {
-		return createdate;
-	}
-
-	public void setCreatedate(Date createdate) {
-		this.createdate = createdate;
-	}
-
-}
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query</title>
-			<para>Internal Server Error","exception":"org.springframework.dao.InvalidDataAccessApiUsageException","message":"Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query"</para>
-			<programlisting>
-			<![CDATA[
-			
-			]]>
-			</programlisting>
-		</section>
-	</section>
-</chapter>
+<!-- </chapter> -->
