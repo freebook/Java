@@ -82,6 +82,15 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 			</screen>
 		</section>
+		<section id="CreatedDate">
+			<title>CreatedDate</title>
+			<screen>
+			<![CDATA[
+	@CreatedDate
+    private Date createdDateTime;			
+			]]>
+			</screen>
+		</section>
 		<section id="time">
 			<title>默认时间规则</title>
 			<section>
