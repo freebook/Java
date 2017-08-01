@@ -550,5 +550,12 @@ spring.data.elasticsearch.repositories.enabled=true
 		]]>
 		</screen>
 	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>java.lang.IllegalStateException: Received message from unsupported version: [2.0.0] minimal compatible version is: [5.0.0]</title>
+			<para>spring-boot-starter-data-elasticsearch 目前还不支持 5.0.0 版本</para>
+		</section>
+	</section>
 </chapter>
 <!-- </chapter> -->

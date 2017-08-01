@@ -23,9 +23,17 @@
 		</section>
 		<section id="Column">
 			<title>@Column</title>
-			<para>@Column(name="name", length=80, nullable=true) //较详细定义 </para>
 			<section>
-				<title></title>
+				<title>字段长度</title>
+				<para>字段长度定义</para>
+				<screen>
+				<![CDATA[
+@Column(name="name", length=80, nullable=true)	
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>浮点型</title>
 				<screen>
 				<![CDATA[
 	@Column(precision=18, scale=5)  
