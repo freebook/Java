@@ -674,7 +674,7 @@ war:war
         myGroup
         myArtifact
         myVersion
-        classes]]>
+        classes
 
     cacheFile (Default: ${project.build.directory}/war/work/webapp-cache.xml)
       Required: true
@@ -700,11 +700,6 @@ war:war
       given, the delimiter is assumed to be the same for start and end.
       
       So, the default filtering delimiters might be specified as:
-      
-      <delimiters>
-        <delimiter>${*}</delimiter>
-        <delimiter>@</delimiter>
-      </delimiters>
       
       Since the '@' delimiter is the same on both ends, we don't need to
       specify '@*@' (though we can).
@@ -755,7 +750,7 @@ war:war
       mapping is set (default) the files are copied with their standard names.
 
     overlays
-      The overlays to apply. Each <overlay> element may contain:
+      The overlays to apply. Each overlay element may contain:
       - id (defaults to currentBuild)
       - groupId (if this and artifactId are null, then the current project is
         treated as its own overlay)
