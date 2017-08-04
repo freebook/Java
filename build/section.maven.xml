@@ -665,7 +665,7 @@ war:war
       Whether classes (that is the content of the WEB-INF/classes directory)
       should be attached to the project as an additional artifact.
       By default the classifier for the additional artifact is 'classes'. You
-      can change it with the someclassifier]]> parameter.
+      can change it with the someclassifier parameter.
       
       If this parameter true, another project can depend on the classes by
       writing something like:
