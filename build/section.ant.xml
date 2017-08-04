@@ -2,7 +2,7 @@
 <section id="ant">
 	<title>Apache Ant</title>
 	<para><ulink url="http://ant.apache.org/">http://ant.apache.org/</ulink></para>
-	<section>
+	<section id="setup">
 		<title>安装 ant</title>
 		<section>
 			<title>1.8</title>
@@ -24,6 +24,51 @@ export CLASSPATH=$CLASSPATH:$ANT_HOME/lib
 			<para>Netkiller OSCM 一键安装</para>
 			<screen>
 curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/ant/apache-ant-1.10.1.sh | bash
+			</screen>
+		</section>
+	</section>
+	<section id="cli">
+		<title>ANT</title>
+		<section>
+			<title>ant.project.name</title>
+			<para>ant.project.name 一般式定义在</para>
+			<screen>
+			<![CDATA[
+<project name="www.netkiller.cn" default="compile" basedir="." xmlns:if="ant:if">
+<echo>${ant.project.name}</echo>
+			]]>
+			</screen>
+			<para>我们希望从命令行传递这个值</para>
+			<screen>
+			<![CDATA[
+<project default="compile" basedir="." xmlns:if="ant:if">
+<echo>${ant.project.name}</echo>
+			]]>
+			</screen>
+			<para>你需要将 project 中的定义去掉才能从命令行传递</para>
+			<screen>
+			<![CDATA[
+ant -Dant.project.name=www.netkiller.cn -f build.xml
+			]]>
+			</screen>
+			<para>你也可以从 build.properties 文件定义 ant.project.name</para>
+			<screen>
+			<![CDATA[
+MacBook-Pro:deployment neo$ cat build.properties 
+ant.project.name=www.netkiller.cn			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+ant -f build.xml -propertyfile build.properties	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>定义 </title>
+			<screen>
+			<![CDATA[
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -559,6 +604,21 @@ Sends an email from me to you with a subject of Results of nightly build and inc
     </fileset>
   </attachments>
 </mail>
+		]]>
+		</screen>
+	</section>
+	<section id="basename">
+		<title>basename</title>
+		<screen>
+		<![CDATA[
+<basename property="jar.filename" file="${lib.jarfile}"/>
+will set jar.filename to myjar.jar, if lib.jarfile is defined as either a full-path filename (eg., /usr/local/lib/myjar.jar), a relative-path filename (eg., lib/myjar.jar), or a simple filename (eg., myjar.jar).
+<basename property="cmdname" file="D:/usr/local/foo.exe"
+          suffix=".exe"/>
+will set cmdname to foo.
+<property environment="env"/>
+<basename property="temp.dirname" file="${env.TEMP}"/>
+			
 		]]>
 		</screen>
 	</section>
