@@ -1257,7 +1257,6 @@ log.debug(message);
 
 logging.level.cn.netkiller.web.TestController=DEBUG
 			</screen>
-
 		</section>
 		<section>
 			<title>禁止控制台输出日志</title>
@@ -1288,6 +1287,27 @@ $ cat src/main/resources/logback.xml
 			]]>
 			</screen>
 			<para>使用 java -jar project-version-xxx.jar 启动后控制不会再输出日志</para>
+		</section>
+		<section id="stdout">
+			<title>标准输出</title>
+			<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{35} : %msg %n</pattern>
+		</encoder>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>日志分割</title>
