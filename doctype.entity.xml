@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.java.xml		 		SYSTEM "chapter.java.xml">
-<!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">
+<!ENTITY chapter.jvm.xml		 			SYSTEM "chapter.jvm.xml">
 <!ENTITY chapter.java.type.xml		 	SYSTEM "chapter.java.type.xml">
 <!ENTITY chapter.java.net.xml 			SYSTEM "chapter.java.net.xml">
 <!ENTITY chapter.java.sql.xml			SYSTEM "chapter.java.sql.xml">
@@ -9,7 +9,7 @@
 <!ENTITY chapter.javax.crypto.xml		SYSTEM "chapter.javax.crypto.xml">
 <!ENTITY chapter.java.reflect.xml 		SYSTEM "chapter.java.reflect.xml">
 <!ENTITY chapter.build.xml				SYSTEM "chapter.build.xml">
-<!ENTITY section.ant.xml				SYSTEM "build/section.ant.xml">
+<!ENTITY section.ant.xml					SYSTEM "build/section.ant.xml">
 <!ENTITY section.gradle.xml				SYSTEM "build/section.gradle.xml">
 <!ENTITY section.maven.xml				SYSTEM "build/section.maven.xml">
 
@@ -19,17 +19,17 @@
 <!ENTITY section.struts.xml				SYSTEM "framework/section.struts.xml">
 <!ENTITY section.play.xml				SYSTEM "framework/section.play.xml">
 
-<!ENTITY part.spring.xml				SYSTEM "framework/spring/part.spring.xml">
+<!ENTITY part.spring.xml					SYSTEM "framework/spring/part.spring.xml">
 <!ENTITY chapter.suite.xml				SYSTEM "framework/spring/chapter.suite.xml">
 <!ENTITY chapter.tomcat.xml				SYSTEM "framework/spring/chapter.tomcat.xml">
 <!ENTITY chapter.security.xml			SYSTEM "framework/spring/chapter.security.xml">
 <!ENTITY chapter.boot.xml				SYSTEM "framework/spring/chapter.boot.xml">
-<!ENTITY chapter.interceptor.xml		SYSTEM "framework/spring/chapter.interceptor.xml">
-<!ENTITY section.boot.quickstart.xml	SYSTEM "framework/spring/section.boot.quickstart.xml">
+<!ENTITY chapter.interceptor.xml			SYSTEM "framework/spring/chapter.interceptor.xml">
+<!ENTITY section.boot.quickstart.xml		SYSTEM "framework/spring/section.boot.quickstart.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "framework/spring/section.mvc.controller.xml">
 <!ENTITY section.rest.xml				SYSTEM "framework/spring/section.rest.xml">
 <!ENTITY section.mvc.view.xml			SYSTEM "framework/spring/section.mvc.view.xml">
-<!ENTITY section.mvc.xml				SYSTEM "framework/spring/section.mvc.xml">
+<!ENTITY section.mvc.xml					SYSTEM "framework/spring/section.mvc.xml">
 <!ENTITY chapter.data.xml				SYSTEM "framework/spring/chapter.data.xml">
 <!ENTITY chapter.data.mongodb.xml		SYSTEM "framework/spring/chapter.data.mongodb.xml">
 <!ENTITY chapter.data.jdbc.xml			SYSTEM "framework/spring/chapter.data.jdbc.xml">
@@ -37,11 +37,11 @@
 <!ENTITY chapter.cloud.config.xml		SYSTEM "framework/spring/chapter.cloud.config.xml">
 <!ENTITY chapter.cloud.netflix.xml		SYSTEM "framework/spring/chapter.cloud.netflix.xml">
 
-<!ENTITY chapter.mybatis.xml			SYSTEM "framework/chapter.mybatis.xml">
+<!ENTITY chapter.mybatis.xml				SYSTEM "framework/chapter.mybatis.xml">
 <!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
 
-<!ENTITY chapter.servlet.xml			SYSTEM "Servlet/chapter.servlet.xml">
-<!ENTITY section.jsp.xml				SYSTEM "Servlet/section.jsp.xml">
+<!ENTITY chapter.servlet.xml				SYSTEM "Servlet/chapter.servlet.xml">
+<!ENTITY section.jsp.xml					SYSTEM "Servlet/section.jsp.xml">
 <!ENTITY section.jstl.xml				SYSTEM "Servlet/section.jstl.xml">
 <!ENTITY section.filter.xml				SYSTEM "Servlet/section.filter.xml">
 <!ENTITY section.websocket.xml			SYSTEM "Servlet/section.websocket.xml">
@@ -49,9 +49,10 @@
 
 <!ENTITY chapter.ampq.xml				SYSTEM "queue/chapter.ampq.xml">
 <!ENTITY chapter.json.xml				SYSTEM "chapter.json.xml">
-<!ENTITY chapter.sdk.xml				SYSTEM "chapter.sdk.xml">
-<!ENTITY chapter.log.xml				SYSTEM "chapter.log.xml">
+<!ENTITY chapter.sdk.xml					SYSTEM "chapter.sdk.xml">
+<!ENTITY chapter.log.xml					SYSTEM "chapter.log.xml">
 <!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
 <!ENTITY chapter.jersey.xml				SYSTEM "chapter.jersey.xml">
 <!ENTITY chapter.apache.xml				SYSTEM "chapter.apache.xml">
-<!ENTITY chapter.java.thread.xml		SYSTEM "chapter.java.thread.xml">
+<!ENTITY chapter.java.thread.xml			SYSTEM "chapter.java.thread.xml">
+<!ENTITY chapter.elasticsearch.xml		SYSTEM "chapter.elasticsearch.xml">

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="elasticsearch" ?>
+	<title>Elasticsearch API</title>
+	<section>
+		<title>Get</title>
+		<programlisting>
+		<![CDATA[
+	@Autowired
+	private TransportClient client;
+
+	@RequestMapping(value = "/article/{articleId}")
+	public GetResponse read(@PathVariable String articleId) {
+		GetResponse response = client.prepareGet("information", "article", articleId).get();
+		return response;
+	}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Search</title>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping(value = "/article/list")
+	public List<Map<String, Object>> list() {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		SearchResponse response = client.prepareSearch("information").setTypes("article")
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).addSort("ctime", SortOrder.DESC)
+				.setFrom(0).setSize(60).setExplain(true).get();
+		for (final SearchHit hit : response.getHits().getHits()) {
+			System.out.println(hit.getSourceAsString());
+			hit.getSourceAsMap().remove("content");
+			list.add(hit.getSourceAsMap());
+		}
+		return list;
+	}
+		]]>
+		</programlisting>
+	</section>
+</chapter>
