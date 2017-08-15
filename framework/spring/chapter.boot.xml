@@ -3,23 +3,26 @@
 	<title>Spring Boot</title>
 	<para>注意以下使用 Spring boot 1.5.2</para>
 	&section.boot.quickstart.xml;
-	<section id="maven">
-		<title>运行</title>
-		<programlisting>
-		<![CDATA[
+	<section id="spring.run">
+		<title>运行 Spring boot 项目</title>
+		<section>
+			<title>Maven run</title>
+			<programlisting>
+			<![CDATA[
 $ mvn spring-boot:run
 $ mvn -P prod spring-boot:run
-		]]>
-		</programlisting>
-		<para>-P 指定 profile</para>
-		<para>打包后，使用jar包运行</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<para>-P 指定 profile</para>
+			<para>打包后，使用jar包运行</para>
+			<programlisting>
+			<![CDATA[
 $ mvn verify
 $ mvn package
 $ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>Linux systemd</title>
 			<para>/etc/systemd/system/spring.service</para>
@@ -632,7 +635,7 @@ public class Application extends SpringBootServletInitializer {
 	<section id="Properties">
 		<title>Properties</title>
 		<section>
-			<title>Application</title>
+			<title>@EnableConfigurationProperties 引用自定义 *.properties 配置文件</title>
 			<para>Application.java 涮锅配置NetkillerProperties.java是 @ComponentScan 扫描范围，可以不用声明下面注解。</para>
 			<screen>
 @EnableConfigurationProperties(NetkillerProperties.class)
@@ -682,10 +685,10 @@ public class Application {
 }
 			]]>
 			</programlisting>
-		</section>
-		<para>NetkillerProperties.java</para>
-		<programlisting>
-		<![CDATA[
+		
+			<para>NetkillerProperties.java</para>
+			<programlisting>
+			<![CDATA[
 package pojo;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -720,11 +723,11 @@ public class NetkillerProperties {
 		return "NetkillerProperties [name=" + name + ", email=" + email + ", home=" + home + "]";
 	}
 }
-		]]>
-		</programlisting>
-		<para>IndexController.java</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<para>IndexController.java</para>
+			<programlisting>
+			<![CDATA[
 package web;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -761,27 +764,27 @@ public class IndexController {
 		return propertie.toString();
 	}
 }
-
-		]]>
-		</programlisting>
-		<para>src/main/resource/application.properties</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<para>src/main/resource/application.properties</para>
+			<programlisting>
+			<![CDATA[
 netkiller.name=Neo
 netkiller.email=netkiller@msn.com
 netkiller.home=http://www.netkiller.cn
-		]]>
-		</programlisting>
-		
-		<para>@ConfigurationProperties 默认配置是 application.properties</para>
-		<para>你可以通过 locations 指向特定配置文件</para>
-		<screen>		
+			]]>
+			</programlisting>
+			
+			<para>@ConfigurationProperties 默认配置是 application.properties</para>
+			<para>你可以通过 locations 指向特定配置文件</para>
+			<screen>		
 @ConfigurationProperties(prefix = "message.api",locations = "classpath:config/message.properties")  		
-		</screen>
-		<para>@EnableConfigurationProperties 可以导入多个配置文件</para>
-		<screen>
+			</screen>
+			<para>@EnableConfigurationProperties 可以导入多个配置文件</para>
+			<screen>
 @EnableConfigurationProperties({NetkillerProperties.class, NeoProperties.class})
-		</screen>
+			</screen>
+		</section>
 		<section>
 			<title>spring.profiles.active 参数切换配置文件</title>
 			<para>首先我们准备三个配置文件</para>
@@ -802,6 +805,20 @@ mvn clean package -Pdevelopment
 mvn clean package -Ptesting
 mvn clean package -Pproduction			
 			</screen>			
+		</section>
+		<section>
+			<title>SpringApplicationBuilder.properties() 方法添加配置项</title>
+			<screen>
+			
+			</screen>
+			<programlisting>
+			<![CDATA[
+  public static void main(String[] args) {
+    new SpringApplicationBuilder(Application.class)
+        .properties("spring.config.name=client").run(args);
+  }			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="service">
@@ -1203,6 +1220,7 @@ public class IndexController {
 		<title>Spring boot with Logging</title>
 		<para>一般的日志需求可以通过配置 application.properties实现，如果仍不能满足可以使用 logback.xml 配置日志。</para>
 		<screen>
+logging.file=target/spring.log
 logging.config=classpath:logback.xml
 		</screen>
 		<section>
@@ -4529,7 +4547,567 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 	}
 }
+				]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
+	<section id="oauth2">
+		<title>Spring boot with Oauth2</title>
+		<para>下面例子由三个项目组成，分别是 tools, server, client。</para>
+		<para>其中 tools 是密码生成工具</para>
+		<section>
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>cn.netkiller</groupId>
+	<artifactId>oauth</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>oauth</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.6.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+		</dependency>
+
+	</dependencies>
+	<modules>
+		<module>server</module>
+		<module>client</module>
+	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Password tools</title>
+			<para>Maven</para>
+			<screen>
+			<![CDATA[
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>cn.netkiller</groupId>
+    <artifactId>oauth</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>tools</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>tools</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+			
+			]]>				
+			</screen>
+			<para>下面的代码用于生成 Spring security 所用的密码</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.oauth.tools;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+/**
+ * Hello world!
+ *
+ */
+public class App {
+	public static void main(String[] args) {
+		int i = 0;
+		while (i < 10) {
+			String password = "123456";
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			String hashedPassword = passwordEncoder.encode(password);
+
+			System.out.println(hashedPassword);
+			i++;
+		}
+	}
+}			
+			]]>
+			</programlisting>
+			<para>运行后生成类似的密码</para>
+			<programlisting>
+			<![CDATA[
+$2a$10$IrDG5Yr3CGorEg9gKG8smeRLnNUieCVyBCJHA80U6h20HDFCxd43W
+$2a$10$wseh5xFv1L3a3uHQId0MAOqAN0rKKcuX.RDaBPQ.pV/hsr80TqwxO
+$2a$10$xP3Gc/5/PN03BdkDfhUjAemTRVaiwr0lsaqPqD18UI.ho9nRC/ebW
+$2a$10$S.wLZ6e5YvmQA6mkX8yXWOdJbvahtDOesRu0ZwPOzAPCwpo7eDAsi
+$2a$10$Jo/yuWyiAZ2Lj8.ywoPl7OeOJYuP7RVq8l.qc/zOwtW8MTFp3NYGO
+$2a$10$eEvvjPok0fRK.DU6yF0qI.aucuiWr3y5G93SLq9/76ovcOwIuQAuS
+$2a$10$BWEkANxbgwATNQCEI9/uNevNEUNlomGY7cZ2CQVm.qCRcnyukT.Si
+$2a$10$69wSpyJQvjzJY7ou5PFWlOlEIecQukHV9WEq0nebsz5V6IZKfOVv2
+$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS
+$2a$10$0/o4cRN2.tmnc58sH.N4WOsreVI6sWlPl4CCBrmUfJ332TMfRzA42
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Server</title>
+			<section>
+				<title>Maven</title>
+				<programlisting>
+				<![CDATA[
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.netkiller</groupId>
+		<artifactId>oauth</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>server</artifactId>
+	<name>server</name>
+	<description>Example Spring Boot REST project</description>
+
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+
+	</dependencies>
+
+</project>
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>application.properties</title>
+				<programlisting>
+				<![CDATA[
+server.port=8000
+server.contextPath=/api
+
+logging.level.com.gigy=DEBUG
+
+# Data source properties
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/5kwords?useSSL=false
+spring.datasource.username=5kwords
+spring.datasource.password=5kwords
+spring.datasource.max-idle=10
+spring.datasource.max-wait=10000
+spring.datasource.min-idle=5
+spring.datasource.initial-size=5
+spring.datasource.validation-query=SELECT 1
+spring.datasource.test-on-borrow=false
+spring.datasource.test-while-idle=true
+spring.datasource.time-between-eviction-runs-millis=18800
+spring.datasource.jdbc-interceptors=ConnectionState;SlowQueryReport(threshold=0)
+
+spring.jpa.database=MYSQL
+spring.jpa.show-sql=true
+#spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=create-drop
+#spring.jpa.hibernate.ddl-auto=validate
+#spring.jpa.show-sql=true				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>EnableAuthorizationServer</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.server.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+
+@Configuration
+@EnableAuthorizationServer
+public class OAuth2Configuration extends AuthorizationServerConfigurerAdapter {
+
+	@Autowired
+	@Qualifier("userDetailsService")
+	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Value("${oauth.tokenTimeout:3600}")
+	private int expiration;
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer configurer) throws Exception {
+		configurer.authenticationManager(authenticationManager);
+		configurer.userDetailsService(userDetailsService);
+	}
+
+	@Override
+	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+		clients.inMemory().withClient("api").secret("secret").accessTokenValiditySeconds(expiration).scopes("read", "write").authorizedGrantTypes("password", "refresh_token").resourceIds("resource");
+	}
+
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>EnableResourceServer</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.server.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+
+@Configuration
+@EnableWebSecurity
+@EnableResourceServer
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+	/**
+	 * Constructor disables the default security settings
+	 */
+	public WebSecurityConfiguration() {
+		super(true);
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/login");
+	}
+
+	@Override
+	public void configure(HttpSecurity http) throws Exception {
+		http.antMatcher("/api/**").authorizeRequests().anyRequest().authenticated();
+	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Entity Table</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.server.model;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+@Entity
+@Table(name = "users")
+public class User implements UserDetails {
+	
+	static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "user_id", nullable = false, updatable = false)
+	private Long id;
+	
+	@Column(name = "username", nullable = false, unique = true)
+	private String username;
+	
+	@Column(name = "password", nullable = false)
+	private String password;
+	
+	@Column(name = "enabled", nullable = false)
+	private boolean enabled;
+
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		
+		return authorities;
+	}
+
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	public boolean isAccountNonLocked() {
+		// we never lock accounts
+		return true;
+	}
+
+	public boolean isCredentialsNonExpired() {
+		// credentials never expire
+		return true;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>UserRepository</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.server.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import cn.netkiller.oauth.server.model.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+	/**
+	 * Find a user by username
+	 *
+	 * @param username
+	 *            the user's username
+	 * @return user which contains the user with the given username or null.
+	 */
+	User findOneByUsername(String username);
+
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>UserService</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.server.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import cn.netkiller.oauth.server.repository.UserRepository;
+
+@Service("userDetailsService")
+public class UserService implements UserDetailsService {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		return userRepository.findOneByUsername(username);
+	}
+}				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>TestRestController</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.server.controller;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/test")
+public class TestRestController {
+
+	@RequestMapping(value = "hello", method = RequestMethod.GET)
+	public ResponseEntity<String> hello() {
+		return new ResponseEntity<String>("Hello world !", HttpStatus.OK);
+	}
+
+	@PreAuthorize("#oauth2.hasScope('write')")
+	@RequestMapping(value = "set/{string}", method = RequestMethod.GET)
+	public ResponseEntity<String> set(String string) {
+		return new ResponseEntity<String>(string, HttpStatus.OK);
+	}
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>数据库初始化</title>
+				<para>在 src/main/resources 目录创建 data.sql 文件</para>
+				<programlisting>
+				<![CDATA[
+INSERT INTO users (user_id, username, password, enabled) VALUES 
+	('1', 'netkiller@msn.com', '$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS', true);
+				]]>
+				</programlisting>
+				<para>此处密码 $2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS 请使用上面提供的工具生成。</para>
+			</section>
+			<section>
+				<title>Test</title>
+				<para>启动 Spring boot Server 项目</para>
+				<screen>
+				<![CDATA[
+mvn spring-boot:run
+				]]>
+				</screen>
+				<para>启动后 Spring boot 会导入 data.sql 文件</para>
+				<screen>
+				<![CDATA[
+mysql> select * from users where username="netkiller@msn.com";
++---------+---------+--------------------------------------------------------------+-------------------+
+| user_id | enabled | password                                                     | username          |
++---------+---------+--------------------------------------------------------------+-------------------+
+|       4 |        | $2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS | netkiller@msn.com |
++---------+---------+--------------------------------------------------------------+-------------------+
+1 row in set (0.00 sec)
+				]]>
+				</screen>
+				<programlisting>
+				<![CDATA[
+MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@msn.com&password=123456' http://localhost:8000/api/oauth/token
+{"access_token":"5bc0ee89-cd6d-47be-b31f-89c9e028159b","token_type":"bearer","refresh_token":"5107c09b-de85-4faf-8396-941572cf30d2","expires_in":3599,"scope":"read write"}MacBook-Pro:Application neo$ 
+
+MacBook-Pro:Application neo$ curl -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 5bc0ee89-cd6d-47be-b31f-89c9e028159b" -X GET http://localhost:8000/api/test/hello
+Hello world !
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section>
+			<title>Client</title>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
 				]]>
 				</programlisting>
 			</section>
@@ -6564,6 +7142,7 @@ output {
 		</section>
 		<section>
 			<title>Redis 方案</title>
+			<para>https://github.com/kmtong/logback-redis-appender</para>
 			<para>Maven pom.xml 增加 Logback Redis 依赖</para>
 			<programlisting>
 			<![CDATA[

@@ -155,7 +155,7 @@ org.hibernate.annotations.GenerationTime.ALWAYS
 			<para>创建复合索引</para>
 			<programlisting>
 			<![CDATA[
-package com.example.api.domain;
+package cn.netkiller.api.model;
 
 import java.io.Serializable;
 import java.util.Date;
