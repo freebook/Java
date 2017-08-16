@@ -956,10 +956,26 @@ public class RestfulResponse implements Serializable {
 		<title>@PageableDefault 分页</title>
 		<programlisting>
 		<![CDATA[
-@RequestMapping(value = "", method=RequestMethod.GET)
+@RequestMapping(value = "/list", method=RequestMethod.GET)
+public Page<Blog> getEntryByPageable1(@PageableDefault( sort = { "id" }, direction = Sort.Direction.DESC) 
+    Pageable pageable) {
+    return blogRepository.findAll(pageable);
+}
+
+@RequestMapping(value = "/blog", method=RequestMethod.GET)
 public Page<Blog> getEntryByPageable(@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) 
     Pageable pageable) {
     return blogRepository.findAll(pageable);
+}
+
+@RequestMapping(value = "/list", method=RequestMethod.GET)
+public Page<Blog> getEntryByPageable2(@PageableDefault Pageable pageable) {
+    return blogRepository.findAll(pageable);
+}
+
+@ModelAttribute("users")
+public Page<User> users(@PageableDefault(size = 5) Pageable pageable) {
+	return userManagement.findAll(pageable);
 }
 		]]>
 		</programlisting>
