@@ -5187,8 +5187,10 @@ public class ClientRestController {
 				<title>Test</title>
 				<para>首先获取 Token</para>
 				<screen>
+				<![CDATA[
 MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@msn.com&password=123456' http://localhost:8000/api/oauth/token
 {"access_token":"6296057a-ed06-4899-9adc-1993ba7a4946","token_type":"bearer","refresh_token":"b22d70db-3253-4f5f-9b6a-8714da23e14d","expires_in":2642,"scope":"read write"}
+				]]>
 				</screen>
 				<para>将Token写入到 http 头</para>
 				<screen>
