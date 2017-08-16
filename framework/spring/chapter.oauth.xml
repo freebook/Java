@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="oauth" ?>
+	<title>Spring Data</title>
+	<section>
+		<title>grant_type</title>
+		<para>client_credentials</para>
+		<screen>
+grant_type = 'client_credentials' 模式不需要用户去资源服务器登录并授权, 因为客户端(client)已经有了访问资源服务器的凭证(credentials). 
+所以当用户访问时,由client直接向资源服务器获取access_token并访问资源即可. 	
+		</screen>
+	</section>
+</chapter>

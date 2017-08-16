@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <chapter id="index"><?dbhtml dir="data" ?>
-	<title>Spring Data</title> -->
+
 	
 	<chapter id="spring-data-redis"><?dbhtml dir="data/redis" ?>
 		<title>Spring Data Redis</title>
@@ -558,4 +557,3 @@ spring.data.elasticsearch.repositories.enabled=true
 		</section>
 	</section>
 </chapter>
-<!-- </chapter> -->
