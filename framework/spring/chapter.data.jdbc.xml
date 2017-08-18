@@ -37,40 +37,20 @@
 				<screen>
 				<![CDATA[
 	@Column(precision=18, scale=5)  
-    private BigDecimal principal; 				
+    private BigDecimal principal; 	
+    
+    @Column(name="Price", columnDefinition="Decimal(10,2) default '100.00'")			
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>创建于更新控制</title>
+				<screen>
+@Column(name = "ctime", nullable = false, insertable = false, updatable = false)		
+				</screen>
+			</section>
 		</section>
-		<section id="JoinColumn">
-			<title>@JoinColumn</title>
-			<para>@JoinColumn与@Column注释类似，它的定义如下代码所示。 </para>
-			<screen>
-			<![CDATA[
-@Target({METHOD, FIELD}) @Retention(RUNTIME) 
-
-public @interface JoinColumn { 
-
-String name() default ""; 
-
-String referencedColumnName() default ""; 
-
-boolean unique() default false; 
-
-boolean nullable() default true; 
-
-boolean insertable() default true; 
-
-boolean updatable() default true; 
-
-String columnDefinition() default ""; 
-
-String table() default ""; 
-
-}
-			]]>
-			</screen>
-		</section>
+		
 		<section id="@NotNull">
 			<title>@NotNull 不能为空声明</title>
 			<programlisting>
@@ -90,18 +70,23 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 			</screen>
 		</section>
-		<section id="CreatedDate">
-			<title>CreatedDate</title>
-			<screen>
-			<![CDATA[
-	@CreatedDate
-    private Date createdDateTime;			
-			]]>
-			</screen>
-		</section>
 		<section id="time">
 			<title>默认时间规则</title>
+			<section id="CreatedDate">
+				<title>CreatedDate</title>
+				<para>Spring 提供了 import org.springframework.data.annotation.CreatedDate;</para>
+				<para>但是这些只能作用于实体类。</para>
+				<screen>
+				<![CDATA[
+	@CreatedDate
+    private Date createdDateTime;			
+				]]>
+				</screen>
+			</section>
 			<section>
+				<title>与时间日期有关的 hibernate 注解</title>
+			
+			<section id="hibernate.time">
 				<title>设置默认时间</title>
 				<programlisting>
 				<![CDATA[
@@ -145,9 +130,171 @@ org.hibernate.annotations.GenerationTime.ALWAYS
 				]]>
 				</programlisting>
 			</section>
+			</section>
+			<section>
+				<title>数据库级别的默认创建日期时间定义</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.domain.elasticsearch;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class ElasticsearchTrash {
+	@Id
+	private int id;
+
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Date ctime;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Date getCtime() {
+		return ctime;
+	}
+
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
+	}
+
+}				
+				]]>
+				</programlisting>
+				<para>对应数据库DDL</para>
+				<programlisting>
+				<![CDATA[
+CREATE TABLE `elasticsearch_trash` (
+  `id` int(11) NOT NULL,
+  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>数据库级别的默认创建日期与更新时间定义</title>
+				<para>需求是这样的：</para>
+				<para>1. 创建时间与更新时间只能由数据库产生，不允许在实体类中产生，因为每个节点的时间/时区不一定一直。另外防止人为插入自定义时间时间。</para>
+				<para>2. 插入记录的时候创建默认时间，创建时间不能为空，时间一旦插入不允许日后在实体类中修改。</para>
+				<para>3. 记录创建后更新日志字段为默认为 null 表示该记录没有被修改过。一旦数据被修改，修改日期字段将记录下最后的修改时间。</para>
+				<para>4. 甚至你可以通过触发器实现一个history 表，用来记录数据的历史修改，详细请参考作者另一部电子书《Netkiller Architect 手札》数据库设计相关章节。</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.domain.elasticsearch;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Null;
+
+@Entity
+@Table
+public class ElasticsearchTrash {
+	@Id
+	private int id;
+
+	// 创建时间
+	@Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Date ctime;
+	
+	// 修改时间
+	@Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+	private Date mtime;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Date getCtime() {
+		return ctime;
+	}
+
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
+	}
+
+	public Date getMtime() {
+		return mtime;
+	}
+
+	public void setMtime(Date mtime) {
+		this.mtime = mtime;
+	}
+
+}		
+				]]>
+				</programlisting>
+				<para>对应数据库DDL</para>
+				<programlisting>
+				<![CDATA[
+CREATE TABLE `elasticsearch_trash` (
+  `id` int(11) NOT NULL,
+  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `mtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>最后修改时间</title>
+				<para>需求：记录最后一次修改时间</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.domain.elasticsearch;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class ElasticsearchTrash {
+	@Id
+	private int id;
+
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	private Date lastModified;
+
+}					
+				]]>
+				</programlisting>
+				<para>产生DDL语句如下</para>
+				<programlisting>
+				<![CDATA[
+CREATE TABLE `elasticsearch_trash` (
+  `id` int(11) NOT NULL,
+  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;				
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="index">
-			<title>唯一索引</title>
+			<title>索引</title>
 			<para>针对字段做唯一索引</para>
 			<screen>
 @Column(unique = true)			
@@ -364,6 +511,34 @@ CREATE TABLE `statistics_history` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 			]]>
 			</programlisting>
+		</section><section id="JoinColumn">
+			<title>@JoinColumn</title>
+			<para>@JoinColumn与@Column注释类似，它的定义如下代码所示。 </para>
+			<screen>
+			<![CDATA[
+@Target({METHOD, FIELD}) @Retention(RUNTIME) 
+
+public @interface JoinColumn { 
+
+String name() default ""; 
+
+String referencedColumnName() default ""; 
+
+boolean unique() default false; 
+
+boolean nullable() default true; 
+
+boolean insertable() default true; 
+
+boolean updatable() default true; 
+
+String columnDefinition() default ""; 
+
+String table() default ""; 
+
+}
+			]]>
+			</screen>
 		</section>
 		<section id="OneToOne">
 			<title>@OneToOne</title>
@@ -895,6 +1070,138 @@ ENGINE=InnoDB;
 			</programlisting>
 			<programlisting>
 			<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="orphanRemoval">
+			<title>外键级联删除</title>
+			<para>orphanRemoval = true 可以实现数据级联删除</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.api.domain;
+
+import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+@Table(name = "member")
+public class Member implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+	private int id;
+
+	private String name;
+	private String sex;
+	private int age;
+	private String wechat;
+
+	@Column(unique = true)
+	private String mobile;
+	private String picture;
+	private String ipAddress;
+
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
+	private Set<Comment> comment;
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
+	private Set<StatisticsHistory> statisticsHistory;
+
+	public Member() {
+	}
+
+	public Member(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public String getWechat() {
+		return wechat;
+	}
+
+	public void setWechat(String wechat) {
+		this.wechat = wechat;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	@Override
+	public String toString() {
+		return "Member [id=" + id + ", name=" + name + ", sex=" + sex + ", age=" + age + ", wechat=" + wechat + ", mobile=" + mobile + ", picture=" + picture + ", ipAddress=" + ipAddress + "]";
+	}
+
+}
+			
 			]]>
 			</programlisting>
 		</section>
