@@ -23,6 +23,16 @@
 		</section>
 		<section id="Column">
 			<title>@Column</title>
+			<screen>
+unique		属性表示该字段是否为唯一标识，默认为false。如果表中有一个字段需要唯一标识，则既可以使用该标记，也可以使用@Table标记中的@UniqueConstraint。
+nullable		属性表示该字段是否可以为null值，默认为true。
+insertable	属性表示在使用“INSERT”脚本插入数据时，是否需要插入该字段的值。
+updatable	属性表示在使用“UPDATE”脚本插入数据时，是否需要更新该字段的值。insertable和updatable属性一般多用于只读的属性，例如主键和外键等。这些字段的值通常是自动生成的。
+columnDefinition属性表示创建表时，该字段创建的SQL语句，一般用于通过Entity生成表定义时使用。
+table		属性表示当映射多个表时，指定表的表中的字段。默认值为主表的表名。
+length		属性表示字段的长度，当字段的类型为varchar时，该属性才有效，默认为255个字符。
+precision	属性和scale属性表示精度，当字段类型为double时，precision表示数值的总长度，scale表示小数点所占的位数。
+			</screen>
 			<section>
 				<title>字段长度</title>
 				<para>字段长度定义</para>
@@ -286,7 +296,7 @@ public class ElasticsearchTrash {
 				<![CDATA[
 CREATE TABLE `elasticsearch_trash` (
   `id` int(11) NOT NULL,
-  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;				
 				]]>
@@ -406,10 +416,12 @@ CREATE TABLE `comment` (
 			</screen>
 		</section>
 		<section id="enum">
-			<title>实体中使用 enum 类型</title>
-			<para>@Enumerated(value = EnumType.ORDINAL) //ORDINAL序数 </para>
-			<para></para>
-			<programlisting>
+			<title>Enum 枚举数据类型</title>
+			<section>
+				<title>实体中处理 enum 类型</title>
+				<para>@Enumerated(value = EnumType.ORDINAL) //ORDINAL序数 </para>
+				<para>在实体中处理枚举类型适用于所有数据库，Spring data 将枚举视为 String 类型。</para>
+				<programlisting>
 package cn.netkiller.api.domain;
 
 import java.io.Serializable;
@@ -476,10 +488,10 @@ public class StatisticsHistory implements Serializable {
 
 }
 		
-			</programlisting>
-			<para>默认 enum 类型创建数据库等效 int(11)</para>
-			<programlisting>
-			<![CDATA[
+				</programlisting>
+				<para>默认 enum 类型创建数据库等效 int(11)</para>
+				<programlisting>
+				<![CDATA[
 CREATE TABLE `statistics_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `member_id` bigint(20) NOT NULL,
@@ -488,20 +500,20 @@ CREATE TABLE `statistics_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 SELECT * FROM test.statistics;
-			]]>
-			</programlisting>
-			<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
-			<programlisting>
+				]]>
+				</programlisting>
+				<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
+				<programlisting>
 	public enum StatisticsType {
 		LIKE, COMMENT, BROWSE;
 	}
 
 	@Enumerated(EnumType.STRING)
 	private StatisticsType type;
-			</programlisting>
-			<para>SQL</para>
-			<programlisting>
-			<![CDATA[
+				</programlisting>
+				<para>SQL</para>
+				<programlisting>
+				<![CDATA[
 CREATE TABLE `statistics_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `member_id` bigint(20) NOT NULL,
@@ -509,9 +521,111 @@ CREATE TABLE `statistics_history` (
   `type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>数据库枚举类型</title>
+				<para>在枚举中处理类型虽然可以适用于所有数据库，但有时我们希望适用数据库的枚举类型（例如MySQL），数据库中得枚举类型要比字符串效率更高</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.domain.elasticsearch;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class NetkillerTrash {
+	@Id
+	private int id;
+
+	@Column(columnDefinition = "enum('Y','N') DEFAULT 'N'")
+	private boolean status;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+}				
+				]]>
+				</programlisting>
+				<para>实际对应的数据库DLL</para>
+				<programlisting>
+				<![CDATA[
+CREATE TABLE `netkiller_trash` (
+  `id` int(11) NOT NULL,
+  `status` enum('Y','N') DEFAULT 'N',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section>
+			<title>整形数据类型</title>
+			<para>无符号整形</para>
+			<programlisting>
+			<![CDATA[
+package com.example.api.domain.elasticsearch;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class Member {
+	@Id
+	private int id;
+		
+	@Column(columnDefinition = "INT(10) UNSIGNED NOT NULL")
+	private int age;
+	
+	@Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Date ctime;
+
+	@Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+	private Date mtime;
+
+	@Column(columnDefinition = "enum('Y','N') DEFAULT 'N'")
+	private boolean status;
+}			
 			]]>
 			</programlisting>
-		</section><section id="JoinColumn">
+			<programlisting>
+			<![CDATA[
+CREATE TABLE `member` (
+  `id` int(11) NOT NULL,
+  `age` int(10) unsigned NOT NULL,
+  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `mtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `status` enum('Y','N') DEFAULT 'N',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8			
+			]]>
+			</programlisting>
+		</section>
+		<section id="JoinColumn">
 			<title>@JoinColumn</title>
 			<para>@JoinColumn与@Column注释类似，它的定义如下代码所示。 </para>
 			<screen>
@@ -1689,7 +1803,7 @@ class AccountServiceImpl implements AccountService {
 			<title>Oracle Date 类型显示日期和时间</title>
 			<programlisting>
 			<![CDATA[
-package api.domain.oracle;
+package cn.netkiller.api.domain.oracle;
 
 import java.util.Date;
 
