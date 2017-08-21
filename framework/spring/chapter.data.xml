@@ -549,6 +549,53 @@ spring.data.elasticsearch.repositories.enabled=true
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Elasticsearch 删除操作</title>	
+		<programlisting>
+		<![CDATA[
+package com.example.api.schedule;
+
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.rest.RestStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import com.example.api.domain.elasticsearch.ElasticsearchTrash;
+import com.example.api.repository.elasticsearch.ElasticsearchTrashRepository;
+
+@Component
+public class ScheduledTasks {
+	private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+
+	@Autowired
+	private TransportClient client;
+
+	@Autowired
+	private ElasticsearchTrashRepository alasticsearchTrashRepository;
+
+	public ScheduledTasks() {
+	}
+
+	@Scheduled(fixedRate = 1000 * 60) // 60秒运行一次调度任务
+	public void cleanTrash() {
+		for (ElasticsearchTrash elasticsearchTrash : alasticsearchTrashRepository.findAll()) {
+			DeleteResponse response = client.prepareDelete("information", "article", elasticsearchTrash.getId() + "").get();
+			RestStatus status = response.status();
+			logger.info("delete {} {}", elasticsearchTrash.getId(), status.toString());
+			if (status == RestStatus.OK || status == RestStatus.NOT_FOUND) {
+				alasticsearchTrashRepository.delete(elasticsearchTrash);
+			}
+		}
+	}
+}
+		
+		]]>
+		</programlisting>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
