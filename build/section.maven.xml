@@ -1399,6 +1399,7 @@ The build.xml:
 				</configuration>
 			</plugin>
 			]]>
+			</screen>
 			<screen>
 			<![CDATA[
 MacBook-Pro:api.netkiller.cn neo$ mvn help:describe -DgroupId=org.springframework.boot                   -DartifactId=spring-boot-maven-plugin                   -Ddetail=true
