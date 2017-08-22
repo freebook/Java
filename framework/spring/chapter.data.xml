@@ -194,7 +194,7 @@ redis 127.0.0.1:6379> get key
 	</chapter>
 	
 	&chapter.data.mongodb.xml;
-	&chapter.data.jdbc.xml;
+	&chapter.data.jpa.xml;
 <chapter id="elasticsearch">
 	<title>Elasticsearch</title>
 	<section>
