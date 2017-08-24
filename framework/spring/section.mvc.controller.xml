@@ -82,39 +82,7 @@ curl -H "Accept:application/json,text/html" http://localhost:8080/spring/news/js
 			</screen>
 		</section>
 	</section>
-	<section id="@ResponseBody">
-		<title>@ResponseBody</title>
-		<programlisting>
-import org.springframework.web.bind.annotation.ResponseBody;
-		</programlisting>
-		<section>
-			<title>直接返回HTML</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-@Controller
-public class Pathinfo {
-
-	@RequestMapping(value = "/news/shenzhen/{numericId:[\\d]+}")
-	@ResponseBody
-	public String getNewsWithPathVariable(@PathVariable final long numericId) {
-		return "Get a specific Bar with id=" + numericId;
-	}
-
-}
-
-			]]>
-			</programlisting>
-		</section>
-	</section>
+	
 	
 	<section id="@PathVariable">
 		<title>RequestMapping with Path Variables - @PathVariable</title>
@@ -366,6 +334,38 @@ public class Http {
 		log.info("===== End ===== {}", endDate);
 		return new ModelAndView("activity/index", "message", "操作成功");
 	}
+			]]>
+			</programlisting>
+		</section>
+	</section><section id="@ResponseBody">
+		<title>@ResponseBody</title>
+		<programlisting>
+import org.springframework.web.bind.annotation.ResponseBody;
+		</programlisting>
+		<section>
+			<title>直接返回HTML</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class Pathinfo {
+
+	@RequestMapping(value = "/news/shenzhen/{numericId:[\\d]+}")
+	@ResponseBody
+	public String getNewsWithPathVariable(@PathVariable final long numericId) {
+		return "Get a specific Bar with id=" + numericId;
+	}
+
+}
+
 			]]>
 			</programlisting>
 		</section>

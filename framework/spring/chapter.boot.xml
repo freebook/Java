@@ -390,6 +390,14 @@ spring.datasource.min-evictable-idle-time-millis=60000
 spring.jpa.properties.hibernate.default_schema=schema
 			</screen>
 		</section>
+		<section>
+			<title>datasource</title>
+			<para>启用/禁用 导入 schema.sql 和 data.sql / data-${platform}.sql 其中 platform 是 spring.datasource.platform 所定义的平台</para>
+			<screen>
+spring.datasource.initialize=false
+spring.datasource.platform=MYSQL
+			</screen>
+		</section>
 		<section id="velocity">
 			<title>velocity</title>
 			<screen>

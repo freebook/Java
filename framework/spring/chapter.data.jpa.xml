@@ -1344,7 +1344,39 @@ CascadeType.ALL
 			</section>
 		</section>
 	</section>
-	
+	<section id="Inheritance">
+		<title>实体集成</title>
+		<para>B、C 类继承 A 所有属性，并且主键均为数据库（auto_increment）</para>
+		<programlisting>
+		<![CDATA[
+@MappedSuperclass
+@(strategy = InheritanceType.TABLE_PER_CLASS)
+public class A{
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private int id;
+}
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+@Entity
+@Table(name="b")
+public class B extends A{
+
+}
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+@Entity
+@Table(name="c")
+public class C extends A{
+
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="Repository">
 		<title>Repository</title>
 		<para>Spring Data JPA 为此提供了一些表达条件查询的关键字：</para>
