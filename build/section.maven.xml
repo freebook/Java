@@ -1323,6 +1323,20 @@ The build.xml:
 			]]>
 			</screen>
 		</section>
+		<section id="maven-deploy-plugin">
+			<title>maven-deploy-plugin</title>
+			<screen>
+			<![CDATA[
+			<plugin>
+		      <!--skip deploy (this is just a test module) -->
+		      <artifactId>maven-deploy-plugin</artifactId>
+		      <configuration>
+		        <skip>true</skip>
+		      </configuration>
+	        </plugin>			
+			]]>
+			</screen>
+		</section>
 		<section id="maven-jar-plugin">
 			<title>maven-jar-plugin</title>
 			<para>指定jar创建目录，下面配置运行 mvn package 后将在 target 目录下创建一个 project 目录。</para>
