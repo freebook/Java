@@ -39,9 +39,89 @@
 			</programlisting>
 		</section>
 		<section id="post">
-			<title>POST to Restfull</title>
-			<programlisting>
-			<![CDATA[
+			<title>HTTP POST 操作</title>
+			<section>
+				<title>Post Data</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.httpclient;
+
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
+
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+public class HttpClientPost {
+
+	public static void main(String[] args) throws ClientProtocolException, IOException, NoSuchAlgorithmException {
+		// TODO Auto-generated method stub
+
+		String url = "http://api.netkiller.cn:8080/api/comment/list.jspx";
+		String appId = "3175755150424665";
+		String appKey = "yEjnjoSEOQpOP49od1IexLkyVB4HTi9c";
+		String contentId = "1103";
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		String date = dateFormat.format(new Date());
+
+		String token = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(String.format("%s&%s", appKey, date).getBytes("UTF-8"))).toLowerCase();
+
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+
+		// appId=3175755150424665&contentId=1103&pageSize=100&timeStamp=2017-08-03
+		// 10:20:00&token=e1180c0306aff7792c3e25699900dd0d
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("appId", appId));
+		params.add(new BasicNameValuePair("contentId", contentId));
+		params.add(new BasicNameValuePair("pageSize", "10"));
+		params.add(new BasicNameValuePair("timeStamp", date));
+		params.add(new BasicNameValuePair("token", token));
+
+		System.out.println(params.toString());
+		UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, Consts.UTF_8);
+		System.out.println(urlEncodedFormEntity.toString());
+
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setEntity(urlEncodedFormEntity);
+
+		CloseableHttpResponse response = httpclient.execute(httpPost);
+
+		System.out.println(response.getStatusLine());
+		HttpEntity entity = response.getEntity();
+		String responseBody = EntityUtils.toString(entity, "UTF-8");
+		System.out.println(responseBody.toString());
+		response.close();
+	}
+
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>POST RAW 数据</title>
+			
+				<programlisting>
+				<![CDATA[
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
@@ -83,8 +163,9 @@ public class HTTPREST {
 	}
 
 }
-			]]>
-			</programlisting>
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="ssl">
 			<title>HTTPS</title>

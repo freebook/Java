@@ -7011,32 +7011,32 @@ MacBook-Pro:~ neo$ curl -k https://test:test@localhost:8443/restful/search/clien
 			<title>Maven</title>
 			<programlisting>
 			<![CDATA[
-<properties>  
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-</properties>  
-  
-<dependencies>  
-    <dependency>  
-        <groupId>org.springframework.boot</groupId>  
-        <artifactId>spring-boot-starter-jdbc</artifactId>  
-    </dependency>  
-    <dependency>
-        <groupId>org.springframework.data</groupId>
-        <artifactId>spring-data-hadoop</artifactId>
-        <version>2.4.0.RELEASE</version>
-    </dependency> 
-	<!-- https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc -->
-	<dependency>
-	    <groupId>org.apache.hive</groupId>
-	    <artifactId>hive-jdbc</artifactId>
-	    <version>2.1.1</version>
-	</dependency>
-	<dependency>  
-        <groupId>com.alibaba</groupId>  
-        <artifactId>druid</artifactId>  
-        <version>1.1.0</version>  
-    </dependency> 
-</dependencies>  
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-hadoop</artifactId>
+			<version>2.5.0.RELEASE</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc -->
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-jdbc</artifactId>
+			<version>2.3.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.jetty.aggregate</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>8.5.20</version>
+		</dependency>
 			]]>
 			</programlisting>
 		</section>
@@ -7046,12 +7046,12 @@ MacBook-Pro:~ neo$ curl -k https://test:test@localhost:8443/restful/search/clien
 			<programlisting>
 			<![CDATA[
 hive.url=jdbc:hive2://172.16.0.10:10000/default
-hive.type: com.alibaba.druid.pool.DruidDataSource
-hive.driver-class-name: org.apache.hive.jdbc.HiveDriver
-hive.username=hive
-hive.password=hive
+hive.driver-class-name=org.apache.hive.jdbc.HiveDriver
+hive.username=hadoop
+hive.password=
 			]]>
 			</programlisting>
+			<para>用户名是需要具有 hdfs 写入权限，密码可以不用写</para>
 			<para>如果使用 yaml 格式 application.yml 配置如下</para>
 			<programlisting>
 			<![CDATA[ 
@@ -7066,6 +7066,48 @@ hive:
 		</section>
 		<section>
 			<title>Configuration</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+@Configuration
+public class HiveConfig {
+	private static final Logger logger = LoggerFactory.getLogger(HiveConfig.class);
+
+	@Autowired
+	private Environment env;
+
+	@Bean(name = "hiveJdbcDataSource")
+	@Qualifier("hiveJdbcDataSource")
+	public DataSource dataSource() {
+		DataSource dataSource = new DataSource();
+		dataSource.setUrl(env.getProperty("hive.url"));
+		dataSource.setDriverClassName(env.getProperty("hive.driver-class-name"));
+		dataSource.setUsername(env.getProperty("hive.username"));
+		dataSource.setPassword(env.getProperty("hive.password"));
+		logger.debug("Hive DataSource");
+		return dataSource;
+	}
+
+	@Bean(name = "hiveJdbcTemplate")
+	public JdbcTemplate hiveJdbcTemplate(@Qualifier("hiveJdbcDataSource") DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+}
+
+			]]>
+			</programlisting>
+			<para>你也可以使用 DruidDataSource</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.api.config; 
@@ -7092,6 +7134,85 @@ public class HiveDataSource {
         return new JdbcTemplate(dataSource);
     }
 
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>CURD 操作实例</title>
+			<para>Hive 数据库的增删插改操作与其他数据库没有什么不同。</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.web;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@RequestMapping("/hive")
+public class HiveController {
+	private static final Logger logger = LoggerFactory.getLogger(HiveController.class);
+
+	@Autowired
+	@Qualifier("hiveJdbcTemplate")
+	private JdbcTemplate hiveJdbcTemplate;
+
+	@RequestMapping("/create")
+	public ModelAndView create() {
+
+		StringBuffer sql = new StringBuffer("create table IF NOT EXISTS ");
+		sql.append("HIVE_TEST");
+		sql.append("(KEY INT, VALUE STRING)");
+		sql.append("PARTITIONED BY (CTIME DATE)"); // 分区存储
+		sql.append("ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' "); // 定义分隔符
+		sql.append("STORED AS TEXTFILE"); // 作为文本存储
+
+		// drop table
+		// StringBuffer sql = new StringBuffer("DROP TABLE IF EXISTS ");
+		// sql.append("HIVE_TEST1");
+		logger.info(sql.toString());
+		hiveJdbcTemplate.execute(sql.toString());
+
+		return new ModelAndView("index");
+
+	}
+
+	@RequestMapping("/insert")
+	public String insert() {
+		hiveJdbcTemplate.execute("insert into hive_test(key, value) values('Neo','Chen')");
+		return "Done";
+	}
+
+	@RequestMapping("/select")
+	public String select() {
+		String sql = "select * from HIVE_TEST";
+		List<Map<String, Object>> rows = hiveJdbcTemplate.queryForList(sql);
+		Iterator<Map<String, Object>> it = rows.iterator();
+		while (it.hasNext()) {
+			Map<String, Object> row = it.next();
+			System.out.println(String.format("%s\t%s", row.get("key"), row.get("value")));
+		}
+		return "Done";
+	}
+
+	@RequestMapping("/delete")
+	public String delete() {
+		StringBuffer sql = new StringBuffer("DROP TABLE IF EXISTS ");
+		sql.append("HIVE_TEST");
+		logger.info(sql.toString());
+		hiveJdbcTemplate.execute(sql.toString());
+		return "Done";
+	}
 }
 			]]>
 			</programlisting>
