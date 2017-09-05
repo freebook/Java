@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="elasticsearch" ?>
 	<title>Elasticsearch API</title>
-	<section>
+	<section id="client">
 		<title>Client</title>
 		<programlisting>
 		<![CDATA[
@@ -93,7 +93,21 @@ DeleteResponse response = client.prepareDelete("book", "computer", "1")
 	</section>
 	<section id="query">
 		<title>Query 查询</title>
-		<section>
+		<section id="matchAllQuery">
+			<title>match all 匹配所有数据</title>
+			<programlisting>
+			<![CDATA[
+SearchResponse response = client.prepareSearch()
+        .setIndices(index)
+        .setTypes(type)
+        .setSearchType(SearchType.QUERY_AND_FETCH)
+        .setFetchSource(new String[]{"title"}, null) 
+        .setQuery(QueryBuilders.matchAllQuery())
+        .setSize(10).execute().actionGet();		
+			]]>
+			</programlisting>
+		</section>
+		<section id="matchQuery">
 			<title>match 匹配查询</title>
 			<programlisting>
 			<![CDATA[
@@ -114,7 +128,7 @@ public void match() {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="matchPhraseQuery">
 			<title>match phrase 短语精准匹配</title>
 			<programlisting>
 			<![CDATA[
@@ -133,6 +147,7 @@ public void matchPhrase() {
 			]]>
 			</programlisting>
 		</section>
+		
 	</section>
 	<section id="filter">
 		<title>Filter 过滤</title>
