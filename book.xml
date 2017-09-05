@@ -65,6 +65,7 @@
 	&chapter.json.xml;
 	&chapter.ampq.xml;
 	&chapter.nosql.mongodb.xml;
+	&chapter.elasticsearch.xml;
 	&chapter.jersey.xml;
 	&chapter.apache.xml;
 	&chapter.cache.xml;

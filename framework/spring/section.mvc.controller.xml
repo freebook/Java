@@ -86,6 +86,7 @@ curl -H "Accept:application/json,text/html" http://localhost:8080/spring/news/js
 	
 	<section id="@PathVariable">
 		<title>RequestMapping with Path Variables - @PathVariable</title>
+		<para>PATHINFO 变量可通过 @Pathvariable注解绑定它传过来的值到方法的参数上。</para>
 		<section>
 			<title>URL 参数传递</title>
 			<para>需求，我们需要通过URL传递参数，所传递的值是分类ID与文章ID，例如 /news/1.html, /news/1/1.html。</para>
@@ -191,6 +192,7 @@ public void download(HttpSession session,@PathVariable("version")String version)
 
 	<section id="@RequestParam">
 		<title>RequestMapping with Request Parameters - @RequestParam</title>
+		<para>@RequestParam 用来处理 HTTP GET/POST 请求的变量</para>
 		<programlisting>
 import org.springframework.web.bind.annotation.RequestParam;
 		</programlisting>
@@ -337,41 +339,21 @@ public class Http {
 			]]>
 			</programlisting>
 		</section>
-	</section><section id="@ResponseBody">
-		<title>@ResponseBody</title>
-		<programlisting>
-import org.springframework.web.bind.annotation.ResponseBody;
-		</programlisting>
-		<section>
-			<title>直接返回HTML</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-@Controller
-public class Pathinfo {
-
-	@RequestMapping(value = "/news/shenzhen/{numericId:[\\d]+}")
-	@ResponseBody
-	public String getNewsWithPathVariable(@PathVariable final long numericId) {
-		return "Get a specific Bar with id=" + numericId;
-	}
-
-}
-
-			]]>
-			</programlisting>
-		</section>
 	</section>
-	
-	<section id="ModelAttribute">
+	<section id="@RequestBody">
+		<title>@RequestBody</title>
+		<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
+		<programlisting>
+		<![CDATA[
+@RequestMapping(value = "/something", method = RequestMethod.PUT)  
+public void handle(@RequestBody String body, Writer writer) throws IOException {  
+	writer.write(body);  
+} 
+		]]>
+		</programlisting>
+	</section>
+
+	<section id="@ModelAttribute">
 		<title>@ModelAttribute</title>
 		<para>@ModelAttribute 处理 HTML FORM POST 提交</para>
 		<programlisting>
@@ -405,6 +387,90 @@ public class Deploy {
 	}		
 		]]>
 		</programlisting>
+	</section>
+	<section id="@CookieValue">
+		<title>@CookieValue</title>
+		<programlisting>
+		<![CDATA[
+@RequestMapping("/sessionInfo")  
+public void sessionInfo(@CookieValue("JSESSIONID") String cookie)  {
+
+  //...  
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="@RequestHeader">
+		<title>@RequestHeader</title>
+		<programlisting>
+		<![CDATA[
+@RequestMapping("/displayHeaderInfo")  
+public void displayHeaderInfo(@RequestHeader("Accept-Encoding") String encoding,  
+                              @RequestHeader("Keep-Alive") long keepAlive)  {  
+  
+  //...  
+  
+} 
+		]]>
+		</programlisting>
+	</section>
+	<section id="@SessionAttributes">
+		<title>@@SessionAttributes</title>
+		<para>@SessionAttributes:
+该注解用来绑定HttpSession中的attribute对象的值，便于在方法中的参数里使用。
+该注解有value、types两个属性，可以通过名字和类型指定要使用的attribute 对象；</para>
+		<programlisting>
+		<![CDATA[
+@Controller  
+@RequestMapping("/editProfile")  
+@SessionAttributes("profile")  
+public class ProfileForm {  
+    // ...  
+}  
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>
+	</section>
+	<section id="@ResponseBody">
+		<title>@ResponseBody</title>
+		<programlisting>
+import org.springframework.web.bind.annotation.ResponseBody;
+		</programlisting>
+		<section>
+			<title>直接返回HTML</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class Pathinfo {
+
+	@RequestMapping(value = "/news/shenzhen/{numericId:[\\d]+}")
+	@ResponseBody
+	public String getNewsWithPathVariable(@PathVariable final long numericId) {
+		return "Get a specific Bar with id=" + numericId;
+	}
+
+}
+
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ModelAndView">
 		<title>ModelAndView</title>

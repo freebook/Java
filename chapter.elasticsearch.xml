@@ -2,6 +2,50 @@
 <chapter id="index"><?dbhtml dir="elasticsearch" ?>
 	<title>Elasticsearch API</title>
 	<section>
+		<title>Client</title>
+		<programlisting>
+		<![CDATA[
+Settings settings = Settings.builder()
+					.put("cluster.name", "elasticsearch") //集群名称
+					.put("client.transport.sniff", true) //自动嗅探
+					.put("discovery.type", "zen")
+					.put("discovery.zen.minimum_master_nodes", 1)
+					.put("discovery.zen.ping_timeout", "500ms")
+					.put("discovery.initial_state_timeout", "500ms")
+					.build();
+Client client = new PreBuiltTransportClient(settings)	.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ip), 9300));
+		]]>
+		</programlisting>
+	</section>
+	<section id="insert">
+		<title>insert</title>
+		<programlisting>
+import org.elasticsearch.action.index.IndexResponse;  
+import org.elasticsearch.client.Client;  
+  
+IndexResponse response = client.prepareIndex("information", "news", "1")  
+.setSource("{ \"title\": \"ElasticSearch 5.5.2\"}")  
+.get();  
+		</programlisting>
+		<para>使用 HashMap 插入</para>
+		<programlisting>
+		<![CDATA[
+public void createData() {
+	Map<String, Object> map = new HashMap<String, Object>();
+	map.put("name", "Neo Chen");
+	map.put("age", 30);
+	map.put("book", new String[]{"Netkiller Linux 手札","Netkiller Java 手札"});
+	map.put("website", "http://www.netkiller.cn");
+	map.put("email", "netkiller@msn.com");
+
+	IndexResponse response = client.prepareIndex("book", "author", UUID.randomUUID().toString())
+			.setSource(map).get();
+	System.out.println("Status: " + response.status().getStatus() + "！id=" + response.getId());
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="select">
 		<title>Get</title>
 		<programlisting>
 		<![CDATA[
@@ -15,8 +59,19 @@
 	}
 		]]>
 		</programlisting>
+	</section><section id="delete">
+		<title>delete</title>
+		<programlisting>
+		<![CDATA[
+import org.elasticsearch.action.delete.DeleteResponse;  
+import org.elasticsearch.client.Client;  
+  
+DeleteResponse response = client.prepareDelete("book", "computer", "1")  
+.get();  
+		]]>
+		</programlisting>
 	</section>
-	<section>
+	<section id="search">
 		<title>Search</title>
 		<programlisting>
 		<![CDATA[
@@ -35,5 +90,223 @@
 	}
 		]]>
 		</programlisting>
+	</section>
+	<section id="query">
+		<title>Query 查询</title>
+		<section>
+			<title>match 匹配查询</title>
+			<programlisting>
+			<![CDATA[
+public void match() {
+	SearchRequestBuilder requestBuilder = client.prepareSearch("company").setTypes("employee")
+			.setQuery(QueryBuilders.matchQuery("name", "neo"));
+	System.out.println(requestBuilder.toString());
+
+	SearchResponse response = requestBuilder.get();
+
+	System.out.println(response.status());
+	if (response.status().getStatus() == 200) {
+		for (SearchHit hits : response.getHits().getHits()) {
+			System.out.println(hits.getSourceAsString());
+		}
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>match phrase 短语精准匹配</title>
+			<programlisting>
+			<![CDATA[
+public void matchPhrase() {
+	SearchRequestBuilder requestBuilder = client.prepareSearch("company").setTypes("employee")
+			.setQuery(QueryBuilders.matchPhraseQuery("name", "neo"));
+
+	SearchResponse response = requestBuilder.get();
+
+	if (response.status().getStatus() == 200) {
+		for (SearchHit hits : response.getHits().getHits()) {
+			System.out.println(hits.getSourceAsString());
+		}
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="filter">
+		<title>Filter 过滤</title>
+		<programlisting>
+		<![CDATA[
+FilterBuilder filterBuilder = FilterBuilders.andFilter(  
+	FilterBuilders.existsFilter("title").filterName("exist"),  
+	FilterBuilders.termFilter("title", "elastic")  
+);  
+
+SearchResponse response = client.prepareSearch("netkiller")  
+	.setPostFilter(filterBuilder)  
+	.get();  
+		]]>
+		</programlisting>
+		<section>
+			<title>term</title>
+			<programlisting>
+			<![CDATA[
+.setPostFilter(QueryBuilders.termQuery("site_id", siteId))
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>range</title>
+			<programlisting>
+			<![CDATA[
+QueryBuilders.rangeQuery("age").from(12).to(18)
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="sort">
+		<title>Sorting</title>
+		<programlisting>
+		<![CDATA[
+SearchResponse response = client.prepareSearch("netkiller")  
+	.setQuery(QueryBuilders.matchAllQuery())  
+	.addSort(SortBuilders.fieldSort("title"))  
+	.addSort("_score", SortOrder.DESC)  
+	.get() 
+		]]>
+		</programlisting>
+	</section>
+	<section id="source">
+		<title>返回 Source 字段</title>
+		<para>下面例子查询返回 "id", "title", "description", "image", "ctime" </para>
+		<programlisting>
+		<![CDATA[
+	/*
+	 * 范例：/restful/search/article/list/23/0/20.json?tags=美国
+	 */
+	@RequestMapping(value = "/article/list/{siteId}/{from}/{size}")
+	public List<Map<String, Object>> listBySiteIdAndTags(@PathVariable String siteId, @PathVariable int from, @PathVariable int size, @RequestParam(value = "tags", required = false) String tags) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+		SearchRequestBuilder searchRequestBuilder = client.prepareSearch("information").setTypes("article").setSearchType(SearchType.DFS_QUERY_THEN_FETCH).addSort("ctime", SortOrder.DESC);
+
+		searchRequestBuilder.setFetchSource(new String[] { "id", "title", "description", "image", "ctime" }, null);
+		if (tags != null && !tags.equals("")) {
+			// logger.info(tags);
+			searchRequestBuilder.setQuery(QueryBuilders.matchQuery("tags", tags));
+		}
+		searchRequestBuilder.setPostFilter(QueryBuilders.termQuery("site_id", siteId)).setFrom(from).setSize(size).setExplain(true);
+
+		logger.info(searchRequestBuilder.toString());
+		SearchResponse response = searchRequestBuilder.get();
+
+		for (final SearchHit hit : response.getHits().getHits()) {
+			// logger.info(hit.getSourceAsString());
+			hit.getSourceAsMap().remove("content");
+			list.add(hit.getSourceAsMap());
+		}
+		logger.info(tags);
+		return list;
+	}
+		]]>
+		</programlisting>
+	</section>
+	<section id="count">
+		<title>Count</title>
+		<programlisting>
+		<![CDATA[
+QueryBuilders qb = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("status", false));  
+  
+CountResponse response = client.prepareCount("book") // 索引  
+                .setQuery(qb) //类型  
+                .get(); 
+		]]>
+		</programlisting>
+	</section>
+
+	<section id="example">
+		<title>Example 范例</title>
+		<section>
+			<title>Spring boot 案例</title>
+			<programlisting>
+			<![CDATA[
+	/*
+	 * 范例：/restful/search/article/list/23/0/20.json?tags=美国
+	 */
+	@RequestMapping(value = "/article/list/{siteId}/{from}/{size}")
+	public List<Map<String, Object>> listBySiteIdAndTags(@PathVariable String siteId, @PathVariable int from, @PathVariable int size, @RequestParam(value = "tags", required = false) String tags) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+		SearchRequestBuilder searchRequestBuilder = client.prepareSearch("information").setTypes("article").setSearchType(SearchType.DFS_QUERY_THEN_FETCH).addSort("ctime", SortOrder.DESC)
+		// .addFields("_source","title", "description", "ctime")
+		;
+
+		if (tags != null && !tags.equals("")) {
+			// logger.info(tags);
+			searchRequestBuilder.setQuery(QueryBuilders.matchQuery("tags", tags));
+		}
+		searchRequestBuilder.setPostFilter(QueryBuilders.termQuery("site_id", siteId)).setFrom(from).setSize(size).setExplain(true);
+
+		// logger.info(searchRequestBuilder.toString());
+
+		SearchResponse response = searchRequestBuilder.get();
+
+		for (final SearchHit hit : response.getHits().getHits()) {
+			// logger.info(hit.getSourceAsString());
+			hit.getSourceAsMap().remove("content");
+			list.add(hit.getSourceAsMap());
+		}
+		logger.info(tags);
+		return list;
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+	</section><section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>显示查询 JSON 字符串</title>
+			<programlisting>
+logger.info(searchRequestBuilder.toString());
+			</programlisting>
+			<screen>
+2017-09-05 14:34:25 14858 [http-nio-8443-exec-1] INFO  c.e.a.restful.SearchRestController : {
+  "from" : 0,
+  "size" : 2,
+  "query" : {
+    "match" : {
+      "tags" : {
+        "query" : "ioi",
+        "operator" : "OR",
+        "prefix_length" : 0,
+        "max_expansions" : 50,
+        "fuzzy_transpositions" : true,
+        "lenient" : false,
+        "zero_terms_query" : "NONE",
+        "boost" : 1.0
+      }
+    }
+  },
+  "post_filter" : {
+    "term" : {
+      "site_id" : {
+        "value" : "22",
+        "boost" : 1.0
+      }
+    }
+  },
+  "explain" : true,
+  "sort" : [
+    {
+      "ctime" : {
+        "order" : "desc"
+      }
+    }
+  ]
+} 
+			</screen>
+		</section>
 	</section>
 </chapter>
