@@ -54,5 +54,6 @@
 <!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
 <!ENTITY chapter.jersey.xml				SYSTEM "chapter.jersey.xml">
 <!ENTITY chapter.apache.xml				SYSTEM "chapter.apache.xml">
+<!ENTITY chapter.apache.httpclient.xml	SYSTEM "chapter.apache.httpclient.xml">
 <!ENTITY chapter.java.thread.xml			SYSTEM "chapter.java.thread.xml">
 <!ENTITY chapter.elasticsearch.xml		SYSTEM "chapter.elasticsearch.xml">
