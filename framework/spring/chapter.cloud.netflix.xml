@@ -24,7 +24,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.3.RELEASE</version>
+		<version>1.5.7.RELEASE</version>
 		<relativePath />
 	</parent>
 
@@ -33,7 +33,7 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-netflix</artifactId>
-				<version>1.3.1.RELEASE</version>
+				<version>1.3.5.RELEASE</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -108,6 +108,33 @@ logging.level.com.netflix.discovery=OFF
 			<para>http://localhost:8761</para>
 			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka.png" srccredit="neo" width=""/></para>
 		</section>
+		<section>
+			<title>为 Eureka Server 增加用户认证</title>
+			<section>
+				<title>Maven</title>
+				<screen>
+				<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>application.properties</title>
+				<screen>
+security.user.name=eureka
+security.user.password=s3cr3t				
+				</screen>
+			</section>
+			<section>
+				<title>Feign Client</title>
+				<screen>
+eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@localhost:8761/eureka/
+				</screen>
+			</section>
+		</section>
 	</section>
 	<section id="eureka.client">
 		<title>Eureka Client</title>
@@ -133,28 +160,23 @@ logging.level.com.netflix.discovery=OFF
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.3.RELEASE</version>
+		<version>1.5.7.RELEASE</version>
 		<relativePath />
 	</parent>
-
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>Dalston.SR1</version>
+				<artifactId>spring-cloud-netflix</artifactId>
+				<version>1.3.5.RELEASE</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
@@ -187,12 +209,24 @@ logging.level.com.netflix.discovery=OFF
 package cn.netkiller.spring.cloud.eureka.client;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootApplication
-@EnableDiscoveryClient
+@Configuration
+@EnableAutoConfiguration
+@EnableEurekaClient
+@RestController
+
 public class Application {
+
+	@RequestMapping("/")
+	public String home() {
+		return "Hello World";
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
@@ -224,25 +258,14 @@ public class TestRestController {
 	private static final Logger logger = LoggerFactory.getLogger(TestRestController.class);
 
 	@RequestMapping("/")
-	public String home() {
+	public String version() {
 		logger.info("Hello!!!");
-		return "Hello World";
-	}
-
-	@Autowired
-	private DiscoveryClient discoveryClient;
-
-	@RequestMapping("/service-instances/{applicationName}")
-	public List<ServiceInstance> serviceInstancesByApplicationName(@PathVariable String applicationName) {
-		return this.discoveryClient.getInstances(applicationName);
+		return "Version: v1.0.0";
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public Integer add(@RequestParam Integer a, @RequestParam Integer b) {
-		@SuppressWarnings("deprecation")
-		ServiceInstance instance = discoveryClient.getLocalServiceInstance();
 		Integer r = a + b;
-		logger.info("/add, host:" + instance.getHost() + ", service_id:" + instance.getServiceId() + ", result:" + r);
 		return r;
 	}
 	
@@ -251,7 +274,6 @@ public class TestRestController {
 		return "GREETING";
 	}
 }
-			
 			]]>
 			</programlisting>
 		</section>
@@ -261,7 +283,7 @@ public class TestRestController {
 			<![CDATA[
 spring.application.name=test-service
 server.port=8080
-eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/			
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 			]]>
 			</programlisting>
 		</section>
@@ -271,53 +293,8 @@ eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka-registered.png" srccredit="neo" width=""/></para>
 			<programlisting>
 			<![CDATA[
-$ curl http://localhost:8080/service-instances/test-service
-
-[
-	{
-		"host": "Neo-Desktop",
-		"port": 8080,
-		"secure": false,
-		"uri": "http://Neo-Desktop:8080",
-		"serviceId": "TEST-SERVICE",
-		"metadata": {},
-		"instanceInfo": {
-			"instanceId": "Neo-Desktop:test-service:8080",
-			"app": "TEST-SERVICE",
-			"appGroupName": null,
-			"ipAddr": "172.25.10.150",
-			"sid": "na",
-			"homePageUrl": "http://Neo-Desktop:8080/",
-			"statusPageUrl": "http://Neo-Desktop:8080/info",
-			"healthCheckUrl": "http://Neo-Desktop:8080/health",
-			"secureHealthCheckUrl": null,
-			"vipAddress": "test-service",
-			"secureVipAddress": "test-service",
-			"countryId": 1,
-			"dataCenterInfo": {
-			"@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
-			"name": "MyOwn"
-		},
-		"hostName": "Neo-Desktop",
-		"status": "UP",
-		"leaseInfo": {
-			"renewalIntervalInSecs": 30,
-			"durationInSecs": 90,
-			"registrationTimestamp": 1497922681680,
-			"lastRenewalTimestamp": 1497922681680,
-			"evictionTimestamp": 0,
-			"serviceUpTimestamp": 1497922003783
-		},
-		"isCoordinatingDiscoveryServer": false,
-		"metadata": {},
-		"lastUpdatedTimestamp": 1497922681680,
-		"lastDirtyTimestamp": 1497922681025,
-		"actionType": "ADDED",
-		"asgName": null,
-		"overriddenStatus": "UNKNOWN"
-		}
-	}
-]
+neo@MacBook-Pro ~ % curl http://localhost:8080/
+Hello World
 			]]>
 			</programlisting>
 			<para>add 接口测试</para>
@@ -325,7 +302,7 @@ $ curl http://localhost:8080/service-instances/test-service
 			<![CDATA[
 curl http://localhost:8080/add.json?a=5&b=3
 
-8			
+8
 			]]>
 			</programlisting>
 		</section>
