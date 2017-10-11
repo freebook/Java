@@ -1,5 +1,20 @@
-<section id="cloud.old">
-	<title>旧版本</title>
+<section id="cloud.faq">
+	<title>FAQ</title>
+	<section>
+		<title>Feign请求超时</title>
+		<programlisting>
+		<![CDATA[
+方法一，修改配置是让Hystrix的超时时间改为5秒
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000
+
+方法二，修改配置，禁用Hystrix的超时时间
+hystrix.command.default.execution.timeout.enabled: false
+
+方法三，修改配置，用于索性禁用feign的hystrix。
+feign.hystrix.enabled: false
+		]]>
+		</programlisting>
+	</section>
 	<section id="eureka.client">
 		<title>Eureka Client (Dalston.SR1)</title>
 		<section id="maven">

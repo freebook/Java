@@ -298,6 +298,8 @@ eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 			<title>测试</title>
 			<para>首先确认客户端已经注册到 http://localhost:8761/</para>
 			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka-registered.png" srccredit="neo" width=""/></para>
+			<para>你可以启动很多 Eureka 客户端，相同的 spring.application.name 会归为一组，为用户提供负载均衡。</para>
+			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka-registered-2.png" srccredit="neo" width=""/></para>
 			<programlisting>
 			<![CDATA[
 neo@MacBook-Pro ~ % curl http://localhost:8080/
