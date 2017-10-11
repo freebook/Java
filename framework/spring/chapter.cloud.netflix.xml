@@ -129,6 +129,13 @@ security.user.password=s3cr3t
 				</screen>
 			</section>
 			<section>
+				<title>Eureka Client</title>
+				<screen>
+spring.application.name=restful-api-service
+eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@localhost:8761/eureka/
+				</screen>
+			</section>
+			<section>
 				<title>Feign Client</title>
 				<screen>
 eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@localhost:8761/eureka/
