@@ -36,7 +36,7 @@
 <!ENTITY chapter.cloud.xml				SYSTEM "framework/spring/chapter.cloud.xml">
 <!ENTITY chapter.cloud.config.xml		SYSTEM "framework/spring/chapter.cloud.config.xml">
 <!ENTITY chapter.cloud.netflix.xml		SYSTEM "framework/spring/chapter.cloud.netflix.xml">
-<!ENTITY chapter.cloud.old.xml			SYSTEM "framework/spring/chapter.cloud.old.xml">
+<!ENTITY chapter.cloud.faq.xml			SYSTEM "framework/spring/chapter.cloud.faq.xml">
 
 <!ENTITY chapter.mybatis.xml				SYSTEM "framework/chapter.mybatis.xml">
 <!ENTITY chapter.tiles.xml				SYSTEM "framework/chapter.tiles.xml">
