@@ -19,6 +19,9 @@
 	
 	<!ENTITY % search.doctype.entity.xml 	SYSTEM "../Database/Search/doctype.entity.xml">
 	%search.doctype.entity.xml;
+	
+	<!ENTITY % android.doctype.entity.xml 	SYSTEM "Android/doctype.entity.xml">
+	%android.doctype.entity.xml;
 
 ]>
 <book xml:base="http://netkiller.sourceforge.net/linux/www"
@@ -55,7 +58,6 @@
 
 	&book.preface.xml;
 	&book.dedication.xml;
-
 <!-- =========================================================================== -->
 	&chapter.java.xml;
 	&chapter.build.xml;
@@ -70,6 +72,8 @@
 	&chapter.apache.xml;
 	&chapter.cache.xml;
 	&chapter.sdk.xml;
+<!-- =========================================================================== -->	
+	&chapter.android.xml;
 	<!-- &part.search.xml; -->
 <!-- =========================================================================== -->
 
