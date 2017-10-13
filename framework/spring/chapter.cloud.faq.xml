@@ -15,6 +15,7 @@ feign.hystrix.enabled: false
 		]]>
 		</programlisting>
 	</section>
+	
 	<section id="eureka.client">
 		<title>Eureka Client (Dalston.SR1)</title>
 		<section id="maven">
@@ -235,5 +236,38 @@ curl http://localhost:8080/add.json?a=5&b=3
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title>Feign 启动出错 PathVariable annotation was empty on param 0.</title>
+		<para>问题分析，@PathVariable 找不到对应的参数</para>
+		<programlisting>
+		<![CDATA[
+package api.feign;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@FeignClient("restful-api-service")
+public interface Search {
+	
+	@RequestMapping("/search/article/list")
+	public List<Map<String, Object>> list();
+	
+	@RequestMapping("/search/article/{articleId}")
+	public Object read(@PathVariable String articleId);
+}		
+		]]>
+		</programlisting>
+		<para>解决方案</para>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping("/search/article/{articleId}")
+	public Object read(@PathVariable("articleId") String articleId);
+		]]>
+		</programlisting>
 	</section>
 </section>
