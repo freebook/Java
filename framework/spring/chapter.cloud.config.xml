@@ -28,6 +28,33 @@ git push
 /{label}/{application}-{profile}.properties		
 		]]>
 		</screen>
+		<para>label 是指 git 的分支</para>
+		<section>
+			<title>分支</title>
+			<programlisting>
+spring.cloud.config.label=mybranch
+			</programlisting>
+		</section>
+		<section>
+			<title>HTTP Auth</title>
+			<programlisting>
+spring.application.name=config-server
+spring.cloud.config.server.git.uri=https://netkiller:xxxxxx@github.com/xyz/microservices-configs.git			
+			</programlisting>
+			<para></para>
+			<programlisting>
+spring.application.name=config-server
+spring.cloud.config.server.git.uri=https://github.com/xyz/microservices-configs.git
+spring.cloud.config.server.git.username=netkiller
+spring.cloud.config.server.git.password=password
+			</programlisting>
+		</section>
+		<section>
+			<title>basedir</title>
+			<programlisting>
+spring.cloud.config.server.git.basedir=api/configs		
+			</programlisting>
+		</section>
 	</section>
 	<section id="server">
 		<title>Server</title>

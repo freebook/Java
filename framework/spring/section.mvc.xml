@@ -297,5 +297,34 @@ public ModelAndView dboxPrint(Model model){
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>Caused by: java.lang.IllegalArgumentException: Not a managed type: class common.domain.Article</title>
+			<para>背景描述：Springboot 入口文件 Application.java 的包是 package api; 为了让 domain,pojo 共用，于是将 domain 放到Maven module下命令为 common。启动后出现这个故障。</para>
+			<para>解决方案增加 @EntityScan("common.domain") 即可。</para>
+			<programlisting>
+			<![CDATA[
+package api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableScheduling
+@EnableEurekaClient
+@EntityScan("common.domain")
+public class Application {
+
+	public static void main(String[] args) {
+		System.out.println( "Service Api Starting..." );
+		SpringApplication.run(Application.class, args);
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>
