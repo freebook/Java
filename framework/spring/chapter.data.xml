@@ -189,8 +189,27 @@ redis 127.0.0.1:6379> get key
 			<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到 "\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过 template.setKeySerializer(new StringRedisSerializer()); 实现 </para>
 		</tip>
 	</section>
-	<section>
+	<section id="zset">
 		<title>ZSET 数据类型</title>
+		<programlisting>
+		<![CDATA[
+//添加 一个 set 集合
+SetOperations<String, Object> set = redisTemplate.opsForSet();
+set.add("Member", "neo");
+set.add("Member", "36");
+set.add("Member", "178cm");
+//输出 set 集合
+System.out.println(set.members("Member"));
+
+//添加有序的 set 集合
+ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+zset.add("zMember", "neo", 0);
+zset.add("zMember", "36", 1);
+zset.add("zMember", "178cm", 2);
+//输出有序 set 集合
+System.out.println(zset.rangeByScore("zMember", 0, 2));		
+		]]>
+		</programlisting>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.api.restful;
@@ -223,10 +242,46 @@ public class NewsRestController {
 		}
 		return new ResponseRestful(true, 0, "返回数据: " + news.size() + " 条", news);
 	}
+	
+	public void addRecentUser(long userId, String name) {  
+	    String key = RedisKeyGenerator.genRecentBrowsingPositionsKey(String.valueOf(userId));  
+	    // 获取已缓存的最近浏览的职位  
+	    ZSetOperations<String, String> zSetOperations = redisTempalte.opsForZSet();  
+        //zset内部是按分数来排序的，这里用当前时间做分数  
+	    zSetOperations.add(key, name, System.currentTimeMillis());  
+	    zSetOperations.removeRange(key, 0, -6);  
+	}  
+	
 }
 		]]>
 		</programlisting>
 	</section>
+	<section id="hash"> 
+		<title>Hash</title>
+		<programlisting>
+		<![CDATA[
+HashOperations<String, Object, Object>  hash = redisTemplate.opsForHash();
+Map<String,Object> map = new HashMap<String,Object>();
+map.put("name", "neo");
+map.put("age", "36");
+hash.putAll("member", map);
+
+System.out.println(hash.entries("member"));		
+		]]>
+		</programlisting> 
+	</section>
+	<section id="list">
+		<title>List</title>
+		<programlisting>
+		<![CDATA[
+ListOperations<String, Object> list = redisTemplate.opsForList();
+list.rightPush("books", "Linux");
+list.rightPush("books", "Java");
+System.out.println(list.range("books", 0, 1));
+		]]>
+		</programlisting>
+	</section>
+	
 </chapter>
 	
 	&chapter.data.mongodb.xml;
