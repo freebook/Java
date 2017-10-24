@@ -1703,7 +1703,7 @@ jdbcTemplate.execute("CREATE TABLE USER (id integer, name varchar(100))");
 		<section id="queryForInt">
 			<title>queryForInt</title>
 			<programlisting>
-int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");			
+int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");
 			</programlisting>
 		</section>
 		
@@ -1801,6 +1801,51 @@ public class CmsRestController {
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title>RowMapper 记录映射</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.model;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+
+public class CustomerRowMapper implements RowMapper
+{
+	public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+		Customer customer = new Customer();
+		customer.setId(rs.getInt("ID"));
+		customer.setName(rs.getString("NAME"));
+		customer.setAge(rs.getInt("AGE"));
+		return customer;
+	}
+
+}
+				]]>
+				</programlisting>
+				
+				<programlisting>
+				<![CDATA[
+public Customer findByCustomerId(int id){
+
+	String sql = "SELECT * FROM CUSTOMER WHERE ID = ?";
+
+	Customer customer = (Customer)getJdbcTemplate().queryForObject(
+			sql, new Object[] { id }, new CustomerRowMapper());
+
+	return customer;
+}
+				]]>
+				</programlisting>
+				
+				<programlisting>
+				<![CDATA[
+				
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="queryForList">
 			<title>queryForList</title>
@@ -1814,7 +1859,28 @@ while(it.hasNext()) {
     System.out.print(userMap.get("name") + "\t");  
     System.out.print(userMap.get("sex") + "\t");  
     System.out.println(userMap.get("age") + "\t");  
-}  			
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/article/tag/{siteId}")
+	public ResponseRestful tag(@PathVariable int siteId) {
+		List<Tag> tags = new ArrayList<Tag>();
+		List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+
+		String sql = "SELECT id,name FROM cms.tag WHERE site_id = ?";
+		rows = jdbcTemplate.queryForList(sql, new Object[] { siteId });
+
+		for (Map<String, Object> row : rows) {
+			Tag tag = new Tag();
+			tag.setId((Integer) row.get("id"));
+			tag.setName((String) row.get("name"));
+			tags.add(tag);
+		}
+		logger.info("tag {} SQL: {}", siteId, sql);
+		return new ResponseRestful(true, tags.size(), "标签", tags);
+	}			
 			]]>
 			</programlisting>
 		</section>
