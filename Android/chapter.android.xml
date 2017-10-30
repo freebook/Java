@@ -49,5 +49,13 @@
 		</screen>
 	</section>
 </section>
-
+<section>
+	<title>Layout</title>
+	<section>
+		<title></title>
+		<screen>
+setContentView(R.layout.view);		
+		</screen>
+	</section>
+</section>
 </chapter>

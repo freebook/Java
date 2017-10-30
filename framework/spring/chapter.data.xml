@@ -286,6 +286,7 @@ System.out.println(list.range("books", 0, 1));
 	
 	&chapter.data.mongodb.xml;
 	&chapter.data.jpa.xml;
+	&chapter.data.jdbc.xml;
 <chapter id="elasticsearch">
 	<title>Elasticsearch</title>
 	<section>
@@ -694,4 +695,83 @@ public class ScheduledTasks {
 			<para>spring-boot-starter-data-elasticsearch 目前还不支持 5.0.0 版本</para>
 		</section>
 	</section>
+	
 </chapter>
+
+	<chapter id="faq">
+		<title>Spring Data FAQ</title>
+		<section>
+			<title>No identifier specified for entity</title>
+			<para></para>
+		</section>
+		<section>
+			<title>Oracle Date 类型显示日期和时间</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.api.domain.oracle;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name = "test")
+public class Test {
+
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_id_Sequence")
+	@SequenceGenerator(name = "test_id_Sequence", sequenceName = "test")
+	private Long id;
+
+	@NotNull
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	public Date createdate;
+
+	public Member() {
+
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getCreatedate() {
+		return createdate;
+	}
+
+	public void setCreatedate(Date createdate) {
+		this.createdate = createdate;
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query</title>
+			<para>Internal Server Error","exception":"org.springframework.dao.InvalidDataAccessApiUsageException","message":"Executing an update/delete query; nested exception is javax.persistence.TransactionRequiredException: Executing an update/delete query"</para>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+	</chapter>

@@ -15,7 +15,34 @@ feign.hystrix.enabled: false
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="faq.logout">
+		<title>已停止的微服务节点注销慢或不注销</title>
+		<para>由于 Eureka Server 清理无效节点周期长默认为90秒，可能会遇到微服务注销慢甚至不注销的问题。</para>
+		<para>Eureka Server 配置，注意仅适合开发环境。</para>
+		<screen>
+		<![CDATA[
+# 设为false, 关闭自我保护， 从而保证会注销微服务
+eureka.server.enable-self-preservation=false
+
+# 清理间隔（单位毫秒，默认是60 * 1000）
+eureka.server.eviction-interval-timer-in-ms=30000
+		]]>
+		</screen>
+		<para>Eureka Client</para>
+		<para>配置开启健康检查，续约更新时间和到期时间。</para>
+		<screen>
+		<![CDATA[
+# 设为true，开启健康检查（需要spring-boot-starter-actuator 依赖）
+eureka.client.healthcheck.enabled=ture
+
+# 续约更新时间间隔（默认是30秒）
+eureka.instance.lease-renewal-interval-in-seconds=20000
+
+# 续约到期时间（默认90秒)
+eureka.instance.lease-expiration-duration-in-seconds=30000
+		]]>
+		</screen>
+	</section>
 	<section id="eureka.client">
 		<title>Eureka Client (Dalston.SR1)</title>
 		<section id="maven">
