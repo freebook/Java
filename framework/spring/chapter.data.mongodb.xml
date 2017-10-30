@@ -1,4 +1,4 @@
-<chapter id="spring-data-mongodb"><?dbhtml dir="data/mongodb" ?>
+<section id="spring-data-mongodb"><?dbhtml dir="mongodb" ?>
 	<title>Spring Data MongoDB</title>
 	
 	<section id="SpringDataMongoDB">
@@ -656,4 +656,4 @@ query.with(pageableRequest);
 		</section>
 	</section>
 	
-</chapter>
+</section>

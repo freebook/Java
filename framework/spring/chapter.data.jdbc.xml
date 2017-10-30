@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="EntityManager">
+<section id="EntityManager">
 	<title>EntityManager</title>
 	<programlisting>
 		<![CDATA[
@@ -45,8 +45,8 @@ class AccountServiceImpl implements AccountService {
 } 
 		]]>
 	</programlisting>
-</chapter>
-<chapter id="JdbcTemplate">
+</section>
+<section id="JdbcTemplate"><?dbhtml dir="jdbc" ?>
 	<title>JdbcTemplate</title>
 	<section id="execute">
 		<title>execute</title>
@@ -288,4 +288,4 @@ SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from test");
 		</programlisting>
 	</section>
 	
-</chapter>
+</section>

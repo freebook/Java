@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="spring-data-redis"><?dbhtml dir="data/redis" ?>
+<chapter id="index"><?dbhtml dir="data" ?>
+	<title>Spring Data</title>
+
+<section id="spring-data-redis"><?dbhtml dir="redis" ?>
 	<title>Spring Data Redis</title>
 	<section>
 		<title>pom.xml</title>
@@ -282,12 +285,12 @@ System.out.println(list.range("books", 0, 1));
 		</programlisting>
 	</section>
 	
-</chapter>
+</section>
 	
 	&chapter.data.mongodb.xml;
 	&chapter.data.jpa.xml;
 	&chapter.data.jdbc.xml;
-<chapter id="elasticsearch">
+<section id="elasticsearch">
 	<title>Elasticsearch</title>
 	<section>
 		<title>内嵌 Elasticsearch</title>
@@ -696,9 +699,9 @@ public class ScheduledTasks {
 		</section>
 	</section>
 	
-</chapter>
+</section>
 
-	<chapter id="faq">
+	<section id="faq">
 		<title>Spring Data FAQ</title>
 		<section>
 			<title>No identifier specified for entity</title>
@@ -774,4 +777,6 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
-	</chapter>
+	</section>
+	
+</chapter>	
