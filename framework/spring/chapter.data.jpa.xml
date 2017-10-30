@@ -1,4 +1,4 @@
-<section id="spring-data-jpa"><?dbhtml dir="jpa" ?>
+<section id="spring-data-jpa"><!-- <?dbhtml dir="jpa" ?> -->
 	<title>Spring Data JPA</title>
 	<section id="Entity">
 		<title>@Entity</title>

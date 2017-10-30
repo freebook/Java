@@ -1,4 +1,4 @@
-<section id="spring-data-mongodb"><?dbhtml dir="mongodb" ?>
+<section id="spring-data-mongodb"><!-- <?dbhtml dir="mongodb" ?> -->
 	<title>Spring Data MongoDB</title>
 	
 	<section id="SpringDataMongoDB">
