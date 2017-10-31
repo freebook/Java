@@ -55,6 +55,22 @@ spring.cloud.config.server.git.password=password
 spring.cloud.config.server.git.basedir=api/configs		
 			</programlisting>
 		</section>
+		<section>
+			<title>本地git仓库</title>
+			<programlisting>
+			<![CDATA[
+## application.properties
+		
+spring.application.name=root-server
+spring.cloud.config.server.bootstrap=true
+spring.cloud.config.server.prefix=/config
+spring.cloud.config.server.git.uri= file://${user.home}/Desktop/config
+
+## Spring cloud GIT Repository file
+${user.home}/config/root-server.properties			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="server">
 		<title>Server</title>

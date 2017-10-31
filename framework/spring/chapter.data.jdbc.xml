@@ -195,10 +195,18 @@ public Customer findByCustomerId(int id){
 }
 				]]>
 			</programlisting>
-
+			<para></para>
 			<programlisting>
 				<![CDATA[
-				
+Member member = this.jdbcTemplate.queryForObject("select first_name, last_name from member where id = ?",new Object[]{112L},
+new RowMapper<Member>() {
+    public Actor mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Member member = new Member();
+        member.setFirstName(rs.getString("first_name"));
+        member.setLastName(rs.getString("last_name"));
+        return member;
+    }
+});
 				]]>
 			</programlisting>
 		</section>
@@ -252,8 +260,10 @@ System.out.println(map.get("USERNAME"));
 	</section>
 	<section id="query">
 		<title>query</title>
-		<programlisting>
-		<![CDATA[
+		<section>
+			<title>ResultSet</title>
+			<programlisting>
+			<![CDATA[
 HashMap<String,String> member = jdbcTemplate.query("select name,age from member where id=1", (ResultSet rs) -> {
     HashMap<String,String> results = new HashMap<>();
     while (rs.next()) {
@@ -261,11 +271,14 @@ HashMap<String,String> member = jdbcTemplate.query("select name,age from member 
     }
     return results;
 }); 
-		]]>
-		</programlisting>
-		<para>ResultSetExtractor</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>ResultSetExtractor</title>
+			<para>ResultSetExtractor</para>
+			<programlisting>
+			<![CDATA[
 HashMap<String,String> member = jdbcTemplate.query("select name,age from member where id=1", new ResultSetExtractor<Map>(){
     @Override
     public Map extractData(ResultSet rs) throws SQLException,DataAccessException {
@@ -275,9 +288,42 @@ HashMap<String,String> member = jdbcTemplate.query("select name,age from member 
         }
         return mapResult;
     }
-});		
-		]]>
-		</programlisting>
+});
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>RowMapper</title>
+			<programlisting>
+			<![CDATA[
+List<Actor> actors = this.jdbcTemplate.query("select first_name, last_name from actor",new RowMapper<Actor>() {
+    public Actor mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Actor actor = new Actor();
+        actor.setFirstName(rs.getString("first_name"));
+        actor.setLastName(rs.getString("last_name"));
+        return actor;
+    }
+});
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+public List<Actor> findAllActors() {
+    return this.jdbcTemplate.query( "select first_name, last_name from actor", new ActorMapper());
+}
+
+private static final class ActorMapper implements RowMapper<Actor> {
+
+    public Actor mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Actor actor = new Actor();
+        actor.setFirstName(rs.getString("first_name"));
+        actor.setLastName(rs.getString("last_name"));
+        return actor;
+    }
+}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="queryForRowSet">
 		<title>queryForRowSet</title>
