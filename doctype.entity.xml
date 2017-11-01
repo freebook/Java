@@ -34,6 +34,7 @@
 <!ENTITY chapter.data.mongodb.xml		SYSTEM "framework/spring/chapter.data.mongodb.xml">
 <!ENTITY chapter.data.jpa.xml			SYSTEM "framework/spring/chapter.data.jpa.xml">
 <!ENTITY chapter.data.jdbc.xml			SYSTEM "framework/spring/chapter.data.jdbc.xml">
+<!ENTITY chapter.data.redis.xml			SYSTEM "framework/spring/chapter.data.redis.xml">
 <!ENTITY chapter.cloud.xml				SYSTEM "framework/spring/chapter.cloud.xml">
 <!ENTITY chapter.cloud.config.xml		SYSTEM "framework/spring/chapter.cloud.config.xml">
 <!ENTITY chapter.cloud.netflix.xml		SYSTEM "framework/spring/chapter.cloud.netflix.xml">

@@ -333,5 +333,32 @@ SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from test");
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="update">
+		<title>update</title>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping(value="/comment/add/{siteId}/{articleId}", method = RequestMethod.POST)
+	public ResponseRestful commentAdd(@PathVariable("siteId") int siteId, @PathVariable("articleId") int articleId, @RequestBody Comment comment) {
+		String sql = "insert into cms.comment("
+				+ "article_id, "
+				+ "ctime,"
+				+ "content,"
+				+ "member_id,"
+				+ "nickname,"
+				+ "picture"
+				+ ") values(?,?,now(),?,?,?,?,?)";
+
+		int count = jdbcTemplate.update(sql, 
+				comment.getArticleId(),
+				comment.getContent(),
+				comment.getMemberId(),
+				comment.getNickname(),
+				comment.getPicture()
+		);
+		
+		return new ResponseRestful(true, count, "评论添加成功", comment);
+	}		
+		]]>
+		</programlisting>
+	</section>
 </section>

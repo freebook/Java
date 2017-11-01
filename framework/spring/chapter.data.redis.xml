@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<section id="spring-data-redis"><!-- <?dbhtml dir="redis" ?> -->
+	<title>Spring Data Redis</title>
+	<section>
+		<title>pom.xml</title>
+		<screen>
+		<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-redis</artifactId>
+		</dependency>			
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>springframework-servlet.xml</title>
+		<screen>
+		<![CDATA[
+	<!-- Redis Connection Factory -->
+	<bean id="jedisConnFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="192.168.2.1" p:port="6379" p:use-pool="true" />
+
+	<!-- redis template definition -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+		p:connection-factory-ref="jedisConnFactory" />
+		]]>
+		</screen>
+		<example>
+			<title>Spring Data Redis Example</title>
+			<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+
+	<context:component-scan base-package="cn.netkiller.controller" />
+
+	<mvc:annotation-driven />
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+		<!-- <property name="viewNames" value="*.jsp" /> -->
+	</bean>
+
+	<bean id="configuracion"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:resources/development.properties" />
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.netkiller.mapper" />
+	</bean>
+
+	<bean id="userService" class="cn.netkiller.service.UserService">
+	</bean>
+
+	<!-- Redis Connection Factory -->
+	<bean id="jedisConnFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="192.168.2.1" p:port="6379" p:use-pool="true" />
+
+	<!-- redis template definition -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+		p:connection-factory-ref="jedisConnFactory" />
+</beans>				
+			]]>
+			</screen>
+		</example>
+	</section>
+	<section>
+		<title>Controller</title>
+		<screen>
+		<![CDATA[
+package cn.netkiller.controller;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import cn.netkiller.model.User;
+
+@Controller
+public class CacheController {
+
+	// inject the actual template
+	@Autowired
+	private RedisTemplate<String, String> template;
+
+	// inject the template as ListOperations
+	@Resource(name = "redisTemplate")
+	private ListOperations<String, String> listOps;
+
+	@RequestMapping("/cache")
+	public ModelAndView cache() {
+
+		String message = "";
+
+		User user = new User();
+		user.setId("1");
+		user.setName("Neo");
+		user.setAge(30);
+
+		String key = "user";
+		listOps.leftPush(key, user.toString());
+		message = listOps.leftPop(key);
+
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setValueSerializer(new StringRedisSerializer());
+		template.opsForValue().set("key", user.toString());
+
+		return new ModelAndView("index/index", "variable", message);
+	}
+}
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>index.jsp</title>
+		<screen>
+		<![CDATA[
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<br>
+	<div style="text-align:center">
+		<h2>
+			${variable}
+		</h2>
+	</div>
+</body>
+</html>			
+		]]>
+		</screen>
+	</section>
+	<section id="delete">
+		<title>删除 key </title>
+		<programlisting>
+		<![CDATA[
+	private void cleanNewToday() {
+		long begin = System.currentTimeMillis();
+        
+		redisTemplate.delete("news:today");
+    
+        long end = System.currentTimeMillis();
+		logger.info("Schedule clean redis {} 耗时 {} 秒", "cleanNewFlash()", (end-begin) / 1000 );
+	}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>测试</title>
+		<para>请求URL http://your.domain.com/your.html</para>
+		<screen>
+		<![CDATA[
+[root@master ~]# redis-cli 
+redis 127.0.0.1:6379> keys *
+1) "\xac\xed\x00\x05t\x00\x04user"
+2) "key"
+
+redis 127.0.0.1:6379> get key
+"\xac\xed\x00\x05t\x00\x1dUser [id=1, name=Neo, age=30]"
+		]]>
+		</screen>
+		<tip>
+			<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到 "\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过 template.setKeySerializer(new StringRedisSerializer()); 实现 </para>
+		</tip>
+	</section>
+	<section id="zset">
+		<title>ZSET 数据类型</title>
+		<programlisting>
+		<![CDATA[
+//添加 一个 set 集合
+SetOperations<String, Object> set = redisTemplate.opsForSet();
+set.add("Member", "neo");
+set.add("Member", "36");
+set.add("Member", "178cm");
+//输出 set 集合
+System.out.println(set.members("Member"));
+
+//添加有序的 set 集合
+ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+zset.add("zMember", "neo", 0);
+zset.add("zMember", "36", 1);
+zset.add("zMember", "178cm", 2);
+//输出有序 set 集合
+System.out.println(zset.rangeByScore("zMember", 0, 2));		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.api.restful;
+
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import common.pojo.ResponseRestful;
+
+@RestController
+@RequestMapping("/news")
+public class NewsRestController {
+
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+
+	@RequestMapping(value = "/flash/{count}")
+	public ResponseRestful flash(@PathVariable("count") long count) {
+		if(count == 0L) {
+			count=10L;
+		}
+		Set<String> news = this.redisTemplate.opsForZSet().reverseRange("news:flash", 0, count);
+		if (news == null) {
+			return new ResponseRestful(false, 10, "没有查询到结果", news);
+		}
+		return new ResponseRestful(true, 0, "返回数据: " + news.size() + " 条", news);
+	}
+	
+	public void addRecentUser(long userId, String name) {  
+	    String key = RedisKeyGenerator.genRecentBrowsingPositionsKey(String.valueOf(userId));  
+	    // 获取已缓存的最近浏览的职位  
+	    ZSetOperations<String, String> zSetOperations = redisTempalte.opsForZSet();  
+        //zset内部是按分数来排序的，这里用当前时间做分数  
+	    zSetOperations.add(key, name, System.currentTimeMillis());  
+	    zSetOperations.removeRange(key, 0, -6);  
+	}  
+	
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="hash"> 
+		<title>Hash</title>
+		<programlisting>
+		<![CDATA[
+HashOperations<String, Object, Object>  hash = redisTemplate.opsForHash();
+Map<String,Object> map = new HashMap<String,Object>();
+map.put("name", "neo");
+map.put("age", "36");
+hash.putAll("member", map);
+
+System.out.println(hash.entries("member"));		
+		]]>
+		</programlisting> 
+	</section>
+	<section id="list">
+		<title>List</title>
+		<programlisting>
+		<![CDATA[
+ListOperations<String, Object> list = redisTemplate.opsForList();
+list.rightPush("books", "Linux");
+list.rightPush("books", "Java");
+System.out.println(list.range("books", 0, 1));
+		]]>
+		</programlisting>
+	</section>
+	
+</section>
