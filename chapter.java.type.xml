@@ -477,7 +477,15 @@ public class Yesterday {
 		
 ]]>
 			</programlisting>
-		</section>		
+		</section>
+		<section id="date.iso8601">
+			<title>ISO 8601</title>
+			<screen>
+			<![CDATA[
+ISO 8601扩展格式 YYYY-MM-DDTHH:mm:ss.sssZ
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="array">
 		<title>Array</title>

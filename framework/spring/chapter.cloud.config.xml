@@ -57,6 +57,45 @@ spring.cloud.config.server.git.basedir=api/configs
 		</section>
 		<section>
 			<title>本地git仓库</title>
+			<para>创建本地仓库</para>
+			<screen>
+			<![CDATA[
+mkdir ~/config
+cd config
+git init
+git config --global user.email "neo.chen@live.com"
+git config --global user.name "Neo Chen"
+			]]>
+			</screen>
+			<para>创建测试配置文件</para>
+			<screen>
+			<![CDATA[
+# cat app-test.properties 
+name=neo
+age=10
+			]]>
+			</screen>
+			<para>提交配置文件</para>
+			<screen>
+			<![CDATA[
+git add app-test.properties 
+git commit -a
+			]]>
+			</screen>
+			
+			<para>检查文件是否提交成功</para>
+			<screen>
+			<![CDATA[
+[root@netkiller config]# git log
+commit aee6c35bacf1740004e02f8ecdcf2fd322422405
+Author: Neo Chen <neo.chen@live.com>
+Date:   Thu Nov 2 14:18:48 2017 +0800
+
+        new file:   app-test.properties
+			]]>
+			</screen>
+			
+			<para>配置 Spring cloud config 服务器</para>
 			<programlisting>
 			<![CDATA[
 ## application.properties
@@ -64,12 +103,20 @@ spring.cloud.config.server.git.basedir=api/configs
 spring.application.name=root-server
 spring.cloud.config.server.bootstrap=true
 spring.cloud.config.server.prefix=/config
-spring.cloud.config.server.git.uri= file://${user.home}/Desktop/config
+spring.cloud.config.server.git.uri= file://${user.home}/config
 
 ## Spring cloud GIT Repository file
 ${user.home}/config/root-server.properties			
 			]]>
 			</programlisting>
+			<para>检验配置中心</para>
+			<screen>
+			<![CDATA[
+[root@netkiller config]# curl http://cfg:test@localhost:8888/app-test.properties
+age: 10
+name: neo
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="server">
