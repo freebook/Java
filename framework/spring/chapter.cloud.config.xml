@@ -95,18 +95,17 @@ Date:   Thu Nov 2 14:18:48 2017 +0800
 			]]>
 			</screen>
 			
-			<para>配置 Spring cloud config 服务器</para>
+			<para>配置 Spring cloud config 服务器，修改 application.properties 文件</para>
 			<programlisting>
 			<![CDATA[
-## application.properties
-		
-spring.application.name=root-server
-spring.cloud.config.server.bootstrap=true
-spring.cloud.config.server.prefix=/config
+server.port=8888
+#spring.cloud.config.server.git.uri=/opt/config
 spring.cloud.config.server.git.uri= file://${user.home}/config
+security.user.name=cfg
+security.user.password=s3cr3t
 
 ## Spring cloud GIT Repository file
-${user.home}/config/root-server.properties			
+${user.home}/config/root-server.properties		
 			]]>
 			</programlisting>
 			<para>检验配置中心</para>

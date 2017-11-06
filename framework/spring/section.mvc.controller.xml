@@ -81,8 +81,16 @@ public String getFoosAsJsonFromBrowser() {
 curl -H "Accept:application/json,text/html" http://localhost:8080/spring/news/json.html
 			</screen>
 		</section>
+		<section id="@GetMapping">
+			<title>@GetMapping</title>
+			<programlisting>
+			<![CDATA[
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	
 	
 	<section id="@PathVariable">
 		<title>RequestMapping with Path Variables - @PathVariable</title>
@@ -340,6 +348,7 @@ public class Http {
 			</programlisting>
 		</section>
 	</section>
+	
 	<section id="@RequestBody">
 		<title>@RequestBody</title>
 		<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
@@ -351,6 +360,40 @@ public void handle(@RequestBody String body, Writer writer) throws IOException {
 } 
 		]]>
 		</programlisting>
+		<section id="@RequestBody.List">
+			<title>@RequestBody 传递 List</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.api.restful;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestRestController {
+
+	@RequestMapping(value = "/test/list/{siteId}", method = RequestMethod.POST)
+	public List<String> ping(@PathVariable("siteId") int siteId, @RequestBody List<String> tags) {
+		System.out.println(String.format("%d, %s", siteId, tags));
+		return (tags);
+	}
+
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+$ curl -H "Content-Type: application/json" -X POST -d '["Neo","Netkiller"]' http://localhost:8440/test/list/22.json 
+
+["Neo","Netkiller"]	
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="@ModelAttribute">
@@ -431,14 +474,7 @@ public class ProfileForm {
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
-		<title></title>
-		<programlisting>
-		<![CDATA[
-
-		]]>
-		</programlisting>
-	</section>
+	
 	<section id="@ResponseBody">
 		<title>@ResponseBody</title>
 		<programlisting>
