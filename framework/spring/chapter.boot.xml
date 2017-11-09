@@ -971,7 +971,8 @@ public class IndexController {
 		</section>
 	</section>
 	<section id="ViewResolver">
-		<title>ViewResolver</title>
+		<title>Spring boot with Webpage</title>
+		<subtitle> ViewResolver </subtitle>
 		<section>
 			<title>Maven</title>
 			<screen>
@@ -4121,6 +4122,80 @@ $ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X P
 			</programlisting>
 		</section>
 	</section>
+	<section id="thymeleaf">
+		<title>Spring boot with Thymeleaf</title>
+		<section id="thymeleaf.maven">
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+	<dependency>  
+		<groupId>org.springframework.boot</groupId>  
+		<artifactId>spring-boot-starter-thymeleaf</artifactId>  
+	</dependency>
+			]]>
+			</programlisting>
+		</section>
+		<section id="thymeleaf.application.properties">
+			<title>application.properties</title>
+			<programlisting>
+			<![CDATA[
+#spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.prefix=/WEB-INF/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML5
+spring.thymeleaf.encoding=UTF-8
+spring.thymeleaf.content-type=text/html
+spring.thymeleaf.cache=false	
+			]]>
+			</programlisting>
+		</section>
+		<section id="thymeleaf.controller">
+			<title>Controller</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/")
+public class HelloController {
+
+	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
+	public String getMovie(@PathVariable String name, ModelMap model) {
+		model.addAttribute("name", name);
+		return "hello";
+	}
+
+}			
+
+			]]>
+			</programlisting>
+		</section>
+		<section id="thymeleaf.template">
+			<title>HTML5 Template</title>
+			<programlisting>
+			<![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Spring MVC + Thymeleaf Example</title>
+</head>
+<body>
+	Hello, <span th:text="${name}" />!
+</body>
+</html>	
+			]]>
+			</programlisting>
+		</section>
+	</section>
+		
+	
 	
 	<section id="security">
 		<title>Spring boot with Spring security</title>
