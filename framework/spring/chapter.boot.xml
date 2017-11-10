@@ -478,7 +478,7 @@ public class Application {
 			]]>
 			</programlisting>
 		</section>
-		<section id="ComponentScan">
+		<section id="@ComponentScan">
 			<title>@ComponentScan</title>
 			<para>@ComponentScan 注入会扫描 @Controller 与 @RestController</para>
 			<programlisting>
@@ -486,6 +486,14 @@ public class Application {
 @ComponentScan
 @ComponentScan({"cn.netkiller.controller"})
 @ComponentScan({"cn.netkiller.controller", "cn.netkiller.rest"})
+			]]>
+			</programlisting>
+		</section>
+		<section id="@EntityScan">
+			<title>@EntityScan 实体扫描</title>
+			<programlisting>
+			<![CDATA[
+@EntityScan("common.domain")
 			]]>
 			</programlisting>
 		</section>
