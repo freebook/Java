@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="security" ?>
 	<title>Spring Security</title>
+	<section>
+		<title>配置 Spring Security</title>
+		<section>
+			<title>禁用 Security</title>
+			<programlisting>
+			<![CDATA[
+security.basic.enabled=false			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="EnableWebSecurity">
 		<title>EnableWebSecurity</title>
 		<section id="HttpSecurity">

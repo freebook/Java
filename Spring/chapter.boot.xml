@@ -143,13 +143,13 @@ exit $?
 		<title>application.properties</title>
 		<para>配置资源文件位置，默认application.properties是放在jar包中的，通过spring.config.location可以制定外部配置文件，这样更便于运维。</para>
 		<screen>
-java -jar demo.jar --spring.config.location=/opt/config/application.properties
+			java -jar demo.jar --spring.config.location=/opt/config/application.properties
 		</screen>
 		<section id="spring.pid">
 			<title>PID FILE</title>
 			<screen>
-spring.pid.fail-on-write-error= # Fail if ApplicationPidFileWriter is used but it cannot write the PID file.
-spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWriter is used).
+				spring.pid.fail-on-write-error= # Fail if ApplicationPidFileWriter is used but it cannot write the PID file.
+				spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWriter is used).
 			</screen>
 		</section>
 		<section id="tomcat">
@@ -158,281 +158,281 @@ spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWrite
 				<title>server.tomcat.basedir</title>
 				<para>设置 Tomcat 工作目录，默认 /tmp/tomcat-docbase.7057591687859485145.7000 通过下面配置修改</para>
 				<screen>
-server.tomcat.basedir=/tmp/your_project
+					server.tomcat.basedir=/tmp/your_project
 				</screen>
-			</section>			
+			</section>
 			<section id="server">
 				<title>server</title>
 				<screen>
-server.port=8080 	# 监听端口
-server.address= 	# 绑定的地址
-server.context-path= #默认为/
+					server.port=8080 # 监听端口
+					server.address= # 绑定的地址
+					server.context-path= #默认为/
 				</screen>
 				<para>连接数配置</para>
 				<screen>
-server.tomcat.max-threads=2048 # 最大线程数
+					server.tomcat.max-threads=2048 # 最大线程数
 				</screen>
 			</section>
 			<section id="access.log">
 				<title>tomcat</title>
 				<para>如果前端有 nginx 代理这个配置可以禁用</para>
 				<screen>
-server.tomcat.accesslog.enabled=true
-server.tomcat.accesslog.directory=/tmp/logs
-server.tomcat.accesslog.pattern=common
-server.tomcat.accesslog.prefix=www.netkiller.cn.access
-server.tomcat.accesslog.suffix=.log
+					server.tomcat.accesslog.enabled=true
+					server.tomcat.accesslog.directory=/tmp/logs
+					server.tomcat.accesslog.pattern=common
+					server.tomcat.accesslog.prefix=www.netkiller.cn.access
+					server.tomcat.accesslog.suffix=.log
 				</screen>
 			</section>
 			<section id="logging">
 				<title>logging</title>
 				<screen>
-logging.path=/tmp # 日志目录默认为 /tmp
-logging.file=your.log # 日志文件名称，默认为spring.log
+					logging.path=/tmp # 日志目录默认为 /tmp
+					logging.file=your.log # 日志文件名称，默认为spring.log
 				</screen>
 				<screen>
-java -jar spring-boot-app.jar --logging.file=/tmp/spring-boot-app.log				
+					java -jar spring-boot-app.jar --logging.file=/tmp/spring-boot-app.log
 				</screen>
 			</section>
 			<section id="charset">
 				<title>charset</title>
 				<para>Spring boot 默认并非UTF-8 所以下面配置必设，否则将会出现</para>
 				<screen>
-spring.messages.encoding=UTF-8
-server.tomcat.uri-encoding=UTF-8
-spring.http.encoding.charset=UTF-8
-spring.http.encoding.enabled=true
-spring.http.encoding.force=true
+					spring.messages.encoding=UTF-8
+					server.tomcat.uri-encoding=UTF-8
+					spring.http.encoding.charset=UTF-8
+					spring.http.encoding.enabled=true
+					spring.http.encoding.force=true
 				</screen>
 			</section>
 			<section id="session">
 				<title>Session 配置</title>
 				<screen>
-server.session.persistent		重启时是否持久化session，默认false
-server.session.timeout			session的超时时间
-server.session.tracking-modes	设定Session的追踪模式(cookie, url, ssl).
-server.session.timeout=1800 		#session有效时长
+					server.session.persistent 重启时是否持久化session，默认false
+					server.session.timeout session的超时时间
+					server.session.tracking-modes 设定Session的追踪模式(cookie, url, ssl).
+					server.session.timeout=1800 #session有效时长
 				</screen>
 			</section>
 			<section id="cookie">
 				<title>cookie</title>
 				<screen>
-server.session.cookie.comment	指定session cookie的comment
-server.session.cookie.domain		指定session cookie的domain
-server.session.cookie.http-only 	否开启HttpOnly.
-server.session.cookie.max-age 	设定session cookie的最大age.
-server.session.cookie.name 		设定Session cookie 的名称.
-server.session.cookie.path 		设定session cookie的路径.
-server.session.cookie.secure 	设定session cookie的“Secure” flag.
+					server.session.cookie.comment 指定session cookie的comment
+					server.session.cookie.domain 指定session cookie的domain
+					server.session.cookie.http-only 否开启HttpOnly.
+					server.session.cookie.max-age 设定session cookie的最大age.
+					server.session.cookie.name 设定Session cookie 的名称.
+					server.session.cookie.path 设定session cookie的路径.
+					server.session.cookie.secure 设定session cookie的“Secure” flag.
 				</screen>
 				<para>案例</para>
 				<screen>
-server.session.cookie.name=PHPSESSID
-server.session.cookie.domain=.example.com
-server.session.cookie.http-only=true
-server.session.cookie.path=/
+					server.session.cookie.name=PHPSESSID
+					server.session.cookie.domain=.example.com
+					server.session.cookie.http-only=true
+					server.session.cookie.path=/
 				</screen>
 			</section>
 			<section id="error">
 				<title>error 路径</title>
 				<screen>
-server.error.path=/error				
+					server.error.path=/error
 				</screen>
 			</section>
 			<section id="compression">
 				<title>压缩传输</title>
 				<screen>
-server.compression.enabled=true			#是否开启压缩，默认为false.
-server.compression.excluded-user-agents	#指定不压缩的user-agent，多个以逗号分隔，默认值为:text/html,text/xml,text/plain,text/css
-server.compression.mime-types			#指定要压缩的MIME type，多个以逗号分隔.
-server.compression.min-response-size	#执行压缩的阈值，默认为2048
+					server.compression.enabled=true #是否开启压缩，默认为false.
+					server.compression.excluded-user-agents #指定不压缩的user-agent，多个以逗号分隔，默认值为:text/html,text/xml,text/plain,text/css
+					server.compression.mime-types #指定要压缩的MIME type，多个以逗号分隔.
+					server.compression.min-response-size #执行压缩的阈值，默认为2048
 
-server.compression.enabled=true
-server.compression.mime-types=application/json,application/xml,text/html,text/xml,text/plain,text/css,application/javascript
-server.compression.min-response-size=1024
+					server.compression.enabled=true
+					server.compression.mime-types=application/json,application/xml,text/html,text/xml,text/plain,text/css,application/javascript
+					server.compression.min-response-size=1024
 				</screen>
 			</section>
 			<section>
 				<title>server.servlet.context-path</title>
 				<screen>
-server.servlet.context-path=/your
+					server.servlet.context-path=/your
 				</screen>
 			</section>
 			<section id="ssl">
 				<title>ssl</title>
 				<screen>
-server.ssl.ciphers			是否支持SSL ciphers.
-server.ssl.client-auth		设定client authentication是wanted 还是 needed.
-server.ssl.enabled			是否开启ssl，默认: true
-server.ssl.key-alias			设定key store中key的别名.
-server.ssl.key-password		访问key store中key的密码.
-server.ssl.key-store			设定持有SSL certificate的key store的路径，通常是一个.jks文件.
-server.ssl.key-store-password设定访问key store的密码.
-server.ssl.key-store-provider设定key store的提供者.
-server.ssl.key-store-type	设定key store的类型.
-server.ssl.protocol			使用的SSL协议，默认: TLS
-server.ssl.trust-store		持有SSL certificates的Trust store.
-server.ssl.trust-store-password访问trust store的密码.
-server.ssl.trust-store-provider设定trust store的提供者.
-server.ssl.trust-store-type	指定trust store的类型.
+					server.ssl.ciphers 是否支持SSL ciphers.
+					server.ssl.client-auth 设定client authentication是wanted 还是 needed.
+					server.ssl.enabled 是否开启ssl，默认: true
+					server.ssl.key-alias 设定key store中key的别名.
+					server.ssl.key-password 访问key store中key的密码.
+					server.ssl.key-store 设定持有SSL certificate的key store的路径，通常是一个.jks文件.
+					server.ssl.key-store-password设定访问key store的密码.
+					server.ssl.key-store-provider设定key store的提供者.
+					server.ssl.key-store-type 设定key store的类型.
+					server.ssl.protocol 使用的SSL协议，默认: TLS
+					server.ssl.trust-store 持有SSL certificates的Trust store.
+					server.ssl.trust-store-password访问trust store的密码.
+					server.ssl.trust-store-provider设定trust store的提供者.
+					server.ssl.trust-store-type 指定trust store的类型.
 				</screen>
 				<para>生成证书</para>
 				<para>server.ssl.* #ssl相关配置</para>
 				<screen>
-keytool -genkey -alias springboot -keyalg RSA -keystore /www/ssl/spring
-设置密码 123456			
+					keytool -genkey -alias springboot -keyalg RSA -keystore /www/ssl/spring
+					设置密码 123456
 				</screen>
 				<para>配置 application.properties</para>
 				<screen>
-server.ssl.enabled 启动tomcat ssl配置
-server.ssl.keyAlias 别名
-server.ssl.keyPassword 密码
-server.ssl.keyStore 位置			
+					server.ssl.enabled 启动tomcat ssl配置
+					server.ssl.keyAlias 别名
+					server.ssl.keyPassword 密码
+					server.ssl.keyStore 位置
 				</screen>
 				<screen>
-server.port=8443
-server.ssl.enabled=true
-server.ssl.keyAlias=springboot
-server.ssl.keyPassword=123456
-server.ssl.keyStore=/www/ssl/spring
+					server.port=8443
+					server.ssl.enabled=true
+					server.ssl.keyAlias=springboot
+					server.ssl.keyPassword=123456
+					server.ssl.keyStore=/www/ssl/spring
 				</screen>
 			</section>
 		</section>
-		
+
 		<section id="json">
 			<title>JSON</title>
 			<screen>
-# Pretty-print JSON responses
-spring.jackson.serialization.indent_output=true
+				# Pretty-print JSON responses
+				spring.jackson.serialization.indent_output=true
 			</screen>
 		</section>
 		<section id="mail">
 			<title>SMTP 相关配置</title>
 			<screen>
-spring.mail.host=smtp.netkiller.cn
-#spring.mail.username=
-#spring.mail.password=
-#spring.mail.properties.mail.smtp.auth=true
-#spring.mail.properties.mail.smtp.starttls.enable=true
-#spring.mail.properties.mail.smtp.starttls.required=true		
-mail.smtp.debug=true
+				spring.mail.host=smtp.netkiller.cn
+				#spring.mail.username=
+				#spring.mail.password=
+				#spring.mail.properties.mail.smtp.auth=true
+				#spring.mail.properties.mail.smtp.starttls.enable=true
+				#spring.mail.properties.mail.smtp.starttls.required=true
+				mail.smtp.debug=true
 			</screen>
 		</section>
 		<section id="redis">
 			<title>Redis</title>
 			<screen>
-# REDIS (RedisProperties)
-# Redis数据库索引（默认为0）
-spring.redis.database=0
-# Redis服务器地址
-spring.redis.host=localhost
-# Redis服务器连接端口
-spring.redis.port=6379
-# Redis服务器连接密码（默认为空）
-spring.redis.password=
-# 连接池最大连接数（使用负值表示没有限制）
-spring.redis.pool.max-active=8
-# 连接池最大阻塞等待时间（使用负值表示没有限制）
-spring.redis.pool.max-wait=-1
-# 连接池中的最大空闲连接
-spring.redis.pool.max-idle=8
-# 连接池中的最小空闲连接
-spring.redis.pool.min-idle=0
-# 连接超时时间（毫秒）
-spring.redis.timeout=0
+				# REDIS (RedisProperties)
+				# Redis数据库索引（默认为0）
+				spring.redis.database=0
+				# Redis服务器地址
+				spring.redis.host=localhost
+				# Redis服务器连接端口
+				spring.redis.port=6379
+				# Redis服务器连接密码（默认为空）
+				spring.redis.password=
+				# 连接池最大连接数（使用负值表示没有限制）
+				spring.redis.pool.max-active=8
+				# 连接池最大阻塞等待时间（使用负值表示没有限制）
+				spring.redis.pool.max-wait=-1
+				# 连接池中的最大空闲连接
+				spring.redis.pool.max-idle=8
+				# 连接池中的最小空闲连接
+				spring.redis.pool.min-idle=0
+				# 连接超时时间（毫秒）
+				spring.redis.timeout=0
 			</screen>
 		</section>
 		<section id="mongodb">
 			<title>MongoDB</title>
 			<para>格式：mongodb://用户名:密码@主机地址/数据库</para>
 			<screen>
-spring.data.mongodb.uri=mongodb://user:passw0rd@mdb.netkiller.cn/test
-spring.data.mongodb.repositories.enabled=true
+				spring.data.mongodb.uri=mongodb://user:passw0rd@mdb.netkiller.cn/test
+				spring.data.mongodb.repositories.enabled=true
 			</screen>
 		</section>
 		<section id="mysql">
 			<title>MySQL</title>
 			<screen>
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-spring.datasource.url=jdbc:mysql://主机地址:端口号/数据库
-spring.datasource.username=用户名
-spring.datasource.password=密码
-spring.jpa.database=MYSQL	# 启用JPA支持	
+				spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+				spring.datasource.url=jdbc:mysql://主机地址:端口号/数据库
+				spring.datasource.username=用户名
+				spring.datasource.password=密码
+				spring.jpa.database=MYSQL # 启用JPA支持
 			</screen>
 		</section>
 		<section id="oracle">
 			<title>Oracle</title>
 			<screen>
-spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
-spring.datasource.url=jdbc:oracle:thin:@//odb.netkiller.cn:1521/orcl
-spring.datasource.username=orcl
-spring.datasource.password=passw0rd
-spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
-spring.jpa.database-platform=org.hibernate.dialect.Oracle10gDialect
+				spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+				spring.datasource.url=jdbc:oracle:thin:@//odb.netkiller.cn:1521/orcl
+				spring.datasource.username=orcl
+				spring.datasource.password=passw0rd
+				spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
+				spring.jpa.database-platform=org.hibernate.dialect.Oracle10gDialect
 
-spring.jpa.show-sql=true
-#spring.jpa.hibernate.ddl-auto=none
-#spring.jpa.hibernate.ddl-auto=create-drop
-spring.datasource.max-active=50
-spring.datasource.initial-size=5
-spring.datasource.max-idle=10
-spring.datasource.min-idle=5
-spring.datasource.test-while-idle=true
-spring.datasource.test-on-borrow=false
-spring.datasource.validation-query=SELECT 1 FROM DUAL
-spring.datasource.time-between-eviction-runs-millis=5000
-spring.datasource.min-evictable-idle-time-millis=60000
+				spring.jpa.show-sql=true
+				#spring.jpa.hibernate.ddl-auto=none
+				#spring.jpa.hibernate.ddl-auto=create-drop
+				spring.datasource.max-active=50
+				spring.datasource.initial-size=5
+				spring.datasource.max-idle=10
+				spring.datasource.min-idle=5
+				spring.datasource.test-while-idle=true
+				spring.datasource.test-on-borrow=false
+				spring.datasource.validation-query=SELECT 1 FROM DUAL
+				spring.datasource.time-between-eviction-runs-millis=5000
+				spring.datasource.min-evictable-idle-time-millis=60000
 			</screen>
 		</section>
 		<section id="default_schema">
 			<title>default_schema</title>
 			<screen>
-spring.jpa.properties.hibernate.default_schema=schema
+				spring.jpa.properties.hibernate.default_schema=schema
 			</screen>
 		</section>
 		<section>
 			<title>datasource</title>
 			<para>启用/禁用 导入 schema.sql 和 data.sql / data-${platform}.sql 其中 platform 是 spring.datasource.platform 所定义的平台</para>
 			<screen>
-spring.datasource.initialize=false
-spring.datasource.platform=MYSQL
+				spring.datasource.initialize=false
+				spring.datasource.platform=MYSQL
 			</screen>
 		</section>
 		<section id="velocity">
 			<title>velocity</title>
 			<screen>
-spring.velocity.resourceLoaderPath=classpath:/templates/
-spring.velocity.prefix=
-spring.velocity.suffix=.vm
-spring.velocity.cache=false
-spring.velocity.check-template-location=true
-spring.velocity.content-type=text/html
-spring.velocity.charset=UTF-8
-spring.velocity.properties.input.encoding=UTF-8
-spring.velocity.properties.output.encoding=UTF-8			
+				spring.velocity.resourceLoaderPath=classpath:/templates/
+				spring.velocity.prefix=
+				spring.velocity.suffix=.vm
+				spring.velocity.cache=false
+				spring.velocity.check-template-location=true
+				spring.velocity.content-type=text/html
+				spring.velocity.charset=UTF-8
+				spring.velocity.properties.input.encoding=UTF-8
+				spring.velocity.properties.output.encoding=UTF-8
 			</screen>
 			<para>禁用 velocity 模板引擎</para>
 			<screen>
-spring.velocity.enabled=false
-spring.velocity.check-template-location=false
+				spring.velocity.enabled=false
+				spring.velocity.check-template-location=false
 			</screen>
 		</section>
 		<section>
 			<title></title>
 			<screen>
-security.user.name=user
-security.user.password=password
-security.user.role=USER
+				security.user.name=user
+				security.user.password=password
+				security.user.role=USER
 			</screen>
 			<para>Web 安全</para>
 			<screen>
-# X-Frame-Options: DENY
-security.headers.frame=false		
+				# X-Frame-Options: DENY
+				security.headers.frame=false
 
-security.headers.cache
-security.headers.content-type
-security.headers.hsts
-security.headers.xss
+				security.headers.cache
+				security.headers.content-type
+				security.headers.hsts
+				security.headers.xss
 			</screen>
 			<para> 参考 https://github.com/spring-projects/spring-boot/blob/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java#L171</para>
 		</section>
@@ -459,7 +459,7 @@ public class Application {
 }
 		]]>
 		</programlisting>
-		
+
 		<section id="SpringBootApplication">
 			<title>@SpringBootApplication</title>
 			<para>@SpringBootApplication 是 @Configuration, @EnableAutoConfiguration 跟 @ComponentScan 的集合。</para>
@@ -468,7 +468,7 @@ public class Application {
 @SpringBootApplication
 			]]>
 			</programlisting>
-		</section>		
+		</section>
 		<section id="EnableAutoConfiguration">
 			<title>@EnableAutoConfiguration</title>
 			<para>exclude 排除配置，下面例子是排除 DataSource配置</para>
@@ -514,13 +514,13 @@ public class Application {
 			<title>隐藏 Banner</title>
 			<para>隐藏 Spring Boot Banner</para>
 			<screen>
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::        (v1.3.0.RELEASE)			
+				. ____ _ __ _ _
+				/\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
+				( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+				\\/ ___)| |_)| | | | | || (_| | ) ) ) )
+				' |____| .__|_| |_|_| |_\__, | / / / /
+				=========|_|==============|___/=/_/_/_/
+				:: Spring Boot :: (v1.3.0.RELEASE)
 			</screen>
 			<programlisting>
 			<![CDATA[
@@ -654,7 +654,7 @@ public class Application extends SpringBootServletInitializer {
 			<title>@EnableConfigurationProperties 引用自定义 *.properties 配置文件</title>
 			<para>Application.java 涮锅配置NetkillerProperties.java是 @ComponentScan 扫描范围，可以不用声明下面注解。</para>
 			<screen>
-@EnableConfigurationProperties(NetkillerProperties.class)
+				@EnableConfigurationProperties(NetkillerProperties.class)
 			</screen>
 			<programlisting>
 			<![CDATA[
@@ -701,7 +701,7 @@ public class Application {
 }
 			]]>
 			</programlisting>
-		
+
 			<para>NetkillerProperties.java</para>
 			<programlisting>
 			<![CDATA[
@@ -790,42 +790,42 @@ netkiller.email=netkiller@msn.com
 netkiller.home=http://www.netkiller.cn
 			]]>
 			</programlisting>
-			
+
 			<para>@ConfigurationProperties 默认配置是 application.properties</para>
 			<para>你可以通过 locations 指向特定配置文件</para>
-			<screen>		
-@ConfigurationProperties(prefix = "message.api",locations = "classpath:config/message.properties")  		
+			<screen>
+				@ConfigurationProperties(prefix = "message.api",locations = "classpath:config/message.properties")
 			</screen>
 			<para>@EnableConfigurationProperties 可以导入多个配置文件</para>
 			<screen>
-@EnableConfigurationProperties({NetkillerProperties.class, NeoProperties.class})
+				@EnableConfigurationProperties({NetkillerProperties.class, NeoProperties.class})
 			</screen>
 		</section>
 		<section>
 			<title>spring.profiles.active 参数切换配置文件</title>
 			<para>首先我们准备三个配置文件</para>
 			<screen>
-src/main/resource/application-development.properties
-src/main/resource/application-testing.properties
-src/main/resource/application-production.properties
+				src/main/resource/application-development.properties
+				src/main/resource/application-testing.properties
+				src/main/resource/application-production.properties
 			</screen>
 			<para>使用下面--spring.profiles.active参数切换运行环境配置文件</para>
 			<screen>
-java -jar application.jar --spring.profiles.active=development
-java -jar application.jar --spring.profiles.active=testing
-java -jar application.jar --spring.profiles.active=production			
+				java -jar application.jar --spring.profiles.active=development
+				java -jar application.jar --spring.profiles.active=testing
+				java -jar application.jar --spring.profiles.active=production
 			</screen>
 			<para>分别为三个环境打包</para>
 			<screen>
-mvn clean package -Pdevelopment
-mvn clean package -Ptesting
-mvn clean package -Pproduction			
-			</screen>			
+				mvn clean package -Pdevelopment
+				mvn clean package -Ptesting
+				mvn clean package -Pproduction
+			</screen>
 		</section>
 		<section>
 			<title>SpringApplicationBuilder.properties() 方法添加配置项</title>
 			<screen>
-			
+
 			</screen>
 			<programlisting>
 			<![CDATA[
@@ -1007,8 +1007,8 @@ public class IndexController {
 		<section>
 			<title>application.properties</title>
 			<programlisting>
-spring.mvc.view.prefix=/WEB-INF/jsp/
-spring.mvc.view.suffix=.jsp			
+				spring.mvc.view.prefix=/WEB-INF/jsp/
+				spring.mvc.view.suffix=.jsp
 			</programlisting>
 		</section>
 		<section>
@@ -1033,7 +1033,7 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 }
-			]]>			
+			]]>
 			</programlisting>
 		</section>
 		<section>
@@ -1127,9 +1127,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 			]]>
 			</programlisting>
 		</section>
-				
+
 	</section>
-		<section id="RestTemplate">
+	<section id="RestTemplate">
 		<title>String boot with RestTemplate</title>
 		<para>RestTemplate 是 Spring Restful Client 用于调用restful接口</para>
 		<section>
@@ -1237,8 +1237,8 @@ public class IndexController {
 		<title>Spring boot with Logging</title>
 		<para>一般的日志需求可以通过配置 application.properties实现，如果仍不能满足可以使用 logback.xml 配置日志。</para>
 		<screen>
-logging.file=target/spring.log
-logging.config=classpath:logback.xml
+			logging.file=target/spring.log
+			logging.config=classpath:logback.xml
 		</screen>
 		<section>
 			<title>打印日志</title>
@@ -1278,19 +1278,19 @@ public class TestController {
 			<title>日志输出级别</title>
 			<para>显示所有DEBUG信息</para>
 			<screen>
-logging.level.root=DEBUG
+				logging.level.root=DEBUG
 			</screen>
 			<para>仅仅显示 springframework 调试信息</para>
 			<screen>
-logging.level.org.springframework.web=DEBUG
+				logging.level.org.springframework.web=DEBUG
 			</screen>
 			<para>仅仅显示 cn.netkiller.web.TestController 调试信息</para>
 			<screen>
-private static final Logger log = LoggerFactory.getLogger(TestController.class);
+				private static final Logger log = LoggerFactory.getLogger(TestController.class);
 
-log.debug(message);
+				log.debug(message);
 
-logging.level.cn.netkiller.web.TestController=DEBUG
+				logging.level.cn.netkiller.web.TestController=DEBUG
 			</screen>
 		</section>
 		<section>
@@ -1676,7 +1676,7 @@ spring.redis.timeout=10
 spring.session.store-type=redis
 				]]>
 				</programlisting>
-				
+
 			</section>
 			<section>
 				<title>Application</title>
@@ -1728,7 +1728,7 @@ public class RedisHttpSessionConfig {
 				]]>
 				</programlisting>
 			</section>
-			
+
 		</section>
 		<section>
 			<title>测试 Session</title>
@@ -1771,26 +1771,26 @@ public class TestController {
 			</programlisting>
 			<para>keys spring:session:* 查看 Session Key</para>
 			<screen>
-$ telnet 192.168.4.1 6379
-Connecting to 192.168.4.1:6379...
-Connection established.
-To escape to local shell, press 'Ctrl+Alt+]'.
-keys spring:session:*
-*7
-$68
-spring:session:sessions:expires:a510f46f-0a2f-4649-af05-34bd750562c1
-$40
-spring:session:expirations:1476100200000
-$40
-spring:session:expirations:1476098400000
-$60
-spring:session:sessions:f6494a2f-591e-42ba-b381-ce2596f4046d
-$60
-spring:session:sessions:a510f46f-0a2f-4649-af05-34bd750562c1
-$112
-spring:session:index:org.springframework.session.FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME:user
-$60
-spring:session:sessions:627018c8-243e-43ac-87b9-fc07f130c899
+				$ telnet 192.168.4.1 6379
+				Connecting to 192.168.4.1:6379...
+				Connection established.
+				To escape to local shell, press 'Ctrl+Alt+]'.
+				keys spring:session:*
+				*7
+				$68
+				spring:session:sessions:expires:a510f46f-0a2f-4649-af05-34bd750562c1
+				$40
+				spring:session:expirations:1476100200000
+				$40
+				spring:session:expirations:1476098400000
+				$60
+				spring:session:sessions:f6494a2f-591e-42ba-b381-ce2596f4046d
+				$60
+				spring:session:sessions:a510f46f-0a2f-4649-af05-34bd750562c1
+				$112
+				spring:session:index:org.springframework.session.FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME:user
+				$60
+				spring:session:sessions:627018c8-243e-43ac-87b9-fc07f130c899
 
 			</screen>
 		</section>
@@ -1811,7 +1811,7 @@ spring.session.jdbc.table-name=SESSIONS
 			<title>org.apache.tomcat.jdbc.pool.DataSource</title>
 			<para>默认连接池，可以忽略配置</para>
 			<programlisting>
-spring.datasource.type = org.apache.tomcat.jdbc.pool.DataSource
+				spring.datasource.type = org.apache.tomcat.jdbc.pool.DataSource
 			</programlisting>
 		</section>
 		<section id="druid">
@@ -1902,11 +1902,12 @@ spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource
 			]]>
 			</programlisting>
 		</section>
-	</section><section id="mongodb">
+	</section>
+	<section id="mongodb">
 		<title>Spring boot with MongoDB</title>
 		<section>
 			<title>Maven</title>
-<para>pom.xml</para>
+			<para>pom.xml</para>
 			<programlisting>
 			<![CDATA[
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -2016,10 +2017,10 @@ spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource
 
 </project>
 			]]>
-			</programlisting>			
+			</programlisting>
 		</section>
 		<section>
-			<title>Application</title>	
+			<title>Application</title>
 			<para>Application.java</para>
 			<programlisting>
 			<![CDATA[
@@ -2062,9 +2063,9 @@ public class Application {
 }
 			]]>
 			</programlisting>
-					
+
 		</section>
-		
+
 		<section id="MongoTemplate">
 			<title>MongoTemplate</title>
 			<programlisting>
@@ -2297,7 +2298,7 @@ public class IndexController {
 			]]>
 			</programlisting>
 		</section>
-		
+
 	</section>
 	<section id="mysql">
 		<title>Spring boot with MySQL</title>
@@ -2435,19 +2436,19 @@ spring.jpa.hibernate.ddl-auto=update
 			]]>
 			</screen>
 			<screen>
-spring.datasource.url=jdbc:mysql://localhost:3306/test
-spring.datasource.username=root
-spring.datasource.password=pasword
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-spring.datasource.max-idle=10
-spring.datasource.max-wait=10000
-spring.datasource.min-idle=5
-spring.datasource.initial-size=5
-spring.datasource.validation-query=SELECT 1
-spring.datasource.test-on-borrow=false
-spring.datasource.test-while-idle=true
-spring.datasource.time-between-eviction-runs-millis=18800
-spring.datasource.jdbc-interceptors=ConnectionState;SlowQueryReport(threshold=0)			
+				spring.datasource.url=jdbc:mysql://localhost:3306/test
+				spring.datasource.username=root
+				spring.datasource.password=pasword
+				spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+				spring.datasource.max-idle=10
+				spring.datasource.max-wait=10000
+				spring.datasource.min-idle=5
+				spring.datasource.initial-size=5
+				spring.datasource.validation-query=SELECT 1
+				spring.datasource.test-on-borrow=false
+				spring.datasource.test-while-idle=true
+				spring.datasource.time-between-eviction-runs-millis=18800
+				spring.datasource.jdbc-interceptors=ConnectionState;SlowQueryReport(threshold=0)
 			</screen>
 		</section>
 		<section>
@@ -2478,7 +2479,7 @@ public class Application {
 
 }
 			]]>
-			</programlisting>			
+			</programlisting>
 		</section>
 		<section>
 			<title>JdbcTemplate</title>
@@ -2671,7 +2672,7 @@ public class IndexController {
 
 			]]>
 			</programlisting>
-			
+
 
 		</section>
 	</section>
@@ -2690,8 +2691,8 @@ public class IndexController {
 			]]>
 			</programlisting>
 			<screen>
-mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true
-mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
+				mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true
+				mvn install:install-file -Dfile=ojdbc7.jar -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
 			</screen>
 			<para>另一种方案是在项目根目录下创建一个/lib文件夹，将下载的驱动放入该文件夹中。然后pom.xml 加入下面代码</para>
 			<para>ojdbc6.jar 例子</para>
@@ -2868,29 +2869,29 @@ spring.jpa.hibernate.ddl-auto=create-drop
 			</programlisting>
 			<para>其他配置</para>
 			<screen>
-spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
-spring.datasource.test-while-idle=true
-spring.datasource.test-on-borrow=true
+				spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
+				spring.datasource.test-while-idle=true
+				spring.datasource.test-on-borrow=true
 			</screen>
 			<para>Oracle RAC</para>
 			<screen>
-jdbc:oracle:thin@(DESCRIPTION=
-   (LOAD_BALANCE=on)
-   (ADDRESS=(PROTOCOL=TCP)(HOST=racnode1) (PORT=1521))
-   (ADDRESS=(PROTOCOL=TCP)(HOST=racnode2) (PORT=1521))
-   (CONNECT_DATA=(SERVICE_NAME=service_name)))
-   
-jdbc:oracle:thin:@(DESCRIPTION=
-	(ADDRESS=(PROTOCOL=TCP)(HOST=125.22.42.68)(PORT=1521))
-	(LOAD_BALANCE=on)
-	(FAILOVER=ON)
-	(CONNECT_DATA=
-		(SERVER=DEDICATED)
-		(SERVICE_NAME=service_name)
-		(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))
-		)
-	)
-			</screen>			
+				jdbc:oracle:thin@(DESCRIPTION=
+				(LOAD_BALANCE=on)
+				(ADDRESS=(PROTOCOL=TCP)(HOST=racnode1) (PORT=1521))
+				(ADDRESS=(PROTOCOL=TCP)(HOST=racnode2) (PORT=1521))
+				(CONNECT_DATA=(SERVICE_NAME=service_name)))
+
+				jdbc:oracle:thin:@(DESCRIPTION=
+				(ADDRESS=(PROTOCOL=TCP)(HOST=125.22.42.68)(PORT=1521))
+				(LOAD_BALANCE=on)
+				(FAILOVER=ON)
+				(CONNECT_DATA=
+				(SERVER=DEDICATED)
+				(SERVICE_NAME=service_name)
+				(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))
+				)
+				)
+			</screen>
 		</section>
 		<section>
 			<title>Application</title>
@@ -3054,7 +3055,7 @@ public class Article implements Serializable {
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section>
 			<title>Controller</title>
 			<programlisting>
@@ -3133,75 +3134,9 @@ public class IndexController {
 			]]>
 			</programlisting>
 		</section>
-		<!-- 
-		<programlisting>
-		<![CDATA[
-    @Bean
-    DataSource dataSource() throws SQLException {
- 
-        OracleDataSource dataSource = new OracleDataSource();
-        dataSource.setUser(username);
-        dataSource.setPassword(password);
-        dataSource.setURL(url);
-        dataSource.setImplicitCachingEnabled(true);
-        dataSource.setFastConnectionFailoverEnabled(true);
-        return dataSource;
-    }		
-		]]>
-		</programlisting>
-		
-		<programlisting>
-		<![CDATA[
-import oracle.jdbc.pool.OracleDataSource;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
- 
-import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
-import java.sql.SQLException;
- 
-@Configuration
-@ConfigurationProperties("oracle")
-public class OracleConfiguration {
-    @NotNull
-    private String username;
- 
-    @NotNull
-    private String password;
- 
-    @NotNull
-    private String url;
- 
-    public void setUsername(String username) {
-        this.username = username;
-    }
- 
-    public void setPassword(String password) {
-        this.password = password;
-    }
- 
-    public void setUrl(String url) {
-        this.url = url;
-    }
- 
-    @Bean
-    DataSource dataSource() throws SQLException {
- 
-        OracleDataSource dataSource = new OracleDataSource();
-        dataSource.setUser(username);
-        dataSource.setPassword(password);
-        dataSource.setURL(url);
-        dataSource.setImplicitCachingEnabled(true);
-        dataSource.setFastConnectionFailoverEnabled(true);
-        return dataSource;
-    }
-}
-		]]>
-		</programlisting>
-		
-		 -->
+		<!-- <programlisting> <![CDATA[ @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } ]]> </programlisting> <programlisting> <![CDATA[ import oracle.jdbc.pool.OracleDataSource; import org.springframework.boot.context.properties.ConfigurationProperties; import 
+			org.springframework.context.annotation.Bean; import org.springframework.context.annotation.Configuration; import org.springframework.context.annotation.Profile; import javax.sql.DataSource; import javax.validation.constraints.NotNull; import java.sql.SQLException; @Configuration @ConfigurationProperties("oracle") public class OracleConfiguration { @NotNull private String username; @NotNull private String password; @NotNull private String url; public void setUsername(String username) { this.username = username; 
+			} public void setPassword(String password) { this.password = password; } public void setUrl(String url) { this.url = url; } @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } } ]]> </programlisting> -->
 	</section>
 	<section id="postgresql">
 		<title>Spring boot with PostgreSQL</title>
@@ -3436,10 +3371,10 @@ public class TestPostgreSQLController {
 		<section>
 			<title>Test</title>
 			<screen>
-curl http://127.0.0.1:7000/test/pgsql/save
-curl http://127.0.0.1:7000/test/pgsql/findall
-curl http://127.0.0.1:7000/test/pgsql/findbyid?id=1
-curl http://127.0.0.1:7000/test/pgsql/jdbc?id=1
+				curl http://127.0.0.1:7000/test/pgsql/save
+				curl http://127.0.0.1:7000/test/pgsql/findall
+				curl http://127.0.0.1:7000/test/pgsql/findbyid?id=1
+				curl http://127.0.0.1:7000/test/pgsql/jdbc?id=1
 			</screen>
 		</section>
 	</section>
@@ -3778,14 +3713,14 @@ public class EmailRestController extends CommonRestController {
 		<section>
 			<title>Test</title>
 			<screen>
-$ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"from":"root@netkiller.cn", "to":"21214094@qq.com","subject":"Hello","text":"Hello world!!!"}' http://172.16.0.20:8080/v1/email/send.json
-HTTP/1.1 200 OK
-Server: Apache-Coyote/1.1
-Content-Type: application/json;charset=UTF-8
-Transfer-Encoding: chunked
-Date: Wed, 10 Aug 2016 06:38:00 GMT
+				$ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"from":"root@netkiller.cn", "to":"21214094@qq.com","subject":"Hello","text":"Hello world!!!"}' http://172.16.0.20:8080/v1/email/send.json
+				HTTP/1.1 200 OK
+				Server: Apache-Coyote/1.1
+				Content-Type: application/json;charset=UTF-8
+				Transfer-Encoding: chunked
+				Date: Wed, 10 Aug 2016 06:38:00 GMT
 
-{"from":"root@netkiller.cn","to":"21214094@qq.com","subject":"Hello","text":"Hello world!!!","status":true}
+				{"from":"root@netkiller.cn","to":"21214094@qq.com","subject":"Hello","text":"Hello world!!!","status":true}
 			</screen>
 		</section>
 	</section>
@@ -4202,9 +4137,9 @@ public class HelloController {
 			</programlisting>
 		</section>
 	</section>
-		
-	
-	
+
+
+
 	<section id="security">
 		<title>Spring boot with Spring security</title>
 		<section>
@@ -4413,10 +4348,10 @@ public class Application {
 }
 			]]>
 			</programlisting>
-		</section>		
+		</section>
 		<section>
 			<title>WebSecurityConfigurer</title>
-			<para>注意WebSecurityConfigurer必须在  ComponentScan 的扫描范围</para>
+			<para>注意WebSecurityConfigurer必须在 ComponentScan 的扫描范围</para>
 			<programlisting>
 			<![CDATA[
 package api.config;
@@ -4761,7 +4696,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
   </dependencies>
 </project>
 			
-			]]>				
+			]]>
 			</screen>
 			<para>下面的代码用于生成 Spring security 所用的密码</para>
 			<programlisting>
@@ -5178,8 +5113,152 @@ Hello world !
 				</programlisting>
 			</section>
 		</section>
+		<section id="oauth.client">
+			<title>Spring boot with Oauth2 RestTemplate</title>
+			<section id="oauth.client.maven">
+				<title>Maven</title>
+				<programlisting>
+				<![CDATA[
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+		</dependency>
+				]]>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.configure">
+				<title>OAuth2ClientConfiguration.java</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.config;
+
+import static java.util.Arrays.asList;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestOperations;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
+import org.springframework.security.oauth2.client.token.AccessTokenRequest;
+import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+
+@EnableOAuth2Client
+@Configuration
+public class OAuth2ClientConfiguration {
+
+	@Value("${oauth.resource:http://localhost:8080}")
+	private String baseUrl;
+	@Value("${oauth.authorize:http://localhost:8080/oauth/authorize}")
+	private String authorizeUrl;
+	@Value("${oauth.token:http://localhost:8080/oauth/token}")
+	private String tokenUrl;
+
+	@Bean
+	protected OAuth2ProtectedResourceDetails resource() {
+
+		ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
+
+		resource.setAccessTokenUri(tokenUrl);
+		resource.setClientId("api");
+		resource.setClientSecret("secret");
+		resource.setGrantType("password");
+		resource.setScope(asList("read", "write"));
+
+		resource.setUsername("netkiller@msn.com");
+		resource.setPassword("123456");
+
+		return resource;
+	}
+
+	@Bean
+	public OAuth2RestOperations restTemplate() {
+		AccessTokenRequest accessTokenRequest = new DefaultAccessTokenRequest();
+		return new OAuth2RestTemplate(resource(), new DefaultOAuth2ClientContext(accessTokenRequest));
+	}
+
+}
+				]]>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.app">
+				<title>Application.java</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+
+		System.out.println("Spring boot with Oauth2RestTemplate!");
+		SpringApplication.run(Application.class, args);
+	}
+}				
+				]]>
+
+				</programlisting>
+			</section>
+			<section id="oauth2.client.application.properties">
+				<title>application.properties</title>
+				<programlisting>
+				<![CDATA[
+security.basic.enabled=false
+				]]>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.controller">
+				<title>Controller</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.OAuth2RestOperations;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class TestController {
+	@Autowired
+	private OAuth2RestOperations restTemplate;
+
+	@GetMapping("/")
+	@ResponseBody
+	public String index() {
+		OAuth2AccessToken token = restTemplate.getAccessToken();
+		System.out.println(token.getValue());
+		String tmp = restTemplate.getForObject("http://api.netkiller.cn/test.json", String.class);
+		System.out.println(tmp);
+		return tmp;
+	}
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.test">
+				<title>Test</title>
+				<screen>
+				<![CDATA[
+neo@MacBook-Pro ~/deployment % curl http://localhost:8080
+
+OK
+				]]>
+				</screen>
+			</section>
+		</section>
 		<section>
-			<title>Client</title>
+			<title>RestTemplate 使用 HttpClient</title>
 			<section>
 				<title>Maven</title>
 				<programlisting>
@@ -5285,21 +5364,21 @@ MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=pas
 				</screen>
 				<para>将Token写入到 http 头</para>
 				<screen>
-headers.set("Authorization","Bearer "+"6296057a-ed06-4899-9adc-1993ba7a4946");
+					headers.set("Authorization","Bearer "+"6296057a-ed06-4899-9adc-1993ba7a4946");
 				</screen>
 				<para>启动 client 项目</para>
 				<screen>
-mvn spring-boot:run				
+					mvn spring-boot:run
 				</screen>
 				<para>curl 测试</para>
 				<screen>
-MacBook-Pro:Application neo$ curl http://localhost:8080/client/token.json
-200 Hello world !
+					MacBook-Pro:Application neo$ curl http://localhost:8080/client/token.json
+					200 Hello world !
 				</screen>
 			</section>
 		</section>
 	</section>
-	
+
 	<section id="scheduling">
 		<title>Spring boot with Scheduling</title>
 		<para>项目中经常会用到计划任务，spring Boot 中通过@EnableScheduling启用计划任务，再通过@Scheduled注解配置计划任务如果运行。</para>
@@ -5308,33 +5387,33 @@ MacBook-Pro:Application neo$ curl http://localhost:8080/client/token.json
 			<para>Application.java</para>
 			<para>启用计划任务, 在Spring Boot启动类加上注解@EnableScheduling，表示该项目启用计划任务</para>
 			<programlisting>
-package api;
+				package api;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+				import org.springframework.boot.SpringApplication;
+				import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+				import org.springframework.boot.autoconfigure.SpringBootApplication;
+				import org.springframework.context.annotation.Bean;
+				import org.springframework.context.annotation.ComponentScan;
+				import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+				import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+				import org.springframework.scheduling.annotation.EnableScheduling;
+				import org.springframework.web.servlet.config.annotation.CorsRegistry;
+				import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+				import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-@SpringBootApplication
-@EnableAutoConfiguration
-@ComponentScan({ "api.config", "api.web", "api.rest", "api.service","api.schedule" })
-@EnableMongoRepositories
-@EnableJpaRepositories
-@EnableScheduling
-public class Application {
+				@SpringBootApplication
+				@EnableAutoConfiguration
+				@ComponentScan({ "api.config", "api.web", "api.rest", "api.service","api.schedule" })
+				@EnableMongoRepositories
+				@EnableJpaRepositories
+				@EnableScheduling
+				public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+				public static void main(String[] args) {
+				SpringApplication.run(Application.class, args);
+				}
 
-}			
+				}
 			</programlisting>
 			<para>开启计划任务 @EnableScheduling</para>
 			<para>确保你的计划任务在 @ComponentScan 包中。</para>
@@ -5343,96 +5422,96 @@ public class Application {
 			<title>Component</title>
 			<para>在计划任务方法上加上@Scheduled注解，表示该方法是一个计划任务，项目启动后会去扫描该注解的方法并加入计划任务列表。</para>
 			<programlisting>
-package api.schedule;
+				package api.schedule;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+				import java.text.SimpleDateFormat;
+				import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+				import org.slf4j.Logger;
+				import org.slf4j.LoggerFactory;
+				import org.springframework.scheduling.annotation.Scheduled;
+				import org.springframework.stereotype.Component;
 
-@Component
-public class ScheduledTasks {
+				@Component
+				public class ScheduledTasks {
 
-	private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-	public final static long ONE_DAY = 24 * 60 * 60 * 1000;
-	public final static long ONE_HOUR = 60 * 60 * 1000;
+				private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+				private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+				public final static long ONE_DAY = 24 * 60 * 60 * 1000;
+				public final static long ONE_HOUR = 60 * 60 * 1000;
 
-	public ScheduledTasks() {
-		// TODO Auto-generated constructor stub
-	}
+				public ScheduledTasks() {
+				// TODO Auto-generated constructor stub
+				}
 
-	@Scheduled(fixedRate = 5000) //5秒运行一次调度任务
-	public void echoCurrentTime() {
-		log.info("The time is now {}", dateFormat.format(new Date()));
-	}
+				@Scheduled(fixedRate = 5000) //5秒运行一次调度任务
+				public void echoCurrentTime() {
+				log.info("The time is now {}", dateFormat.format(new Date()));
+				}
 
-	@Scheduled(fixedRate = ONE_DAY)
-	public void scheduledTask() {
-		System.out.println("每隔一天执行一次调度任务");
-	}
+				@Scheduled(fixedRate = ONE_DAY)
+				public void scheduledTask() {
+				System.out.println("每隔一天执行一次调度任务");
+				}
 
-	@Scheduled(fixedDelay = ONE_HOUR)
-	public void scheduleTask2() {
-		System.out.println("运行完后隔一小时就执行任务");
-	}
+				@Scheduled(fixedDelay = ONE_HOUR)
+				public void scheduleTask2() {
+				System.out.println("运行完后隔一小时就执行任务");
+				}
 
-	@Scheduled(initialDelay = 1000, fixedRate = 5000)
-	public void doSomething() {
-		// something that should execute periodically
-	}
+				@Scheduled(initialDelay = 1000, fixedRate = 5000)
+				public void doSomething() {
+				// something that should execute periodically
+				}
 
-	@Scheduled(cron = "0 0/1 * * * ? ")
-	public void ScheduledTask3() {
-		System.out.println(" 每隔一分钟执行一次任务");
-	}
+				@Scheduled(cron = "0 0/1 * * * ? ")
+				public void ScheduledTask3() {
+				System.out.println(" 每隔一分钟执行一次任务");
+				}
 
-}
+				}
 			</programlisting>
 			<para>@Scheduled参数说明</para>
 			<screen>
-@Scheduled注解有一些参数，用于配置计划任务执行频率，执行时段等。
+				@Scheduled注解有一些参数，用于配置计划任务执行频率，执行时段等。
 
-cron ：cron表达式，e.g. {@code "0 * * * * ？"}从前到后依次表示秒 分 时 日 月 年
-zone：设置时区，指明计划任务运行在哪个时区下，默认为空，采用操作系统默认时区
-fixedDelay：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以long类型复制
-fixedDelayString：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以String类型赋值
-fixedRate：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以long类型赋值
-fixedRateString：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以String类型赋值
-initialDelay：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以long类型赋值
-initialDelayString：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以String赋值			
+				cron ：cron表达式，e.g. {@code "0 * * * * ？"}从前到后依次表示秒 分 时 日 月 年
+				zone：设置时区，指明计划任务运行在哪个时区下，默认为空，采用操作系统默认时区
+				fixedDelay：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以long类型复制
+				fixedDelayString：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以String类型赋值
+				fixedRate：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以long类型赋值
+				fixedRateString：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以String类型赋值
+				initialDelay：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以long类型赋值
+				initialDelayString：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以String赋值
 			</screen>
 		</section>
 		<section>
 			<title>查看日志</title>
 			<programlisting>
-tail -f spring.log			
+				tail -f spring.log
 			</programlisting>
 		</section>
 		<section>
 			<title>计划任务控制</title>
 			<para>matchIfMissing = true， 如果改属性条目不存在返回 true</para>
 			<programlisting>
-@ConditionalOnProperty("batch.metrics.export.influxdb.enabled")
-			
-# mybean.enabled = true
-@ConditionalOnProperty(value='mybean.enabled')
-@ConditionalOnProperty(value = "endpoints.hal.enabled", matchIfMissing = true)
+				@ConditionalOnProperty("batch.metrics.export.influxdb.enabled")
 
-# server.host = localhost
-@ConditionalOnProperty(name="server.host", havingValue="localhost")
-@ConditionalOnExpression("'${server.host}'=='localhost'")
+				# mybean.enabled = true
+				@ConditionalOnProperty(value='mybean.enabled')
+				@ConditionalOnProperty(value = "endpoints.hal.enabled", matchIfMissing = true)
 
-# spring.rabbitmq.dynamic = true
-@ConditionalOnProperty(prefix = "spring.rabbitmq", name = "dynamic", matchIfMissing = true)
-@ConditionalOnProperty(prefix = "extension.security.cors", name = "enabled", matchIfMissing = false)
-@ConditionalOnProperty(prefix = "camunda.bpm.job-execution", name = "enabled", havingValue = "true", matchIfMissing = true)
+				# server.host = localhost
+				@ConditionalOnProperty(name="server.host", havingValue="localhost")
+				@ConditionalOnExpression("'${server.host}'=='localhost'")
 
-# spring.social.auto-connection-views = true
-@ConditionalOnProperty(prefix = "spring.social.", value = "auto-connection-views")
+				# spring.rabbitmq.dynamic = true
+				@ConditionalOnProperty(prefix = "spring.rabbitmq", name = "dynamic", matchIfMissing = true)
+				@ConditionalOnProperty(prefix = "extension.security.cors", name = "enabled", matchIfMissing = false)
+				@ConditionalOnProperty(prefix = "camunda.bpm.job-execution", name = "enabled", havingValue = "true", matchIfMissing = true)
+
+				# spring.social.auto-connection-views = true
+				@ConditionalOnProperty(prefix = "spring.social.", value = "auto-connection-views")
 			</programlisting>
 			<para>使用案例</para>
 			<programlisting>
@@ -5470,12 +5549,12 @@ public class ScheduledTasks {
 			</programlisting>
 			<para>application.properties 配置如下</para>
 			<screen>
-mis.schedule.enabled=true
+				mis.schedule.enabled=true
 			</screen>
 		</section>
 	</section>
 	<section id="cache">
-		<title>Spring boot with Cache</title>	
+		<title>Spring boot with Cache</title>
 		<section id="redis">
 			<title>Spring boot with Redis</title>
 			<section>
@@ -5653,8 +5732,8 @@ public class Example {
 			</section>
 		</section>
 	</section>
-	
-	
+
+
 	<section id="hessian">
 		<title>Spring boot with Hessian</title>
 		<section>
@@ -5749,7 +5828,7 @@ public interface HelloWorldService {
 }
 			]]>
 			</programlisting>
-			
+
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.service.impl;
@@ -5802,28 +5881,28 @@ public class TestRestController {
 			<title>安装 kafka</title>
 			<para>一下安装仅仅适合开发环境，生产环境请使用这个脚本安装 https://github.com/oscm/shell/tree/master/mq/kafka</para>
 			<screen>
-cd /usr/local/src
-wget http://apache.communilink.net/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz
-tar zxvf kafka_2.12-0.10.2.0.tgz
-mv kafka_2.12-0.10.2.0 /srv/
-cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
-echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
-ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka		
+				cd /usr/local/src
+				wget http://apache.communilink.net/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz
+				tar zxvf kafka_2.12-0.10.2.0.tgz
+				mv kafka_2.12-0.10.2.0 /srv/
+				cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
+				echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
+				ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka
 			</screen>
 			<para>启动 Kafka 服务</para>
 			<screen>
-/srv/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties
-/srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties
+				/srv/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties
+				/srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties
 			</screen>
 			<para>-daemon 表示守护进程方式在后台启动</para>
 			<screen>
-/srv/kafka/bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
-/srv/kafka/bin/kafka-server-start.sh -daemon /srv/kafka/config/server.properties
+				/srv/kafka/bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+				/srv/kafka/bin/kafka-server-start.sh -daemon /srv/kafka/config/server.properties
 			</screen>
 			<para>停止 Kafka 服务</para>
 			<screen>
-/srv/kafka/bin/kafka-server-stop.sh
-/srv/kafka/bin/zookeeper-server-stop.sh
+				/srv/kafka/bin/kafka-server-stop.sh
+				/srv/kafka/bin/zookeeper-server-stop.sh
 			</screen>
 		</section>
 		<section id="maven">
@@ -6194,7 +6273,7 @@ public class Application {
 	}
 }				
 				]]>
-				</programlisting>				
+				</programlisting>
 				<para>Consumer configuration</para>
 				<programlisting>
 				<![CDATA[
@@ -6583,7 +6662,7 @@ $Id: 929bc9e4c90b4d68c25dc693618f23b33fd6ba0f $
 			]]>
 			</programlisting>
 		</section>
-	</section>		
+	</section>
 	<section id="https">
 		<title>Spring boot with HTTPS SSL</title>
 		<section>
@@ -6622,12 +6701,12 @@ server.ssl.key-alias=www.netkiller.cn
 			</programlisting>
 			<para>keystore 文件可以放到 classpath 中，首先将证书文件放到 src/main/resources 目录中，然后配置 application.properties 如下：</para>
 			<programlisting>
-server.port=8443
-server.ssl.enabled=true
-server.ssl.key-store=classpath:www.netkiller.cn.keystore
-server.ssl.key-store-password=123456
-server.ssl.key-store-type=JKS
-server.ssl.key-alias=www.netkiller.cn
+				server.port=8443
+				server.ssl.enabled=true
+				server.ssl.key-store=classpath:www.netkiller.cn.keystore
+				server.ssl.key-store-password=123456
+				server.ssl.key-store-type=JKS
+				server.ssl.key-alias=www.netkiller.cn
 			</programlisting>
 		</section>
 		<section>
@@ -6688,11 +6767,11 @@ ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMet
     </dependencies>
 </project>
                ]]>
-               </programlisting>
-	       </section>
-	       <section>
-               <title>Application</title>
-               <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
                <![CDATA[
 package cn.netkiller;
 
@@ -6717,20 +6796,20 @@ public class Application {
        }
 }
                ]]>
-               </programlisting>
-           </section>
-           <section>
-               <title>application.properties</title>
-               <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
                <![CDATA[
 spring.data.elasticsearch.repositories.enabled=true
 spring.data.elasticsearch.cluster-nodes=127.0.0.1:9300
                ]]>
-               </programlisting>
-           </section>
-           <section>
-               <title>Domain</title>
-               <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Domain</title>
+			<programlisting>
                <![CDATA[
 @Document(indexName = "province", type = "city")
 public class City implements Serializable {
@@ -6759,11 +6838,11 @@ public class City implements Serializable {
     }
 }
             ]]>
-            </programlisting>
-        </section>
-        <section>
-            <title>ElasticsearchRepository</title>
-            <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>ElasticsearchRepository</title>
+			<programlisting>
             <![CDATA[
 public interface CityRepository extends ElasticsearchRepository<City, Long> {
     List<City> findByNameLike(String name);
@@ -6772,9 +6851,9 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
     Page<City> findByDescriptionLike(String description, Pageable page);
 }
 	        ]]>
-	        </programlisting>
-	    </section>
-    </section>
+			</programlisting>
+		</section>
+	</section>
 	<section id="elasticsearch5">
 		<title>Spring boot with Elasticsearch 5.5.x</title>
 		<para>Spring data 目前还不支持 Elasticsearch 5.5.x 所以需要通过注入 TransportClient 这就意味着使用 5.5.x 版本你无法使用 ElasticsearchRepository 这种特性，只能通过官方的 TransportClient 操作 Elasticsearch。</para>
@@ -6804,8 +6883,8 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
 			<version>2.8.2</version>
 		</dependency>
 			]]>
-            </programlisting>
-            <para>下面是我的完整例子</para>
+			</programlisting>
+			<para>下面是我的完整例子</para>
 			<programlisting>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
@@ -6919,11 +6998,11 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
 </project>
 
                ]]>
-               </programlisting>
-	       </section>
-	       <section>
-               <title>Application</title>
-               <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
                <![CDATA[
 package cn.netkiller;
 
@@ -6948,22 +7027,22 @@ public class Application {
        }
 }
                ]]>
-               </programlisting>
-           </section>
-           <section>
-               <title>application.properties</title>
-               <para>注意：Elasticsearch 连接地址是 9300， 而不是 9200</para>
-               <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<para>注意：Elasticsearch 连接地址是 9300， 而不是 9200</para>
+			<programlisting>
                <![CDATA[
 spring.data.elasticsearch.cluster-nodes=172.0.0.1:9300
 spring.data.elasticsearch.local=false
 spring.data.elasticsearch.properties.transport.tcp.connect_timeout=60s
                ]]>
-               </programlisting>
-           </section>
-           <section>
-               <title>ElasticsearchConfiguration</title>
-               <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>ElasticsearchConfiguration</title>
+			<programlisting>
                <![CDATA[
 package com.example.api.config;
 
@@ -7048,11 +7127,11 @@ public class ElasticsearchConfiguration implements FactoryBean<TransportClient>,
 	}
 }
             ]]>
-            </programlisting>
-        </section>
-        <section>
-            <title>RestController</title>
-            <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>RestController</title>
+			<programlisting>
             <![CDATA[
 package com.example.api.restful;
 
@@ -7078,16 +7157,16 @@ public class SearchRestController {
 }
 
 	        ]]>
-	        </programlisting>
-	        <para>使用 Curl 测试 restful 接口</para>
-	        <screen>
+			</programlisting>
+			<para>使用 Curl 测试 restful 接口</para>
+			<screen>
 	        <![CDATA[
 MacBook-Pro:~ neo$ curl -k https://test:test@localhost:8443/restful/search/client/1093.json
 {"fields":{},"id":"1093","type":"article","source":{"@timestamp":"2017-07-31T05:41:00.248Z","author":"test","@version":"1","description":"test","ctime":"2017-07-31T05:40:35.000Z","id":1093,"source":"test","title":"test11111","content":"<p>test</p><p>aaaaaaaaaaaaaa</p>"},"version":3,"index":"information","sourceAsBytes":"eyJAdGltZXN0YW1wIjoiMjAxNy0wNy0zMVQwNTo0MTowMC4yNDhaIiwiYXV0aG9yIjoidGVzdCIsIkB2ZXJzaW9uIjoiMSIsImRlc2NyaXB0aW9uIjoidGVzdCIsImN0aW1lIjoiMjAxNy0wNy0zMVQwNTo0MDozNS4wMDBaIiwiaWQiOjEwOTMsInNvdXJjZSI6InRlc3QiLCJ0aXRsZSI6InRlc3QxMTExMSIsImNvbnRlbnQiOiI8cD50ZXN0PC9wPjxwPmFhYWFhYWFhYWFhYWFhPC9wPiJ9","sourceInternal":{"childResources":[]},"sourceAsString":"{\"@timestamp\":\"2017-07-31T05:41:00.248Z\",\"author\":\"test\",\"@version\":\"1\",\"description\":\"test\",\"ctime\":\"2017-07-31T05:40:35.000Z\",\"id\":1093,\"source\":\"test\",\"title\":\"test11111\",\"content\":\"<p>test</p><p>aaaaaaaaaaaaaa</p>\"}","sourceEmpty":false,"sourceAsMap":{"@timestamp":"2017-07-31T05:41:00.248Z","author":"test","@version":"1","description":"test","ctime":"2017-07-31T05:40:35.000Z","id":1093,"source":"test","title":"test11111","content":"<p>test</p><p>aaaaaaaaaaaaaa</p>"},"exists":true,"sourceAsBytesRef":{"childResources":[]},"fragment":false}	        
 	        ]]>
-	        </screen>
-	    </section>
-    </section>
+			</screen>
+		</section>
+	</section>
 	<section id="hive">
 		<title>Spring boot with Apache Hive</title>
 		<section>
@@ -7401,9 +7480,18 @@ public class PhoenixDataSource {
 		<title>Spring boot with ELK(Elasticsearch + Logstash + Kibana)</title>
 		<para>将 Spring boot 日志写入 ELK 有多种实现方式，这里仅提供三种方案：</para>
 		<orderedlist>
-			<listitem><para>Spring boot -&gt; logback -&gt; Tcp/IP -&gt; logstash -&gt; elasticsearch</para> 这种方式实现非常方便不需要而外包或者软件</listitem>
-			<listitem><para>Spring boot -&gt; logback -&gt; Redis -&gt; logstash -&gt; elasticsearch</para> 利用 Redis 提供的发布订阅功能将日志投递到 elasticsearch</listitem>
-			<listitem><para>Spring boot -&gt; logback -&gt; Kafka -&gt; logstash -&gt; elasticsearch</para> Kafka 方法适合大数据的情况。</listitem>
+			<listitem>
+				<para>Spring boot -&gt; logback -&gt; Tcp/IP -&gt; logstash -&gt; elasticsearch</para>
+				这种方式实现非常方便不需要而外包或者软件
+			</listitem>
+			<listitem>
+				<para>Spring boot -&gt; logback -&gt; Redis -&gt; logstash -&gt; elasticsearch</para>
+				利用 Redis 提供的发布订阅功能将日志投递到 elasticsearch
+			</listitem>
+			<listitem>
+				<para>Spring boot -&gt; logback -&gt; Kafka -&gt; logstash -&gt; elasticsearch</para>
+				Kafka 方法适合大数据的情况。
+			</listitem>
 		</orderedlist>
 		<section>
 			<title>TCP 方案</title>
@@ -7590,9 +7678,9 @@ output {
 	<section id="faq">
 		<title>FAQ</title>
 		<section id="faq.application.properties">
-		<title>application.properties 参考</title>
-		<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>
-		<screen>
+			<title>application.properties 参考</title>
+			<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>
+			<screen>
 		<![CDATA[
 # ===================================================================
 # COMMON SPRING BOOT PROPERTIES
@@ -8710,62 +8798,62 @@ spring.devtools.remote.secret-header-name=X-AUTH-TOKEN # HTTP header used to tra
 		<section>
 			<title>org.hibernate.dialect.Oracle10gDialect does not support identity key generation</title>
 			<screen>
-@GeneratedValue(strategy=GenerationType.IDENTITY)
-换成
-@GeneratedValue(strategy=GenerationType.AUTO)
+				@GeneratedValue(strategy=GenerationType.IDENTITY)
+				换成
+				@GeneratedValue(strategy=GenerationType.AUTO)
 
-or
+				or
 
-@Id
-@Column(name = "ID")
-@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
-@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
-private int id;
+				@Id
+				@Column(name = "ID")
+				@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+				@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
+				private int id;
 			</screen>
 		</section>
 		<section>
 			<title>No identifier specified for entity</title>
 			<screen>
-在实体中使用
-import javax.persistence.Id;
-替换
-import org.springframework.data.annotation.Id;
+				在实体中使用
+				import javax.persistence.Id;
+				替换
+				import org.springframework.data.annotation.Id;
 			</screen>
 		</section>
 		<section>
 			<title>Could not read document: Invalid UTF-8 middle byte 0xd0</title>
 			<para>Spring 默认不支持 UTF-8</para>
 			<screen>
-2016-08-17 16:04:53.148  WARN 7700 --- [nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: Could not read document: Invalid UTF-8 middle byte 0xd0
- at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"]); nested exception is com.fasterxml.jackson.databind.JsonMappingException: Invalid UTF-8 middle byte 0xd0
- at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"])			
+				2016-08-17 16:04:53.148 WARN 7700 --- [nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: Could not read document: Invalid UTF-8 middle byte 0xd0
+				at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"]); nested exception is com.fasterxml.jackson.databind.JsonMappingException: Invalid UTF-8 middle byte 0xd0
+				at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"])
 			</screen>
 			<para>解决方案 application.properties 配置文件中加入如下配置：</para>
 			<screen>
-spring.messages.encoding=UTF-8
-server.tomcat.uri-encoding=UTF-8
-spring.http.encoding.charset=UTF-8
-spring.http.encoding.enabled=true
-spring.http.encoding.force=true
+				spring.messages.encoding=UTF-8
+				server.tomcat.uri-encoding=UTF-8
+				spring.http.encoding.charset=UTF-8
+				spring.http.encoding.enabled=true
+				spring.http.encoding.force=true
 			</screen>
 		</section>
 		<section>
 			<title>java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection</title>
 			<para>分析，Oracle 数据库无法连接，确认用户密码正确，日志提示 The Network Adapter could not establish the connection 看上去更像网络故障，同事还有下面两条日志。</para>
 			<screen>
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection
-Caused by: java.net.SocketTimeoutException: connect timed out
+				Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection
+				Caused by: java.net.SocketTimeoutException: connect timed out
 			</screen>
 			<para>通过 ss 命令可以看到有tcp操作，可以排除不是网络故障。</para>
 			<screen>
-[root@iZ62m7362hwZ ~]# ss -ant | grep 1521
-TIME-WAIT  0      0      47.90.18.24:45780              15.84.21.59:1521
+				[root@iZ62m7362hwZ ~]# ss -ant | grep 1521
+				TIME-WAIT 0 0 47.90.18.24:45780 15.84.21.59:1521
 			</screen>
 			<para>检查你的用户名与密码是否含有特殊字符，特殊字符需要使用转义字符"\".</para>
 			<screen>
-spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=215.184.211.50)(PORT=1521))(LOAD_BALANCE=YES)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))
-#spring.datasource.username=neo
-#spring.datasource.password=[y7$ghM~3b
+				spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=215.184.211.50)(PORT=1521))(LOAD_BALANCE=YES)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))
+				#spring.datasource.username=neo
+				#spring.datasource.password=[y7$ghM~3b
 			</screen>
 			<para>将用户名写入spring.datasource.url中，格式jdbc:oracle:thin:用户名/密码@(......)，禁用spring.datasource.username和spring.datasource.password两个配置项。</para>
 		</section>
@@ -8773,19 +8861,19 @@ spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(
 			<title>Field javaMailSender in cn.netkiller.rest.EmailRestController required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.</title>
 			<para>启动提示 'org.springframework.mail.javamail.JavaMailSender' that could not be found 这句话很误导人。实际上是 (spring.mail.host) did not find property 'host'</para>
 			<screen>
-***************************
-APPLICATION FAILED TO START
-***************************
+				***************************
+				APPLICATION FAILED TO START
+				***************************
 
-Description:
+				Description:
 
-Field javaMailSender in cn.netkiller.rest.EmailRestController required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.
-	- Bean method 'mailSender' not loaded because AnyNestedCondition 0 matched 2 did not; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty @ConditionalOnProperty (spring.mail.jndi-name) did not find property 'jndi-name'; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.HostProperty @ConditionalOnProperty (spring.mail.host) did not find property 'host'
+				Field javaMailSender in cn.netkiller.rest.EmailRestController required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.
+				- Bean method 'mailSender' not loaded because AnyNestedCondition 0 matched 2 did not; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty @ConditionalOnProperty (spring.mail.jndi-name) did not find property 'jndi-name'; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.HostProperty @ConditionalOnProperty (spring.mail.host) did not find property 'host'
 
 
-Action:
+				Action:
 
-Consider revisiting the conditions above or defining a bean of type 'org.springframework.mail.javamail.JavaMailSender' in your configuration.
+				Consider revisiting the conditions above or defining a bean of type 'org.springframework.mail.javamail.JavaMailSender' in your configuration.
 			</screen>
 			<para>解决方案，application.properties 增加 spring.mail.host=localhost</para>
 		</section>
@@ -8793,12 +8881,12 @@ Consider revisiting the conditions above or defining a bean of type 'org.springf
 			<title>org.postgresql.util.PSQLException: FATAL: no pg_hba.conf entry for host "172.16.0.3", user "test", database "test ", SSL off</title>
 			<para>确认 pg_hba.conf 配置正确，并且 psql 可以正常链接，spring仍然报错</para>
 			<screen>
-spring.datasource.url=jdbc:postgresql://47.90.18.244:5432/test
-spring.datasource.username=test
-spring.datasource.password=test
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=create-drop
-spring.jpa.generate-ddl=true
+				spring.datasource.url=jdbc:postgresql://47.90.18.244:5432/test
+				spring.datasource.username=test
+				spring.datasource.password=test
+				spring.jpa.show-sql=true
+				spring.jpa.hibernate.ddl-auto=create-drop
+				spring.jpa.generate-ddl=true
 			</screen>
 			<para>请检查 jdbc:postgresql://47.90.18.244:5432/test 后面test是否多了一个空格或者有特殊字符。删除test后面的空格可以解决</para>
 		</section>
