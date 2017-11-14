@@ -297,4 +297,40 @@ public interface Search {
 		]]>
 		</programlisting>
 	</section>
+	<section id="">
+		<title>Feign 提示 Consider defining a bean of type 'common.feign.Cms' in your configuration.</title>
+		<para>背景：我们需要共用 Feign 接口，故将 Feign 放到共用的 common-version.jar 包中，供其他项目使用。</para>
+		<para>启动提示：Consider defining a bean of type 'common.feign.Cms' in your configuration.</para>
+		<para>注解加入包位置后解决</para>
+		<programlisting>
+		<![CDATA[
+@EnableFeignClients("common.feign")		
+		]]>
+		</programlisting>
+		<example>
+			<title>Share feign interface.</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.feign;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
+
+@SpringBootApplication
+@EnableEurekaClient
+@EnableFeignClients("common.feign")
+public class Application {
+
+	public static void main(String[] args) {
+		System.out.println("Feign Starting...");
+		SpringApplication.run(Application.class, args);
+	}
+}
+			
+			]]>
+			</programlisting>
+		</example>
+	</section>
 </section>
