@@ -22,6 +22,9 @@
 	
 	<!ENTITY % android.doctype.entity.xml 	SYSTEM "Android/doctype.entity.xml">
 	%android.doctype.entity.xml;
+	
+	<!ENTITY % spring.doctype.entity.xml 	SYSTEM "Spring/doctype.entity.xml">
+	%spring.doctype.entity.xml;
 
 ]>
 <book xml:base="http://netkiller.sourceforge.net/linux/www"

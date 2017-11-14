@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
+	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+<!-- http://www.oasis-open.org/docbook/xml/5.0b5/dtd/docbook.dtd -->
+	
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
+	%common.doctype.entity.xml;
+
+	<!ENTITY % doctype.entity.xml 		SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+	
+]>
+<book xml:base="http://netkiller.sourceforge.net/centos/"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Spring 手札</title>
+		<subtitle>Spring Cloud Cookbook</subtitle>
+		<authorgroup>
+		<author>
+			<personname>
+				<honorific>Mr</honorific>
+				<firstname>Neo</firstname>
+				<othername></othername>
+				<surname>Chan</surname>
+				<lineage>陈景峰(BG7NYT)</lineage>
+			</personname>
+			<affiliation>
+				<address>
+					<country>中国</country><state>广东省</state><city>深圳市</city><street>宝安区龙华镇溪山美地</street>
+					<postcode>518109</postcode>
+					<phone>+86 13113668890</phone>
+					<fax>+86 755 29812080</fax>
+					<email>netkiller@msn.com</email>
+				</address>
+			</affiliation>
+		</author>
+
+		</authorgroup>
+
+		<edition>$Revision: 606 $</edition>
+  		<pubdate>$Date: 2013-05-29 17:52:58 +0800 (Wed, 29 May 2013) $</pubdate>
+
+		<copyright>
+			<year>2015</year>
+			<holder>Neo Chan</holder>
+		</copyright>
+		<releaseinfo>
+			<remark>$Id: book.xml 606 2013-05-29 09:52:58Z netkiller $</remark>
+		</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+
+		<keywordset>
+
+		</keywordset>
+	</info>
+
+	&book.dedication.xml;
+	&book.preface.xml;
+
+	&part.spring.xml;
+	
+	&book.appendix.xml;
+
+</book>
