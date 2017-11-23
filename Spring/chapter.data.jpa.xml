@@ -1,6 +1,6 @@
 <section id="spring-data-jpa"><!-- <?dbhtml dir="jpa" ?> -->
 	<title>Spring Data JPA</title>
-	<section id="Entity">
+	<section id="@Entity">
 		<title>@Entity</title>
 		<section id="id">
 			<title>@Id</title>
@@ -12,14 +12,41 @@
 	private int id;
 			</screen>
 		</section>
-		<section id="Table">
+		<section id="@Table">
 			<title>@Table</title>
-			<para>配置Schema</para>
-			<screen>
-			<![CDATA[
+			<section id="catalog">
+				<title>catalog</title>
+				<screen>
+				<![CDATA[
+@Table(name="CUSTOMERS",catalog="hibernate")				
+				]]>
+				</screen>
+			</section>
+			<section id="schema">
+				<title>schema</title>
+				<para>配置Schema</para>
+				<screen>
+				<![CDATA[
 @Table(name="tabname", schema="public")
-			]]>
-			</screen>
+				]]>
+				</screen>
+			</section>
+			<section id="uniqueConstraints">
+				<title>uniqueConstraints</title>
+				<para>唯一索引</para>
+				<screen>
+				<![CDATA[
+@Table(name="CUSTOMERS",uniqueConstraints={@UniqueConstraint(columnNames={"name","email"})})				
+				]]>
+				</screen>
+				<para>定义多组唯一索引</para>
+				<screen>
+				<![CDATA[
+uniqueConstraints={@UniqueConstraint(columnNames={"name","email"}),@UniqueConstraint(columnNames={"name","age"})} 				
+				]]>
+				</screen>
+				
+			</section>
 		</section>
 		<section id="Column">
 			<title>@Column</title>

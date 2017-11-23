@@ -366,24 +366,30 @@ spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSou
 			<section id="server">
 				<title>server</title>
 				<screen>
-					server.port=8080 # 监听端口
-					server.address= # 绑定的地址
-					server.context-path= #默认为/
+					<![CDATA[
+server.port=8080 # 监听端口
+server.address= # 绑定的地址
+server.context-path= #默认为/					
+					]]>
 				</screen>
 				<para>连接数配置</para>
 				<screen>
-					server.tomcat.max-threads=2048 # 最大线程数
+				<![CDATA[
+server.tomcat.max-threads=2048 # 最大线程数				
+				]]>
 				</screen>
 			</section>
 			<section id="access.log">
-				<title>tomcat</title>
+				<title>access.log</title>
 				<para>如果前端有 nginx 代理这个配置可以禁用</para>
 				<screen>
-					server.tomcat.accesslog.enabled=true
-					server.tomcat.accesslog.directory=/tmp/logs
-					server.tomcat.accesslog.pattern=common
-					server.tomcat.accesslog.prefix=www.netkiller.cn.access
-					server.tomcat.accesslog.suffix=.log
+				<![CDATA[
+server.tomcat.accesslog.enabled=true
+server.tomcat.accesslog.directory=/tmp/logs
+server.tomcat.accesslog.pattern=common
+server.tomcat.accesslog.prefix=www.netkiller.cn.access
+server.tomcat.accesslog.suffix=.log				
+				]]>
 				</screen>
 			</section>
 			<section id="logging">
@@ -4108,8 +4114,7 @@ $ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X P
 			<title>application.properties</title>
 			<programlisting>
 			<![CDATA[
-#spring.thymeleaf.prefix=classpath:/templates/
-spring.thymeleaf.prefix=/WEB-INF/templates/
+spring.thymeleaf.prefix=classpath:/WEB-INF/templates/
 spring.thymeleaf.suffix=.html
 spring.thymeleaf.mode=HTML5
 spring.thymeleaf.encoding=UTF-8

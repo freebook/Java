@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="oauth" ?>
 	<title>Spring Data</title>
-	<section>
+	<section id="oauth2">
+		<title>Oauth2</title>
+		<section id="oauth.token">
+			<title>token</title>
+			<literallayout>
+　　access_token：访问令牌，必选项。
+　　token_type：令牌类型，该值大小写不敏感，必选项。
+　　expires_in：过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。
+　　refresh_token：更新令牌，用来获取下一次的访问令牌，可选项。
+　　scope：权限范围，如果与客户端申请的范围一致，此项可省略。			
+			</literallayout>
+		</section>
+	</section>
+	<section id="grant_type">
 		<title>grant_type</title>
 		<para>client_credentials</para>
 		<screen>
@@ -129,7 +142,7 @@ MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=pas
 				</screen>
 			</section>
 		</section>
-		<section id="">
+		<section id="oauth.self-sign">
 			<title>自签名证书</title>
 			<subtitle>unable to find valid certification path to requested target</subtitle>
 			<programlisting>
