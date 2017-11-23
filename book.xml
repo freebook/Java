@@ -45,7 +45,7 @@
 		</publisher>
 		<isbn>ISBN#</isbn>
 		<edition>User's Guide version 1.0 for Linux</edition>
-		<pubdate>$Date: 2013-04-10 15:03:49 +0800 (Wed, 10 Apr 2013) $</pubdate>
+		<pubdate>2017-11</pubdate>
 		<releaseinfo>文档始创于<date>2015-11-10</date></releaseinfo>
 
 		&book.info.legalnotice.xml;
