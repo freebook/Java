@@ -4988,33 +4988,35 @@ OK
 			<para>Application.java</para>
 			<para>启用计划任务, 在Spring Boot启动类加上注解@EnableScheduling，表示该项目启用计划任务</para>
 			<programlisting>
-				package api;
+			<![CDATA[
+package api;
 
-				import org.springframework.boot.SpringApplication;
-				import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-				import org.springframework.boot.autoconfigure.SpringBootApplication;
-				import org.springframework.context.annotation.Bean;
-				import org.springframework.context.annotation.ComponentScan;
-				import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-				import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-				import org.springframework.scheduling.annotation.EnableScheduling;
-				import org.springframework.web.servlet.config.annotation.CorsRegistry;
-				import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-				import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-				@SpringBootApplication
-				@EnableAutoConfiguration
-				@ComponentScan({ "api.config", "api.web", "api.rest", "api.service","api.schedule" })
-				@EnableMongoRepositories
-				@EnableJpaRepositories
-				@EnableScheduling
-				public class Application {
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan({ "api.config", "api.web", "api.rest", "api.service","api.schedule" })
+@EnableMongoRepositories
+@EnableJpaRepositories
+@EnableScheduling
+public class Application {
 
-				public static void main(String[] args) {
-				SpringApplication.run(Application.class, args);
-				}
+public static void main(String[] args) {
+SpringApplication.run(Application.class, args);
+}
 
-				}
+}
+				]]>
 			</programlisting>
 			<para>开启计划任务 @EnableScheduling</para>
 			<para>确保你的计划任务在 @ComponentScan 包中。</para>
@@ -5023,54 +5025,57 @@ OK
 			<title>Component</title>
 			<para>在计划任务方法上加上@Scheduled注解，表示该方法是一个计划任务，项目启动后会去扫描该注解的方法并加入计划任务列表。</para>
 			<programlisting>
-				package api.schedule;
+			<![CDATA[
+			
+package api.schedule;
 
-				import java.text.SimpleDateFormat;
-				import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-				import org.slf4j.Logger;
-				import org.slf4j.LoggerFactory;
-				import org.springframework.scheduling.annotation.Scheduled;
-				import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
-				@Component
-				public class ScheduledTasks {
+@Component
+public class ScheduledTasks {
 
-				private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
-				private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-				public final static long ONE_DAY = 24 * 60 * 60 * 1000;
-				public final static long ONE_HOUR = 60 * 60 * 1000;
+private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+public final static long ONE_DAY = 24 * 60 * 60 * 1000;
+public final static long ONE_HOUR = 60 * 60 * 1000;
 
-				public ScheduledTasks() {
-				// TODO Auto-generated constructor stub
-				}
+public ScheduledTasks() {
+// TODO Auto-generated constructor stub
+}
 
-				@Scheduled(fixedRate = 5000) //5秒运行一次调度任务
-				public void echoCurrentTime() {
-				log.info("The time is now {}", dateFormat.format(new Date()));
-				}
+@Scheduled(fixedRate = 5000) //5秒运行一次调度任务
+public void echoCurrentTime() {
+log.info("The time is now {}", dateFormat.format(new Date()));
+}
 
-				@Scheduled(fixedRate = ONE_DAY)
-				public void scheduledTask() {
-				System.out.println("每隔一天执行一次调度任务");
-				}
+@Scheduled(fixedRate = ONE_DAY)
+public void scheduledTask() {
+System.out.println("每隔一天执行一次调度任务");
+}
 
-				@Scheduled(fixedDelay = ONE_HOUR)
-				public void scheduleTask2() {
-				System.out.println("运行完后隔一小时就执行任务");
-				}
+@Scheduled(fixedDelay = ONE_HOUR)
+public void scheduleTask2() {
+System.out.println("运行完后隔一小时就执行任务");
+}
 
-				@Scheduled(initialDelay = 1000, fixedRate = 5000)
-				public void doSomething() {
-				// something that should execute periodically
-				}
+@Scheduled(initialDelay = 1000, fixedRate = 5000)
+public void doSomething() {
+// something that should execute periodically
+}
 
-				@Scheduled(cron = "0 0/1 * * * ? ")
-				public void ScheduledTask3() {
-				System.out.println(" 每隔一分钟执行一次任务");
-				}
+@Scheduled(cron = "0 0/1 * * * ? ")
+public void ScheduledTask3() {
+System.out.println(" 每隔一分钟执行一次任务");
+}
 
-				}
+}
+			]]>
 			</programlisting>
 			<para>@Scheduled参数说明</para>
 			<screen>

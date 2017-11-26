@@ -335,4 +335,46 @@ spring.mvc.favicon.enabled=false
 		]]>
 		</screen>
 	</section>
+	<section id="kafka">
+		<title>Kafka 相关配置</title>
+		<programlisting>
+		<![CDATA[
+spring.kafka.bootstrap-servers
+spring.kafka.client-id
+spring.kafka.ssl.key-password
+spring.kafka.ssl.keystore-location
+spring.kafka.ssl.keystore-password
+spring.kafka.ssl.truststore-location
+spring.kafka.ssl.truststore-password
+spring.kafka.template.default-topic
+spring.kafka.consumer.auto-commit-interval
+spring.kafka.consumer.auto-offset-reset
+spring.kafka.consumer.bootstrap-servers
+spring.kafka.consumer.client-id
+spring.kafka.consumer.enable-auto-commit
+spring.kafka.consumer.fetch-max-wait
+spring.kafka.consumer.fetch-min-size
+spring.kafka.consumer.group-id
+spring.kafka.consumer.heartbeat-interval
+spring.kafka.consumer.key-deserializer
+spring.kafka.consumer.max-poll-records
+spring.kafka.consumer.value-deserializer
+spring.kafka.listener.ack-count
+spring.kafka.listener.ack-mode
+spring.kafka.listener.ack-time
+spring.kafka.listener.concurrency
+spring.kafka.listener.poll-timeout
+spring.kafka.producer.acks
+spring.kafka.producer.batch-size
+spring.kafka.producer.bootstrap-servers
+spring.kafka.producer.buffer-memory
+spring.kafka.producer.client-id
+spring.kafka.producer.compression-type
+spring.kafka.producer.key-serializer
+spring.kafka.producer.retries
+spring.kafka.producer.value-serializer
+spring.kafka.properties		
+		]]>
+		</programlisting>
+	</section>
 </section>

@@ -10,4 +10,5 @@
 	&chapter.interceptor.xml;
 	&chapter.cloud.xml;
 	&chapter.tomcat.xml;
+	&section.miscellaneous.xml;
 </part>
