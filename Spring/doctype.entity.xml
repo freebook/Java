@@ -4,6 +4,7 @@
 <!ENTITY chapter.tomcat.xml				SYSTEM "chapter.tomcat.xml">
 <!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 <!ENTITY chapter.boot.xml				SYSTEM "chapter.boot.xml">
+<!ENTITY section.boot.kafka.xml			SYSTEM "section.boot.kafka.xml">
 <!ENTITY chapter.interceptor.xml			SYSTEM "chapter.interceptor.xml">
 <!ENTITY section.boot.quickstart.xml		SYSTEM "section.boot.quickstart.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">
