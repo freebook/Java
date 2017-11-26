@@ -696,6 +696,7 @@ public class Math {
 	</section>
 	<section id="BigDecimal">
 		<title>BigDecimal</title>
+		<screen>
 		<![CDATA[
 package cn.netkiller.example;
 
@@ -757,8 +758,8 @@ public class BigDecimalTest {
 	}
 
 }
-
 		]]>
+		</screen>
 		<section>
 			<title>Convert BigDecimal Object to double value</title>
 			<programlisting>

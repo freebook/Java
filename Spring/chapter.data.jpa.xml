@@ -6,10 +6,10 @@
 			<title>@Id</title>
 			<para>ID 字段</para>
 			<screen>
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
-	private int id;
+				@Id
+				@GeneratedValue(strategy = GenerationType.IDENTITY)
+				@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+				private int id;
 			</screen>
 		</section>
 		<section id="@Table">
@@ -45,20 +45,20 @@
 uniqueConstraints={@UniqueConstraint(columnNames={"name","email"}),@UniqueConstraint(columnNames={"name","age"})} 				
 				]]>
 				</screen>
-				
+
 			</section>
 		</section>
 		<section id="Column">
 			<title>@Column</title>
 			<screen>
-unique		属性表示该字段是否为唯一标识，默认为false。如果表中有一个字段需要唯一标识，则既可以使用该标记，也可以使用@Table标记中的@UniqueConstraint。
-nullable		属性表示该字段是否可以为null值，默认为true。
-insertable	属性表示在使用“INSERT”脚本插入数据时，是否需要插入该字段的值。
-updatable	属性表示在使用“UPDATE”脚本插入数据时，是否需要更新该字段的值。insertable和updatable属性一般多用于只读的属性，例如主键和外键等。这些字段的值通常是自动生成的。
-columnDefinition属性表示创建表时，该字段创建的SQL语句，一般用于通过Entity生成表定义时使用。
-table		属性表示当映射多个表时，指定表的表中的字段。默认值为主表的表名。
-length		属性表示字段的长度，当字段的类型为varchar时，该属性才有效，默认为255个字符。
-precision	属性和scale属性表示精度，当字段类型为double时，precision表示数值的总长度，scale表示小数点所占的位数。
+				unique 属性表示该字段是否为唯一标识，默认为false。如果表中有一个字段需要唯一标识，则既可以使用该标记，也可以使用@Table标记中的@UniqueConstraint。
+				nullable 属性表示该字段是否可以为null值，默认为true。
+				insertable 属性表示在使用“INSERT”脚本插入数据时，是否需要插入该字段的值。
+				updatable 属性表示在使用“UPDATE”脚本插入数据时，是否需要更新该字段的值。insertable和updatable属性一般多用于只读的属性，例如主键和外键等。这些字段的值通常是自动生成的。
+				columnDefinition属性表示创建表时，该字段创建的SQL语句，一般用于通过Entity生成表定义时使用。
+				table 属性表示当映射多个表时，指定表的表中的字段。默认值为主表的表名。
+				length 属性表示字段的长度，当字段的类型为varchar时，该属性才有效，默认为255个字符。
+				precision 属性和scale属性表示精度，当字段类型为double时，precision表示数值的总长度，scale表示小数点所占的位数。
 			</screen>
 			<section>
 				<title>字段长度</title>
@@ -83,28 +83,28 @@ precision	属性和scale属性表示精度，当字段类型为double时，preci
 			<section>
 				<title>创建于更新控制</title>
 				<screen>
-@Column(name = "ctime", nullable = false, insertable = false, updatable = false)		
+					@Column(name = "ctime", nullable = false, insertable = false, updatable = false)
 				</screen>
 			</section>
 		</section>
-		
+
 		<section id="@NotNull">
 			<title>@NotNull 不能为空声明</title>
 			<programlisting>
-@NotNull
-public String username;
+				@NotNull
+				public String username;
 			</programlisting>
 		</section>
 		<section id="DateTimeFormat">
 			<title>@DateTimeFormat 处理日期时间格式</title>
 			<programlisting>
-public java.sql.Date createdate; 创建日期 YYYY-MM-DD 
-public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
+				public java.sql.Date createdate; 创建日期 YYYY-MM-DD
+				public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 			</programlisting>
 			<para>Json默认为 yyyy-MM-ddTHH:mm:ss 注意日期与时间中间的T，修改日期格式将T去掉</para>
 			<screen>
-@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+				@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+				@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 			</screen>
 		</section>
 		<section id="time">
@@ -122,10 +122,10 @@ public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
 			</section>
 			<section>
 				<title>与时间日期有关的 hibernate 注解</title>
-			
-			<section id="hibernate.time">
-				<title>设置默认时间</title>
-				<programlisting>
+
+				<section id="hibernate.time">
+					<title>设置默认时间</title>
+					<programlisting>
 				<![CDATA[
 @Column(insertable = false) 
 @org.hibernate.annotations.ColumnDefault("1.00") 
@@ -134,30 +134,30 @@ org.hibernate.annotations.GenerationTime.INSERT
 ) 
 protected Date lastModified; 
 				]]>
-				</programlisting>
-			</section>
-			<section id="createTime">
-				<title>创建时间</title>
-				<programlisting>
+					</programlisting>
+				</section>
+				<section id="createTime">
+					<title>创建时间</title>
+					<programlisting>
 				<![CDATA[
 @Temporal(TemporalType.TIMESTAMP)  
 @Column(updatable = false)  
 @org.hibernate.annotations.CreationTimestamp  
 protected Date createdDate;   			
 				]]>
-				</programlisting>
-			</section>
-			<section id="updateTime">
-				<title>更新时间</title>
-				<programlisting>
+					</programlisting>
+				</section>
+				<section id="updateTime">
+					<title>更新时间</title>
+					<programlisting>
 				<![CDATA[
 @Column(name="update_time")  
 @org.hibernate.annotations.UpdateTimestamp  
 @Temporal(TemporalType.TIMESTAMP)
 private Date updateTime;    			
 				]]>
-				</programlisting>
-				<programlisting>
+					</programlisting>
+					<programlisting>
 				<![CDATA[
 @Temporal(TemporalType.TIMESTAMP)  
 @Column(insertable = false, updatable = false)  
@@ -165,8 +165,8 @@ private Date updateTime;
 org.hibernate.annotations.GenerationTime.ALWAYS  
 ) 
 				]]>
-				</programlisting>
-			</section>
+					</programlisting>
+				</section>
 			</section>
 			<section>
 				<title>数据库级别的默认创建日期时间定义</title>
@@ -334,7 +334,7 @@ CREATE TABLE `elasticsearch_trash` (
 			<title>索引</title>
 			<para>针对字段做唯一索引</para>
 			<screen>
-@Column(unique = true)			
+				@Column(unique = true)
 			</screen>
 			<para>创建复合索引</para>
 			<programlisting>
@@ -449,72 +449,72 @@ CREATE TABLE `comment` (
 				<para>@Enumerated(value = EnumType.ORDINAL) //ORDINAL序数 </para>
 				<para>在实体中处理枚举类型适用于所有数据库，Spring data 将枚举视为 String 类型。</para>
 				<programlisting>
-package cn.netkiller.api.domain;
+					package cn.netkiller.api.domain;
 
-import java.io.Serializable;
+					import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+					import javax.persistence.Column;
+					import javax.persistence.Entity;
+					import javax.persistence.GeneratedValue;
+					import javax.persistence.GenerationType;
+					import javax.persistence.Id;
+					import javax.persistence.Table;
 
-@Entity
-@Table(name = "statistics_history")
-public class StatisticsHistory implements Serializable {
+					@Entity
+					@Table(name = "statistics_history")
+					public class StatisticsHistory implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
-	private long id;
-	private long memberId;
-	private long statisticsId;
+					/**
+					*
+					*/
+					private static final long serialVersionUID = 1L;
+					@Id
+					@GeneratedValue(strategy = GenerationType.IDENTITY)
+					@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+					private long id;
+					private long memberId;
+					private long statisticsId;
 
-	public enum StatisticsType {
-		LIKE, COMMENT, BROWSE;
-	}
+					public enum StatisticsType {
+					LIKE, COMMENT, BROWSE;
+					}
 
-	private StatisticsType type;
+					private StatisticsType type;
 
-	public Long getId() {
-		return id;
-	}
+					public Long getId() {
+					return id;
+					}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+					public void setId(Long id) {
+					this.id = id;
+					}
 
-	public long getMemberId() {
-		return memberId;
-	}
+					public long getMemberId() {
+					return memberId;
+					}
 
-	public void setMemberId(long memberId) {
-		this.memberId = memberId;
-	}
+					public void setMemberId(long memberId) {
+					this.memberId = memberId;
+					}
 
-	public long getStatisticsId() {
-		return statisticsId;
-	}
+					public long getStatisticsId() {
+					return statisticsId;
+					}
 
-	public void setStatisticsId(long statisticsId) {
-		this.statisticsId = statisticsId;
-	}
+					public void setStatisticsId(long statisticsId) {
+					this.statisticsId = statisticsId;
+					}
 
-	public StatisticsType getType() {
-		return type;
-	}
+					public StatisticsType getType() {
+					return type;
+					}
 
-	public void setType(StatisticsType type) {
-		this.type = type;
-	}
+					public void setType(StatisticsType type) {
+					this.type = type;
+					}
 
-}
-		
+					}
+
 				</programlisting>
 				<para>默认 enum 类型创建数据库等效 int(11)</para>
 				<programlisting>
@@ -531,12 +531,12 @@ SELECT * FROM test.statistics;
 				</programlisting>
 				<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
 				<programlisting>
-	public enum StatisticsType {
-		LIKE, COMMENT, BROWSE;
-	}
+					public enum StatisticsType {
+					LIKE, COMMENT, BROWSE;
+					}
 
-	@Enumerated(EnumType.STRING)
-	private StatisticsType type;
+					@Enumerated(EnumType.STRING)
+					private StatisticsType type;
 				</programlisting>
 				<para>SQL</para>
 				<programlisting>
@@ -1351,11 +1351,11 @@ public class Member implements Serializable {
 			<section id="Cascade">
 				<title>Cascade</title>
 				<screen>
-CascadeType.PERSIST （级联新建） 
-CascadeType.REMOVE  （级联删除） 
-CascadeType.REFRESH （级联刷新） 
-CascadeType.MERGE   （级联更新）中选择一个或多个。 
-CascadeType.ALL			
+					CascadeType.PERSIST （级联新建）
+					CascadeType.REMOVE （级联删除）
+					CascadeType.REFRESH （级联刷新）
+					CascadeType.MERGE （级联更新）中选择一个或多个。
+					CascadeType.ALL
 				</screen>
 			</section>
 			<section>
@@ -1615,7 +1615,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 				]]>
 				</programlisting>
 			</section>
-		</section><section id="Transactional">
+		</section>
+		<section id="Transactional">
 			<title>@Transactional</title>
 			<section>
 				<title>删除更新需要 @Transactional 注解</title>
@@ -1712,6 +1713,29 @@ public interface UserRepository extends CrudRepository<User, Long> {
 }
 		]]>
 		</programlisting>
+		<section id="GreaterThan">
+			<title>GreaterThan</title>
+			<programlisting>
+			<![CDATA[
+package schedule.repository;
+
+import java.util.Date;
+
+import org.springframework.data.repository.CrudRepository;
+
+import common.domain.CmsTrash;
+
+public interface CmsTrashRepository extends CrudRepository<CmsTrash, Integer> {
+
+	Iterable<CmsTrash> findBySiteIdAndTypeOrderByCtimeASC(int siteId, String string);
+
+	Iterable<CmsTrash> findBySiteIdAndTypeAndCtimeGreaterThanOrderByCtimeASC(int siteId, String string, Date date);
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="JpaRepository">
 		<title>JpaRepository</title>

@@ -736,4 +736,305 @@ public class SpringKafkaApplicationTests {
 		</section>
 
 	</section>
+	<section id="spring.cloud.kafka">
+		<title>Spring cloud with Kafka</title>
+		<section id="Application">
+			<title>Application 主文件</title>
+			<programlisting>
+			<![CDATA[
+package schedule;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableScheduling
+@EnableEurekaClient
+@EntityScan("common.domain")
+public class Application {
+
+	public static void main(String[] args) {
+		System.out.println("Service Schedule Starting...");
+		SpringApplication.run(Application.class, args);
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="resources">
+			<title>资源配置文件</title>
+			<section id="application.properties">
+				<title>application.properties</title>
+				<para>只需要两行，其余所有配置均放在配置中心。</para>
+				<programlisting>
+				<![CDATA[
+# ==============================
+spring.application.name=schedule
+eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@172.16.0.10:8761/eureka/
+# ==============================
+				]]>
+				</programlisting>
+			</section>
+			<section id="bootstrap.properties">
+				<title>bootstrap.properties</title>
+				<para>配置中心服务器相关配置</para>
+				<programlisting>
+				<![CDATA[
+#spring.application.name=schedule
+spring.cloud.config.profile=development
+spring.cloud.config.label=master
+spring.cloud.config.uri=http://172.16.0.10:8888
+management.security.enabled=false
+spring.cloud.config.username=cfg
+spring.cloud.config.password=s3cr3t
+				]]>
+				</programlisting>
+			</section>
+			<section id="spring.kafka.bootstrap_servers">
+				<title>Git 仓库</title>
+				<para>在 git 仓库中加入 spring.kafka.bootstrap_servers 配置项</para>
+				<programlisting>
+				<![CDATA[
+spring.kafka.bootstrap_servers=172.16.0.10:9092
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="kafka.enable">
+			<title>启用 kafka</title>
+			<para>使用 @EnableKafka 启用 Kafka 不需要其他@Bean等。这个配置文件可以省略，可以将 @EnableKafka 放到 Application.java 中。我还是喜欢独立配置。</para>
+			<programlisting>
+			<![CDATA[
+package schedule.config;
+@Configuration
+@EnableKafka
+public class KafkaConfiguration {
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section id="schedule.task">
+			<title>消息发布主程序</title>
+			<programlisting>
+			<![CDATA[
+package schedule.task;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import schedule.repository.CmsTrashRepository;
+import schedule.repository.ArticleRepository;
+import common.domain.Article;
+import common.domain.CmsTrash;
+import common.pojo.ResponseRestful;
+
+@Component
+public class CFPushTasks {
+	private static final Logger logger = LoggerFactory.getLogger(CFPushTasks.class);
+
+	private static final String TOPIC = "test";
+	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	private ArticleRepository articleRepository;
+
+	@Autowired
+	private CmsTrashRepository cmsTrashRepository;
+
+	@Autowired
+	private KafkaTemplate<String, String> kafkaTemplate;
+
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+
+	@Value("${cf.cms.site_id}")
+	private int siteId;
+
+	public CFPushTasks() {
+	}
+
+	private Date getDate() {
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, -1);
+		Date date = calendar.getTime();
+		return date;
+	}
+
+	private boolean setPostionDate(String key, Date value) {
+		String cacheKey = String.format("schedule:CFPushTasks:%s", key);
+		String date = simpleDateFormat.format(value);
+		logger.info("setPostion({},{})", cacheKey, date);
+		redisTemplate.opsForValue().set(cacheKey, date);
+
+		if (value == this.getPostionDate(cacheKey)) {
+			return true;
+		}
+		return false;
+	}
+
+	private Date getPostionDate(String key) {
+		String cacheKey = String.format("schedule:CFPushTasks:%s", key);
+		Date date = null;
+		if (redisTemplate.hasKey(cacheKey)) {
+			try {
+				date = simpleDateFormat.parse(redisTemplate.opsForValue().get(cacheKey));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+				logger.warn(e.getMessage());
+			}
+		}
+		logger.debug("getPostion({}) => {}", cacheKey, date);
+		return date;
+	}
+
+	private boolean setPostionId(String key, int id) {
+		String cacheKey = String.format("schedule:CFPushTasks:PostionId:%s", key);
+		logger.info("setPostionId({},{})", cacheKey, id);
+		redisTemplate.opsForValue().set(cacheKey, String.valueOf(id));
+		if (id == this.getPostionId(cacheKey)) {
+			return true;
+		}
+		return false;
+	}
+
+	private int getPostionId(String key) {
+		String cacheKey = String.format("schedule:CFPushTasks:PostionId:%s", key);
+		int id = 0;
+		if (redisTemplate.hasKey(cacheKey)) {
+			id = Integer.valueOf(redisTemplate.opsForValue().get(cacheKey));
+		}
+		logger.debug("getPostion({}) => {}", cacheKey, id);
+		return id;
+	}
+
+	@Scheduled(fixedRate = 1000 * 50)
+	public void insert() {
+		Iterable<Article> articles = null;
+		int id = this.getPostionId("insert");
+
+		if (id == 0) {
+			articles = articleRepository.findBySiteId(this.siteId);
+
+		} else {
+			articles = articleRepository.findBySiteIdAndIdGreaterThan(this.siteId, id);
+		}
+		if (articles != null) {
+			for (Article article : articles) {
+				ResponseRestful responseRestful = new ResponseRestful(true, this.getPostionId("insert"), "INSERT", article);
+				String jsonString;
+				try {
+					jsonString = mapper.writeValueAsString(responseRestful);
+					this.send(TOPIC, jsonString);
+					if (!this.setPostionId("insert", article.getId())) {
+						return;
+					}
+
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	@Scheduled(fixedRate = 1000 * 50)
+	public void update() {
+		String message = "Hello";
+		this.send(TOPIC, message);
+
+	}
+
+	@Scheduled(fixedRate = 1000 * 50)
+	public void delete() {
+		Date date = this.getPostionDate("delete");
+		Iterable<CmsTrash> cmsTrashs;
+		if (date == null) {
+			cmsTrashs = cmsTrashRepository.findBySiteIdAndTypeOrderByCtime(this.siteId, "delete");
+		} else {
+			cmsTrashs = cmsTrashRepository.findBySiteIdAndTypeAndCtimeGreaterThanOrderByCtime(this.siteId, "delete", date);
+		}
+		if (cmsTrashs != null) {
+
+			for (CmsTrash cmsTrash : cmsTrashs) {
+				ResponseRestful responseRestful = new ResponseRestful(true, this.getPostionId("delete"), "DELETE", cmsTrash);
+				String jsonString;
+				try {
+					jsonString = mapper.writeValueAsString(responseRestful);
+					this.send(TOPIC, jsonString);
+					this.setPostionId("delete", cmsTrash.getId());
+					if (!this.setPostionDate("delete", cmsTrash.getCtime())) {
+						return;
+					} else {
+
+					}
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+
+	}
+
+	private void send(String topic, String message) {
+
+		ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
+
+		future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+
+			@Override
+			public void onSuccess(SendResult<String, String> result) {
+				logger.debug("sent message='{}' with offset={}", message, result.getRecordMetadata().offset());
+			}
+
+			@Override
+			public void onFailure(Throwable ex) {
+				logger.error("unable to send message='{}'", message, ex);
+			}
+		});
+	}
+
+	private void post(ResponseRestful responseRestful) {
+		RestTemplate restTemplate = new RestTemplate();
+		String response = restTemplate.postForObject("http://localhost:8440/test/cf/post.json", responseRestful, String.class);
+
+		// logger.info(article.toString());
+		if (response != null) {
+			logger.info(response);
+		}
+	}
+}
+
+			]]>
+			</programlisting>
+		</section>
+	</section>
 </section>
