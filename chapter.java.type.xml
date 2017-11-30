@@ -994,6 +994,137 @@ for (Map.Entry<String, Integer> entry : session.entrySet()) {
 }
 			]]>
 			</programlisting>
+			
+			<programlisting>
+			<![CDATA[
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
+  
+for (Map.Entry<Integer, Integer> entry : map.entrySet()) {  
+  
+    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());  
+  
+} 
+
+
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
+  
+//遍历map中的键  
+  
+for (Integer key : map.keySet()) {  
+  
+    System.out.println("Key = " + key);  
+  
+}  
+  
+//遍历map中的值  
+  
+for (Integer value : map.values()) {  
+  
+    System.out.println("Value = " + value);  
+  
+}  
+
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
+  
+for (Integer key : map.keySet()) {  
+  
+    Integer value = map.get(key);  
+  
+    System.out.println("Key = " + key + ", Value = " + value);  
+  
+}  
+
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
+  
+Iterator<Map.Entry<Integer, Integer>> entries = map.entrySet().iterator();  
+  
+while (entries.hasNext()) {  
+  
+    Map.Entry<Integer, Integer> entry = entries.next();  
+  
+    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());  
+  
+}  
+
+Map map = new HashMap();  
+  
+Iterator entries = map.entrySet().iterator();  
+  
+while (entries.hasNext()) {  
+  
+    Map.Entry entry = (Map.Entry) entries.next();  
+  
+    Integer key = (Integer)entry.getKey();  
+  
+    Integer value = (Integer)entry.getValue();  
+  
+    System.out.println("Key = " + key + ", Value = " + value);  
+  
+}  
+
+
+			]]>
+			</programlisting>
 		</section>
+		<section>
+			<title>Set 转为 List</title>
+			<programlisting>
+			<![CDATA[
+		// 将Map Key 转化为List      
+        List<String> mapKeyList = new ArrayList<String>(map.keySet());    
+        System.out.println("mapKeyList:"+mapKeyList);  
+          
+        // 将Map Key 转化为List      
+        List<String> mapValuesList = new ArrayList<String>(map.values());    
+        System.out.println("mapValuesList:"+mapValuesList);  			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="LinkedHashMap">
+		<title>LinkedHashMap</title>
+		<programlisting>
+		<![CDATA[
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+public class TestLinkedHashMap {
+ 
+  public static void main(String args[])
+  {
+   System.out.println("*** LinkedHashMap ***");
+   Map<Integer,String> map = new LinkedHashMap<Integer,String>();
+   map.put(6, "apple");
+   map.put(3, "banana");
+   map.put(2,"pear");
+   
+   for (Iterator it =  map.keySet().iterator();it.hasNext();)
+   {
+    Object key = it.next();
+    System.out.println( key+"="+ map.get(key));
+   }
+   
+   System.out.println("*** HashMap ***");
+   Map<Integer,String> map1 = new  HashMap<Integer,String>();
+   map1.put(6, "apple");
+   map1.put(3, "banana");
+   map1.put(2,"pear");
+   
+   for (Iterator it =  map1.keySet().iterator();it.hasNext();)
+   {
+    Object key = it.next();
+    System.out.println( key+"="+ map1.get(key));
+   }
+  }
+}
+		]]>
+		</programlisting>
+		
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
 	</section>
 </section>

@@ -391,5 +391,29 @@ public class GsonJsonParser {
 			]]>
 			</programlisting>
 		</section>
-	</section>	
+		<section id="map2json">
+			<title>Exmaple 范例</title>
+			<section>
+				<title>Map to Json</title>
+				<programlisting>
+				<![CDATA[
+Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+String jsonString = gson.toJson(map);
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="json2map">
+			<title>Exmaple 范例</title>
+			<section>
+				<title>Map to Json</title>
+				<programlisting>
+				<![CDATA[
+Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+Map<String, String> source = gson.fromJson(output, HashMap.class);
+				]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
 </chapter>

@@ -29,6 +29,15 @@ public class LangTest {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>StringUtils.join 使用特定字符链接字符串</title>
+			<para>下面例子使用逗号链接字符串</para>
+			<programlisting>
+			<![CDATA[
+org.apache.commons.lang.StringUtils.join(arraylist, ',') 			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	&chapter.apache.httpclient.xml;
 </chapter>
