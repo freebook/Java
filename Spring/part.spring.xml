@@ -11,4 +11,5 @@
 	&chapter.cloud.xml;
 	&chapter.tomcat.xml;
 	&section.miscellaneous.xml;
+	&chapter.faq.xml;
 </part>
