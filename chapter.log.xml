@@ -5,8 +5,40 @@
 		<title>Logback</title>
 		<para>http://logback.qos.ch/index.html</para>
 		<para>Logback 是 log4j 作者开发，目前的趋势Log4j逐步被Logback取代。</para>
-		<programlisting>
-		<![CDATA[
+		<section>
+			<title>Maven 包</title>
+			<programlisting>
+			<![CDATA[
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Example</title>
+			<programlisting>
+			<![CDATA[
 package com.logs;
  
 import org.slf4j.Logger;
@@ -23,8 +55,10 @@ public class MyApp {
 		logger.error("error");
 	}
 }
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 	
 	<section id="slf4j">

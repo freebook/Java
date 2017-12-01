@@ -977,35 +977,59 @@ $ ls ~/.m2
 			]]>
 			</screen>
 		</section>
-		<section id="build">
-			<title>build</title>
-			
-			
+		<section id="dependencyManagement">
+			<title>dependencyManagement</title>
+			<para>声明父项目引用包的版本号。</para>
+			<screen>
+			<![CDATA[
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-netflix</artifactId>
+				<version>1.3.5.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-config</artifactId>
+				<version>1.3.3.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>			
+			]]>
+			</screen>
+
 		</section>
 		<section id="build">
-		<title>build</title>
-		<section>
-			<title>finalName</title>
-			<para>最终 jar 包得名字</para>
-			<screen>
+			<title>build</title>
+			<section>
+				<title>finalName</title>
+				<para>最终 jar 包得名字</para>
+				<screen>
 			<![CDATA[
 <build>
 		<finalName>crawler</finalName>
 </build>
 			]]>
-			</screen>
-		</section><section>
+				</screen>
+			</section>
+			<section>
 				<title>sourceDirectory</title>
 				<para>编译源码目录</para>
 				<screen>
-				<![CDATA[
+			<![CDATA[
 <sourceDirectory>src</sourceDirectory>				
-				]]>
+			]]>
 				</screen>
-			</section><section id="resources">
-			<title>resources 文件处理</title>
-			<para>resources 用来处理 src/main/resources 目录中得内容</para>
-			<screen>
+			</section>
+			<section id="resources">
+				<title>resources 文件处理</title>
+				<para>resources 用来处理 src/main/resources 目录中得内容</para>
+				<screen>
 			<![CDATA[
 		<resources>
 			<resource>
@@ -1037,10 +1061,11 @@ $ ls ~/.m2
 		</resources>
 				
 			]]>
-			</screen><section>
-				<title>resources</title>
-				<para>将资源文件编译后复制到 WEB-INF/classes 目录中</para>
-				<screen>
+				</screen>
+				<section>
+					<title>resources</title>
+					<para>将资源文件编译后复制到 WEB-INF/classes 目录中</para>
+					<screen>
 				<![CDATA[
 		<resources>
 			<resource>
@@ -1048,9 +1073,9 @@ $ ls ~/.m2
 			</resource>
 		</resources>			
 				]]>
-				</screen>
-				<para>include / exclude</para>
-				<screen>
+					</screen>
+					<para>include / exclude</para>
+					<screen>
 				<![CDATA[
 <resources>  
     <!-- Filter jdbc.properties & mail.properties. NOTE: We don't filter applicationContext-infrastructure.xml,   
@@ -1074,15 +1099,16 @@ $ ls ~/.m2
     </resource>  
 </resources>
 				]]>
-				</screen>
+					</screen>
+				</section>
 			</section>
 		</section>
-	</section><section id="plugins">
+		<section id="plugins">
 			<title>plugins</title>
 			<section>
 				<title>跳过Unit test</title>
-			
-			<screen>
+
+				<screen>
 			<![CDATA[
 <project>
   [...]
@@ -1100,8 +1126,8 @@ $ ls ~/.m2
   [...]
 </project>			
 			]]>
-			</screen>
-			
+				</screen>
+
 			</section>
 			<section>
 				<title>maven-shade-plugin</title>
@@ -1131,10 +1157,10 @@ $ ls ~/.m2
 				</screen>
 			</section>
 		</section>
-	</section>		
-	
-	
-	
+	</section>
+
+
+
 	<section id="plugins">
 		<title>plugins</title>
 		<section id="maven-compiler-plugin">
@@ -1274,7 +1300,7 @@ The build.xml:
     </target>
 
 </project>
-			]]>	
+			]]>
 			</screen>
 		</section>
 		<section id="maven-install-plugin">
@@ -1339,7 +1365,8 @@ The build.xml:
 		</section>
 		<section id="maven-jar-plugin">
 			<title>maven-jar-plugin</title>
-			<para>指定jar创建目录，下面配置运行 mvn package 后将在 target 目录下创建一个 project 目录。</para>
+			<para>指定jar创建目录，下面配置运行 mvn package 后将在 target 目录下创建一个 project 目录。
+			</para>
 			<screen>
 			<![CDATA[
 	<plugin>
@@ -1821,5 +1848,5 @@ spring-boot:stop
 			]]>
 			</screen>
 		</section>
-	</section>	
+	</section>
 </section>
