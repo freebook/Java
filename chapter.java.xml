@@ -111,6 +111,53 @@ neo@netkiller:~/project/Oracle$ java -jar -Dconfig=jdbc.properties target/oracle
 		]]>		
 		</screen>
 	</section>
+	<section>
+		<title>System.in 标准输入(Stdin)</title>
+		<para>标准输入一般用于管道输入，例如：</para>
+		<screen>
+		<![CDATA[
+cat test.txt | java cn.netkiller.ipo.test.StdinToStdout
+		]]>
+		</screen>
+		<para>下面的程序例子里从管道输入，并从标准输出打印。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.ipo.test;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class StdinToStdout {
+
+	public StdinToStdout() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+
+		String s = "";
+		try {
+			BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+
+			while ((s = stdIn.readLine()) != null) {
+				System.out.println(s);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+}
+		]]>
+		</programlisting>
+		<para>默认 BufferedReader 缓冲区比较小，无法处理大于1000 行的输入，可以通过配置缓冲区来解决。</para>
+		<programlisting>
+		<![CDATA[
+stdin = new BufferedReader(new InputStreamReader(System.in, "utf-8"), 1024 * 1024 * 1024); // 1G 缓冲区		
+		]]>
+		</programlisting>
+	</section>
 </section>
 
 	<section id="Runtime">
