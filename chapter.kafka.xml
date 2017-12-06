@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="kafka" ?>
 	<title>Kafka</title>
-	<section id="">
+	<section id="install">
+		<title>安装 Kafka 环境</title>
+		<para>请参考《Netkiller Linux 手札》电子书的 Kafka 章节，电子书中又详细的安装步骤。</para>
+	</section>
+	<section id="maven">
 		<title>Maven</title>
 		<programlisting>
 		<![CDATA[
