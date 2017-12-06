@@ -74,6 +74,7 @@
 	&chapter.jersey.xml;
 	&chapter.apache.xml;
 	&chapter.cache.xml;
+	&chapter.kafka.xml;
 	&chapter.sdk.xml;
 <!-- =========================================================================== -->	
 	&chapter.android.xml;

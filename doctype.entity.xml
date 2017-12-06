@@ -38,4 +38,6 @@
 <!ENTITY chapter.apache.xml				SYSTEM "chapter.apache.xml">
 <!ENTITY chapter.apache.httpclient.xml	SYSTEM "chapter.apache.httpclient.xml">
 <!ENTITY chapter.java.thread.xml			SYSTEM "chapter.java.thread.xml">
+
 <!ENTITY chapter.elasticsearch.xml		SYSTEM "chapter.elasticsearch.xml">
+<!ENTITY chapter.kafka.xml				SYSTEM "chapter.kafka.xml">

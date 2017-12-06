@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="kafka" ?>
+	<title>Kafka</title>
+	<section id="">
+		<title>Maven</title>
+		<programlisting>
+		<![CDATA[
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		]]>
+		</programlisting>
+	</section>
+	<section id="Example.KafkaConsumer">
+		<title>订阅例子</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.kafka.test;
+
+import java.util.Arrays;
+import java.util.Properties;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+
+public class KafkaConsumerExample {
+
+	private static KafkaConsumer<String, String> consumer;
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties props = new Properties();
+		props.put("bootstrap.servers", "kafka.netkiller.cn:9092");
+		props.put("group.id", "test");
+		props.put("enable.auto.commit", "true");
+		props.put("auto.commit.interval.ms", "1000");
+		props.put("session.timeout.ms", "30000");
+		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+		consumer = new KafkaConsumer<String, String>(props);
+		consumer.subscribe(Arrays.asList("test"));
+		while (true) {
+			ConsumerRecords<String, String> records = consumer.poll(100);
+			for (ConsumerRecord<String, String> record : records)
+				System.out.printf("offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value());
+		}
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="Example.KafkaProducer">
+		<title>发布例子</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.kafka.test;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
+import java.util.Properties;
+
+public class KafkaProducerExample {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "kafka.netkiller.cn:9092");
+        props.put("acks", "all");
+        props.put("retries", 0);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("buffer.memory", 33554432);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer<>(props);
+        for(int i = 0; i < 100; i++)
+            producer.send(new ProducerRecord<>("topic1", Integer.toString(i), Integer.toString(i)));
+
+        producer.close();
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+</chapter>
