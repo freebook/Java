@@ -4,132 +4,138 @@
 	<section id="javax.json">
 		<title>javax.json.*</title>
 
-	<section id="json.encode">
-		<title>Json 编码</title>
-		<programlisting language="java">
-package netkiller.json;
+		<section id="json.encode">
+			<title>Json 编码</title>
+			<programlisting language="java">
+				package netkiller.json;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+				import java.io.File;
+				import java.io.FileOutputStream;
+				import java.io.IOException;
+				import java.io.OutputStream;
 
-import javax.json.*;
+				import javax.json.*;
 
-public final class Writer {
+				public final class Writer {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+				public static void main(String[] args) {
+				// TODO Auto-generated method stub
 
-		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
-		JsonObjectBuilder addressBuilder = Json.createObjectBuilder();
-		JsonArrayBuilder phoneNumBuilder = Json.createArrayBuilder();
+				JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+				JsonObjectBuilder addressBuilder = Json.createObjectBuilder();
+				JsonArrayBuilder phoneNumBuilder = Json.createArrayBuilder();
 
-		phoneNumBuilder.add("12355566688").add("0755-2222-3333");
+				phoneNumBuilder.add("12355566688").add("0755-2222-3333");
 
-		addressBuilder.add("street", "Longhua").add("city", "Shenzhen").add("zipcode", 518000);
+				addressBuilder.add("street", "Longhua").add("city",
+				"Shenzhen").add("zipcode", 518000);
 
-		jsonBuilder.add("nickname", "netkiller").add("name", "Neo").add("department", "IT").add("role", "Admin");
+				jsonBuilder.add("nickname", "netkiller").add("name", "Neo").add("department", "IT").add("role",
+				"Admin");
 
-		jsonBuilder.add("phone", phoneNumBuilder);
-		jsonBuilder.add("address", addressBuilder);
+				jsonBuilder.add("phone", phoneNumBuilder);
+				jsonBuilder.add("address", addressBuilder);
 
-		JsonObject jsonObject = jsonBuilder.build();
+				JsonObject jsonObject = jsonBuilder.build();
 
-		System.out.println(jsonObject);
+				System.out.println(jsonObject);
 
-		try {
-			// write to file
-			File file = new File("json.txt");
-			if (!file.exists()) {
+				try {
+				// write to file
+				File file = new File("json.txt");
+				if (!file.exists()) {
 				file.createNewFile();
-			}
-			OutputStream os = null;
-			os = new FileOutputStream(file);
-			JsonWriter jsonWriter = Json.createWriter(os);
-			jsonWriter.writeObject(jsonObject);
-			jsonWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				}
+				OutputStream os = null;
+				os = new FileOutputStream(file);
+				JsonWriter jsonWriter = Json.createWriter(os);
+				jsonWriter.writeObject(jsonObject);
+				jsonWriter.close();
+				} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				}
 
-	}
+				}
 
-}
-		</programlisting>
-		<para>运行后输出</para>
-		<screen>
-{"nickname":"netkiller","name":"Neo","department":"IT","role":"Admin","phone":["12355566688","0755-2222-3333"],"address":{"street":"Longhua","city":"Shenzhen","zipcode":"518000"}}
-		</screen>
-	</section>
-	<section id="json.decode">
-		<title>Json 解码</title>
-		<programlisting>
-package netkiller.json;
+				}
+			</programlisting>
+			<para>运行后输出</para>
+			<screen>
+				{"nickname":"netkiller","name":"Neo","department":"IT","role":"Admin","phone":["12355566688","0755-2222-3333"],"address":{"street":"Longhua","city":"Shenzhen","zipcode":"518000"}}
+			</screen>
+		</section>
+		<section id="json.decode">
+			<title>Json 解码</title>
+			<programlisting>
+				package netkiller.json;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
- 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
- 
-public final class Reader {
- 
-    public static final String JSON_FILE="json.txt";
-     
-    public static void main(String[] args) throws IOException {
-        InputStream fis = new FileInputStream(JSON_FILE);
-        //create JsonReader object
-        JsonReader jsonReader = Json.createReader(fis);
+				import java.io.FileInputStream;
+				import java.io.IOException;
+				import java.io.InputStream;
 
-        //get JsonObject from JsonReader
-        JsonObject jsonObject = jsonReader.readObject();
-         
-        //we can close IO resource and JsonReader now
-        jsonReader.close();
-        fis.close();
-         
-        System.out.printf("nickname: %s \n", jsonObject.getString("nickname"));
-        System.out.printf("name: %s \n", jsonObject.getString("name"));
-        System.out.printf("department: %s \n", jsonObject.getString("department"));
-        System.out.printf("role: %s \n", jsonObject.getString("role"));
-        JsonArray jsonArray = jsonObject.getJsonArray("phone");
-        
-        //long[] numbers = new long[jsonArray.size()];
-        int index = 0;
-        for(JsonValue value : jsonArray){
-            //numbers[index++] = Long.parseLong(value.toString());
-        	System.out.printf("phone[%d]: %s \n", index++, value.toString());
-        }
+				import javax.json.Json;
+				import javax.json.JsonArray;
+				import javax.json.JsonObject;
+				import javax.json.JsonReader;
+				import javax.json.JsonValue;
 
-        //reading inner object from json object
-        JsonObject innerJsonObject = jsonObject.getJsonObject("address");
-        
-        System.out.printf("address: %s, %s, %d \n", innerJsonObject.getString("street"), innerJsonObject.getString("city"), innerJsonObject.getInt("zipcode"));
-         
-    }
- 
-}		
-		</programlisting>
-		<para>运行结果</para>
-		<screen>
-nickname: netkiller 
-name: Neo 
-department: IT 
-role: Admin 
-phone[0]: +8612355566688 
-phone[1]: 0755-2222-3333 
-address: Longhua, Shenzhen, 518000
-		</screen>
-	</section>
-	<section id="json.url">
-		<title>URL获取Json</title>
-		<programlisting>
+				public final class Reader {
+
+				public static final String JSON_FILE="json.txt";
+
+				public static void main(String[] args) throws IOException {
+				InputStream fis = new FileInputStream(JSON_FILE);
+				//create JsonReader object
+				JsonReader jsonReader = Json.createReader(fis);
+
+				//get JsonObject from JsonReader
+				JsonObject jsonObject = jsonReader.readObject();
+
+				//we can close IO resource and JsonReader now
+				jsonReader.close();
+				fis.close();
+
+				System.out.printf("nickname: %s \n", jsonObject.getString("nickname"));
+				System.out.printf("name: %s \n", jsonObject.getString("name"));
+				System.out.printf("department: %s \n",
+				jsonObject.getString("department"));
+				System.out.printf("role: %s \n", jsonObject.getString("role"));
+				JsonArray jsonArray = jsonObject.getJsonArray("phone");
+
+				//long[] numbers = new long[jsonArray.size()];
+				int index = 0;
+				for(JsonValue value : jsonArray){
+				//numbers[index++] = Long.parseLong(value.toString());
+				System.out.printf("phone[%d]: %s \n", index++, value.toString());
+				}
+
+				//reading inner object from json object
+				JsonObject innerJsonObject = jsonObject.getJsonObject("address");
+
+				System.out.printf("address: %s, %s, %d \n",
+				innerJsonObject.getString("street"),
+				innerJsonObject.getString("city"),
+				innerJsonObject.getInt("zipcode"));
+
+				}
+
+				}
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+				nickname: netkiller
+				name: Neo
+				department: IT
+				role: Admin
+				phone[0]: +8612355566688
+				phone[1]: 0755-2222-3333
+				address: Longhua, Shenzhen, 518000
+			</screen>
+		</section>
+		<section id="json.url">
+			<title>URL获取Json</title>
+			<programlisting>
 		<![CDATA[
 package netkiller.json;
 
@@ -197,9 +203,9 @@ public class HttpUrl {
 
 }
 		]]>
-		</programlisting>
-	</section>
-	
+			</programlisting>
+		</section>
+
 	</section>
 	<section id="com.google.gson">
 		<title>com.google.gson</title>
@@ -230,7 +236,7 @@ public class HttpUrl {
 
 </project>		
 		]]>
-		</programlisting>	
+		</programlisting>
 		<section id="pojo">
 			<title>map 处理</title>
 			<para>Example</para>
@@ -269,9 +275,9 @@ public class GsonTest {
 		System.out.println(map.get("1").get("title"));
 		System.out.println(map.get("pages").get("count"));
 			]]>
-			</programlisting>			
-			
-			
+			</programlisting>
+
+
 		</section>
 		<section id="pojo">
 			<title>POJO</title>
@@ -302,7 +308,7 @@ public class Personal {
 }
 			]]>
 			</programlisting>
-		</section>	
+		</section>
 		<section id="toJson">
 			<title>toJson</title>
 			<programlisting>
@@ -326,7 +332,7 @@ public class GsonExampleToJson {
 }
 			]]>
 			</programlisting>
-		</section>	
+		</section>
 		<section id="fromJson">
 			<title>fromJson</title>
 			<programlisting>
@@ -349,7 +355,7 @@ public class GsonExampleFromJson {
 }
 			]]>
 			</programlisting>
-		</section>	
+		</section>
 		<section id="JsonParser">
 			<title>JsonParser</title>
 			<programlisting>
@@ -414,6 +420,52 @@ Map<String, String> source = gson.fromJson(output, HashMap.class);
 				]]>
 				</programlisting>
 			</section>
+		</section>
+		<section>
+			<title>处理复杂的类型</title>
+			<para>通过 TypeToken 定义复杂数据库类型。</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.ipo.process.json;
+
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import cn.netkiller.ipo.process.ProcessInterface;
+
+public class JsonValueLength implements ProcessInterface {
+	private final static Logger logger = LoggerFactory.getLogger(JsonValueLength.class);
+	private Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+	private int maxLength = 0;
+
+	public JsonValueLength(int maxLength) {
+		this.maxLength = maxLength;
+	}
+
+	@Override
+	public String run(String line) {
+
+		Map<String, String> map = gson.fromJson(line, new TypeToken<Map<String, String>>() {
+		}.getType());
+		for (String key : map.keySet()) {
+			if (map.get(key).length() > this.maxLength) {
+				map.put(key, map.get(key).substring(0, this.maxLength));
+			}
+		}
+		logger.debug("{}", map);
+		return gson.toJson(map);
+	}
+
+}
+
+			]]>
+			</programlisting>
 		</section>
 	</section>
 </chapter>
