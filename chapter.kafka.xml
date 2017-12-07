@@ -18,9 +18,11 @@
 		]]>
 		</programlisting>
 	</section>
-	<section id="Example.KafkaConsumer">
-		<title>订阅例子</title>
-		<programlisting>
+	<section id="example">
+		<title>入门例子</title>
+		<section id="Example.KafkaConsumer">
+			<title>订阅例子</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.kafka.test;
 
@@ -56,11 +58,53 @@ public class KafkaConsumerExample {
 
 }
 		]]>
-		</programlisting>
-	</section>
-	<section id="Example.KafkaProducer">
-		<title>发布例子</title>
-		<programlisting>
+			</programlisting>
+			<para>测试方法</para>
+			<programlisting>
+		<![CDATA[
+root@netkiller ~ % /srv/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+>Helloworld
+		]]>
+			</programlisting>
+			<para>下面详细讲解上面的程序。首先我们通过Properties文件来配置消费属性。</para>
+			<programlisting>
+		<![CDATA[
+		Properties props = new Properties();
+		props.put("bootstrap.servers", "kafka.netkiller.cn:9092");
+		props.put("group.id", "test");
+		props.put("enable.auto.commit", "true");
+		props.put("auto.commit.interval.ms", "1000");
+		props.put("session.timeout.ms", "30000");
+		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+		]]>
+			</programlisting>
+			<para>然后订阅TOPIC，从那个TOPIC 读取消息，Kafka 可以同时订阅多个 TOPIC。下面的例子中，同时订阅了foo和bar两个topic：</para>
+			<programlisting>
+		<![CDATA[
+consumer.subscribe(Arrays.asList("foo", "bar"));
+		]]>
+			</programlisting>
+			<para>取出消息（消费消息），通过循环调用poll方法，从队列中取出消息。</para>
+			<programlisting>
+		<![CDATA[
+		while (true) {
+			ConsumerRecords<String, String> records = consumer.poll(100);
+			for (ConsumerRecord<String, String> record : records)
+				System.out.printf("offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value());
+		}		
+		]]>
+			</programlisting>
+			<para>poll方法里面的参数是等待消息的时间(Long类型)，如果队列里面有消息，会立马返回，如果没有，会等待指定的时间然后返回。</para>
+			<programlisting>
+		<![CDATA[
+
+		]]>
+			</programlisting>
+		</section>
+		<section id="Example.KafkaProducer">
+			<title>发布例子</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.kafka.test;
 
@@ -84,11 +128,106 @@ public class KafkaProducerExample {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for(int i = 0; i < 100; i++)
-            producer.send(new ProducerRecord<>("topic1", Integer.toString(i), Integer.toString(i)));
+            producer.send(new ProducerRecord<>("test", Integer.toString(i), Integer.toString(i)));
 
         producer.close();
     }
 }		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="">
+		<title>线程例子</title>
+		<programlisting>
+		<![CDATA[
+
+package cn.netkiller.ipo.test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.serialization.StringDeserializer;
+
+public class KafkaConsumerThread implements Runnable {
+	private final KafkaConsumer<String, String> consumer;
+	private final List<String> topics;
+
+	public KafkaConsumerThread(String groupId, List<String> topics) {
+		this.topics = topics;
+		Properties props = new Properties();
+		props.put("bootstrap.servers", "kafka.netkiller.cn:9092");
+		props.put("group.id", groupId);
+		props.put("key.deserializer", StringDeserializer.class.getName());
+		props.put("value.deserializer", StringDeserializer.class.getName());
+		this.consumer = new KafkaConsumer<String, String>(props);
+	}
+
+	public void run() {
+		try {
+			consumer.subscribe(this.topics);
+
+			while (true) {
+				ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
+				for (ConsumerRecord<String, String> record : records) {
+					Map<String, Object> data = new HashMap<>();
+					data.put("partition", record.partition());
+					data.put("offset", record.offset());
+					data.put("value", record.value());
+					System.out.println(data);
+				}
+			}
+		} catch (WakeupException e) {
+			// ignore for shutdown
+		} finally {
+			consumer.close();
+		}
+	}
+
+	public void shutdown() {
+		consumer.wakeup();
+	}
+
+	public static void main(String[] args) {
+		int numConsumers = 3;
+		String groupId = "consumer-tutorial-group";
+		List<String> topics = Arrays.asList("test");
+		ExecutorService executor = Executors.newFixedThreadPool(numConsumers);
+
+		final List<KafkaConsumerThread> consumers = new ArrayList<>();
+		for (int i = 0; i < numConsumers; i++) {
+			KafkaConsumerThread consumer = new KafkaConsumerThread(groupId, topics);
+			consumers.add(consumer);
+			executor.submit(consumer);
+		}
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				for (KafkaConsumerThread consumer : consumers) {
+					consumer.shutdown();
+				}
+				executor.shutdown();
+				try {
+					executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+}
 		]]>
 		</programlisting>
 	</section>
