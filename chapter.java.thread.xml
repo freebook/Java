@@ -2,7 +2,6 @@
 <section id="index"><?dbhtml dir="thread" ?>
 	<title>Thread 线程</title>
 	<para></para>
-	
 	<section>
 		<title>实现异步执行</title>
 		<programlisting>
@@ -26,18 +25,71 @@
 		</programlisting>
 		<para></para>
 	</section>
-	<section>
-		<title></title>
+	<section id="Thread">
+		<title>集成 Thread 类实现多线程</title>
 		<programlisting>
 		<![CDATA[
+package cn.netkiller.ipo.test;
+
+public class MyThread extends Thread {
+
+	private String name;
+
+	public MyThread(String name) {
+		super();
+		this.name = name;
+	}
+
+	public void run() {
+		for (int i = 0; i < 10; i++) {
+			System.out.println("Thread:" + this.name + ",i=" + i);
+		}
+	}
+
+	public static void main(String[] args) {
+		MyThread mt1 = new MyThread("A");
+		MyThread mt2 = new MyThread("B");
+		mt1.start();
+		mt2.start();
+	}
+}
 		]]>
 		</programlisting>
 		<para></para>
 	</section>
-	<section>
-		<title></title>
+	<section id="Runnable">
+		<title>实现 Runnable 接口</title>
 		<programlisting>
 		<![CDATA[
+		
+package cn.netkiller.ipo.test;
+
+public class MyRunnable implements Runnable {
+
+	private String name;
+
+	public MyRunnable(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public void run() {
+		for (int i = 0; i < 10; i++) {
+			System.out.println("Thread:" + this.name + ",i=" + i);
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		MyRunnable mr1 = new MyRunnable("A");
+		MyRunnable mr2 = new MyRunnable("B");
+
+		new Thread(mr1).start();
+		new Thread(mr2).start();
+		new Thread(new MyRunnable("C")).start();
+	}
+}
 		]]>
 		</programlisting>
 	</section>
