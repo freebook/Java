@@ -93,4 +93,139 @@ public class MyRunnable implements Runnable {
 		]]>
 		</programlisting>
 	</section>
+	<section id="synchronized">
+		<title>线程同步</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.thread;
+
+public class SynchronizedThread extends Thread {
+	private int count = 0;
+
+	@Override
+	public /*synchronized*/ void run() {
+		count++;
+		System.out.println(Thread.currentThread().getName() + " count:" + count);
+	}
+
+	public static void main(String[] args) {
+		SynchronizedThread myThread = new SynchronizedThread();
+		Thread thread1 = new Thread(myThread, "thread1");
+		Thread thread2 = new Thread(myThread, "thread2");
+		Thread thread3 = new Thread(myThread, "thread3");
+		Thread thread4 = new Thread(myThread, "thread4");
+		Thread thread5 = new Thread(myThread, "thread5");
+		thread1.start();
+		thread2.start();
+		thread3.start();
+		thread4.start();
+		thread5.start();
+	}
+}		
+		]]>
+		</programlisting>
+		<para>线程运行不分先后</para>
+		<screen>
+		<![CDATA[
+thread2 count:3
+thread4 count:4
+thread1 count:3
+thread3 count:3
+thread5 count:5
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.thread;
+
+public class SynchronizedThread extends Thread {
+	private int count = 0;
+
+	@Override
+	public synchronized void run() {
+		count++;
+		System.out.println(Thread.currentThread().getName() + " count:" + count);
+	}
+
+	public static void main(String[] args) {
+		SynchronizedThread myThread = new SynchronizedThread();
+		Thread thread1 = new Thread(myThread, "thread1");
+		Thread thread2 = new Thread(myThread, "thread2");
+		Thread thread3 = new Thread(myThread, "thread3");
+		Thread thread4 = new Thread(myThread, "thread4");
+		Thread thread5 = new Thread(myThread, "thread5");
+		thread1.start();
+		thread2.start();
+		thread3.start();
+		thread4.start();
+		thread5.start();
+	}
+}		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+thread1 count:1
+thread5 count:2
+thread4 count:3
+thread2 count:4
+thread3 count:5
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.thread;
+
+public class MultiThread {
+	private static int count = 0;
+
+	public synchronized void add() {
+		count++;
+		System.out.println(Thread.currentThread().getName() + " count:" + count);
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+
+		final MultiThread multiThread1 = new MultiThread();
+		final MultiThread multiThread2 = new MultiThread();
+		final MultiThread multiThread3 = new MultiThread();
+		final MultiThread multiThread4 = new MultiThread();
+		final MultiThread multiThread5 = new MultiThread();
+
+		new Thread(new Runnable() {
+			public void run() {
+				multiThread1.add();
+			}
+		}).start();
+
+		new Thread(new Runnable() {
+			public void run() {
+				multiThread2.add();
+			}
+		}).start();
+
+		new Thread(new Runnable() {
+			public void run() {
+				multiThread3.add();
+			}
+		}).start();
+
+		new Thread(new Runnable() {
+			public void run() {
+				multiThread4.add();
+			}
+		}).start();
+
+		new Thread(new Runnable() {
+			public void run() {
+				multiThread5.add();
+			}
+		}).start();
+	}
+}
+		]]>
+		</programlisting>
+
+
+	</section>
 </section>
