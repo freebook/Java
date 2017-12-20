@@ -6517,7 +6517,7 @@ output {
         codec => "json"
         protocol => "http"
     }
-}			
+}
 			]]>
 			</programlisting>
 		</section>

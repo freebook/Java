@@ -2,33 +2,34 @@
 <section id="controller">
 	<title>@Controller</title>
 	<programlisting>
-package cn.netkiller.controller;
+		package cn.netkiller.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+		import org.springframework.stereotype.Controller;
+		import org.springframework.web.bind.annotation.RequestMapping;
+		import org.springframework.web.servlet.ModelAndView;
 
-@Controller
-public class Welcome {
+		@Controller
+		public class Welcome {
 
-	@RequestMapping("/welcome")
-	public ModelAndView helloWorld() {
+		@RequestMapping("/welcome")
+		public ModelAndView helloWorld() {
 
 		String message = "Helloworld!!!";
-		return new ModelAndView("welcome", "message", message);
-	}
-}
+		return
+		new ModelAndView("welcome", "message", message);
+		}
+		}
 	</programlisting>
 
 	<section id="@RequestMapping">
 		<title>@RequestMapping</title>
 		<programlisting>
-@RequestMapping("/welcome")
+			@RequestMapping("/welcome")
 		</programlisting>
 		<programlisting>
-@RequestMapping(value = "/list", method = RequestMethod.GET)
+			@RequestMapping(value = "/list", method = RequestMethod.GET)
 		</programlisting>
-		
+
 		<section>
 			<title>@RequestMapping("/")</title>
 			<programlisting>
@@ -54,16 +55,16 @@ public class HelloController {
 }		
 			]]>
 			</programlisting>
-		</section>		
-		
+		</section>
+
 		<section>
 			<title>映射多个URL</title>
 			<programlisting>
-@RequestMapping({ "/news/zh-cn", "/news/zh-tw" })
-@ResponseBody
-public String getNewsByPath() {
-    return "Hello";
-}
+				@RequestMapping({ "/news/zh-cn", "/news/zh-tw" })
+				@ResponseBody
+				public String getNewsByPath() {
+				return "Hello";
+				}
 			</programlisting>
 		</section>
 		<section>
@@ -78,7 +79,8 @@ public String getFoosAsJsonFromBrowser() {
 			]]>
 			</programlisting>
 			<screen>
-curl -H "Accept:application/json,text/html" http://localhost:8080/spring/news/json.html
+				curl -H "Accept:application/json,text/html"
+				http://localhost:8080/spring/news/json.html
 			</screen>
 		</section>
 		<section id="@GetMapping">
@@ -122,13 +124,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section id="@PathVariable">
 		<title>RequestMapping with Path Variables - @PathVariable</title>
 		<para>PATHINFO 变量可通过 @Pathvariable注解绑定它传过来的值到方法的参数上。</para>
 		<section>
 			<title>URL 参数传递</title>
-			<para>需求，我们需要通过URL传递参数，所传递的值是分类ID与文章ID，例如 /news/1.html, /news/1/1.html。</para>
+			<para>需求，我们需要通过URL传递参数，所传递的值是分类ID与文章ID，例如 /news/1.html,
+				/news/1/1.html。</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.controller;
@@ -199,19 +202,20 @@ ${ id } <br>
 			<title>处理特殊字符</title>
 			<para>http://www.netkiller.cn/release/1.0.1</para>
 			<programlisting>
-@RequestMapping(value = "/release/{version:[a-zA-Z0-9\\.]+}", method = RequestMethod.GET)  
-public @ResponseBody  
-String release(@PathVariable String version) {  
-    log.debug("version: ", version);  
-    return version;  
-}
+				@RequestMapping(value = "/release/{version:[a-zA-Z0-9\\.]+}", method = RequestMethod.GET)
+				public @ResponseBody
+				String release(@PathVariable String version) {
+				log.debug("version: ", version);
+				return version;
+				}
 			</programlisting>
 			<para>http://www.netkiller.cn/release/1.0.1/other</para>
 			<programlisting>
-@RequestMapping(value="/release/{version:.+}",method=RequestMethod.GET)
-public void download(HttpSession session,@PathVariable("version")String version){
-	return version;
-}
+				@RequestMapping(value="/release/{version:.+}",method=RequestMethod.GET)
+				public void download(HttpSession
+				session,@PathVariable("version")String version){
+				return version;
+				}
 			</programlisting>
 		</section>
 		<section>
@@ -233,7 +237,7 @@ public void download(HttpSession session,@PathVariable("version")String version)
 		<title>RequestMapping with Request Parameters - @RequestParam</title>
 		<para>@RequestParam 用来处理 HTTP GET/POST 请求的变量</para>
 		<programlisting>
-import org.springframework.web.bind.annotation.RequestParam;
+			import org.springframework.web.bind.annotation.RequestParam;
 		</programlisting>
 		<section>
 			<title>HTTP GET</title>
@@ -248,7 +252,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 			</programlisting>
 			<para></para>
 			<screen>
-http://localhost:8080/Spring/request/param.html?id=100
+				http://localhost:8080/Spring/request/param.html?id=100
 			</screen>
 		</section>
 
@@ -379,7 +383,7 @@ public class Http {
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section id="@RequestBody">
 		<title>@RequestBody</title>
 		<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
@@ -508,8 +512,9 @@ public void displayHeaderInfo(@RequestHeader("Accept-Encoding") String encoding,
 	<section id="@SessionAttributes">
 		<title>@@SessionAttributes</title>
 		<para>@SessionAttributes:
-该注解用来绑定HttpSession中的attribute对象的值，便于在方法中的参数里使用。
-该注解有value、types两个属性，可以通过名字和类型指定要使用的attribute 对象；</para>
+			该注解用来绑定HttpSession中的attribute对象的值，便于在方法中的参数里使用。
+			该注解有value、types两个属性，可以通过名字和类型指定要使用的attribute 对象；
+		</para>
 		<programlisting>
 		<![CDATA[
 @Controller  
@@ -521,11 +526,11 @@ public class ProfileForm {
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="@ResponseBody">
 		<title>@ResponseBody</title>
 		<programlisting>
-import org.springframework.web.bind.annotation.ResponseBody;
+			import org.springframework.web.bind.annotation.ResponseBody;
 		</programlisting>
 		<section>
 			<title>直接返回HTML</title>
@@ -560,35 +565,35 @@ public class Pathinfo {
 		<section>
 			<title>变量传递</title>
 			<programlisting>
-	@RequestMapping("/testString")
-	public ModelAndView helloWorld() {
-		String message = "Helloworld!!!";
-		return new ModelAndView("welcome", "message", message);
-	}
+				@RequestMapping("/testString")
+				public ModelAndView helloWorld() {
+				String message = "Helloworld!!!";
+				return new ModelAndView("welcome", "message", message);
+				}
 			</programlisting>
 
 			<programlisting>
-	public ModelAndView handleRequestInternal() {
+				public ModelAndView handleRequestInternal() {
 
-		ModelAndView mav = new ModelAndView("test");// 实例化一个VIew的ModelAndView实例
-		mav.addObject("variable", "Hello World!");// 添加一个带名的model对象
-		return mav;
-	}
+				ModelAndView mav = new ModelAndView("test");// 实例化一个VIew的ModelAndView实例
+				mav.addObject("variable", "Hello World!");// 添加一个带名的model对象
+				return mav;
+				}
 			</programlisting>
 		</section>
 		<section>
 			<title>ModelMap 传递多个变量</title>
 			<para>传递多个字符串</para>
 			<programlisting>
-	@RequestMapping("/testModelMap")
-	public ModelAndView testModelMap() {
-		ModelMap model = new ModelMap();
+				@RequestMapping("/testModelMap")
+				public ModelAndView testModelMap() {
+				ModelMap model = new ModelMap();
 
-		model.addAttribute("username", "Neo");
-		model.addAttribute("password", "Netkiller");
+				model.addAttribute("username", "Neo");
+				model.addAttribute("password", "Netkiller");
 
-		return new ModelAndView("test/modelmap", model);
-	}
+				return new ModelAndView("test/modelmap", model);
+				}
 			</programlisting>
 			<para>推荐使用ModelMap</para>
 			<programlisting>
@@ -783,12 +788,14 @@ Password: ${user.password}<br>
 	<section id="@CrossOrigin">
 		<title>@CrossOrigin</title>
 		<screen>
-	@CrossOrigin(origins = "http://localhost:9000")
-    @GetMapping("/greeting")
-    public Greeting greeting(@RequestParam(required=false, defaultValue="World") String name) {
-        System.out.println("==== in greeting ====");
-        return new Greeting(counter.incrementAndGet(), String.format(template, name));
-    }
+			@CrossOrigin(origins = "http://localhost:9000")
+			@GetMapping("/greeting")
+			public Greeting greeting(@RequestParam(required=false,
+			defaultValue="World") String name) {
+			System.out.println("==== in greeting ====");
+			return new Greeting(counter.incrementAndGet(), String.format(template,
+			name));
+			}
 		</screen>
 	</section>
 	<section id="@SessionAttributes">
@@ -806,7 +813,7 @@ public class MyController {
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>
 		<section>
-			<title>用于方法参数</title>		
+			<title>用于方法参数</title>
 			<para>HttpServletResponse 实例</para>
 			<programlisting>
 			<![CDATA[
@@ -928,6 +935,47 @@ public class MainController {
 		]]>
 		</programlisting>
 	</section>
+	<section id="">
+		<title>返回 JSON 对象 NULL 专为 "" 字符串</title>
+		<programlisting>
+		<![CDATA[
+package api.config;
+
+import java.io.IOException;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+@Configuration
+public class JacksonConfig {
+    @Bean
+    @Primary
+    @ConditionalOnMissingBean(ObjectMapper.class)
+    public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
+        ObjectMapper objectMapper = builder.createXmlMapper(false).build();
+        objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
+            @Override
+            public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+                jsonGenerator.writeString("");
+            }
+        });
+        return objectMapper;
+    }
+}
+
+		]]>
+		</programlisting>
+
+	</section>
 	<section>
 		<title>XML</title>
 		<para>restful 将同时支持 json 和 xml 数据传递</para>
@@ -998,7 +1046,9 @@ public class ArticleRestController {
 }
 		]]>
 		</programlisting>
-		<para>返回数据必须放在 data 字典中, 而我通常是采用 http status code 来返回状态，返回结果是对象。实现上面的需求我们需要加入一个data成员变量，因为我们不清楚最终要返回什么对象。所以声明为 java.lang.Object</para>
+		<para>返回数据必须放在 data 字典中, 而我通常是采用 http status code
+			来返回状态，返回结果是对象。实现上面的需求我们需要加入一个data成员变量，因为我们不清楚最终要返回什么对象。所以声明为
+			java.lang.Object</para>
 		<programlisting>
 		<![CDATA[
 package com.example.api.pojo;
@@ -1125,15 +1175,15 @@ sort，排序相关的信息，以property,property(,ASC|DESC)的方式组织，
 
 Spring提供了@PageableDefault帮助我们个性化的设置pageable的默认配置。例如@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC)表示默认情况下我们按照id倒序排列，每一页的大小为15。		
 		]]>
-		
+
 		</screen>
 	</section>
 </section>
 <section id="scheduled">
-		<title>@Scheduled 计划任务</title>
-		<para></para>
-		<para>cron表达式使用空格分隔的时间元素。</para>
-		<screen>
+	<title>@Scheduled 计划任务</title>
+	<para></para>
+	<para>cron表达式使用空格分隔的时间元素。</para>
+	<screen>
 		<![CDATA[
 字段   允许值   允许的特殊字符
 秒	 	0-59	 	, - * /
@@ -1220,10 +1270,10 @@ Spring提供了@PageableDefault帮助我们个性化的设置pageable的默认�
 注意：在使用“L”参数时，不要指定列表或范围，因为这会导致问题
 
 		]]>
-		</screen>
-		<section>
-			<title>每3秒钟一运行一次</title>
-			<screen>
+	</screen>
+	<section>
+		<title>每3秒钟一运行一次</title>
+		<screen>
 			<![CDATA[
 @Component
 @EnableScheduling
@@ -1235,11 +1285,11 @@ public class MyTask {
     }
 }
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>凌晨23点运行</title>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>凌晨23点运行</title>
+		<programlisting>
 			<![CDATA[
 	@Scheduled(cron = "0 0 23 * * ?")
 	private void cleanNewToday() {
@@ -1251,6 +1301,6 @@ public class MyTask {
 		logger.info("Schedule clean redis {} 耗时 {} 秒", "cleanNewFlash()", (end-begin) / 1000 );
 	}
 			]]>
-			</programlisting>
-		</section>
+		</programlisting>
 	</section>
+</section>
