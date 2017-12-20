@@ -332,13 +332,169 @@ CREATE TABLE `elasticsearch_trash` (
 		</section>
 		<section id="index">
 			<title>索引</title>
-			<para>针对字段做唯一索引</para>
-			<screen>
-				@Column(unique = true)
-			</screen>
-			<para>创建复合索引</para>
-			<programlisting>
-			<![CDATA[
+			<section id="">
+				<title>普通索引</title>
+				<screen>
+				<![CDATA[
+@Table(indexes = { @Index(name = "name", columnList = "name DESC"), @Index(name = "path", columnList = "path") })				
+				]]>
+				</screen>
+				<programlisting>
+				<![CDATA[
+package common.domain;
+
+import java.util.Date;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+@Table(indexes = { @Index(name = "name", columnList = "name DESC"), @Index(name = "path", columnList = "path") })
+public class Category {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+	public int id;
+	public String name;
+	public String description;
+	public String path;
+
+	@Column(columnDefinition = "enum('Enabled','Disabled') DEFAULT 'Enabled' COMMENT '状态'")
+	public String status;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'")
+	public Date ctime;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@Column(columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更改时间'")
+	public Date mtime;
+
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	@JoinColumn(name = "pid", referencedColumnName = "id")
+	private Category categorys;
+
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "category", fetch = FetchType.EAGER)
+	private Set<Category> category;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getCtime() {
+		return ctime;
+	}
+
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
+	}
+
+	public Date getMtime() {
+		return mtime;
+	}
+
+	public void setMtime(Date mtime) {
+		this.mtime = mtime;
+	}
+
+	public Category getCategorys() {
+		return categorys;
+	}
+
+	public void setCategorys(Category categorys) {
+		this.categorys = categorys;
+	}
+
+	public Set<Category> getCategory() {
+		return category;
+	}
+
+	public void setCategory(Set<Category> category) {
+		this.category = category;
+	}
+
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + ", description=" + description + ", path=" + path + ", status="
+				+ status + ", ctime=" + ctime + ", mtime=" + mtime + ", categorys=" + categorys + ", category="
+				+ category + "]";
+	}
+
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section id="unique">
+				<title>唯一索引</title>
+				<para>针对字段做唯一索引</para>
+				<screen>
+				<![CDATA[
+@Column(unique = true)
+				]]>
+				</screen>
+			</section>
+			<section id="uniqueConstraints">
+				<title>复合索引</title>
+			
+				<para>创建由多个字段组成的复合索引</para>
+				<programlisting>
+				<![CDATA[
 package cn.netkiller.api.model;
 
 import java.io.Serializable;
@@ -425,10 +581,10 @@ public class Comment implements Serializable {
 		this.createDate = createDate;
 	}
 }
-			]]>
-			</programlisting>
-			<screen>
-			<![CDATA[
+				]]>
+				</programlisting>
+				<screen>
+				<![CDATA[
 CREATE TABLE `comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) NOT NULL,
@@ -439,8 +595,9 @@ CREATE TABLE `comment` (
   UNIQUE KEY `UK5qxfiu92nwlvgli7bl3evl11m` (`member_id`,`article_id`),
   CONSTRAINT `FKmrrrpi513ssu63i2783jyiv9m` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-			]]>
-			</screen>
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="enum">
 			<title>Enum 枚举数据类型</title>
@@ -605,7 +762,7 @@ CREATE TABLE `netkiller_trash` (
 				</programlisting>
 			</section>
 		</section>
-		<section>
+		<section id="UNSIGNED">
 			<title>整形数据类型</title>
 			<para>无符号整形</para>
 			<programlisting>
