@@ -762,6 +762,86 @@ CREATE TABLE `netkiller_trash` (
 				</programlisting>
 			</section>
 		</section>
+		<section id="set">
+			<title>SET 数据结构</title>
+			<programlisting>
+			<![CDATA[
+package common.domain;
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import common.type.OptionConverter;
+
+@Entity
+public class ItemPool {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false)
+	public int id;
+
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	@JoinColumn(name = "site_id", referencedColumnName = "id")
+	private Site site;
+
+	public String question;
+
+	@Column(columnDefinition = "json DEFAULT NULL")
+	@Convert(converter = OptionConverter.class)
+	public Map<String, String> options;
+
+	@Column(columnDefinition = "SET('A','B','C','D','E','F','G') DEFAULT NULL COMMENT '答案'")
+	public String answer;
+
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	@JoinColumn(name = "category_id", referencedColumnName = "id")
+	private Category category;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'")
+	public Date ctime;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@Column(columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更改时间'")
+	public Date mtime;
+}
+			]]>
+			</programlisting>
+			<para>定义 SET 如下，在JAVA中 SET被映射为逗号分隔的字符串（String），所以操作起来并无不同。使用字符串"A,B,C"存储即可，取出也同样是字符串。</para>
+			<programlisting>
+			<![CDATA[
+@Column(columnDefinition = "SET('A','B','C','D','E','F','G') DEFAULT NULL COMMENT '答案'")			
+			]]>
+			</programlisting>
+			<para>接入后查看</para>
+			<programlisting>
+			<![CDATA[
+mysql> select answer from item_pool;
++--------+
+| answer |
++--------+
+| A,B,C  |
++--------+
+1 row in set (0.00 sec)			
+			]]>
+			</programlisting>
+			<para>完美实现</para>
+		</section>
 		<section id="UNSIGNED">
 			<title>整形数据类型</title>
 			<para>无符号整形</para>
@@ -806,6 +886,203 @@ CREATE TABLE `member` (
   `status` enum('Y','N') DEFAULT 'N',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8			
+			]]>
+			</programlisting>
+		</section>
+		<section id="json">
+			<title>JSON 数据类型</title>
+			<para>MySQL 5.7 中增加了 json 数据类型，下面是一个例子：</para>
+			<programlisting>
+			<![CDATA[
+CREATE TABLE `test` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `your` json DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8
+			]]>
+			</programlisting>
+			<para>我们需要在 Java 实体中定义 json 数据库结构，我搜索遍了整个互联网（Google,Bing,Baidu......），没有找到解决方案，功夫不负有心人，反复尝试后终于成功。记住我是第一个这样用的 ：） 。</para>
+			<programlisting>
+			<![CDATA[
+package common.domain;
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import common.type.OptionConverter;
+
+@Entity
+public class ItemPool {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false)
+	public int id;
+
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	@JoinColumn(name = "site_id", referencedColumnName = "id")
+	private Site site;
+
+	public String name;
+
+	@Column(columnDefinition = "json DEFAULT NULL")
+	@Convert(converter = OptionConverter.class)
+	public Map<String, String> options;
+
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	@JoinColumn(name = "category_id", referencedColumnName = "id")
+	private Category category;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'")
+	public Date ctime;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@Column(columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更改时间'")
+	public Date mtime;
+}
+
+			]]>
+			</programlisting>
+			<para>类型转换 Class</para>
+			<programlisting>
+			<![CDATA[
+package common.type;
+
+import java.util.Map;
+import javax.persistence.AttributeConverter;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+public class OptionConverter implements AttributeConverter<Map<String, String>, String> {
+
+	Gson json = new Gson();
+
+	@Override
+	public String convertToDatabaseColumn(Map<String, String> items) {
+		return json.toJson(items, new TypeToken<Map<String, String>>() {
+		}.getType());
+	}
+
+	@Override
+	public Map<String, String> convertToEntityAttribute(String str) {
+		return json.fromJson(str, new TypeToken<Map<String, String>>() {
+		}.getType());
+	}
+}			
+			]]>
+			</programlisting>
+			<para>通过 @Column(columnDefinition = "json DEFAULT NULL") 定义数据库为 JSON 数据类型</para>
+			<para>数据存储与取出通过 @Convert(converter = OptionConverter.class) 做转换 </para>
+			<para>这里我需要使用 Map 数据结构 <![CDATA[public Map<String, String> options;]]>， 你可以根据你的实际需要定义数据类型 Class</para>
+			<para>启动 Spring 项目后创建 Schema 如下：</para>
+			<programlisting>
+			<![CDATA[
+CREATE TABLE `item_pool` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '????',
+  `mtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '????',
+  `name` varchar(255) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKgwuxedi20fxclobkk2po053hj` (`category_id`),
+  KEY `FKiujumwssofow95st51ukklpgv` (`site_id`),
+  CONSTRAINT `FKgwuxedi20fxclobkk2po053hj` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
+  CONSTRAINT `FKiujumwssofow95st51ukklpgv` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8
+			]]>
+			</programlisting>
+			<para>我们做个简单的测试, 创建仓库。</para>
+			<programlisting>
+			<![CDATA[
+package common.repository;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import common.domain.ItemPool;
+
+@Repository
+public interface ItemPoolRepository extends CrudRepository<ItemPool, Integer> {
+
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.api.restful;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import common.domain.ItemPool;
+import common.repository.ItemPoolRepository;
+
+@RestController
+public class TestRestController {
+
+	private static final Logger logger = LoggerFactory.getLogger(TestRestController.class);
+	@Autowired
+	private ItemPoolRepository itemPoolRepository;
+
+	@GetMapping("/test/json/data/type")
+	public void jsonType() {
+
+		ItemPool itemPool = new ItemPool();
+		itemPool.name = "Which is Operstion System?";
+		Map<String, String> opt = new LinkedHashMap<String, String>();
+		opt.put("A", "Linux");
+		opt.put("B", "Java");
+		itemPool.options = opt;
+		itemPoolRepository.save(itemPool);
+
+		itemPool = null;
+		itemPool = itemPoolRepository.findOne(1);
+		System.out.println(itemPool.toString());
+	}
+
+}
+
+			]]>
+			</programlisting>
+			<para>只能用完美来形容</para>
+			<programlisting>
+			<![CDATA[
+mysql> select options from item_pool;
++-----------------------------+
+| options                     |
++-----------------------------+
+| {"A": "Linux", "B": "Java"} |
++-----------------------------+
+1 row in set (0.00 sec)			
 			]]>
 			</programlisting>
 		</section>

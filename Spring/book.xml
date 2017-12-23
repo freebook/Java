@@ -55,7 +55,7 @@
 		&book.info.abstract.xml;
 
 		<keywordset>
-
+			<keyword>Spring, Spring Boot, Spring Cloud, Spring Eureka, Spring Config</keyword>
 		</keywordset>
 	</info>
 
