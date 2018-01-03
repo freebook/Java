@@ -297,5 +297,30 @@ System.out.println(list.range("books", 0, 1));
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="">
+		<title>过期时间未执行</title>
+		<para>Spring Redis 中设置过期时间方法如下</para>
+		<programlisting>
+		<![CDATA[
+设置 key
+redisTemplate.opsForValue().setIfAbsent("key", "value");
+设置过期时间
+redisTemplate.expire("key", 30000, TimeUnit.MILLISECONDS);
+释放 key
+redisTemplate.delete("key");		
+		]]>
+		</programlisting>
+		<para>这样存在一个问题，当程序运行一半被强行终止，可能导致setIfAbsent运行完成，但是expire未被执行，这样 key 便永远不会释放。解决方案如下，使用RedisCallback执行原生 Redis 命令。</para>
+		<programlisting>
+		<![CDATA[
+String result = redisTemplate.execute(new RedisCallback<String>() {
+	@Override
+	public String doInRedis(RedisConnection connection) throws DataAccessException {
+		JedisCommands commands = (JedisCommands) connection.getNativeConnection();
+		return commands.set(key, value, "NX", "PX", expire);
+	}
+});		
+		]]>
+		</programlisting>
+	</section>
 </section>
