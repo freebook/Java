@@ -3,7 +3,11 @@
 	<title>Kafka</title>
 	<section id="install">
 		<title>安装 Kafka 环境</title>
-		<para>请参考《Netkiller Linux 手札》电子书的 Kafka 章节，电子书中又详细的安装步骤。</para>
+		<para>
+			请参考
+			<ulink url="http://www.netkiller.cn/linux/index.html">《Netkiller Linux 手札》电子书</ulink>
+			的 Kafka 章节，电子书中又详细的安装步骤。
+		</para>
 	</section>
 	<section id="maven">
 		<title>Maven</title>
@@ -15,6 +19,37 @@
 			<artifactId>kafka-clients</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>启动 kafka</title>
+		<para>有两种方式启动 kafka, 一种是命令行，另一种是通过 Java 程序，命令行方式请参考《Netkiller Linux
+			手札》，这里只介绍如何使用 Java 程序启动 Kafka。</para>
+		<para>首先启动 Zookeeper</para>
+		<programlisting>
+		<![CDATA[
+QuorumPeerConfig config = new QuorumPeerConfig();
+InputStream inputStream = KafkaTest.class.getResourceAsStream("/srv/kafka/config/zookeeper.properties");
+Properties properties = new Properties();	    
+properties.load(inputStream);
+inputStream.close();
+config.parseProperties(properties);
+ServerConfig   serverConfig = new ServerConfig();
+serverConfig.readFrom(config);
+new ZooKeeperServerMain().runFromConfig(serverConfig);		
+		]]>
+		</programlisting>
+		<para>然后启动 Kafka</para>
+		<programlisting>
+		<![CDATA[
+InputStream inputStream = KafkaTest.class.getResourceAsStream("/srv/kafka/config/server.properties");
+Properties properties = new Properties();
+properties.load(is);
+inputStream.close();
+KafkaServerStartable kafkaServerStartable = KafkaServerStartable.fromProps(properties);
+kafkaServerStartable.startup();
+kafkaServerStartable.awaitShutdown();
 		]]>
 		</programlisting>
 	</section>
@@ -79,7 +114,8 @@ root@netkiller ~ % /srv/kafka/bin/kafka-console-producer.sh --broker-list localh
 		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		]]>
 			</programlisting>
-			<para>然后订阅TOPIC，从那个TOPIC 读取消息，Kafka 可以同时订阅多个 TOPIC。下面的例子中，同时订阅了foo和bar两个topic：</para>
+			<para>然后订阅TOPIC，从那个TOPIC 读取消息，Kafka 可以同时订阅多个
+				TOPIC。下面的例子中，同时订阅了foo和bar两个topic：</para>
 			<programlisting>
 		<![CDATA[
 consumer.subscribe(Arrays.asList("foo", "bar"));
@@ -95,7 +131,8 @@ consumer.subscribe(Arrays.asList("foo", "bar"));
 		}		
 		]]>
 			</programlisting>
-			<para>poll方法里面的参数是等待消息的时间(Long类型)，如果队列里面有消息，会立马返回，如果没有，会等待指定的时间然后返回。</para>
+			<para>poll方法里面的参数是等待消息的时间(Long类型)，如果队列里面有消息，会立马返回，如果没有，会等待指定的时间然后返回。
+			</para>
 			<programlisting>
 		<![CDATA[
 
@@ -137,7 +174,7 @@ public class KafkaProducerExample {
 			</programlisting>
 		</section>
 	</section>
-	<section id="">
+	<section id="kafka.thread">
 		<title>线程例子</title>
 		<programlisting>
 		<![CDATA[
