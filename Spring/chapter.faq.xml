@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section id="faq">
-		<title>FAQ</title>
-		<section id="faq.application.properties">
-			<title>application.properties 参考</title>
-			<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html</para>
-			<screen>
+<section id="faq">
+	<title>FAQ</title>
+	<section id="faq.application.properties">
+		<title>application.properties 参考</title>
+		<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+		</para>
+		<screen>
 		<![CDATA[
 # ===================================================================
 # COMMON SPRING BOOT PROPERTIES
@@ -1117,115 +1118,145 @@ spring.devtools.remote.restart.enabled=true # Enable remote restart.
 spring.devtools.remote.secret= # A shared secret required to establish a connection (required to enable remote support).
 spring.devtools.remote.secret-header-name=X-AUTH-TOKEN # HTTP header used to transfer the shared secret.
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>org.hibernate.dialect.Oracle10gDialect does not support identity key generation</title>
-			<screen>
-				@GeneratedValue(strategy=GenerationType.IDENTITY)
-				换成
-				@GeneratedValue(strategy=GenerationType.AUTO)
+		</screen>
+	</section>
+	<section>
+		<title>org.hibernate.dialect.Oracle10gDialect does not support
+			identity key generation</title>
+		<screen>
+			<![CDATA[
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+换成
+@GeneratedValue(strategy=GenerationType.AUTO)
 
-				or
+or
 
-				@Id
-				@Column(name = "ID")
-				@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
-				@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
-				private int id;
-			</screen>
-		</section>
-		<section>
-			<title>No identifier specified for entity</title>
-			<screen>
-				在实体中使用
-				import javax.persistence.Id;
-				替换
-				import org.springframework.data.annotation.Id;
-			</screen>
-		</section>
-		<section>
-			<title>Could not read document: Invalid UTF-8 middle byte 0xd0</title>
-			<para>Spring 默认不支持 UTF-8</para>
-			<screen>
-				2016-08-17 16:04:53.148 WARN 7700 --- [nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: Could not read document: Invalid UTF-8 middle byte 0xd0
-				at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"]); nested exception is com.fasterxml.jackson.databind.JsonMappingException: Invalid UTF-8 middle byte 0xd0
-				at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38] (through reference chain: api.domain.oracle.Withdraw["bankname"])
-			</screen>
-			<para>解决方案 application.properties 配置文件中加入如下配置：</para>
-			<screen>
-				spring.messages.encoding=UTF-8
-				server.tomcat.uri-encoding=UTF-8
-				spring.http.encoding.charset=UTF-8
-				spring.http.encoding.enabled=true
-				spring.http.encoding.force=true
-			</screen>
-		</section>
-		<section>
-			<title>java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection</title>
-			<para>分析，Oracle 数据库无法连接，确认用户密码正确，日志提示 The Network Adapter could not establish the connection 看上去更像网络故障，同事还有下面两条日志。</para>
-			<screen>
-				Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection
-				Caused by: java.net.SocketTimeoutException: connect timed out
-			</screen>
-			<para>通过 ss 命令可以看到有tcp操作，可以排除不是网络故障。</para>
-			<screen>
-				[root@iZ62m7362hwZ ~]# ss -ant | grep 1521
-				TIME-WAIT 0 0 47.90.18.24:45780 15.84.21.59:1521
-			</screen>
-			<para>检查你的用户名与密码是否含有特殊字符，特殊字符需要使用转义字符"\".</para>
-			<screen>
-				spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=215.184.211.50)(PORT=1521))(LOAD_BALANCE=YES)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))
-				#spring.datasource.username=neo
-				#spring.datasource.password=[y7$ghM~3b
-			</screen>
-			<para>将用户名写入spring.datasource.url中，格式jdbc:oracle:thin:用户名/密码@(......)，禁用spring.datasource.username和spring.datasource.password两个配置项。</para>
-		</section>
-		<section>
-			<title>Field javaMailSender in cn.netkiller.rest.EmailRestController required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.</title>
-			<para>启动提示 'org.springframework.mail.javamail.JavaMailSender' that could not be found 这句话很误导人。实际上是 (spring.mail.host) did not find property 'host'</para>
-			<screen>
-				***************************
-				APPLICATION FAILED TO START
-				***************************
+@Id
+@Column(name = "ID")
+@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
+private int id;			
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>No identifier specified for entity</title>
+		<para>在实体中使用</para>
+		<screen>
+		<![CDATA[
+import javax.persistence.Id;
+替换
+import org.springframework.data.annotation.Id;		
+		]]>
+		</screen>
+	</section>
 
-				Description:
+	<section>
+		<title>Could not read document: Invalid UTF-8 middle byte 0xd0</title>
+		<para>Spring 默认不支持 UTF-8</para>
+		<screen>
+		<![CDATA[
+2016-08-17 16:04:53.148 WARN 7700 --- [nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Failed to read HTTP message:	org.springframework.http.converter.HttpMessageNotReadableException:Could not read document: Invalid UTF-8 middle byte 0xd0 at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38](through reference chain: api.domain.oracle.Withdraw["bankname"]); nested exception is 	com.fasterxml.jackson.databind.JsonMappingException: Invalid UTF-8 middle byte 0xd0 at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38]
+			(through reference chain: api.domain.oracle.Withdraw["bankname"])
+		]]>
+		</screen>
+		<para>解决方案 application.properties 配置文件中加入如下配置：</para>
+		<screen>
+			spring.messages.encoding=UTF-8
+			server.tomcat.uri-encoding=UTF-8
+			spring.http.encoding.charset=UTF-8
+			spring.http.encoding.enabled=true
+			spring.http.encoding.force=true
+		</screen>
+	</section>
+	<section>
+		<title>java.sql.SQLRecoverableException: IO Error: The Network Adapter
+			could not establish the connection</title>
+		<para>分析，Oracle 数据库无法连接，确认用户密码正确，日志提示 The Network Adapter could not
+			establish the connection 看上去更像网络故障，同事还有下面两条日志。</para>
+		<screen>
+			Caused by: oracle.net.ns.NetException: The Network Adapter could not
+			establish the connection
+			Caused by: java.net.SocketTimeoutException: connect timed out
+		</screen>
+		<para>通过 ss 命令可以看到有tcp操作，可以排除不是网络故障。</para>
+		<screen>
+			[root@iZ62m7362hwZ ~]# ss -ant | grep 1521
+			TIME-WAIT 0 0 47.90.18.24:45780 15.84.21.59:1521
+		</screen>
+		<para>检查你的用户名与密码是否含有特殊字符，特殊字符需要使用转义字符"\".</para>
+		<screen>
+			spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=215.184.211.50)(PORT=1521))(LOAD_BALANCE=YES)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))
+			#spring.datasource.username=neo
+			#spring.datasource.password=[y7$ghM~3b
+		</screen>
+		<para>将用户名写入spring.datasource.url中，格式jdbc:oracle:thin:用户名/密码@(......)，禁用spring.datasource.username和spring.datasource.password两个配置项。
+		</para>
+	</section>
+	<section>
+		<title>Field javaMailSender in cn.netkiller.rest.EmailRestController
+			required a bean of type
+			'org.springframework.mail.javamail.JavaMailSender' that could not be
+			found.</title>
+		<para>启动提示 'org.springframework.mail.javamail.JavaMailSender' that
+			could not be found 这句话很误导人。实际上是 (spring.mail.host) did not find
+			property 'host'</para>
+		<screen>
+			***************************
+			APPLICATION FAILED TO START
+			***************************
 
-				Field javaMailSender in cn.netkiller.rest.EmailRestController required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.
-				- Bean method 'mailSender' not loaded because AnyNestedCondition 0 matched 2 did not; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty @ConditionalOnProperty (spring.mail.jndi-name) did not find property 'jndi-name'; NestedCondition on MailSenderAutoConfiguration.MailSenderCondition.HostProperty @ConditionalOnProperty (spring.mail.host) did not find property 'host'
+			Description:
+
+			Field javaMailSender in cn.netkiller.rest.EmailRestController required a
+			bean of type 'org.springframework.mail.javamail.JavaMailSender' that
+			could not be found.
+			- Bean method 'mailSender' not loaded because AnyNestedCondition 0
+			matched 2 did not; NestedCondition on
+			MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty
+			@ConditionalOnProperty (spring.mail.jndi-name) did not find property
+			'jndi-name'; NestedCondition on
+			MailSenderAutoConfiguration.MailSenderCondition.HostProperty
+			@ConditionalOnProperty (spring.mail.host) did not find property
+			'host'
 
 
-				Action:
+			Action:
 
-				Consider revisiting the conditions above or defining a bean of type 'org.springframework.mail.javamail.JavaMailSender' in your configuration.
-			</screen>
-			<para>解决方案，application.properties 增加 spring.mail.host=localhost</para>
-		</section>
-		<section>
-			<title>org.postgresql.util.PSQLException: FATAL: no pg_hba.conf entry for host "172.16.0.3", user "test", database "test ", SSL off</title>
-			<para>确认 pg_hba.conf 配置正确，并且 psql 可以正常链接，spring仍然报错</para>
-			<screen>
-				spring.datasource.url=jdbc:postgresql://47.90.18.244:5432/test
-				spring.datasource.username=test
-				spring.datasource.password=test
-				spring.jpa.show-sql=true
-				spring.jpa.hibernate.ddl-auto=create-drop
-				spring.jpa.generate-ddl=true
-			</screen>
-			<para>请检查 jdbc:postgresql://47.90.18.244:5432/test 后面test是否多了一个空格或者有特殊字符。删除test后面的空格可以解决</para>
-		</section>
-		<section>
-			<title>Spring boot 怎样显示执行的SQL语句</title>
-			<programlisting>
+			Consider revisiting the conditions above or defining a bean of type
+			'org.springframework.mail.javamail.JavaMailSender' in your
+			configuration.
+		</screen>
+		<para>解决方案，application.properties 增加 spring.mail.host=localhost</para>
+	</section>
+	<section>
+		<title>org.postgresql.util.PSQLException: FATAL: no pg_hba.conf entry
+			for host "172.16.0.3", user "test", database "test ", SSL off</title>
+		<para>确认 pg_hba.conf 配置正确，并且 psql 可以正常链接，spring仍然报错</para>
+		<screen>
+			spring.datasource.url=jdbc:postgresql://47.90.18.244:5432/test
+			spring.datasource.username=test
+			spring.datasource.password=test
+			spring.jpa.show-sql=true
+			spring.jpa.hibernate.ddl-auto=create-drop
+			spring.jpa.generate-ddl=true
+		</screen>
+		<para>请检查 jdbc:postgresql://47.90.18.244:5432/test
+			后面test是否多了一个空格或者有特殊字符。删除test后面的空格可以解决</para>
+	</section>
+	<section>
+		<title>Spring boot 怎样显示执行的SQL语句</title>
+		<programlisting>
 			<![CDATA[
 spring.jpa.show-sql=true
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Cannot determine embedded database driver class for database type NONE</title>
-			<para>错误如下</para>
-			<screen>
+		</programlisting>
+	</section>
+	<section>
+		<title>Cannot determine embedded database driver class for database
+			type NONE</title>
+		<para>错误如下</para>
+		<screen>
 			<![CDATA[
 ***************************
 APPLICATION FAILED TO START
@@ -1240,10 +1271,11 @@ Action:
 If you want an embedded database please put a supported one on the classpath. If you have database settings to be loaded from a particular profile you may need to active it (no profiles are currently active).
 			
 			]]>
-			</screen>
-			<para>背景：Maven 项目中并不包含任何与数据库有关的依赖。问题出在另一个公共包中如： common-version.jar</para>
-			<para>解决方案：排除不需要的包</para>
-			<screen>
+		</screen>
+		<para>背景：Maven 项目中并不包含任何与数据库有关的依赖。问题出在另一个公共包中如： common-version.jar
+		</para>
+		<para>解决方案：排除不需要的包</para>
+		<screen>
 			<![CDATA[
 		<dependency>
 			<groupId>cn.netkiller</groupId>
@@ -1265,23 +1297,23 @@ If you want an embedded database please put a supported one on the classpath. If
 			</exclusions>
 		</dependency>
 			]]>
-			</screen>
-			
-		</section>
-		<section id="">
-			<title>Spring boot / Spring cloud 时区差8个小时</title>
-			<para>经过检查：操作系统时区 CST，数据库是 SYSTEM，Spring boot 获取时间相差8个小时。</para>
-			<para>分析：认为是 @JsonFormat 格式化造成的。</para>
-			<para>解决方案：在 @JsonFormat 中增加时区设置。</para>
-			<programlisting>
+		</screen>
+
+	</section>
+	<section id="">
+		<title>Spring boot / Spring cloud 时区差8个小时</title>
+		<para>经过检查：操作系统时区 CST，数据库是 SYSTEM，Spring boot 获取时间相差8个小时。</para>
+		<para>分析：认为是 @JsonFormat 格式化造成的。</para>
+		<para>解决方案：在 @JsonFormat 中增加时区设置。</para>
+		<programlisting>
 			<![CDATA[
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
 	public Date ctime;			
 			]]>
-			</programlisting>
-			<para>期间尝试多种方式无效:</para>
-			<literallayout>
+		</programlisting>
+		<para>期间尝试多种方式无效:</para>
+		<literallayout>
 			<![CDATA[
 # 下面例子无效			
 spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
@@ -1296,10 +1328,10 @@ spring.jpa.properties.jadira.usertype.autoRegisterUserTypes = true
 spring.jpa.properties.jadira.usertype.javaZone=Asia/Shanghai
 spring.jpa.properties.jadira.usertype.databaseZone=Asia/Shanghai
 			]]>
-			</literallayout>
-			<para>根源在 Json 转化。</para>
-			<para>完成的例子</para>
-			<programlisting>
+		</literallayout>
+		<para>根源在 Json 转化。</para>
+		<para>完成的例子</para>
+		<programlisting>
 			<![CDATA[
 package common.domain;
 
@@ -1454,6 +1486,6 @@ public class Article implements Serializable {
 }
 
 			]]>
-			</programlisting>
-		</section>
+		</programlisting>
 	</section>
+</section>
