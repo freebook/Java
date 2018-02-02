@@ -26,7 +26,7 @@
 		<para></para>
 	</section>
 	<section id="Thread">
-		<title>集成 Thread 类实现多线程</title>
+		<title>继承 Thread 类实现多线程</title>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.ipo.test;
