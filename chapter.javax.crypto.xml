@@ -5,10 +5,10 @@
 		<title>MD5</title>
 		<para>JDK 1.8</para>
 		<programlisting>
-String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("SOMESTRING".getBytes("UTF-8")));		
+			String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("SOMESTRING".getBytes("UTF-8")));
 		</programlisting>
 	</section>
-	<section id="aes">
+	<section>
 		<title>AES</title>
 		<programlisting>
 		<![CDATA[
@@ -98,6 +98,165 @@ public class TestAES {
 	}
 
 }
+		]]>
+		</programlisting>
+
+
+
+	</section>
+	<section>
+		<title>AES/CBC/PKCS5PADDING</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.security;
+
+import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+public class AES {
+	private static final String initVector = "encryptionIntVec";
+	private String key;
+
+	public AES(String key) {
+		// TODO Auto-generated constructor stub
+		this.key = key;
+	}
+
+	public String encrypt(String value) {
+		return this.encrypt(value, this.key);
+	}
+
+	public String encrypt(String value, String key) {
+		try {
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(initVector.getBytes("UTF-8"));
+			SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+			byte[] encrypted = cipher.doFinal(value.getBytes());
+			return Base64.getEncoder().encodeToString(encrypted);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	public String decrypt(String encrypted) {
+		return this.decrypt(encrypted, this.key);
+	}
+
+	public String decrypt(String encrypted, String key) {
+		try {
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(initVector.getBytes("UTF-8"));
+			SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+			byte[] original = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+
+			return new String(original);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static void main(String[] args) {
+		// key 长度16个字节
+		String key = "www.netkiller.cn";
+		System.out.println(key.length());
+		AES aes = new AES(key);
+		String en = aes.encrypt("Helloworld!!!");
+		String de = aes.decrypt(en);
+		System.out.println(en);
+		System.out.println(de);
+
+	}
+}
+
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>DES</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.security;
+
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+
+public class DES {
+
+	public DES() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static String encrypt(String text, String password) {
+		try {
+			SecureRandom random = new SecureRandom();
+			DESKeySpec desKey = new DESKeySpec(password.getBytes());
+			// 创建一个密匙工厂，然后用它把DESKeySpec转换成
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+			SecretKey securekey = keyFactory.generateSecret(desKey);
+			// Cipher对象实际完成加密操作
+			Cipher cipher = Cipher.getInstance("DES");
+			// 用密匙初始化Cipher对象
+			cipher.init(Cipher.ENCRYPT_MODE, securekey, random);
+			// 现在，获取数据并加密
+			// 正式执行加密操作
+
+			return Base64.getEncoder().encodeToString(cipher.doFinal(text.getBytes(StandardCharsets.UTF_8)));
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static String decrypt(String text, String password) throws Exception {
+		try {
+			// DES算法要求有一个可信任的随机数源
+			SecureRandom random = new SecureRandom();
+			// 创建一个DESKeySpec对象
+			DESKeySpec desKey = new DESKeySpec(password.getBytes());
+			// 创建一个密匙工厂
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+			// 将DESKeySpec对象转换成SecretKey对象
+			SecretKey securekey = keyFactory.generateSecret(desKey);
+			// Cipher对象实际完成解密操作
+			Cipher cipher = Cipher.getInstance("DES");
+			// 用密匙初始化Cipher对象
+			cipher.init(Cipher.DECRYPT_MODE, securekey, random);
+			// 真正开始解密操作
+			return new String(cipher.doFinal(Base64.getDecoder().decode(text)), StandardCharsets.UTF_8);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+		String en = DES.encrypt("Helloworld!!!", "www.netkiller.cn");
+		String de = DES.decrypt(en, "www.netkiller.cn");
+		System.out.println(en);
+		System.out.println(de);
+
+	}
+
+}
+
 		]]>
 		</programlisting>
 	</section>
