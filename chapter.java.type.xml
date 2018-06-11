@@ -1,6 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="type">
 	<title>类型</title>
+	<section id="integer">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+十进制转成十六进制：   
+  
+Integer.toHexString(int i)   
+  
+十进制转成八进制   
+  
+Integer.toOctalString(int i)   
+  
+十进制转成二进制   
+  
+Integer.toBinaryString(int i)   
+  
+十六进制转成十进制   
+  
+Integer.valueOf("FFFF",16).toString()   
+  
+八进制转成十进制   
+  
+Integer.valueOf("876",8).toString()   
+  
+二进制转十进制   
+  
+Integer.valueOf("0101",2).toString()   
+  
+  
+  
+有什么方法可以直接将2,8,16进制直接转换为10进制的吗?   
+  
+java.lang.Integer类   
+  
+parseInt(String s, int radix)   
+  
+使用第二个参数指定的基数，将字符串参数解析为有符号的整数。   
+  
+examples from jdk:   
+  
+parseInt("0", 10) returns 0   
+  
+parseInt("473", 10) returns 473   
+  
+parseInt("-0", 10) returns 0   
+  
+parseInt("-FF", 16) returns -255   
+  
+parseInt("1100110", 2) returns 102   
+  
+parseInt("2147483647", 10) returns 2147483647   
+  
+parseInt("-2147483648", 10) returns -2147483648   
+  
+parseInt("2147483648", 10) throws a NumberFormatException   
+  
+parseInt("99",throws a NumberFormatException   
+  
+parseInt("Kona", 10) throws a NumberFormatException   
+  
+parseInt("Kona", 27) returns 411787    
+  
+  
+例二   
+  
+  
+int i=100;   
+
+String binStr=Integer.toBinaryString(i);   
+String otcStr=Integer.toOctalString(i);   
+String hexStr=Integer.toHexString(i);   
+System.out.println(binStr);   
+  
+
+  
+  
+  
+  
+例二   
+ 
+Integer factor = Integer.valueOf(args[0]);   
+  
+String s;   
+
+  
+s = String.format("%d", factor);     
+System.out.println(s);   
+  
+s = String.format("%x", factor);   
+System.out.println(s);   
+  
+s = String.format("%o", factor);   
+System.out.println(s);   
+  
+其他方法：   
+  
+  
+  
+Integer.toHexString(你的10进制数);   
+  
+例如   
+  
+String temp = Integer.toHexString(75);   
+  
+输出temp就为 4b     		
+		]]>
+		</programlisting>
+	</section>
 	<section id="string">
 		<title>String</title>
 		<section id="random">
@@ -164,7 +272,8 @@ hell
 	<section id="date">
 		<title>Date</title>
 		<para>java.util.Date, java.sql.Date, java.sql.Time, java.sql.Timestamp
-			区别</para>
+			区别
+		</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.java.date;
@@ -1030,7 +1139,7 @@ public class ArrayListExample {
 		</section>
 
 	</section>
-	
+
 	<section id="map">
 		<title>HashMap</title>
 		<screen>
@@ -1063,7 +1172,7 @@ WeakHashMap类
 　　WeakHashMap是一种改进的HashMap，它对key实行“弱引用”，如果一个key不再被外部所引用，那么该key可以被GC回收。
 		]]>
 		</screen>
-		
+
 		<section id="map.static">
 			<title>static map</title>
 			<programlisting>
@@ -1076,7 +1185,7 @@ WeakHashMap类
 		point.put("TW", "Taiwan");
 	};
 			]]>
-			</programlisting>	
+			</programlisting>
 		</section>
 		<section id="hashmap">
 			<title>foreach hashmap</title>
@@ -1094,7 +1203,7 @@ for (Map.Entry<String, Integer> entry : session.entrySet()) {
 }
 			]]>
 			</programlisting>
-			
+
 			<programlisting>
 			<![CDATA[
 Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
@@ -1166,10 +1275,10 @@ while (entries.hasNext()) {  
 			]]>
 			</programlisting>
 		</section>
-		
-	<section id="LinkedHashMap">
-		<title>LinkedHashMap</title>
-		<programlisting>
+
+		<section id="LinkedHashMap">
+			<title>LinkedHashMap</title>
+			<programlisting>
 		<![CDATA[
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1205,13 +1314,14 @@ public class TestLinkedHashMap {
   }
 }
 		]]>
-		</programlisting>
-		
-		<programlisting>
+			</programlisting>
+
+			<programlisting>
 		<![CDATA[
 		
 		]]>
-		</programlisting>
-	</section></section>
-	
+			</programlisting>
+		</section>
+	</section>
+
 </section>

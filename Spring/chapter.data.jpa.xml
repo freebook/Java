@@ -1,17 +1,23 @@
 <section id="spring-data-jpa"><!-- <?dbhtml dir="jpa" ?> -->
 	<title>Spring Data JPA</title>
+	<section id="engine">
+		<title>选择数据库表引擎</title>
+		<para>正常创建表会使用数据库默认引擎，有时数据库默认引擎并不是我们需要的，通过下面配置可以指定表引擎</para>
+		<screen>
+			<![CDATA[
+# Spring boot 1.x.x
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+
+# Spring boot 2.0.2
+spring.jpa.hibernate.use-new-id-generator-mappings=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+			]]>
+		</screen>
+	</section>
 	<section id="@Entity">
 		<title>@Entity</title>
-		<section id="id">
-			<title>@Id</title>
-			<para>ID 字段</para>
-			<screen>
-				@Id
-				@GeneratedValue(strategy = GenerationType.IDENTITY)
-				@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
-				private int id;
-			</screen>
-		</section>
+
+		
 		<section id="@Table">
 			<title>@Table</title>
 			<section id="catalog">
@@ -47,6 +53,80 @@ uniqueConstraints={@UniqueConstraint(columnNames={"name","email"}),@UniqueConstr
 				</screen>
 
 			</section>
+		</section>
+		<section id="id">
+			<title>@Id</title>
+			<para>ID 字段，数据库中的主键。</para>
+			<screen>
+			<![CDATA[
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+private int id;			
+			]]>
+
+			</screen>
+			<para>字符串做主键</para>
+			<screen>
+			<![CDATA[
+package api.domain;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table()
+public class TransactionsPostion {
+
+	@Id
+	private String address;
+	private String startblock;
+	private String endblock;
+
+	public TransactionsPostion() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getStartblock() {
+		return startblock;
+	}
+
+	public void setStartblock(String startblock) {
+		this.startblock = startblock;
+	}
+
+	public String getEndblock() {
+		return endblock;
+	}
+
+	public void setEndblock(String endblock) {
+		this.endblock = endblock;
+	}
+
+}
+
+			]]>
+			</screen>
+			<para>对应数据库表</para>
+			<screen>
+			<![CDATA[
+CREATE TABLE "transactions_postion" (
+  "address" varchar(255) NOT NULL,
+  "endblock" varchar(255) DEFAULT NULL,
+  "startblock" varchar(255) DEFAULT NULL,
+  PRIMARY KEY ("address")
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+			]]>
+			</screen>
 		</section>
 		<section id="Column">
 			<title>@Column</title>
@@ -86,8 +166,38 @@ uniqueConstraints={@UniqueConstraint(columnNames={"name","email"}),@UniqueConstr
 					@Column(name = "ctime", nullable = false, insertable = false, updatable = false)
 				</screen>
 			</section>
+			<section id="">
+				<title></title>
+				<programlisting>
+				<![CDATA[
+	private String subject;
+	@Column(columnDefinition = "TEXT")
+	private String content;				
+				]]>
+				</programlisting>
+			</section>
 		</section>
-
+		<section id="@Lob">
+			<title>@Lob 注解属性将被持久化为 Blog 或 Clob 类型</title>
+			<literallayout>
+			<![CDATA[
+Clob（Character Large Ojects）类型是长字符串类型，具体的java.sql.Clob, Character[], char[] 和 java.lang.String 将被持久化为 Clob 类型。
+Blob（Binary Large Objects）类型是字节类型，具体的java.sql.Blob, Byte[], byte[] 和 serializable type 将被持久化为 Blob 类型。
+@Lob 持久化为Blob或者Clob类型,根据get方法的返回值不同,自动进行Clob和Blob的转换。
+因为这两种类型的数据一般占用的内存空间比较大，所以通常使用延迟加载的方式，与@Basic标记同时使用，设置加载方式为FetchType.LAZY。			
+			]]>
+			</literallayout>
+			<programlisting>
+			<![CDATA[
+@Lob 
+@Basic(fetch = FetchType.LAZY) 
+@Column(name=" content", columnDefinition="CLOB", nullable=true) 
+public String getContent() {
+    return content;
+}			
+			]]>
+			</programlisting>
+		</section>
 		<section id="@NotNull">
 			<title>@NotNull 不能为空声明</title>
 			<programlisting>
@@ -491,7 +601,7 @@ public class Category {
 			</section>
 			<section id="uniqueConstraints">
 				<title>复合索引</title>
-			
+
 				<para>创建由多个字段组成的复合索引</para>
 				<programlisting>
 				<![CDATA[
@@ -627,7 +737,8 @@ CREATE TABLE `comment` (
 					private static final long serialVersionUID = 1L;
 					@Id
 					@GeneratedValue(strategy = GenerationType.IDENTITY)
-					@Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+					@Column(name = "id",
+					unique = true, nullable = false, insertable = true, updatable = false)
 					private long id;
 					private long memberId;
 					private long statisticsId;
@@ -989,7 +1100,10 @@ public class OptionConverter implements AttributeConverter<Map<String, String>, 
 			</programlisting>
 			<para>通过 @Column(columnDefinition = "json DEFAULT NULL") 定义数据库为 JSON 数据类型</para>
 			<para>数据存储与取出通过 @Convert(converter = OptionConverter.class) 做转换 </para>
-			<para>这里我需要使用 Map 数据结构 <![CDATA[public Map<String, String> options;]]>， 你可以根据你的实际需要定义数据类型 Class</para>
+			<para>这里我需要使用
+				Map 数据结构 <![CDATA[public Map<String, String> options;]]>，
+				你可以根据你的实际需要定义数据类型 Class
+			</para>
 			<para>启动 Spring 项目后创建 Schema 如下：</para>
 			<programlisting>
 			<![CDATA[
@@ -2045,6 +2159,181 @@ import org.springframework.data.repository.query.Param;
 public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("SELECT p FROM Person p WHERE LOWER(p.lastName) = LOWER(:lastName)")
     public List<Person> find(@Param("lastName") String lastName);
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>@Query 与 Pageagble</title>
+				<para><ulink url="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#_native_queries" /></para>
+				<programlisting>
+				<![CDATA[
+package api.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+
+@Entity
+@Table(indexes = { @Index(name = "address", columnList = "from_address,to_address"), @Index(name = "contractAddress", columnList = "contractAddress") })
+
+public class TransactionHistory implements Serializable {
+	private static final long serialVersionUID = 6710992220657056861L;
+	@Id
+	@Column(name = "blockNumber", unique = true, nullable = false, insertable = true, updatable = false)
+	private int blockNumber;
+	private String timeStamp;
+	private String hash;
+	@Column(name = "from_address")
+	private String from;
+	@Column(name = "to_address")
+	private String to;
+	private String value;
+	private String gas;
+	private String gasPrice;
+	private String isError;
+	private String contractAddress;
+	private String gasUsed;
+	private String symbol;
+
+	public TransactionHistory() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public int getBlockNumber() {
+		return blockNumber;
+	}
+
+	public void setBlockNumber(int blockNumber) {
+		this.blockNumber = blockNumber;
+	}
+
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	public String getFrom() {
+		return from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
+	public String getTo() {
+		return to;
+	}
+
+	public void setTo(String to) {
+		this.to = to;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getGas() {
+		return gas;
+	}
+
+	public void setGas(String gas) {
+		this.gas = gas;
+	}
+
+	public String getGasPrice() {
+		return gasPrice;
+	}
+
+	public void setGasPrice(String gasPrice) {
+		this.gasPrice = gasPrice;
+	}
+
+	public String getIsError() {
+		return isError;
+	}
+
+	public void setIsError(String isError) {
+		this.isError = isError;
+	}
+
+	public String getContractAddress() {
+		return contractAddress;
+	}
+
+	public void setContractAddress(String contractAddress) {
+		this.contractAddress = contractAddress;
+	}
+
+	public String getGasUsed() {
+		return gasUsed;
+	}
+
+	public void setGasUsed(String gasUsed) {
+		this.gasUsed = gasUsed;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
+	}
+
+	@Override
+	public String toString() {
+		return "TransactionHistory [blockNumber=" + blockNumber + ", timeStamp=" + timeStamp + ", hash=" + hash + ", from=" + from + ", to=" + to + ", value=" + value + ", gas=" + gas + ", gasPrice=" + gasPrice + ", isError=" + isError + ", contractAddress=" + contractAddress + ", gasUsed=" + gasUsed + ", symbol=" + symbol + "]";
+	}
+
+}
+				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package api.repository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import api.domain.TransactionHistory;
+
+@Repository
+public interface TransactionHistoryRepository extends CrudRepository<TransactionHistory, Integer> {
+
+	@Query(value = "SELECT * FROM transaction_history th WHERE (th.from_address = :address or th.to_address = :address) and contract_address is NULL",
+			countQuery = "SELEÇT count(*) FROM transaction_history th WHERE (th.from_address = :address or th.to_address = :address) and contract_address is NULL",
+			nativeQuery = true)
+	public Page<TransactionHistory> findEthByAddress(@Param("address") String address, Pageable pageable);
+
 }
 				]]>
 				</programlisting>
