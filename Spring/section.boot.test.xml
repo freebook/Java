@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="SpringBootTest">
+	<title>SpringBootTest</title>
+	<section>
+		<title>JPA 测试</title>
+		<programlisting>
+		<![CDATA[
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(Application.class)
+public class ApplicationTests {
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private MessageRepository messageRepository;
+
+    @Test
+    public void test() throws Exception {
+
+        userRepository.save(new User("Neo", 10));
+        userRepository.save(new User("Jam", 20));
+        userRepository.save(new User("Tom", 30));
+        userRepository.save(new User("Sam", 40));
+        userRepository.save(new User("Leo", 50));
+
+        Assert.assertEquals(5, userRepository.findAll().size());
+
+        messageRepository.save(new Message("Neo", "How are you?"));
+        messageRepository.save(new Message("Jam", "Hi!"));
+        messageRepository.save(new Message("Sam", "What's going on?"));
+
+        Assert.assertEquals(3, messageRepository.findAll().size());
+
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+</section>
