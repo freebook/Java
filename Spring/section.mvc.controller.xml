@@ -32,7 +32,7 @@ public class Welcome {
 		<![CDATA[
 @RequestMapping(value = "/list", method =
 RequestMethod.GET)		
-		]]>		
+		]]>
 		</programlisting>
 
 		<section>
@@ -72,7 +72,7 @@ public String getNewsByPath() {
 	return "Hello";
 }			
 			]]>
-			
+
 			</programlisting>
 		</section>
 		<section>
@@ -90,7 +90,7 @@ public String getFoosAsJsonFromBrowser() {
 			<![CDATA[
 curl -H "Accept:application/json,text/html"
 http://localhost:8080/spring/news/json.html			
-			]]>				
+			]]>
 			</screen>
 		</section>
 		<section id="@GetMapping">
@@ -231,7 +231,7 @@ public void download(HttpSession
 	return version;
 }			
 			]]>
-			
+
 			</programlisting>
 		</section>
 		<section>
@@ -549,7 +549,7 @@ public class ProfileForm {
 		<programlisting>
 		<![CDATA[
 import org.springframework.web.bind.annotation.ResponseBody;		
-		]]>	
+		]]>
 		</programlisting>
 		<section>
 			<title>直接返回HTML</title>
@@ -838,6 +838,20 @@ Password: ${user.password}<br>
 public class MyController {
   ...
 }
+		]]>
+		</programlisting>
+	</section>
+	<section id="@RequestHeader">
+		<title>@RequestHeader 从 Http 头中获取变量</title>
+		<programlisting>
+		<![CDATA[
+	@PostMapping(value = "/token")
+	public TokenResponse token(@RequestParam String symbol, @RequestHeader String token) {
+	
+			TokenResponse tokenResponse = walletService.getTokenBySymbol(symbol);
+
+			return tokenResponse;
+	}		
 		]]>
 		</programlisting>
 	</section>

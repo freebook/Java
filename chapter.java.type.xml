@@ -2,7 +2,7 @@
 <section id="type">
 	<title>类型</title>
 	<section id="integer">
-		<title></title>
+		<title>Integer</title>
 		<programlisting>
 		<![CDATA[
 十进制转成十六进制：   
@@ -108,6 +108,21 @@ String temp = Integer.toHexString(75);
 输出temp就为 4b     		
 		]]>
 		</programlisting>
+
+		<section id="">
+			<title>前面补零</title>
+			<programlisting>
+			<![CDATA[
+public static String frontCompWithZore(int sourceDate,int formatLength) {  
+  
+　　String newString = String.format("%0"+formatLength+"d", sourceDate);   
+　　return newString;  
+}  			
+			]]>
+			</programlisting>
+
+		</section>
+
 	</section>
 	<section id="string">
 		<title>String</title>
@@ -803,7 +818,14 @@ public class Math {
 }		
 		]]>
 		</programlisting>
-
+		<section>
+			<title>String to double</title>
+			<programlisting>
+			<![CDATA[
+double amount = Double.parseDouble(value);			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="BigDecimal">
 		<title>BigDecimal</title>
@@ -879,6 +901,104 @@ BigDecimal.doubleValue()
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>移动小数点位置</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.example.test;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+public class Test {
+
+	public Test() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		int decimal = 4;
+
+		BigInteger amount = BigInteger.valueOf(10000000000L);
+		BigDecimal balance = new BigDecimal(amount);
+		BigDecimal point = new BigDecimal(0.1 / Math.pow(10, decimal));
+		balance = balance.multiply(point);
+		System.out.println(balance);
+	}
+
+}			
+			]]>
+			</programlisting>
+			<para>发现输出有问题 100000.000000000008180305391403130954586231382563710212707519531250000000000</para>
+			<para>换种方法</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.example.test;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+public class Test {
+
+	public Test() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		// String i = Integer.valueOf("0x57c457",16).toString();
+		// System.out.println(i);
+
+		int decimal = 6;
+
+		BigInteger amount = BigInteger.valueOf(10000000000L);
+
+		System.out.println(amount);
+
+		String tmp = amount.toString();
+
+		String number = new StringBuffer(tmp).insert(tmp.length() - decimal, ".").toString();
+		BigDecimal balance = new BigDecimal(number);
+
+		System.out.println(balance);
+	}
+
+}			
+			]]>
+			</programlisting>
+			<para>最佳方案</para>
+			<programlisting>
+			<![CDATA[
+
+		int decimal = 6;
+
+		System.out.println(BigDecimal.TEN.pow(decimal));
+		BigDecimal balance1 = new BigDecimal("1234");
+		BigDecimal value = balance1.divide(BigDecimal.TEN.pow(decimal));
+		System.out.println(value);
+
+		BigDecimal balance2 = new BigDecimal("12.107");
+		BigDecimal value2 = balance2.multiply(BigDecimal.TEN.pow(decimal)).setScale(0, RoundingMode.DOWN);
+		System.out.println(value2);			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="StringBuffer">
+		<title>StringBuffer</title>
+		<programlisting>
+		<![CDATA[
+String str = Integer.toString(j);
+str = new StringBuilder(str).insert(str.length()-2, ".").toString();
+
+Or if you need synchronization use the StringBuffer with similar usage :
+
+String str = Integer.toString(j);
+str = new StringBuffer(str).insert(str.length()-2, ".").toString();		
+		]]>
+		</programlisting>
 	</section>
 	<section id="enum">
 		<title>enum</title>

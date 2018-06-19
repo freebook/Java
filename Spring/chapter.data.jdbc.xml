@@ -247,6 +247,7 @@ while(it.hasNext()) {
 	}			
 			]]>
 		</programlisting>
+
 	</section>
 	<section id="queryForMap">
 		<title>queryForMap</title>
@@ -323,6 +324,29 @@ private static final class ActorMapper implements RowMapper<Actor> {
 }
 			]]>
 			</programlisting>
+			<para>返回第一条数据，事实上只有一条。</para>
+			<programlisting>
+			<![CDATA[
+	public Token getTokenBySymbol(String symbol) {
+
+		List<Token> response = jdbcTemplate.query("select * from token where symbol ='" + symbol + "'", new RowMapper<Token>() {
+			public Token mapRow(ResultSet result, int rowNum) throws SQLException {
+				Token Token = new Token();
+				Token.setContractAddress(result.getString(""));
+				Token.setName(result.getString("name"));
+				Token.setSymbol(result.getString("symbol"));
+				Token.setDecimals(result.getInt("decimals"));
+				return Token;
+			}
+		});
+
+		if (response.size() == 1) {
+			return response.get(0);
+		}
+		return null;
+	}			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="queryForRowSet">
@@ -360,5 +384,50 @@ SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from test");
 	}		
 		]]>
 		</programlisting>
+	</section>
+	<section id="">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+new MapSqlParameterSource("symbol", symbol)		
+		]]>
+		</programlisting>
+	</section>
+	<section id="jdbc.example">
+		<title>实例参考</title>
+		<section id="">
+			<title>参数传递技巧</title>
+			<programlisting>
+			<![CDATA[
+	public List<PendingTransaction> getPendingTransaction(String address, String contractAddress) {
+		List<PendingTransaction> pendingTransactions = new ArrayList<PendingTransaction>();
+		String sql;
+		Object[] param;
+		if (contractAddress == null || contractAddress.equals("")) {
+			sql = "select * from pending_transaction where from_address = ? and contract_address IS NULL";
+			param = new Object[] { address };
+		} else {
+			sql = "select * from pending_transaction where from_address = ? and contract_address = ?";
+			param = new Object[] { address, contractAddress };
+		}
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, param);
+
+		for (Map<String, Object> row : rows) {
+			PendingTransaction pendingTransaction = new PendingTransaction();
+			pendingTransaction.setHash((String) row.get("hash"));
+			pendingTransaction.setFrom((String) row.get("from_address"));
+			pendingTransaction.setTo((String) row.get("to_address"));
+			pendingTransaction.setValue((String) row.get("value"));
+			pendingTransaction.setGas((String) row.get("gas"));
+			pendingTransaction.setSymbol((String) row.get("symbol"));
+			pendingTransaction.setContractAddress((String) row.get("contractAddress"));
+			pendingTransactions.add(pendingTransaction);
+		}
+		logger.info("PendingTransaction:" + pendingTransactions.toString());
+		return pendingTransactions;
+	}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>

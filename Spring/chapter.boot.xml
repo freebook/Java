@@ -6363,7 +6363,7 @@ Geth/v1.8.3-stable/linux-amd64/go1.10
 			</screen>
 		</section>
 	</section>
-	&section.boot.test.xml;
+	
 	&section.boot.properties.xml;
 
 </chapter>
