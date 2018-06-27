@@ -109,7 +109,7 @@ String temp = Integer.toHexString(75);
 		]]>
 		</programlisting>
 
-		<section id="">
+		<section>
 			<title>前面补零</title>
 			<programlisting>
 			<![CDATA[
@@ -898,6 +898,23 @@ public class BigDecimalTest {
 			<programlisting>
 			<![CDATA[
 BigDecimal.doubleValue()
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>去除末尾多余的0</title>
+			<programlisting>
+			<![CDATA[
+System.out.println( new BigDecimal("100.000").stripTrailingZeros().toString());		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>禁用科学计数法</title>
+			<programlisting>
+			<![CDATA[
+有时会输出 1E+2，如果你不希望这种科学计数法输出可以使用 toPlainString() 替代 toString()
+System.out.println( new BigDecimal("100.000").stripTrailingZeros().toPlainString());			
 			]]>
 			</programlisting>
 		</section>

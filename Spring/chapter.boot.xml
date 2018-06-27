@@ -4953,6 +4953,133 @@ public class Example {
 				</example>
 			</section>
 		</section>
+		<section id="redis.pubsub">
+			<title>Redis Pub/Sub</title>
+			<section>
+				<title>Redis配置类</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+
+import cn.netkiller.wallet.redis.RedisMessageSubscriber;
+
+@Configuration
+public class RedisConfig {
+
+	public RedisConfig() {
+	}
+
+	@Bean
+	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
+		StringRedisTemplate redisTemplate = new StringRedisTemplate();
+		redisTemplate.setConnectionFactory(connectionFactory);
+		return redisTemplate;
+	}
+
+	@Bean
+	public MessageListenerAdapter messageListener() {
+		return new MessageListenerAdapter(new RedisMessageSubscriber());
+	}
+
+	@Bean
+	public ChannelTopic topic() {
+		return new ChannelTopic("demo");
+	}
+
+	@Bean
+	public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter messageListener) {
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+
+		container.setConnectionFactory(connectionFactory);
+		container.addMessageListener(messageListener(), topic());
+		container.addMessageListener(messageListener(), new ChannelTopic("test"));
+		return container;
+	}
+
+}
+
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>订阅和发布类</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.redis;
+
+import java.nio.charset.StandardCharsets;
+
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
+
+public class RedisMessageSubscriber implements MessageListener {
+	public void onMessage(final Message message, final byte[] pattern) {
+		System.out.println("Topic : " + new String(message.getChannel(), StandardCharsets.UTF_8));
+		System.out.println("Message : " + message.toString());
+	}
+}
+
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.redis;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+
+public class RedisMessagePublisher {
+
+	private final StringRedisTemplate redisTemplate;
+
+	private final ChannelTopic topic;
+
+	public RedisMessagePublisher(StringRedisTemplate redisTemplate, ChannelTopic topic) {
+		this.redisTemplate = redisTemplate;
+		this.topic = topic;
+	}
+
+	public void publish(String message) {
+		redisTemplate.convertAndSend(topic.getTopic(), message);
+	}
+}
+								
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>消息发布演示</title>
+				<programlisting>
+				<![CDATA[
+	@GetMapping("/pub/demo")
+	public String pub() {
+
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("demo"));
+		String message = "Message " + UUID.randomUUID();
+		publisher.publish(message);
+		return message;
+	}
+
+	@GetMapping("/pub/test")
+	public String pub(@RequestParam String message) {
+
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("test"));
+		publisher.publish(message);
+		return message;
+	}				
+				]]>
+				</programlisting>
+			</section>
+		</section>
 		<section id="cacheable">
 			<title>@Cacheable</title>
 			<section>

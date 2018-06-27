@@ -17,7 +17,7 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
 	<section id="@Entity">
 		<title>@Entity</title>
 
-		
+
 		<section id="@Table">
 			<title>@Table</title>
 			<section id="catalog">
@@ -1919,6 +1919,151 @@ public class Member implements Serializable {
 			</section>
 		</section>
 	</section>
+	<section id="@Embeddable">
+		<title>创建复合主键</title>
+		<para>定义实体</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.wallet.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+
+@Entity
+public class UserToken {
+	@EmbeddedId
+	@Column(unique = true, nullable = false, insertable = true, updatable = false)
+	private UserTokenPrimaryKey primaryKey;
+
+	private String name;
+	private String symbol;
+	private int decimals;
+
+	public UserToken() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserTokenPrimaryKey getPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(UserTokenPrimaryKey primaryKey) {
+		this.primaryKey = primaryKey;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
+	}
+
+	public int getDecimals() {
+		return decimals;
+	}
+
+	public void setDecimals(int decimals) {
+		this.decimals = decimals;
+	}
+
+	@Override
+	public String toString() {
+		return "UserToken [primaryKey=" + primaryKey + ", name=" + name + ", symbol=" + symbol + ", decimals=" + decimals + "]";
+	}
+
+	@Embeddable
+	public static class UserTokenPrimaryKey implements Serializable {
+
+		private static final long serialVersionUID = 1242827922377178368L;
+		private String address;
+		private String contractAddress;
+
+		public UserTokenPrimaryKey() {
+		}
+
+		public UserTokenPrimaryKey(String address, String contractAddress) {
+			this.address = address;
+			this.contractAddress = contractAddress;
+		}
+
+		public String getAddress() {
+			return address;
+		}
+
+		public void setAddress(String address) {
+			this.address = address;
+		}
+
+		public String getContractAddress() {
+			return contractAddress;
+		}
+
+		public void setContractAddress(String contractAddress) {
+			this.contractAddress = contractAddress;
+		}
+
+		@Override
+		public String toString() {
+			return "UserTokenPrimaryKey [address=" + address + ", contractAddress=" + contractAddress + "]";
+		}
+
+	}
+
+}		
+		]]>
+		</programlisting>
+		<para>实际效果</para>
+		<screen>
+		<![CDATA[
+CREATE TABLE "user_has_token" (
+  "address" varchar(255) NOT NULL,
+  "contract_address" varchar(255) NOT NULL,
+  "decimals" int(11) NOT NULL,
+  "name" varchar(255) DEFAULT NULL,
+  "symbol" varchar(255) DEFAULT NULL,
+  PRIMARY KEY ("address","contract_address")
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.wallet.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import cn.netkiller.wallet.domain.UserToken;
+import cn.netkiller.wallet.domain.UserToken.UserTokenPrimaryKey;;
+
+public interface UserTokenRepository extends JpaRepository<UserToken, UserTokenPrimaryKey> {
+
+	UserToken findOneByPrimaryKey(UserTokenPrimaryKey primaryKey);
+
+	@Query("select ut from UserToken ut where ut.primaryKey.address=:address")
+	List<UserToken> getByAddress(@Param("address") String address);
+
+	@Query("select ut from UserToken ut where ut.primaryKey.address=:address and ut.primaryKey.contractAddress=:contractAddress")
+	List<UserToken> findByPrimaryKey(@Param("address") String address, @Param("contractAddress") String contractAddress);
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="Inheritance">
 		<title>实体集成</title>
 		<para>B、C 类继承 A 所有属性，并且主键均为数据库（auto_increment）</para>
@@ -1954,33 +2099,41 @@ public class C extends A{
 	</section>
 	<section id="Repository">
 		<title>Repository</title>
+		<screen>
+		<![CDATA[
+Repository： 仅仅是一个标识，没有任何方法，方便Spring自动扫描识别
+CrudRepository： 继承Repository，实现了一组CRUD相关的方法
+PagingAndSortingRepository： 继承CrudRepository，实现了一组分页排序相关的方法
+JpaRepository： 继承PagingAndSortingRepository，实现一组JPA规范相关的方法		
+		]]>
+		</screen>
 		<para>Spring Data JPA 为此提供了一些表达条件查询的关键字：</para>
 		<screen>
 		<![CDATA[
 Keyword	Sample	JPQL snippet
-And	findByLastnameAndFirstname	… where x.lastname = ?1 and x.firstname = ?2
-Or	findByLastnameOrFirstname	… where x.lastname = ?1 or x.firstname = ?2
+And			findByLastnameAndFirstname	… where x.lastname = ?1 and x.firstname = ?2
+Or			findByLastnameOrFirstname	… where x.lastname = ?1 or x.firstname = ?2
 Is,Equals	findByFirstnameIs,findByFirstnameEquals	… where x.firstname = ?1
-Between	findByStartDateBetween	… where x.startDate between ?1 and ?2
+Between		findByStartDateBetween	… where x.startDate between ?1 and ?2
 LessThan	findByAgeLessThan	… where x.age < ?1
 LessThanEqual	findByAgeLessThanEqual	… where x.age ⇐ ?1
 GreaterThan	findByAgeGreaterThan	… where x.age > ?1
 GreaterThanEqual	findByAgeGreaterThanEqual	… where x.age >= ?1
-After	findByStartDateAfter	… where x.startDate > ?1
-Before	findByStartDateBefore	… where x.startDate < ?1
-IsNull	findByAgeIsNull	… where x.age is null
+After		findByStartDateAfter	… where x.startDate > ?1
+Before		findByStartDateBefore	… where x.startDate < ?1
+IsNull		findByAgeIsNull	… where x.age is null
 IsNotNull,NotNull	findByAge(Is)NotNull	… where x.age not null
-Like	findByFirstnameLike	… where x.firstname like ?1
-NotLike	findByFirstnameNotLike	… where x.firstname not like ?1
+Like		findByFirstnameLike	… where x.firstname like ?1
+NotLike		findByFirstnameNotLike	… where x.firstname not like ?1
 StartingWith	findByFirstnameStartingWith	… where x.firstname like ?1 (parameter bound with appended %)
 EndingWith	findByFirstnameEndingWith	… where x.firstname like ?1 (parameter bound with prepended %)
 Containing	findByFirstnameContaining	… where x.firstname like ?1 (parameter bound wrapped in %)
-OrderBy	findByAgeOrderByLastnameDesc	… where x.age = ?1 order by x.lastname desc
-Not	findByLastnameNot	… where x.lastname <> ?1
-In	findByAgeIn(Collection ages)	… where x.age in ?1
-NotIn	findByAgeNotIn(Collection age)	… where x.age not in ?1
-TRUE	findByActiveTrue()	… where x.active = true
-FALSE	findByActiveFalse()	… where x.active = false
+OrderBy		findByAgeOrderByLastnameDesc	… where x.age = ?1 order by x.lastname desc
+Not			findByLastnameNot	… where x.lastname <> ?1
+In			findByAgeIn(Collection ages)	… where x.age in ?1
+NotIn		findByAgeNotIn(Collection age)	… where x.age not in ?1
+TRUE		findByActiveTrue()	… where x.active = true
+FALSE		findByActiveFalse()	… where x.active = false
 IgnoreCase	findByFirstnameIgnoreCase	… where UPPER(x.firstame) = UPPER(?1)		
 
 常用如下：
@@ -2163,9 +2316,23 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 				]]>
 				</programlisting>
 			</section>
+			<section id="">
+				<title>原生 SQL</title>
+				<programlisting>
+				<![CDATA[
+public interface UserRepository extends JpaRepository<User, Long> {
+
+	@Query(value = "SELECT * FROM USERS WHERE EMAIL_ADDRESS = ?0", nativeQuery = true)
+	User findByEmailAddress(String emailAddress);
+}
+				]]>
+				</programlisting>
+			</section>
 			<section>
 				<title>@Query 与 Pageagble</title>
-				<para><ulink url="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#_native_queries" /></para>
+				<para>
+					<ulink url="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#_native_queries" />
+				</para>
 				<programlisting>
 				<![CDATA[
 package api.domain;
@@ -2403,6 +2570,18 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Intege
 				</programlisting>
 			</section>
 		</section>
+		<section id="@Lock">
+			<title>锁 @Lock</title>
+			<programlisting>
+			<![CDATA[
+interface UserRepository extends Repository<User, Long> {
+
+  // Plain query method
+  @Lock(LockModeType.READ)
+  List<User> findByLastname(String lastname);			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="CrudRepository">
 		<title>CrudRepository</title>
@@ -2462,6 +2641,34 @@ public interface CmsTrashRepository extends CrudRepository<CmsTrash, Integer> {
 	</section>
 	<section id="JpaRepository">
 		<title>JpaRepository</title>
+		<para>
+			<ulink url="https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html" />
+		</para>
+		<screen>
+		<![CDATA[
+Modifier and Type	Method and Description
+void	deleteAllInBatch()
+Deletes all entities in a batch call.
+void	deleteInBatch(Iterable<T> entities)
+Deletes the given entities in a batch which means it will create a single Query.
+List<T>	findAll() 
+<S extends T>
+List<S>	findAll(Example<S> example) 
+<S extends T>
+List<S>	findAll(Example<S> example, Sort sort) 
+List<T>	findAll(Sort sort) 
+List<T>	findAllById(Iterable<ID> ids) 
+void	flush()
+Flushes all pending changes to the database.
+T	getOne(ID id)
+Returns a reference to the entity with the given identifier.
+<S extends T>
+List<S>	saveAll(Iterable<S> entities) 
+<S extends T>
+S	saveAndFlush(S entity)
+Saves an entity and flushes changes instantly.		
+		]]>
+		</screen>
 	</section>
 
 </section>
