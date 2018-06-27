@@ -172,6 +172,26 @@ public class CacheController {
 		]]>
 		</screen>
 	</section>
+	<section id="stringRedisTemplate">
+		<title>stringRedisTemplate</title>
+		<screen>
+		<![CDATA[
+stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
+stringRedisTemplate.boundValueOps("test").increment(-1);						//val做-1操作
+stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
+stringRedisTemplate.boundValueOps("test").increment(1);							//val +1
+stringRedisTemplate.getExpire("test")											//根据key获取过期时间
+stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
+stringRedisTemplate.delete("test");												//根据key删除缓存
+stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
+stringRedisTemplate.opsForSet().add("test", "1","2","3");						//向指定key中存放set集合
+stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间
+stringRedisTemplate.opsForSet().isMember("test", "1")							//根据key查看集合中是否存在指定数据
+stringRedisTemplate.opsForSet().members("test");								//根据key获取set集合		
+		]]>
+		</screen>
+		
+	</section>
 	<section id="delete">
 		<title>删除 key </title>
 		<programlisting>
@@ -272,7 +292,7 @@ public class NewsRestController {
 		]]>
 		</programlisting>
 	</section>
-	<section id="hash"> 
+	<section id="hash">
 		<title>Hash</title>
 		<programlisting>
 		<![CDATA[
@@ -284,7 +304,7 @@ hash.putAll("member", map);
 
 System.out.println(hash.entries("member"));		
 		]]>
-		</programlisting> 
+		</programlisting>
 	</section>
 	<section id="list">
 		<title>List</title>
@@ -297,7 +317,7 @@ System.out.println(list.range("books", 0, 1));
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section id="redisTemplate.expire">
 		<title>过期时间未执行</title>
 		<para>Spring Redis 中设置过期时间方法如下</para>
 		<programlisting>
@@ -322,5 +342,179 @@ String result = redisTemplate.execute(new RedisCallback<String>() {
 });		
 		]]>
 		</programlisting>
+	</section>
+	<section>
+		<title>存储 Json 对象</title>
+		<section>
+			<title>集成 RedisTemplate 定义新类 JsonRedisTemplate</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.wallet.redis;
+
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class JsonRedisTemplate extends RedisTemplate<String, Object> {
+
+	public JsonRedisTemplate(RedisConnectionFactory connectionFactory, ObjectMapper objectMapper, Class<?> valueType) {
+		RedisSerializer<String> stringSerializer = new StringRedisSerializer();
+		super.setKeySerializer(stringSerializer);
+		super.setHashKeySerializer(stringSerializer);
+		super.setHashValueSerializer(stringSerializer);
+		Jackson2JsonRedisSerializer<?> jsonRedisSerializer = new Jackson2JsonRedisSerializer<>(valueType);
+		jsonRedisSerializer.setObjectMapper(objectMapper);
+		super.setValueSerializer(jsonRedisSerializer);
+		super.setConnectionFactory(connectionFactory);
+		super.afterPropertiesSet();
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>配置 Redis</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.wallet.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import cn.netkiller.wallet.redis.JsonRedisTemplate;
+import cn.netkiller.wallet.redis.RedisMessageSubscriber;
+
+@Configuration
+public class RedisConfig {
+
+	public RedisConfig() {
+	}
+
+	@Bean
+	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
+		StringRedisTemplate redisTemplate = new StringRedisTemplate();
+		redisTemplate.setConnectionFactory(connectionFactory);
+		return redisTemplate;
+	}
+
+	@Bean
+	public MessageListenerAdapter messageListener() {
+		return new MessageListenerAdapter(new RedisMessageSubscriber());
+	}
+
+	@Bean
+	public ChannelTopic topic() {
+		return new ChannelTopic("demo");
+	}
+
+	@Bean
+	public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter messageListener) {
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+
+		container.setConnectionFactory(connectionFactory);
+		container.addMessageListener(messageListener(), topic());
+		container.addMessageListener(messageListener(), new ChannelTopic("test"));
+		return container;
+	}
+
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
+
+	@Bean
+	public JsonRedisTemplate jsonRedisTemplate(RedisConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+		return new JsonRedisTemplate(connectionFactory, objectMapper, Object.class);
+	}
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.wallet.restful;
+
+import java.io.IOException;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.netkiller.wallet.pojo.RestfulResponse;
+import cn.netkiller.wallet.redis.JsonRedisTemplate;
+import cn.netkiller.wallet.redis.RedisMessagePublisher;
+
+@RestController
+public class TestRestController {
+	private static final Logger logger = LoggerFactory.getLogger(TestRestController.class);
+
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+
+	@Autowired
+	private JsonRedisTemplate jsonRedisTemplate;
+
+	public TestRestController() {
+
+	}
+
+	@GetMapping("/version")
+	public String version() throws IOException {
+		Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().send();
+		String clientVersion = web3ClientVersion.getWeb3ClientVersion();
+		logger.info(clientVersion);
+		return clientVersion;
+	}
+
+	@GetMapping("/pub/demo")
+	public String pub() {
+
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("demo"));
+		String message = "Message " + UUID.randomUUID();
+		publisher.publish(message);
+		return message;
+	}
+
+	@GetMapping("/pub/test")
+	public String pub(@RequestParam String message) {
+
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("test"));
+		publisher.publish(message);
+		return message;
+	}
+
+	@GetMapping("/pub/json")
+	public RestfulResponse pubJson() {
+		RestfulResponse restfulResponse = new RestfulResponse(true, 0, null, null);
+		jsonRedisTemplate.opsForValue().set("test", restfulResponse);
+		jsonRedisTemplate.convertAndSend("test", restfulResponse);
+		return restfulResponse;
+	}
+}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>

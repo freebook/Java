@@ -5060,6 +5060,9 @@ public class RedisMessagePublisher {
 				<title>消息发布演示</title>
 				<programlisting>
 				<![CDATA[
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	
 	@GetMapping("/pub/demo")
 	public String pub() {
 
