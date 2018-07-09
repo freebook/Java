@@ -51,23 +51,36 @@ class AccountServiceImpl implements AccountService {
 	<section id="execute">
 		<title>execute</title>
 		<programlisting>
-			jdbcTemplate.execute("CREATE TABLE USER (id integer, name varchar(100))");
+		<![CDATA[
+jdbcTemplate.execute("CREATE TABLE USER (id integer, name varchar(100))");
+		]]>
 		</programlisting>
 	</section>
 	<section id="queryForInt">
 		<title>queryForInt</title>
 		<programlisting>
-			int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");
+		<![CDATA[
+int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");
+		]]>
 		</programlisting>
 	</section>
-
+	<section id="jdbcTemplate.queryForLong">
+		<title>queryForInt</title>
+		<programlisting>
+		<![CDATA[
+lang count = jdbcTemplate.queryForLong("SELECT COUNT(*) FROM USER");		
+		]]>
+		</programlisting>
+	</section>
 	<section id="queryForObject">
 		<title>queryForObject</title>
 		<section>
 			<title>返回整形与字符型</title>
-			<programlisting>
-				Integer age = queryForObject("select age from emp", Integer.class);
-				String name = queryForObject("select name from emp",String.class);
+			<programlisting>			
+			<![CDATA[
+Integer age = queryForObject("select age from emp", Integer.class);
+String name = queryForObject("select name from emp",String.class);			
+			]]>
 			</programlisting>
 		</section>
 		<section>
@@ -227,7 +240,20 @@ while(it.hasNext()) {
 			]]>
 		</programlisting>
 		<programlisting>
-			<![CDATA[
+		<![CDATA[
+List<Map<String, Object>> rows = jdbcTemplate.queryForList("select * from user_token where address=? and contract_address not in (select contract_address from token)", new Object[] { address });
+Iterator<Map<String, Object>> it = rows.iterator();
+while (it.hasNext()) {
+	Map<String, Object> userMap = (Map<String, Object>) it.next();
+	
+	String contractAddress = (String) userMap.get("contract_address");
+	String symbol = (String) userMap.get("symbol");
+	int decimals = (int) userMap.get("decimals");
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
 	@RequestMapping("/article/tag/{siteId}")
 	public ResponseRestful tag(@PathVariable int siteId) {
 		List<Tag> tags = new ArrayList<Tag>();
@@ -245,7 +271,7 @@ while(it.hasNext()) {
 		logger.info("tag {} SQL: {}", siteId, sql);
 		return new ResponseRestful(true, tags.size(), "标签", tags);
 	}			
-			]]>
+		]]>
 		</programlisting>
 
 	</section>

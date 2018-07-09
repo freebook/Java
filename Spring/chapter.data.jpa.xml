@@ -2153,7 +2153,9 @@ In --- 等价于 SQL 中的 "in"，比如 findByUsernameIn(Collection<String> us
 NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<String> userList) ，方法的参数可以是 Collection 类型，也可以是数组或者不定长
 		]]>
 		</screen>
-		<programlisting>
+		<section id="">
+			<title>findByXXX</title>
+			<programlisting>
 		<![CDATA[
 	@Autowired
 	private ArticleRepository articleRepository;
@@ -2185,7 +2187,34 @@ NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<
 		return tmp.get(0).getTitle();
 	}
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section >
+			<title>Boolean</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.wallet.repository.fcoin;
+
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
+
+import cn.netkiller.wallet.domain.fcoin.Fcoin;;
+
+public interface FcoinRepository extends CrudRepository<Fcoin, String> {
+
+	Fcoin findOneByAddress(String address);
+
+	int countByAirdropFalse();
+
+	List<Fcoin> findByAirdrop(boolean airdrop, Pageable pageable);
+
+}
+
+			]]>
+			</programlisting>
+		</section>
 		<section id="eunm">
 			<title>传递枚举参数</title>
 			<programlisting>
@@ -2246,6 +2275,18 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Long> 
 	}
 			]]>
 			</programlisting>
+			<para>注意 PageRequest(int page, int size) 在新版 Spring boot 2.x 中已经废弃请使用 PageRequest.of(page, size) 替代</para>
+			<programlisting>
+			<![CDATA[
+List<Fcoin> fcoins = fcoinRepository.findByAirdrop(false, PageRequest.of(0, size));
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+PageRequest(int page, int size, Sort sort)  Deprecated. 
+use PageRequest.of(int, int, Sort) instead.			
+			]]>
+			</screen>
 		</section>
 		<section id="sort">
 			<title>排序操作操作</title>
@@ -2316,7 +2357,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 				]]>
 				</programlisting>
 			</section>
-			<section id="">
+			<section>
 				<title>原生 SQL</title>
 				<programlisting>
 				<![CDATA[
@@ -2325,6 +2366,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query(value = "SELECT * FROM USERS WHERE EMAIL_ADDRESS = ?0", nativeQuery = true)
 	User findByEmailAddress(String emailAddress);
 }
+				]]>
+				</programlisting>
+				<para>insert ignore</para>
+				<programlisting>
+				<![CDATA[
+	@Modifying
+    @Query(value = "insert ignore into emp(create, modified, user_id, user_name, user_nickname, user_mail) values(?1, ?2, ?3, ?4, ?5, ?6)", nativeQuery = true)
+    void insertIgnoreEmployee(Timestamp create, Timestamp modified, String userId, String name, String nickname, String mail);
+				
 				]]>
 				</programlisting>
 			</section>
