@@ -2555,6 +2555,48 @@ public interface TransactionHistoryRepository extends CrudRepository<Transaction
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title>返回指定字段</title>
+				<para>通过实体返回数据有时结果集非常庞大，可能会影响性能，这时我们只需要返回指定字段即可。</para>
+				<programlisting>
+				<![CDATA[
+@Query(value = "select u.userName, ui.name, ui.gender, ui.description from UserInfo ui, User u where u.id = ui.userId")
+public List<Object> getCustomField();
+				]]>				
+				</programlisting>
+			</section>
+			<section>
+				<title>返回指定的模型</title>
+				<para>临时写一个新的模型</para>
+				<programlisting>
+				<![CDATA[
+public class MyModel implements Serializable {
+
+    private String userName;
+    private String name;
+    private String gender;
+    private String description;
+
+    public MyModel() {};
+
+    public MyModel(String userName, String name, String gender, String description) {
+        this.userName = userName;
+        this.name = name;
+        this.gender = gender;
+        this.description = description;
+    }
+}
+				]]>
+				</programlisting>
+				<para>使用构造方法赋值</para>
+				<programlisting>
+				<![CDATA[
+@Query(value = "select new cn.netkiller.model.MyModel(u.userName, ui.name, ui.gender, ui.description) from UserInfo ui, User u where u.id = ui.userId")
+public List<MyModel> getAllRecord();
+				]]>
+				</programlisting>
+				
+			</section>
 		</section>
 		<section id="Transactional">
 			<title>@Transactional</title>
