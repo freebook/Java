@@ -76,6 +76,24 @@ public String getNewsByPath() {
 			</programlisting>
 		</section>
 		<section>
+			<title>匹配通配符</title>
+			<programlisting>
+			<![CDATA[
+@Controller
+@RequestMapping("/test/*")
+
+public class TestController {
+
+	@RequestMapping
+	public String default() {
+		return "OK";
+	}
+}
+			]]>
+			</programlisting>
+		</section>
+
+		<section>
 			<title>headers</title>
 			<programlisting>
 			<![CDATA[
