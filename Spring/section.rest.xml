@@ -4,7 +4,7 @@
 	<subtitle>@RestController</subtitle>
 	<para>首先我要禁告各位，Spring发展过程中，每个版本都有一定差异。如果你做实验失败后在网上搜索答案，切记看一下版本号还有文章帖子的发布时间。否则你可能按照Spring3配置方法去Spring4。</para>
 	<para>@RestController 默认返回 @ResponseBody， 所以@ResponseBody可加可不加</para>
-	<section id="example">
+	<section id="restTemplate.example">
 		<title>RestTemplate Example</title>
 		<section id="rest.pom.xml">
 			<title>pom.xml</title>
@@ -256,7 +256,7 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 			</programlisting>
 		</section>
 	</section>
-	<section id="getForObject">
+	<section id="restTemplate.getForObject">
 		<title>getForObject</title>
 		<section>
 			<title>返回字符串</title>
@@ -295,7 +295,7 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		</section>
 
 	</section>
-	<section id="postForObject">
+	<section id="restTemplate.postForObject">
 		<title>postForObject</title>
 		<section>
 			<title>传递对象</title>
@@ -353,7 +353,7 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 			</programlisting>
 		</section>
 	</section>
-	<section id="postForEntity">
+	<section id="restTemplate.postForEntity">
 		<title>postForEntity</title>
 		<programlisting>
 		<![CDATA[
@@ -384,7 +384,7 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		]]>
 		</programlisting>
 	</section>
-	<section id="put">
+	<section id="restTemplate.put">
 		<title>PUT</title>
 		<programlisting>
 		<![CDATA[
@@ -403,7 +403,7 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		]]>
 		</programlisting>
 	</section>
-	<section id="delete">
+	<section id="restTemplate.delete">
 		<title>Delete</title>
 		<programlisting>
 		<![CDATA[
@@ -417,6 +417,51 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.delete(uri, params);
 	}			
+		]]>
+		</programlisting>
+	</section>
+	<section id="restTemplate.exchange">
+		<title>上传文件</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.file;
+
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class UploadClient {
+
+    public static void main(String[] args) throws IOException {
+        MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
+        bodyMap.add("user-file", getUserFileResource());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8080/upload", HttpMethod.POST, requestEntity, String.class);
+        System.out.println("response status: " + response.getStatusCode());
+        System.out.println("response body: " + response.getBody());
+    }
+
+    public static Resource getUserFileResource() throws IOException {
+        //todo replace tempFile with a real file
+        Path tempFile = Files.createTempFile("hello", ".txt");
+        Files.write(tempFile, "Helloworld, http://www.netkiller.cn".getBytes());
+        System.out.println("uploading: " + tempFile);
+        File file = tempFile.toFile();
+        //to upload in-memory bytes use ByteArrayResource instead
+        return new FileSystemResource(file);
+    }
+}		
 		]]>
 		</programlisting>
 	</section>
