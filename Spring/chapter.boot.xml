@@ -1282,1484 +1282,566 @@ spring.session.jdbc.table-name=SESSIONS
 		</section>
 	</section>
 
-	<section id="mongodb">
-		<title>Spring boot with MongoDB</title>
-		<section>
-			<title>Maven</title>
-			<para>pom.xml</para>
-			<programlisting>
-			<![CDATA[
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>netkiller.cn</groupId>
-	<artifactId>api.netkiller.cn</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<name>api.netkiller.cn</name>
-	<url>http://maven.apache.org</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.2.RELEASE</version>
-	</parent>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>		
-		-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-		</dependency>
 	
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source />
-					<target />
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-</project>
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Application</title>
-			<para>Application.java</para>
-			<programlisting>
-			<![CDATA[
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.authentication.UserCredentials;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-
-import com.mongodb.Mongo;
-
-@Configuration
-@SpringBootApplication
-@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@ComponentScan({ "web", "rest" })
-@EnableMongoRepositories
-public class Application {
-
-	@SuppressWarnings("deprecation")
-	public @Bean MongoDbFactory mongoDbFactory() throws Exception {
-		UserCredentials userCredentials = new UserCredentials("finance", "En7d0l0wssXQ8owzedjb82I0BMd4pFoZ");
-		return new SimpleMongoDbFactory(new Mongo("db.netkiller.cn"), "finance", userCredentials);
-	}
-
-	public @Bean MongoTemplate mongoTemplate() throws Exception {
-		return new MongoTemplate(mongoDbFactory());
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-
-}
-			]]>
-			</programlisting>
-
-		</section>
-		
-		<section id="MongoTemplate">
-			<title>MongoTemplate</title>
-			<programlisting>
-			<![CDATA[
-package web;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import api.domain.City;
-import api.domain.Article;
-import api.ApplicationConfiguration;
-import api.repository.CityRepository;
-import api.repository.ArticleRepository;
-import api.service.TestService;
-
-@Controller
-public class IndexController {
-
-	@Autowired
-	private CityRepository repository;
-
-	@Autowired
-	private TestService testService;
-
-	@Autowired
-	private ApplicationConfiguration propertie;
-
-	@RequestMapping("/repository")
-	@ResponseBody
-	public String repository() {
-
-		repository.deleteAll();
-
-		// save a couple of city
-		repository.save(new City("Shenzhen", "China"));
-		repository.save(new City("Beijing", "China"));
-
-		System.out.println("--------------------------------");
-		// fetch all city
-		for (City city : repository.findAll()) {
-			System.out.println(city);
-		}
-		// fetch an individual city
-		System.out.println("--------------------------------");
-		System.out.println(repository.findByName("Shenzhen"));
-		System.out.println("--------------------------------");
-		for (City city : repository.findByCountry("China")) {
-			System.out.println(city);
-		}
-
-		String message = "Hello";
-		return message;
-	}
-
-}
-
-			]]>
-			</programlisting>
-		</section>
-		<section id="Repository">
-			<title>Repository</title>
-			<para>在上一节 MongoTemplate 中，继续添加下面代码。</para>
-			<programlisting>
-			<![CDATA[
-package api;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-@SpringBootApplication
-@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@ComponentScan({ "api.web", "api.rest","api.service" })
-@EnableMongoRepositories
-public class Application {
-	
-	
-    public @Bean WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**");
-            }
-        };
-    }
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-
-}
-			]]>
-			</programlisting>
-			<para>Resource: src/main/resources/application.properties</para>
-			<programlisting>
-			<![CDATA[
-spring.data.mongodb.uri=mongodb://finance:XQ8os82I0pFoZBMd4@mdb.netkiller.cn/finance
-spring.data.mongodb.repositories.enabled=true
-			]]>
-			</programlisting>
-			<para>CityRepository.java</para>
-			<programlisting>
-			<![CDATA[
-package repository;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-import domain.City;
-
-public interface CityRepository extends MongoRepository<City, String> {
-	public Page<City> findAll(Pageable pageable);
-
-	public City findByNameAndCountry(String name, String country);
-
-	public City findByName(String name);
-
-	public List<City> findByCountry(String country);
-
-}
-			]]>
-			</programlisting>
-			<para>City.java</para>
-			<programlisting>
-			<![CDATA[
-package domain;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "city")
-public class City {
-	
-	@Id
-    private String id;
-	public String name;
-	public String country;
-	
-	public City(String name, String country){
-		this.setName(name);
-		this.setCountry(country);
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getCountry() {
-		return country;
-	}
-	public void setCountry(String country) {
-		this.country = country;
-	}
-	@Override
-	public String toString() {
-		return "City [id=" + id + ", name=" + name + ", country=" + country + "]";
-	}
-	
-}
-			]]>
-			</programlisting>
-			<para>在 IndexController 中调用 CityRepository</para>
-			<programlisting>
-			<![CDATA[
-package web;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import repository.CityRepository;
-
-import domain.City;
-import repository.CityRepository;
-
-@Controller
-public class IndexController {
-	
-	@Autowired
-	private CityRepository repository;
-	
-	@RequestMapping("/index")
-	@ResponseBody
-	public ModelAndView index() {
-		String message = "Hello";
-		return new ModelAndView("home/welcome", "variable", message);
-	}
-	
-	@RequestMapping("/curd")
-	@ResponseBody
-	public String curd() {
-
-		repository.deleteAll();
-
-		// save a couple of city
-		repository.save(new City("Shenzhen", "China"));
-		repository.save(new City("Beijing", "China"));
-
-		System.out.println("--------------------------------");
-		// fetch all city
-		for (City city : repository.findAll()) {
-			System.out.println(city);
-		}
-		// fetch an individual city
-		System.out.println("--------------------------------");
-		System.out.println(repository.findByName("Shenzhen"));
-		System.out.println("--------------------------------");
-		for (City city : repository.findByCountry("China")) {
-			System.out.println(city);
-		}
-
-		String message = "Hello";
-		return message;
-	}
-}
-			]]>
-			</programlisting>
-		</section>
-
-	</section>
-	<section id="mysql">
-		<title>Spring boot with MySQL</title>
-		<section>
-			<title>Maven</title>
-			<para>pom.xml</para>
-			<screen>
-			<![CDATA[
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-
-	<groupId>netkiller.cn</groupId>
-	<artifactId>api.netkiller.cn</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<name>api.netkiller.cn</name>
-	<url>http://maven.apache.org</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.2.RELEASE</version>
-	</parent>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		-->		 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>		
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-		</dependency>
-	 	<dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source />
-					<target />
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-</project>
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Resource</title>
-			<para>src/main/resources/application.properties</para>
-			<screen>
-			<![CDATA[
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-spring.datasource.url=jdbc:mysql://192.168.6.1:3306/test
-spring.datasource.username=root
-spring.datasource.password=password
-
-spring.jpa.database=MYSQL
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=update
-#spring.jpa.hibernate.ddl-auto=create-drop
-			]]>
-			</screen>
-			<screen>
-				spring.datasource.url=jdbc:mysql://localhost:3306/test
-				spring.datasource.username=root
-				spring.datasource.password=pasword
-				spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-				spring.datasource.max-idle=10
-				spring.datasource.max-wait=10000
-				spring.datasource.min-idle=5
-				spring.datasource.initial-size=5
-				spring.datasource.validation-query=SELECT 1
-				spring.datasource.test-on-borrow=false
-				spring.datasource.test-while-idle=true
-				spring.datasource.time-between-eviction-runs-millis=18800
-				spring.datasource.jdbc-interceptors=ConnectionState;SlowQueryReport(threshold=0)
-			</screen>
-		</section>
-		<section>
-			<title>Application</title>
-			<programlisting>
-			<![CDATA[
-package api;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-
-import api.ApplicationConfiguration;
-
-@SpringBootApplication
-@EnableConfigurationProperties(ApplicationConfiguration.class)
-@EnableAutoConfiguration
-@ComponentScan({ "api.web", "api.rest","api.service" })
-@EnableMongoRepositories
-public class Application {
-
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-
-}
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>JdbcTemplate</title>
-			<programlisting>
-			<![CDATA[
-package api.web;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import api.domain.City;
-import api.domain.Article;
-import api.ApplicationConfiguration;
-import api.repository.CityRepository;
-import api.repository.ArticleRepository;
-import api.service.TestService;
-
-@Controller
-public class IndexController {
-
-	@Autowired
-	private CityRepository repository;
-
-	@Autowired
-	private TestService testService;
-
-	@Autowired
-	private ApplicationConfiguration propertie;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@RequestMapping(value = "/article")
-	public @ResponseBody String dailyStats(@RequestParam Integer id) {
-		String query = "SELECT id, title, content from article where id = " + id;
-
-		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
-			System.out.println(resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-			return (resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-		});
-	}
-}
-
-			]]>
-			</programlisting>
-
-		</section>
-		<section>
-			<title>CrudRepository</title>
-			<para>ArticleRepository</para>
-			<programlisting>
-			<![CDATA[
-package api.repository;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-import api.domain.Article;
-
-@Repository
-public interface ArticleRepository extends CrudRepository<Article, Long> {
-
-    Page<Article> findAll(Pageable pageable);
-
-}
-			]]>
-			</programlisting>
-			<para>Article.java</para>
-			<programlisting>
-			<![CDATA[
-package api.domain;
-
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "article")
-public class Article implements Serializable {
-	private static final long serialVersionUID = 7998903421265538801L;
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id", unique=true, nullable=false, insertable=true, updatable = false)
-	private Long id;
-	private String title;
-	private String content;
-
-	public Article(){
-		
-	}
-	public Article(String title, String content) {
-		this.title = title;
-		this.content = content;
-	}
-
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	@Override
-	public String toString() {
-		return "Article [id=" + id + ", title=" + title + ", content=" + content + "]";
-	}
-
-}
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-package api.web;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import api.domain.City;
-import api.domain.Article;
-import api.ApplicationConfiguration;
-import api.repository.CityRepository;
-import api.repository.ArticleRepository;
-import api.service.TestService;
-
-@Controller
-public class IndexController {
-
-	@Autowired
-	private CityRepository repository;
-
-	@Autowired
-	private TestService testService;
-
-	@Autowired
-	private ApplicationConfiguration propertie;
-
-	@Autowired
-	private ArticleRepository articleRepository;
-
-	@RequestMapping("/save")
-	@ResponseBody
-	public String save() {
-		articleRepository.save(new Article("Neo", "Chen"));
-		return "OK";
-	}
-	
-	@RequestMapping("/mysql")
-	@ResponseBody
-	public String mysql() {
-		
-		for (Article article : articleRepository.findAll()) {
-			System.out.println(article);
-		}
-		return "OK";
-	}
-}
-
-			]]>
-			</programlisting>
-
-
-		</section>
-	</section>
-	<section id="oracle">
-		<title>Spring boot with Oracle</title>
-		<section>
-			<title>Maven</title>
-			<para>首先到oracle官网，根据你的Oracle数据库，下载ojdbc6.jar(Oracle 11) 或者 ojdbc7.jar (Oracle 12)</para>
-			<programlisting>
-			<![CDATA[
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>12.1.0.1</version>
-        </dependency>
-			]]>
-			</programlisting>
-			<screen>
-				mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true
-				mvn install:install-file -Dfile=ojdbc7.jar -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
-			</screen>
-			<para>另一种方案是在项目根目录下创建一个/lib文件夹，将下载的驱动放入该文件夹中。然后pom.xml 加入下面代码</para>
-			<para>ojdbc6.jar 例子</para>
-			<programlisting>
-			<![CDATA[
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.3</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
-        </dependency>
-			]]>
-			</programlisting>
-			<para>ojdbc7.jar 例子</para>
-			<programlisting>
-			<![CDATA[
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>12.1.0.1</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/ojdbc7.jar</systemPath>
-        </dependency>
-			]]>
-			</programlisting>
-			<example>
-				<title>Example Spring boot with Oracle </title>
+	&section.boot.datasource.xml;
+
+	<section id="cache">
+		<title>Spring boot with Redis</title>
+		<section id="redis">
+			<title>Spring boot with Redis</title>
+			<section>
+				<title>maven</title>
 				<programlisting>
 				<![CDATA[
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>			
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>application.properties</title>
+				<programlisting>
+				<![CDATA[
+spring.redis.database=10
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.password=
+spring.redis.pool.max-active=8
+spring.redis.pool.max-wait=-1
+spring.redis.pool.max-idle=8
+spring.redis.pool.min-idle=0
+spring.redis.timeout=0
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>JUnit</title>
+				<programlisting>
+				<![CDATA[
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(Application.class)
+public class ApplicationTests {
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	@Test
+	public void test() throws Exception {
+		// 保存字符串
+		stringRedisTemplate.opsForValue().set("neo", "chen");
+		Assert.assertEquals("chen", stringRedisTemplate.opsForValue().get("neo"));
+    }
+}				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Controller</title>
+				<para>stringRedisTemplate模板用于存储key,value为字符串的数据</para>
+				<programlisting>
+				<![CDATA[
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	
+	@RequestMapping("/test")
+	@ResponseBody
+	public String test() {
+		String message = "";
+		stringRedisTemplate.opsForValue().set("hello", "world");
+		message = stringRedisTemplate.opsForValue().get("hello");
+		return message;
+	}
+				]]>
+				</programlisting>
+				<para>等同于</para>
+				<programlisting>
+				<![CDATA[
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+				]]>
+				</programlisting>
+				<para>ListOperations</para>
+				<programlisting>
+				<![CDATA[
+public class Example {
 
-	<groupId>netkiller.cn</groupId>
-	<artifactId>api.netkiller.cn</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    // inject the actual template
+    @Autowired
+    private RedisTemplate<String, String> template;
 
-	<name>api.netkiller.cn</name>
-	<url>http://maven.apache.org</url>
+    // inject the template as ListOperations
+    // can also inject as Value, Set, ZSet, and HashOperations
+    @Resource(name="redisTemplate")
+    private ListOperations<String, String> listOps;
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
-	</properties>
+    public void addLink(String userId, URL url) {
+        listOps.leftPush(userId, url.toExternalForm());
+        // or use template directly
+        redisTemplate.boundListOps(userId).leftPush(url.toExternalForm());
+    }
+}
+				]]>
+				</programlisting>
+				<example>
+					<title>RedisTemplate</title>
+					<programlisting>
+					<![CDATA[
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+	
+	public List<Protocol> getProtocol() {
+		List<Protocol> protocols = new ArrayList<Protocol>();
+		Gson gson = new Gson();
+		Type type = new TypeToken<List<Protocol>>(){}.getType();
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
+		
+		String cacheKey = String.format("%s:%s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName());
+		long expireTime = 5;
+		
+		if(redisTemplate.hasKey(cacheKey)){
+			String cacheValue = redisTemplate.opsForValue().get(cacheKey);
+			System.out.println(cacheValue);
+			protocols = gson.fromJson(cacheValue, type);
+		}else{
+			Protocol protocol = new Protocol();
+			protocol.setRequest(new Date().toString());
+			protocols.add(protocol);
+			
+			String jsonString = gson.toJson(protocols, type);
+	        System.out.println( jsonString );
+			
+			redisTemplate.opsForValue().set(cacheKey, jsonString);
+			redisTemplate.expire(cacheKey, expireTime, TimeUnit.SECONDS);
+		}
+		return protocols;
+	}
+					]]>
+					</programlisting>
+				</example>
+			</section>
+		</section>
+		<section id="redis.pubsub">
+			<title>Redis Pub/Sub</title>
+			<section>
+				<title>Redis配置类</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.config;
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.2.RELEASE</version>
-	</parent>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency> -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-		</dependency>
+import cn.netkiller.wallet.redis.RedisMessageSubscriber;
 
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-oracle</artifactId>
-			<version>1.0.0.RELEASE</version>
-		</dependency>
+@Configuration
+public class RedisConfig {
 
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <!-- <version>12.1.0.1</version> -->
-            <version>11.2.0.3</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
-        </dependency>
+	public RedisConfig() {
+	}
 
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	@Bean
+	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
+		StringRedisTemplate redisTemplate = new StringRedisTemplate();
+		redisTemplate.setConnectionFactory(connectionFactory);
+		return redisTemplate;
+	}
 
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source />
-					<target />
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	@Bean
+	public MessageListenerAdapter messageListener() {
+		return new MessageListenerAdapter(new RedisMessageSubscriber());
+	}
 
-</project>
+	@Bean
+	public ChannelTopic topic() {
+		return new ChannelTopic("demo");
+	}
+
+	@Bean
+	public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter messageListener) {
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+
+		container.setConnectionFactory(connectionFactory);
+		container.addMessageListener(messageListener(), topic());
+		container.addMessageListener(messageListener(), new ChannelTopic("test"));
+		return container;
+	}
+
+}
 
 				]]>
 				</programlisting>
-			</example>
-		</section>
-		<section>
-			<title>application.properties</title>
-			<programlisting>
-			<![CDATA[
-spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
-spring.datasource.url=jdbc:oracle:thin:@//192.168.4.9:1521/orcl.example.com
-spring.datasource.username=www
-spring.datasource.password=123123
-spring.jpa.database-platform=org.hibernate.dialect.Oracle10gDialect
+			</section>
+			<section>
+				<title>订阅和发布类</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.redis;
 
-spring.jpa.show-sql=true
-#spring.jpa.hibernate.ddl-auto=update
-spring.jpa.hibernate.ddl-auto=create-drop
-			]]>
-			</programlisting>
-			<para>其他配置</para>
-			<screen>
-				spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
-				spring.datasource.test-while-idle=true
-				spring.datasource.test-on-borrow=true
-			</screen>
-			<para>Oracle RAC</para>
-			<screen>
-				jdbc:oracle:thin@(DESCRIPTION=
-				(LOAD_BALANCE=on)
-				(ADDRESS=(PROTOCOL=TCP)(HOST=racnode1) (PORT=1521))
-				(ADDRESS=(PROTOCOL=TCP)(HOST=racnode2) (PORT=1521))
-				(CONNECT_DATA=(SERVICE_NAME=service_name)))
+import java.nio.charset.StandardCharsets;
 
-				jdbc:oracle:thin:@(DESCRIPTION=
-				(ADDRESS=(PROTOCOL=TCP)(HOST=125.22.42.68)(PORT=1521))
-				(LOAD_BALANCE=on)
-				(FAILOVER=ON)
-				(CONNECT_DATA=
-				(SERVER=DEDICATED)
-				(SERVICE_NAME=service_name)
-				(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))
-				)
-				)
-			</screen>
-		</section>
-		<section>
-			<title>Application</title>
-			<programlisting>
-			<![CDATA[
-package api;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import api.ApplicationConfiguration;
-
-@SpringBootApplication
-@EnableConfigurationProperties(ApplicationConfiguration.class)
-@EnableAutoConfiguration
-@ComponentScan({ "api.web", "api.rest", "api.service" })
-@EnableMongoRepositories
-@EnableJpaRepositories
-public class Application {
-
-	public @Bean WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurerAdapter() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**");
-			}
-		};
+public class RedisMessageSubscriber implements MessageListener {
+	public void onMessage(final Message message, final byte[] pattern) {
+		System.out.println("Topic : " + new String(message.getChannel(), StandardCharsets.UTF_8));
+		System.out.println("Message : " + message.toString());
 	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-
 }
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>CrudRepository</title>
-			<programlisting>
-			<![CDATA[
-package api.repository;
 
-import java.util.List;
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.redis;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 
-import api.domain.Article;
+public class RedisMessagePublisher {
 
-@Repository
-public interface ArticleRepository extends CrudRepository<Article, Long> {
+	private final StringRedisTemplate redisTemplate;
 
-    Page<Article> findAll(Pageable pageable);
+	private final ChannelTopic topic;
 
-    Article findByTitle(String title);
-    
-    //@Query("select id,title,content from Article where id > ?1")
-    //public List<Article> findBySearch(@Param("id")long id); 
+	public RedisMessagePublisher(StringRedisTemplate redisTemplate, ChannelTopic topic) {
+		this.redisTemplate = redisTemplate;
+		this.topic = topic;
+	}
 
+	public void publish(String message) {
+		redisTemplate.convertAndSend(topic.getTopic(), message);
+	}
 }
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-package api.domain;
-
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "article")
-public class Article implements Serializable {
-	private static final long serialVersionUID = 7998903421265538801L;
-
-	@Id
-	@Column(name = "ID")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
-	@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
-	private Long id;
-	private String title;
-	private String content;
-
-	public Article(){
-		
-	}
-	public Article(String title, String content) {
-		this.title = title;
-		this.content = content;
-	}
-
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	@Override
-	public String toString() {
-		return "Article [id=" + id + ", title=" + title + ", content=" + content + "]";
-	}
-
-}
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>JdbcTemplate</title>
-			<programlisting>
-			<![CDATA[
+								
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>消息发布演示</title>
+				<programlisting>
+				<![CDATA[
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private StringRedisTemplate stringRedisTemplate;
+	
+	@GetMapping("/pub/demo")
+	public String pub() {
 
-	@RequestMapping(value = "/article")
-	public @ResponseBody String dailyStats(@RequestParam Integer id) {
-		String query = "SELECT id, title, content from article where id = " + id;
-
-		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
-			System.out.println(resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-			return (resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-		});
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("demo"));
+		String message = "Message " + UUID.randomUUID();
+		publisher.publish(message);
+		return message;
 	}
-			]]>
-			</programlisting>
+
+	@GetMapping("/pub/test")
+	public String pub(@RequestParam String message) {
+
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("test"));
+		publisher.publish(message);
+		return message;
+	}				
+				]]>
+				</programlisting>
+			</section>
 		</section>
-
-		<section>
-			<title>Controller</title>
-			<programlisting>
-			<![CDATA[
-package api.web;
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import api.domain.Article;
-import api.repository.ArticleRepository;
-
-@Controller
-public class IndexController {
-
-	@Autowired
-	private ArticleRepository articleRepository;
-	
-	@RequestMapping("/mysql")
-	@ResponseBody
-	public String mysql() {
-		repository.deleteAll();
-		return "Deleted"	
-	}
-	
-	@RequestMapping("/mysql")
-	@ResponseBody
-	public String mysql() {
-		articleRepository.save(new Article("Neo", "Chen"));
-		for (Article article : articleRepository.findAll()) {
-			System.out.println(article);
-		}
-		Article tmp = articleRepository.findByTitle("Neo");
-		return tmp.getTitle();
-	}
-	
-	/*
-	@RequestMapping("/search")
-	@ResponseBody
-	public String search() {
 		
-		/*for (Article article : articleRepository.findBySearch(1)) {
-			System.out.println(article);
-		}*/
-		List<Article> tmp = articleRepository.findBySearch(1L);
-		
-		tmp.forEach((temp) -> {
-			System.out.println(temp.toString());
-		});
-		
-		return tmp.get(0).getTitle();
-	}
-	*/
-	
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@RequestMapping(value = "/article")
-	public @ResponseBody String dailyStats(@RequestParam Integer id) {
-		String query = "SELECT id, title, content from article where id = " + id;
-
-		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
-			System.out.println(resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-			return (resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-		});
-
-	}
-}
-			
-			]]>
-			</programlisting>
-		</section>
-		<!-- <programlisting> <![CDATA[ @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } ]]> </programlisting> <programlisting> <![CDATA[ import oracle.jdbc.pool.OracleDataSource; import org.springframework.boot.context.properties.ConfigurationProperties; import 
-			org.springframework.context.annotation.Bean; import org.springframework.context.annotation.Configuration; import org.springframework.context.annotation.Profile; import javax.sql.DataSource; import javax.validation.constraints.NotNull; import java.sql.SQLException; @Configuration @ConfigurationProperties("oracle") public class OracleConfiguration { @NotNull private String username; @NotNull private String password; @NotNull private String url; public void setUsername(String username) { this.username = username; 
-			} public void setPassword(String password) { this.password = password; } public void setUrl(String url) { this.url = url; } @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } } ]]> </programlisting> -->
 	</section>
-	<section id="postgresql">
-		<title>Spring boot with PostgreSQL</title>
+	<section id="cacheable">
+		<title>Spring boot with Caching</title>
 		<section>
-			<title>pom.xml</title>
+			<title>maven</title>
 			<programlisting>
-			<![CDATA[
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-<dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-    <version>9.4.1212</version>
-</dependency>
-
-			]]>
+				<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>			
+				]]>
 			</programlisting>
 		</section>
-		<section>
-			<title>application.properties</title>
-			<programlisting>
+		<section id="">
+			<title>启用 Cache</title>
+			<para>添加 @EnableCaching </para>
+			<screen>
 			<![CDATA[
-spring.datasource.url=jdbc:postgresql://localhost:5432/your-database
-spring.datasource.username=postgres
-spring.datasource.password=postgres
-
-spring.jpa.database=POSTGRESQL
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=create-drop
-spring.jpa.generate-ddl=true
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Application</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller;
+package hello;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
-@EnableAutoConfiguration
-@ComponentScan
-@EnableMongoRepositories
-@EnableJpaRepositories
-@EnableScheduling
+@EnableCaching
 public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}			
 			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>测试 Controller</title>
+			<para>缓存返回结果</para>
+			<programlisting>
+				<![CDATA[
+	@Cacheable("cacheable")
+	@RequestMapping("/test/cacheable")
+	@ResponseBody
+	public String cacheable() {
+		Date date = new Date();
+		String message = date.toString();
+		return message;
+	}
+				]]>
+			</programlisting>
+			<para>5秒钟清楚一次缓存</para>
+			<programlisting>
+				<![CDATA[
+	@Scheduled(fixedDelay = 5000)
+	@CacheEvict(allEntries = true, value = "cacheable")	
+	public void expire() {
+		Date date = new Date();
+		String message = date.toString();
+		System.out.println(message);
+	}
+				]]>
 			</programlisting>
 		</section>
 		<section>
-			<title>CrudRepository</title>
-			<para>Model Class</para>
+			<title>@Cacheable 的用法</title>
 			<programlisting>
 			<![CDATA[
-package cn.netkiller.model;
+@Cacheable(value="users", key="#id")
+public User find(Integer id) {
 
-import java.io.Serializable;
+   return null;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+}			
+			]]>
+			</programlisting>
+			<para>引用对象</para>
+			<programlisting>
+			<![CDATA[
+@Cacheable(value="users", key="#user.id")
+public User find(User user) {
 
-@Entity
-@Table(name = "customer")
-public class Customer implements Serializable {
+   returnnull;
 
-	private static final long serialVersionUID = -3009077722242246666L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+}			
+			]]>
+			</programlisting>
+			<para>条件判断</para>
+			<programlisting>
+			<![CDATA[
+@Cacheable(value="messagecache", key="#id", condition="id < 10")
+public String getMessage(int id){
 
-	@Column(name = "firstname")
-	private String firstName;
+	return "hello"+id;
 
-	@Column(name = "lastname")
-	private String lastName;
+}
 
-	protected Customer() {
-	}
+@Cacheable(value="test",condition="#userName.length()>2")
+@Cacheable(value={"users"}, key="#user.id", condition="#user.id%2==0")
+			]]>
+			</programlisting>
+			<para>#p0 参数索引，p0表示第一个参数</para>
+			<programlisting>
+			<![CDATA[
+@Cacheable(value="users", key="#p0")
+public User find(Integer id) {
 
-	public Customer(String firstName, String lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+   return null;
 
-	@Override
-	public String toString() {
-		return String.format("Customer[id=%d, firstName='%s', lastName='%s']", id, firstName, lastName);
-	}
+}
+
+@Cacheable(value="users", key="#p0.id")
+public User find(User user) {
+
+   return null;
+
 }
 			]]>
 			</programlisting>
-			<para>CrudRepository</para>
+			<para>@Cacheable 如果没有任何参数将会自动生成 key ，前提是必须设置 @CacheConfig(cacheNames = "test")</para>
 			<programlisting>
 			<![CDATA[
-package cn.netkiller.repository;
-
-import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
-
-import cn.netkiller.model.Customer;
-
-public interface CustomerRepository extends CrudRepository<Customer, Long>{
-	List<Customer> findByFirstName(String firstName);
-    List<Customer> findByLastName(String lastName);
-}
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>JdbcTemplate</title>
-			<programlisting>
-			<![CDATA[
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@RequestMapping(value = "/jdbc")
-	public @ResponseBody String dailyStats(@RequestParam Integer id) {
-		String query = "SELECT id, firstname, lastname from customer where id = " + id;
-
-		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
-			System.out.println(resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-			return (resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-		});
+	@GetMapping("/cache/auto")
+	@Cacheable()
+	public Attribute auto() {
+		Attribute attribute = new Attribute();
+		attribute.setName("sdfsdf");
+		return attribute;
 	}			
 			]]>
 			</programlisting>
+			<screen>
+			<![CDATA[
+127.0.0.1:6379> keys *
+1) "test::SimpleKey []"			
+			]]>
+			</screen>
 		</section>
-		<section>
-			<title>Controller</title>
+		<section id="">
+			<title>@CachePut 用法</title>
+			<para>@CachePut 每次都会执行方法，都会将结果存入指定key的缓存中，@CachePut 不会判断是否 key 已经存在，二是始终覆盖。</para>
 			<programlisting>
 			<![CDATA[
-package cn.netkiller.web;
+@CachePut("users")
+public User find(Integer id) {
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+   return null;
 
-import cn.netkiller.model.Customer;
-import cn.netkiller.repository.CustomerRepository;
-
-@Controller
-@RequestMapping("/test/pgsql")
-public class TestPostgreSQLController {
-
-	@Autowired
-	private CustomerRepository customerRepository;
-
-	@RequestMapping("/save")
-	public @ResponseBody String process() {
-		customerRepository.save(new Customer("Neo", "Chan"));
-		customerRepository.save(new Customer("Luke", "Liu"));
-		customerRepository.save(new Customer("Ran", "Guo"));
-		customerRepository.save(new Customer("Joey", "Chen"));
-		customerRepository.save(new Customer("Larry", "Huang"));
-		return "Done";
-	}
-
-	@RequestMapping("/findall")
-	public @ResponseBody String findAll() {
-		String result = "<html>";
-
-		for (Customer cust : customerRepository.findAll()) {
-			result += "<div>" + cust.toString() + "</div>";
-		}
-
-		return result + "</html>";
-	}
-
-	@RequestMapping("/findbyid")
-	public @ResponseBody String findById(@RequestParam("id") long id) {
-		String result = "";
-		result = customerRepository.findOne(id).toString();
-		return result;
-	}
-
-	@RequestMapping("/findbylastname")
-	public @ResponseBody String fetchDataByLastName(@RequestParam("lastname") String lastName) {
-		String result = "<html>";
-
-		for (Customer cust : customerRepository.findByLastName(lastName)) {
-			result += "<div>" + cust.toString() + "</div>";
-		}
-
-		return result + "</html>";
-	}
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@RequestMapping(value = "/jdbc")
-	public @ResponseBody String dailyStats(@RequestParam Integer id) {
-		String query = "SELECT id, firstname, lastname from customer where id = " + id;
-
-		return jdbcTemplate.queryForObject(query, (resultSet, i) -> {
-			System.out.println(resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-			return (resultSet.getLong(1)+","+ resultSet.getString(2)+","+ resultSet.getString(3));
-		});
-	}
 }
 			]]>
 			</programlisting>
 		</section>
-		<section>
-			<title>Test</title>
+		<section id="">
+			<title>解决Expire 和 TTL 过期时间</title>
+			<para>Springboot 1.x</para>
+			<programlisting>
+			<![CDATA[
+	@Bean
+	public CacheManager cacheManager(RedisTemplate redisTemplate) {
+		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
+		cacheManager.setDefaultExpiration(60);	//缓存默认 60 秒
+		Map<String, Long> expiresMap = new HashMap<>();
+		expiresMap.put("Product", 5L);  //设置 key = Product 时 5秒缓存。你可以添加很多规则。 
+		cacheManager.setExpires(expiresMap);
+		return cacheManager;
+	}			
+			]]>
+			</programlisting>
+			<para>Springboot 2.x</para>
+			<programlisting>
+			<![CDATA[
+package api.config;
+
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Configuration
+public class CachingConfigurer {
+
+	public CachingConfigurer() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Bean
+	public KeyGenerator simpleKeyGenerator() {
+		return (o, method, objects) -> {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(o.getClass().getSimpleName());
+			stringBuilder.append(".");
+			stringBuilder.append(method.getName());
+			stringBuilder.append("[");
+			for (Object obj : objects) {
+				stringBuilder.append(obj.toString());
+			}
+			stringBuilder.append("]");
+
+			return stringBuilder.toString();
+		};
+	}
+
+	@Bean
+	public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+		return new RedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory), 
+		this.redisCacheConfiguration(600), 	// 默认配置
+		this.initialCacheConfigurations());	// 指定key过期时间配置
+	}
+               
+	private Map<String, RedisCacheConfiguration> initialCacheConfigurations() {
+		Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
+		redisCacheConfigurationMap.put("UserInfoList", this.redisCacheConfiguration(3000));
+		redisCacheConfigurationMap.put("UserInfoListAnother", this.redisCacheConfiguration(18000));
+
+		return redisCacheConfigurationMap;
+	}
+
+	private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
+		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+		ObjectMapper om = new ObjectMapper();
+		om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+		om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+		jackson2JsonRedisSerializer.setObjectMapper(om);
+
+		RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
+		redisCacheConfiguration = redisCacheConfiguration.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer)).entryTtl(Duration.ofSeconds(seconds));
+
+		return redisCacheConfiguration;
+	}
+
+}
+
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+	@Cacheable(value = "DefaultKey", keyGenerator = "simpleKeyGenerator") // 600秒，使用默认策略
+	@Cacheable(value = "UserInfoList", keyGenerator = "simpleKeyGenerator") // 3000秒
+    @Cacheable(value = "UserInfoListAnother", keyGenerator = "simpleKeyGenerator") // 18000秒
+    
+			]]>
+			</programlisting>
 			<screen>
-				curl http://127.0.0.1:7000/test/pgsql/save
-				curl http://127.0.0.1:7000/test/pgsql/findall
-				curl http://127.0.0.1:7000/test/pgsql/findbyid?id=1
-				curl http://127.0.0.1:7000/test/pgsql/jdbc?id=1
+			<![CDATA[
+127.0.0.1:6379> keys *
+1) "test2::SimpleKey []"
+
+127.0.0.1:6379> ttl "test2::SimpleKey []"
+(integer) 584
+			
+			]]>
 			</screen>
 		</section>
+		<section>
+			<title>SpEL表达式</title>
+			<programlisting>
+			<![CDATA[
+	@GetMapping("/cache/expire")
+	@Cacheable("test1#${select.cache.timeout:1000}")
+	public String expire() {
+		return "Test";
+	}
+	
+	@GetMapping("/cache/expire")
+	@Cacheable("test1#${select.cache.timeout:1000}#${select.cache.refresh:600}")
+	public String expire() {
+		return "Test";
+	}
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	
-	&section.boot.datasource.xml;
-	
 	<section id="email">
 		<title>Spring boot with Email</title>
 		<section>
@@ -4141,315 +3223,7 @@ public class ScheduledTasks {
 			</screen>
 		</section>
 	</section>
-	<section id="cache">
-		<title>Spring boot with Cache</title>
-		<section id="redis">
-			<title>Spring boot with Redis</title>
-			<section>
-				<title>maven</title>
-				<programlisting>
-				<![CDATA[
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-redis</artifactId>
-</dependency>			
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>application.properties</title>
-				<programlisting>
-				<![CDATA[
-spring.redis.database=10
-spring.redis.host=localhost
-spring.redis.port=6379
-spring.redis.password=
-spring.redis.pool.max-active=8
-spring.redis.pool.max-wait=-1
-spring.redis.pool.max-idle=8
-spring.redis.pool.min-idle=0
-spring.redis.timeout=0
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>JUnit</title>
-				<programlisting>
-				<![CDATA[
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(Application.class)
-public class ApplicationTests {
-	@Autowired
-	private StringRedisTemplate stringRedisTemplate;
-	@Test
-	public void test() throws Exception {
-		// 保存字符串
-		stringRedisTemplate.opsForValue().set("neo", "chen");
-		Assert.assertEquals("chen", stringRedisTemplate.opsForValue().get("neo"));
-    }
-}				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>Controller</title>
-				<para>stringRedisTemplate模板用于存储key,value为字符串的数据</para>
-				<programlisting>
-				<![CDATA[
-	@Autowired
-	private StringRedisTemplate stringRedisTemplate;
 	
-	@RequestMapping("/test")
-	@ResponseBody
-	public String test() {
-		String message = "";
-		stringRedisTemplate.opsForValue().set("hello", "world");
-		message = stringRedisTemplate.opsForValue().get("hello");
-		return message;
-	}
-				]]>
-				</programlisting>
-				<para>等同于</para>
-				<programlisting>
-				<![CDATA[
-	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
-				]]>
-				</programlisting>
-				<para>ListOperations</para>
-				<programlisting>
-				<![CDATA[
-public class Example {
-
-    // inject the actual template
-    @Autowired
-    private RedisTemplate<String, String> template;
-
-    // inject the template as ListOperations
-    // can also inject as Value, Set, ZSet, and HashOperations
-    @Resource(name="redisTemplate")
-    private ListOperations<String, String> listOps;
-
-    public void addLink(String userId, URL url) {
-        listOps.leftPush(userId, url.toExternalForm());
-        // or use template directly
-        redisTemplate.boundListOps(userId).leftPush(url.toExternalForm());
-    }
-}
-				]]>
-				</programlisting>
-				<example>
-					<title>RedisTemplate</title>
-					<programlisting>
-					<![CDATA[
-	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
-	
-	public List<Protocol> getProtocol() {
-		List<Protocol> protocols = new ArrayList<Protocol>();
-		Gson gson = new Gson();
-		Type type = new TypeToken<List<Protocol>>(){}.getType();
-		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new StringRedisSerializer());
-		
-		String cacheKey = String.format("%s:%s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName());
-		long expireTime = 5;
-		
-		if(redisTemplate.hasKey(cacheKey)){
-			String cacheValue = redisTemplate.opsForValue().get(cacheKey);
-			System.out.println(cacheValue);
-			protocols = gson.fromJson(cacheValue, type);
-		}else{
-			Protocol protocol = new Protocol();
-			protocol.setRequest(new Date().toString());
-			protocols.add(protocol);
-			
-			String jsonString = gson.toJson(protocols, type);
-	        System.out.println( jsonString );
-			
-			redisTemplate.opsForValue().set(cacheKey, jsonString);
-			redisTemplate.expire(cacheKey, expireTime, TimeUnit.SECONDS);
-		}
-		return protocols;
-	}
-					]]>
-					</programlisting>
-				</example>
-			</section>
-		</section>
-		<section id="redis.pubsub">
-			<title>Redis Pub/Sub</title>
-			<section>
-				<title>Redis配置类</title>
-				<programlisting>
-				<![CDATA[
-package cn.netkiller.wallet.config;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-
-import cn.netkiller.wallet.redis.RedisMessageSubscriber;
-
-@Configuration
-public class RedisConfig {
-
-	public RedisConfig() {
-	}
-
-	@Bean
-	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
-		StringRedisTemplate redisTemplate = new StringRedisTemplate();
-		redisTemplate.setConnectionFactory(connectionFactory);
-		return redisTemplate;
-	}
-
-	@Bean
-	public MessageListenerAdapter messageListener() {
-		return new MessageListenerAdapter(new RedisMessageSubscriber());
-	}
-
-	@Bean
-	public ChannelTopic topic() {
-		return new ChannelTopic("demo");
-	}
-
-	@Bean
-	public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter messageListener) {
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-
-		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(messageListener(), topic());
-		container.addMessageListener(messageListener(), new ChannelTopic("test"));
-		return container;
-	}
-
-}
-
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>订阅和发布类</title>
-				<programlisting>
-				<![CDATA[
-package cn.netkiller.wallet.redis;
-
-import java.nio.charset.StandardCharsets;
-
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
-
-public class RedisMessageSubscriber implements MessageListener {
-	public void onMessage(final Message message, final byte[] pattern) {
-		System.out.println("Topic : " + new String(message.getChannel(), StandardCharsets.UTF_8));
-		System.out.println("Message : " + message.toString());
-	}
-}
-
-				]]>
-				</programlisting>
-				<programlisting>
-				<![CDATA[
-package cn.netkiller.wallet.redis;
-
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
-
-public class RedisMessagePublisher {
-
-	private final StringRedisTemplate redisTemplate;
-
-	private final ChannelTopic topic;
-
-	public RedisMessagePublisher(StringRedisTemplate redisTemplate, ChannelTopic topic) {
-		this.redisTemplate = redisTemplate;
-		this.topic = topic;
-	}
-
-	public void publish(String message) {
-		redisTemplate.convertAndSend(topic.getTopic(), message);
-	}
-}
-								
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>消息发布演示</title>
-				<programlisting>
-				<![CDATA[
-	@Autowired
-	private StringRedisTemplate stringRedisTemplate;
-	
-	@GetMapping("/pub/demo")
-	public String pub() {
-
-		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("demo"));
-		String message = "Message " + UUID.randomUUID();
-		publisher.publish(message);
-		return message;
-	}
-
-	@GetMapping("/pub/test")
-	public String pub(@RequestParam String message) {
-
-		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("test"));
-		publisher.publish(message);
-		return message;
-	}				
-				]]>
-				</programlisting>
-			</section>
-		</section>
-		<section id="cacheable">
-			<title>@Cacheable</title>
-			<section>
-				<title>maven</title>
-				<programlisting>
-				<![CDATA[
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-cache</artifactId>
-		</dependency>			
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>Controller</title>
-				<para>缓存返回结果</para>
-				<programlisting>
-				<![CDATA[
-	@Cacheable("cacheable")
-	@RequestMapping("/test/cacheable")
-	@ResponseBody
-	public String cacheable() {
-		Date date = new Date();
-		String message = date.toString();
-		return message;
-	}
-				]]>
-				</programlisting>
-				<para>5秒钟清楚一次缓存</para>
-				<programlisting>
-				<![CDATA[
-	@Scheduled(fixedDelay = 5000)
-	@CacheEvict(allEntries = true, value = "cacheable")	
-	public void expire() {
-		Date date = new Date();
-		String message = date.toString();
-		System.out.println(message);
-	}
-				]]>
-				</programlisting>
-			</section>
-		</section>
-	</section>
 
 
 	<section id="hessian">
@@ -5985,6 +4759,23 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 			</programlisting>
 			
 		</section>
+	</section>
+	<section id="lombok">
+		<title>Spring boot with lombok</title>
+		<screen>
+		<![CDATA[
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>		
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
 	</section>
 	&section.boot.properties.xml;
 
