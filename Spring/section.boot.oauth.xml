@@ -751,16 +751,7 @@ OK
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title></title>
-		<para></para>
-		<screen>
-		<![CDATA[
-INSERT INTO `user` (username, password, enabled) VALUES ('netkiller@msn.com', '$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS', true);		
-		]]>
-		</screen>
-
-	</section>
+	
 	<section>
 		<title>Authorization Server</title>
 		<programlisting>
@@ -847,7 +838,7 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
 }		
 		]]>
 		</programlisting>
-	</section>
+</section>
 	<section>
 		<title>Resource Server</title>
 		<programlisting>
@@ -946,12 +937,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
-		<programlisting>
+		<title>插入数据</title>
+		<para></para>
+		<screen>
 		<![CDATA[
-		
+INSERT INTO `user` (username, password, enabled) VALUES ('netkiller@msn.com', '$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS', true);		
 		]]>
-		</programlisting>
+		</screen>
+
 	</section>
 	<section>
 		<title>使用 CURL 测试 JWT</title>
@@ -970,3 +963,94 @@ neo@MacBook-Pro ~ % curl -H "Accept: application/json" -H "Content-Type: applica
 		</screen>
 	</section>
 </section>
+
+<section id="oauth2.jwt.keypair">
+	<title>Spring boot with Oauth2 jwt 非对称证书</title>
+	<section>
+		<title>创建证书</title>
+		<para>创建证书 keytool -genkeypair -alias jwt -keyalg RSA -keypass passw0rd -keystore jwt.jks -storepass passw0rd	</para>
+		<programlisting>
+		<![CDATA[
+neo@MacBook-Pro /tmp/oauth % keytool -genkeypair -alias jwt -keyalg RSA -keypass passw0rd -keystore jwt.jks -storepass passw0rd
+What is your first and last name?
+  [Unknown]:  Neo Chen
+What is the name of your organizational unit?
+  [Unknown]:  netkiller.cn
+What is the name of your organization?
+  [Unknown]:  netkiller.cn
+What is the name of your City or Locality?
+  [Unknown]:  Shenzhen
+What is the name of your State or Province?
+  [Unknown]:  Guangdong
+What is the two-letter country code for this unit?
+  [Unknown]:  CN
+Is CN=Neo Chen, OU=netkiller.cn, O=netkiller.cn, L=Shenzhen, ST=Guangdong, C=CN correct?
+  [no]:  yes	
+		]]>
+		</programlisting>
+		<para>该命令将生成一个名为jwt.jks的文件，其中包含我们的密钥 - 公钥和私钥。 还要牢记keypass和storepass密码。</para>
+		<para>导出公钥，接下来，我们需要从刚刚生成的JKS中导出我们的公钥，我们可以使用下面的命令来实现：</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro /tmp/oauth % keytool -list -rfc --keystore jwt.jks | openssl x509 -inform pem -pubkey -out certificate.crt > public.crt
+
+Enter keystore password:  passw0rd
+		]]>
+		</screen>
+		<para>公钥内容</para>
+		<screen>
+		<![CDATA[
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj6ePdDwBrHKX3kNFnbve
+T1rTTbyA9GjaiZNwj2X4Y0In7RCFl8auXXBn2DxztQMGqHY2Ydc3/26Gu9Vri441
+r8/RInA6UpzzDRl5SeYYTobcgfIVpfQ0hTX0xzuMDVLVoLibGfcvGy7ZkrJjQFX8
+lIaO84K8KP/yzma5622XJ+f5hkXmTX5e0tXGDCPjVO1dSrouPWqhcbM0Kf6y3RdE
+JkNRTHLky6afx8MNobakz1Ab9K7cjD8De6LwScwMQMFU46traN/3Fw0lZFxKkpay
++sEUHvHDUYWTuVovUmfiKMX8fj5QCm4imPdA3pF/jjM+xeeVcTID3qffDGOKrGTF
+HQIDAQAB
+-----END PUBLIC KEY-----		
+		]]>
+		</screen>
+		<para>复制 jwt.jks 和 public.crt 到 src/main/resources 目录下</para>
+	</section>
+	<section id="">
+		<title>Authorization Server</title>
+		<programlisting>
+		<![CDATA[
+	@Bean
+	public JwtAccessTokenConverter accessTokenConverter() {
+		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+		KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "passw0rd".toCharArray());
+		converter.setKeyPair(keyStoreKeyFactory.getKeyPair("passw0rd"));
+		return converter;
+	}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title>Resource Server</title>
+		<programlisting>
+		<![CDATA[
+	@Bean
+	public JwtAccessTokenConverter accessTokenConverter() {
+		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+
+		String publicKey = "-----BEGIN PUBLIC KEY-----\n" + 
+				"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj6ePdDwBrHKX3kNFnbve\n" + 
+				"T1rTTbyA9GjaiZNwj2X4Y0In7RCFl8auXXBn2DxztQMGqHY2Ydc3/26Gu9Vri441\n" + 
+				"r8/RInA6UpzzDRl5SeYYTobcgfIVpfQ0hTX0xzuMDVLVoLibGfcvGy7ZkrJjQFX8\n" + 
+				"lIaO84K8KP/yzma5622XJ+f5hkXmTX5e0tXGDCPjVO1dSrouPWqhcbM0Kf6y3RdE\n" + 
+				"JkNRTHLky6afx8MNobakz1Ab9K7cjD8De6LwScwMQMFU46traN/3Fw0lZFxKkpay\n" + 
+				"+sEUHvHDUYWTuVovUmfiKMX8fj5QCm4imPdA3pF/jjM+xeeVcTID3qffDGOKrGTF\n" + 
+				"HQIDAQAB\n" + 
+				"-----END PUBLIC KEY-----";
+
+		converter.setVerifierKey(publicKey);
+		return converter;
+	}		
+		]]>
+		</programlisting>
+	</section>
+</section>
+
+

@@ -3,6 +3,37 @@
 	<title>Spring Boot</title>
 	<para>注意以下使用 Spring boot 2.0.2</para>
 	&section.boot.quickstart.xml;
+	<section id="">
+		<title>Maven 插件</title>
+		<section id="">
+			<title></title>
+			<para>将 resource 添加应用程序</para>
+			<screen>
+			<![CDATA[
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/java/resources</directory>
+            <filtering>true</filtering>
+            <excludes>
+                <exclude>*.jks</exclude>
+            </excludes>
+        </resource>
+    </resources>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <addResources>true</addResources>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>		
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="spring.run">
 		<title>运行 Spring boot 项目</title>
 		<section>
@@ -1286,7 +1317,7 @@ spring.session.jdbc.table-name=SESSIONS
 	
 	&section.boot.datasource.xml;
 
-	<section id="cache">
+	<section id="redis">
 		<title>Spring boot with Redis</title>
 		<section id="redis">
 			<title>Spring boot with Redis</title>
@@ -1554,7 +1585,7 @@ public class RedisMessagePublisher {
 		</section>
 		
 	</section>
-	<section id="cacheable">
+	<section id="cache">
 		<title>Spring boot with Caching</title>
 		<section>
 			<title>maven</title>
