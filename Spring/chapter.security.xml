@@ -4,6 +4,40 @@
 	<section>
 		<title>配置 Spring Security</title>
 		<section>
+			<title>默认配置</title>
+			<para>如果在 maven 中引入了 spring security当你启动 springboot 的时候会提示</para>
+			<screen>
+			<![CDATA[
+Using generated security password: 1cd27b90-1208-4be2-ae8e-0f564ee427b8			
+			]]>
+			</screen>
+			<para>默认用户名是 user 可以这样访问</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % curl -s http://user:1cd27b90-1208-4be2-ae8e-0f564ee427b8@localhost:8080/member/json
+{"status":false,"reason":"","code":0,"data":{}} 			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>设置用户名和密码</title>
+			<programlisting>
+			<![CDATA[
+spring.security.user.name=test
+spring.security.user.password=test
+spring.security.user.role=USER		
+			]]>
+			</programlisting>
+			<para>注意 Springboot 1.x</para>
+			<programlisting>
+			<![CDATA[
+security.user.name=test
+security.user.password=passw0rdf
+security.user.role=USER
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>禁用 Security</title>
 			<programlisting>
 			<![CDATA[
