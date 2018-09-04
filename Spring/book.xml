@@ -62,7 +62,7 @@
 	&book.dedication.xml;
 	&book.preface.xml;
 
-	&part.spring.xml;
+	&chapter.spring.xml;
 	
 	&book.appendix.xml;
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	&chapter.suite.xml;
+	&chapter.boot.xml;
+	&section.mvc.xml;
+	&section.rest.xml;
+	&chapter.data.xml;
+	&chapter.security.xml;
+	&chapter.interceptor.xml;
+	&chapter.cloud.xml;
+	&section.boot.test.xml;
+	&chapter.tomcat.xml;
+	&section.miscellaneous.xml;
+	&chapter.faq.xml;
