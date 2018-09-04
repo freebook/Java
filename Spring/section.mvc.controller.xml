@@ -1059,7 +1059,19 @@ public class MainController {
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section>
+		<title>处理原始 RAW JSON 数据</title>
+		<programlisting>
+		<![CDATA[
+	@RequestMapping(value = "/create", method = RequestMethod.POST, produces = { "application/xml", "application/json" })
+	public ResponseEntity<Member> create(@RequestBody Member member) {
+		memberRepository.save(member);
+		return new ResponseEntity<Member>(member, HttpStatus.OK);
+	}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="json.null">
 		<title>返回 JSON 对象 NULL 专为 "" 字符串</title>
 		<programlisting>
 		<![CDATA[

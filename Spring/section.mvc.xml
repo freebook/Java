@@ -5,6 +5,44 @@
 	<para>两种方式各有优缺点，Tomcat 方式配置繁琐，但是可以使用虚拟机，同一个IP地址使用不同域名访问，出现不同的内容。而Spring Boot一个应用一个容器一个端口，比不得不通过端口来区分应用。</para>
 	&section.mvc.controller.xml;	
 	&section.mvc.view.xml;
+
+	<section id="spring.mvc.i18n">
+		<title>i18n 国际化</title>
+		<section>
+			<title>在 appliction.properties 中配置启用 i18n</title>
+			<screen>
+			<![CDATA[
+spring.messages.basename=message
+spring.messages.encoding=UTF-8
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>创建语言包文件</title>
+			<para>message_en_US.properties</para>
+			<screen>
+			<![CDATA[
+member.name=Name
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>控制器重引用语言包</title>
+			<screen>
+			<![CDATA[
+	@Autowired
+	private MessageSource messageSource;
+
+	@GetMapping("/lang")
+	public String language() {
+		String message = messageSource.getMessage("member.name", null, LocaleContextHolder.getLocale());
+		return message;
+	}
+			]]>
+			</screen>
+		</section>
+	</section>
+
 	<section id="properties">
 		<title>Properties</title>
 		<section>
@@ -32,8 +70,8 @@
 			<title>@Value 注解</title>
 			<para>application.properties</para>
 			<screen>
-server.name=Linux
-server.host=192.168.0.1,172.16.0.1
+				server.name=Linux
+				server.host=192.168.0.1,172.16.0.1
 			</screen>
 			<screen>
 			<![CDATA[
@@ -75,8 +113,8 @@ server.host=192.168.0.1,172.16.0.1
 			</programlisting>
 			<para>test.properties</para>
 			<programlisting>
-name=Neo
-age=30
+				name=Neo
+				age=30
 			</programlisting>
 			<programlisting>
 			<![CDATA[
@@ -170,7 +208,8 @@ public class TestController {
 		<section>
 			<title>HTTP Status 500 - Handler processing failed; nested exception
 				is java.lang.NoClassDefFoundError:
-				javax/servlet/jsp/jstl/core/Config</title>
+				javax/servlet/jsp/jstl/core/Config
+			</title>
 			<para>pom.xml 文件中加入依赖包</para>
 			<screen>
 			<![CDATA[

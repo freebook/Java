@@ -39,6 +39,19 @@ security.user.role=USER
 		</section>
 		<section>
 			<title>禁用 Security</title>
+			<para>方法一</para>
+			<screen>
+			<![CDATA[
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+public class Application {
+	public static void main(String[] args) {
+		System.out.println("Web Starting...");
+		SpringApplication.run(Application.class, args);
+	}
+}
+			]]>
+			</screen>
+			<para>Springboot 1.x 可以在 appliction.properties 中加入</para>
 			<programlisting>
 			<![CDATA[
 security.basic.enabled=false			
