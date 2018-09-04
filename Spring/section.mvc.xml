@@ -41,6 +41,28 @@ member.name=Name
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>参数传递</title>
+			<para>有时定义语言包会出现一种情况，一个句子中可能存在变量。例如：</para>
+			<para>恭喜你 XXXX 您已成为我们的会员</para>
+			<para>这样的需求，如果丁一两个key处理起来会非常麻烦。这里可以定义一个变量，通过参数传递来修改一句话中间的部分。</para>
+			<screen>
+			<![CDATA[
+welcome=Welcom to {0}		
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+	@GetMapping("/lang/args")
+	public String welcome() {
+		String[] args = { "China" };
+		String message = messageSource.getMessage("welcome", args, LocaleContextHolder.getLocale());
+		return message;
+	}
+			]]>
+			</screen>
+			<para>参数以此类推 {0}, {1} ...... {n}</para>
+		</section>
 	</section>
 
 	<section id="properties">
