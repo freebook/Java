@@ -18,7 +18,10 @@
 	<info>
 		<title>Netkiller Spring Cloud 手札</title>
 		<subtitle>Spring Cloud Cookbook</subtitle>
-		<authorgroup>
+		
+		&book.info.author.xml;
+		
+		<!-- <authorgroup>
 		<author>
 			<personname>
 				<honorific>Mr</honorific>
@@ -38,7 +41,7 @@
 			</affiliation>
 		</author>
 
-		</authorgroup>
+		</authorgroup> -->
 
 		<edition>$Revision: 606 $</edition>
   		<pubdate>2017-11</pubdate>
