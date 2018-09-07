@@ -50,7 +50,7 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 	</section>
 	<section id="java">
 		<title>java - Launches a Java application.</title>
-		<section>
+		<section id="java.verbose:class">
 			<title>-verbose:class 显示载入jar文件</title>
 			<programlisting>
 			<![CDATA[
@@ -447,20 +447,233 @@ Hello
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id ="java.io.tmpdir">
 			<title>java.io.tmpdir</title>
 			<para>临时文件目录</para>
 			<screen>
 java -Djava.io.tmpdir=/path/to/tmpdir		
 			</screen>
 		</section>
-		<section>
+		<section id="java.version">
 			<title>显示版本号</title>
 			<screen>
 $ java -version
 java version "1.8.0_131"
 Java(TM) SE Runtime Environment (build 1.8.0_131-b11)
 Java HotSpot(TM) 64-Bit Server VM (build 25.131-b11, mixed mode)			
+			</screen>
+		</section>
+		<section id="java.list-modules">
+			<title>列出java模块</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % java --list-modules
+java.activation@10.0.1
+java.base@10.0.1
+java.compiler@10.0.1
+java.corba@10.0.1
+java.datatransfer@10.0.1
+java.desktop@10.0.1
+java.instrument@10.0.1
+java.jnlp@10.0.1
+java.logging@10.0.1
+java.management@10.0.1
+java.management.rmi@10.0.1
+java.naming@10.0.1
+java.prefs@10.0.1
+java.rmi@10.0.1
+java.scripting@10.0.1
+java.se@10.0.1
+java.se.ee@10.0.1
+java.security.jgss@10.0.1
+java.security.sasl@10.0.1
+java.smartcardio@10.0.1
+java.sql@10.0.1
+java.sql.rowset@10.0.1
+java.transaction@10.0.1
+java.xml@10.0.1
+java.xml.bind@10.0.1
+java.xml.crypto@10.0.1
+java.xml.ws@10.0.1
+java.xml.ws.annotation@10.0.1
+javafx.base@10.0.1
+javafx.controls@10.0.1
+javafx.deploy@10.0.1
+javafx.fxml@10.0.1
+javafx.graphics@10.0.1
+javafx.media@10.0.1
+javafx.swing@10.0.1
+javafx.web@10.0.1
+jdk.accessibility@10.0.1
+jdk.aot@10.0.1
+jdk.attach@10.0.1
+jdk.charsets@10.0.1
+jdk.compiler@10.0.1
+jdk.crypto.cryptoki@10.0.1
+jdk.crypto.ec@10.0.1
+jdk.deploy@10.0.1
+jdk.deploy.controlpanel@10.0.1
+jdk.dynalink@10.0.1
+jdk.editpad@10.0.1
+jdk.hotspot.agent@10.0.1
+jdk.httpserver@10.0.1
+jdk.incubator.httpclient@10.0.1
+jdk.internal.ed@10.0.1
+jdk.internal.jvmstat@10.0.1
+jdk.internal.le@10.0.1
+jdk.internal.opt@10.0.1
+jdk.internal.vm.ci@10.0.1
+jdk.internal.vm.compiler@10.0.1
+jdk.internal.vm.compiler.management@10.0.1
+jdk.jartool@10.0.1
+jdk.javadoc@10.0.1
+jdk.javaws@10.0.1
+jdk.jcmd@10.0.1
+jdk.jconsole@10.0.1
+jdk.jdeps@10.0.1
+jdk.jdi@10.0.1
+jdk.jdwp.agent@10.0.1
+jdk.jfr@10.0.1
+jdk.jlink@10.0.1
+jdk.jshell@10.0.1
+jdk.jsobject@10.0.1
+jdk.jstatd@10.0.1
+jdk.localedata@10.0.1
+jdk.management@10.0.1
+jdk.management.agent@10.0.1
+jdk.management.cmm@10.0.1
+jdk.management.jfr@10.0.1
+jdk.management.resource@10.0.1
+jdk.naming.dns@10.0.1
+jdk.naming.rmi@10.0.1
+jdk.net@10.0.1
+jdk.pack@10.0.1
+jdk.packager@10.0.1
+jdk.packager.services@10.0.1
+jdk.plugin@10.0.1
+jdk.plugin.server@10.0.1
+jdk.rmic@10.0.1
+jdk.scripting.nashorn@10.0.1
+jdk.scripting.nashorn.shell@10.0.1
+jdk.sctp@10.0.1
+jdk.security.auth@10.0.1
+jdk.security.jgss@10.0.1
+jdk.snmp@10.0.1
+jdk.unsupported@10.0.1
+jdk.xml.bind@10.0.1
+jdk.xml.dom@10.0.1
+jdk.xml.ws@10.0.1
+jdk.zipfs@10.0.1
+oracle.desktop@10.0.1
+oracle.net@10.0.1
+			
+			]]>
+			</screen>
+			<para>模块所在位置 /Library/Java/JavaVirtualMachines/jdk-10.0.1.jdk/Contents/Home/jmods</para>
+			<screen>
+			<![CDATA[
+cd /Library/Java/JavaVirtualMachines/jdk-10.0.1.jdk/Contents/Home/jmods
+
+neo@MacBook-Pro /Library/Java/JavaVirtualMachines/jdk-10.0.1.jdk/Contents/Home/jmods % ll -1
+java.activation.jmod
+java.base.jmod
+java.compiler.jmod
+java.corba.jmod
+java.datatransfer.jmod
+java.desktop.jmod
+java.instrument.jmod
+java.jnlp.jmod
+java.logging.jmod
+java.management.jmod
+java.management.rmi.jmod
+java.naming.jmod
+java.prefs.jmod
+java.rmi.jmod
+java.scripting.jmod
+java.se.ee.jmod
+java.se.jmod
+java.security.jgss.jmod
+java.security.sasl.jmod
+java.smartcardio.jmod
+java.sql.jmod
+java.sql.rowset.jmod
+java.transaction.jmod
+java.xml.bind.jmod
+java.xml.crypto.jmod
+java.xml.jmod
+java.xml.ws.annotation.jmod
+java.xml.ws.jmod
+javafx.base.jmod
+javafx.controls.jmod
+javafx.deploy.jmod
+javafx.fxml.jmod
+javafx.graphics.jmod
+javafx.media.jmod
+javafx.swing.jmod
+javafx.web.jmod
+jdk.accessibility.jmod
+jdk.aot.jmod
+jdk.attach.jmod
+jdk.charsets.jmod
+jdk.compiler.jmod
+jdk.crypto.cryptoki.jmod
+jdk.crypto.ec.jmod
+jdk.deploy.controlpanel.jmod
+jdk.deploy.jmod
+jdk.dynalink.jmod
+jdk.editpad.jmod
+jdk.hotspot.agent.jmod
+jdk.httpserver.jmod
+jdk.incubator.httpclient.jmod
+jdk.internal.ed.jmod
+jdk.internal.jvmstat.jmod
+jdk.internal.le.jmod
+jdk.internal.opt.jmod
+jdk.internal.vm.ci.jmod
+jdk.internal.vm.compiler.jmod
+jdk.internal.vm.compiler.management.jmod
+jdk.jartool.jmod
+jdk.javadoc.jmod
+jdk.javaws.jmod
+jdk.jcmd.jmod
+jdk.jconsole.jmod
+jdk.jdeps.jmod
+jdk.jdi.jmod
+jdk.jdwp.agent.jmod
+jdk.jfr.jmod
+jdk.jlink.jmod
+jdk.jshell.jmod
+jdk.jsobject.jmod
+jdk.jstatd.jmod
+jdk.localedata.jmod
+jdk.management.agent.jmod
+jdk.management.cmm.jmod
+jdk.management.jfr.jmod
+jdk.management.jmod
+jdk.management.resource.jmod
+jdk.naming.dns.jmod
+jdk.naming.rmi.jmod
+jdk.net.jmod
+jdk.pack.jmod
+jdk.packager.jmod
+jdk.packager.services.jmod
+jdk.plugin.jmod
+jdk.plugin.server.jmod
+jdk.rmic.jmod
+jdk.scripting.nashorn.jmod
+jdk.scripting.nashorn.shell.jmod
+jdk.sctp.jmod
+jdk.security.auth.jmod
+jdk.security.jgss.jmod
+jdk.snmp.jmod
+jdk.unsupported.jmod
+jdk.xml.bind.jmod
+jdk.xml.dom.jmod
+jdk.xml.ws.jmod
+jdk.zipfs.jmod
+oracle.desktop.jmod
+oracle.net.jmod			
+			]]>
 			</screen>
 		</section>
 	</section>
