@@ -2,7 +2,7 @@
 <section id="index"><?dbhtml dir="java/util" ?>
 	<title>Util</title>
 	<section id="properties">
-		<title>*.properties</title>
+		<title>Properties 处理 *.properties 文件</title>
 		<programlisting>
 		<![CDATA[
 package netkiller.test;
@@ -89,7 +89,7 @@ public class MainClass {
   }
 }			
 			]]>
-			</programlisting>			
+			</programlisting>
 		</section>
 		<section>
 			<title>keySet()</title>
@@ -351,7 +351,43 @@ public class Application {
 			]]>
 			</programlisting>
 		</section>
-	</section>	
+		<section>
+			<title>实现国际化</title>
+			<para>准备语言包文件 chinese.properties 内容如下</para>
+			<screen>
+			<![CDATA[
+hello=你好世界
+			]]>
+			</screen>
+			<para>english.properties</para>
+			<screen>
+			<![CDATA[
+hello=Helloworld
+			]]>
+			</screen>
+			<programlisting>
+			 <![CDATA[
+	@GetMapping("/lang")
+	public String lang(@RequestHeader String lang) throws IOException {
+		System.out.println(lang);
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(lang + ".properties"));
+		String tmp = properties.getProperty("hello");
+		return tmp;
+	}
+			 ]]>
+			</programlisting>
+			<para>测试效果</para>
+			<screen>
+			<![CDATA[
+curl -s -H lang:chinese http://localhost:8080/lang
+你好世界
+
+curl -s -H lang:english http://localhost:8080/lang
+Helloworld
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="logging">
 		<title>Logging</title>
 		<programlisting>
@@ -496,16 +532,16 @@ public class Main {
 			<title>console</title>
 			<para>控制台日志输入格式定义</para>
 			<programlisting>
-		ConsoleHandler consoleHandler = new ConsoleHandler();
-		consoleHandler.setLevel(Level.OFF);
-		logger.addHandler(consoleHandler);			
+				ConsoleHandler consoleHandler = new ConsoleHandler();
+				consoleHandler.setLevel(Level.OFF);
+				logger.addHandler(consoleHandler);
 			</programlisting>
 			<para>禁止 Console 输出</para>
 			<programlisting>
-logger.setUseParentHandlers(false);			
+				logger.setUseParentHandlers(false);
 			</programlisting>
 		</section>
-	</section>	
+	</section>
 	<section id="base64">
 		<title>BASE64</title>
 		<programlisting>
@@ -526,6 +562,37 @@ public class Base64Test {
 		System.out.println(decoded);
 	}
 }
+		]]>
+		</programlisting>
+	</section>
+	<section id="java.util.Locale">
+		<title>Locale 国际化</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.i18n;
+
+import java.util.Locale;
+
+public class Lang {
+
+	public Lang() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// create a new locale
+		Locale locale = new Locale("ENGLISH", "US");
+
+		// print locale
+		System.out.println("Locale:" + locale);
+
+		// print display name for locale - based on inLocale
+		System.out.println("Name:" + locale.getDisplayName(new Locale("GERMAN", "GERMANY")));
+
+	}
+
+}
+		
 		]]>
 		</programlisting>
 	</section>

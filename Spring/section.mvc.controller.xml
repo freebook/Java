@@ -579,7 +579,7 @@ public class Deploy {
 		</programlisting>
 	</section>
 	<section id="@CookieValue">
-		<title>@CookieValue</title>
+		<title>@CookieValue - 获取 Cookie 值</title>
 		<programlisting>
 		<![CDATA[
 @RequestMapping("/sessionInfo")  
@@ -592,7 +592,7 @@ public void sessionInfo(@CookieValue("JSESSIONID") String cookie)  {
 		</programlisting>
 	</section>
 	<section id="@RequestHeader">
-		<title>@RequestHeader</title>
+		<title>@RequestHeader - 获取 HTTP Header 信息</title>
 		<programlisting>
 		<![CDATA[
 @RequestMapping("/displayHeaderInfo")  
@@ -604,9 +604,51 @@ public void displayHeaderInfo(@RequestHeader("Accept-Encoding") String encoding,
 } 
 		]]>
 		</programlisting>
+		<para>获取用户当前语言</para>
+		<programlisting>
+		<![CDATA[
+	@GetMapping("/lang")
+	public String language(@RequestHeader("Accept-Language") String locale ) {
+		System.out.println(locale);
+		return locale;
+	}				
+		]]>
+		</programlisting>
+		<para>下面代码可以获得相同效果</para>
+		<programlisting>
+		<![CDATA[
+	@GetMapping("/lang")
+	public String language(Locale locale) {
+		System.out.println(locale);
+		return locale;
+	}	
+	
+	@GetMapping("/lang")
+	public String language() {
+		String locale = LocaleContextHolder.getLocale().toString();
+		System.out.println(locale);
+		return locale;
+	}
+		]]>
+		</programlisting>
+		<section>
+			<title>@RequestHeader 从 Http 头中获取变量</title>
+			<programlisting>
+			<![CDATA[
+	@PostMapping(value = "/token")
+	public TokenResponse token(@RequestParam String symbol, @RequestHeader String token) {
+	
+			TokenResponse tokenResponse = walletService.getTokenBySymbol(symbol);
+
+			return tokenResponse;
+	}
+			]]>
+			</programlisting>
+		</section>
 	</section>
+
 	<section id="@SessionAttributes">
-		<title>@@SessionAttributes</title>
+		<title>@SessionAttributes</title>
 		<para>@SessionAttributes:
 			该注解用来绑定HttpSession中的attribute对象的值，便于在方法中的参数里使用。
 			该注解有value、types两个属性，可以通过名字和类型指定要使用的attribute 对象；
@@ -657,6 +699,35 @@ public class Pathinfo {
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	
+	<section id="@CrossOrigin">
+		<title>@CrossOrigin</title>
+		<screen>
+			@CrossOrigin(origins = "http://localhost:9000")
+			@GetMapping("/greeting")
+			public Greeting
+			greeting(@RequestParam(required=false,
+			defaultValue="World") String
+			name) {
+			System.out.println("==== in greeting ====");
+			return new
+			Greeting(counter.incrementAndGet(), String.format(template,
+			name));
+			}
+		</screen>
+</section>
+	<section id="@SessionAttributes">
+		<title>@SessionAttributes</title>
+		<programlisting>
+		<![CDATA[
+@Controller
+@SessionAttributes("myRequestObject")
+public class MyController {
+  ...
+}
+		]]>
+		</programlisting>
 	</section>
 	<section id="ModelAndView">
 		<title>ModelAndView</title>
@@ -891,48 +962,6 @@ Password: ${user.password}<br>
 			]]>
 			</programlisting>
 		</section>
-	</section>
-	<section id="@CrossOrigin">
-		<title>@CrossOrigin</title>
-		<screen>
-			@CrossOrigin(origins = "http://localhost:9000")
-			@GetMapping("/greeting")
-			public Greeting
-			greeting(@RequestParam(required=false,
-			defaultValue="World") String
-			name) {
-			System.out.println("==== in greeting ====");
-			return new
-			Greeting(counter.incrementAndGet(), String.format(template,
-			name));
-			}
-		</screen>
-	</section>
-	<section id="@SessionAttributes">
-		<title>@SessionAttributes</title>
-		<programlisting>
-		<![CDATA[
-@Controller
-@SessionAttributes("myRequestObject")
-public class MyController {
-  ...
-}
-		]]>
-		</programlisting>
-	</section>
-	<section id="@RequestHeader">
-		<title>@RequestHeader 从 Http 头中获取变量</title>
-		<programlisting>
-		<![CDATA[
-	@PostMapping(value = "/token")
-	public TokenResponse token(@RequestParam String symbol, @RequestHeader String token) {
-	
-			TokenResponse tokenResponse = walletService.getTokenBySymbol(symbol);
-
-			return tokenResponse;
-	}		
-		]]>
-		</programlisting>
 	</section>
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>

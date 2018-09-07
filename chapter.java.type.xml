@@ -615,6 +615,13 @@ ISO 8601扩展格式 YYYY-MM-DDTHH:mm:ss.sssZ
 	</section>
 	<section id="array">
 		<title>Array</title>
+		<para>一定字符串数组</para>
+		<programlisting>
+		<![CDATA[
+String[] str={"AAA","BBB","CCC"};
+String str[]={"AAA","BBB","CCC"};		
+		]]>
+		</programlisting>
 		<para>String to Array</para>
 		<programlisting>
 		<![CDATA[
