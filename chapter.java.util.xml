@@ -32,6 +32,36 @@ public class PropertiesTest {
 }
 		]]>
 		</programlisting>
+		<section>
+			<title>打开 properties 文件</title>
+			<section>
+				<title>文件方式打开</title>
+				<programlisting>
+				<![CDATA[
+BufferedReader br = null;
+Properties properties = new Properties();
+br = new BufferedReader(new InputStreamReader(new  FileInputStream(new File("data.properties")), "UTF8"));
+properties.load(br);				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>输入流</title>
+				<programlisting>
+				<![CDATA[
+Properties properties = new Properties();
+InputStream in = getClass().getResourceAsStream("/IcisReport.properties");
+properties.load(in);
+Set keyValue = properties.keySet();
+for (Iterator it = keyValue.iterator(); it.hasNext();)
+{
+	String key = (String) it.next();
+}				
+				]]>
+				</programlisting>
+			</section>
+
+		</section>
 		<section id="propertyNames">
 			<title>propertyNames()</title>
 			<programlisting>
@@ -592,7 +622,39 @@ public class Lang {
 	}
 
 }
-		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Locale locale = new Locale("zh", "CN");
+Locale locale = Locale.US;
+Locale locale = Locale.getDefault();	// 默认语言	
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+java.util.ResourceBundle resourceBundle = java.util.ResourceBundle.getBundle("message");
+
+resourceBundle.getString("nickname");	
+
+// 指定语言
+
+Locale  locale = new Locale("zh", "CN");
+ResourceBundle res = ResourceBundle.getBundle("message", locale);	
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Scanner</title>
+		<programlisting>
+		<![CDATA[
+Scanner in = new Scanner(System.in);
+System.out.println("Username:");
+String username = in.next();
+      		
 		]]>
 		</programlisting>
 	</section>
