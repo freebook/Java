@@ -178,7 +178,7 @@ server.tomcat.accesslog.suffix=.log
 				server.ssl.keyStore=/www/ssl/spring
 			</screen>
 		</section>
-		<section id="id=" spring.servlet.multipart ">
+		<section id="spring.servlet.multipart">
 			<title>上传限制</title>
 			<screen>
 			<![CDATA[
