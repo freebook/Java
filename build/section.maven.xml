@@ -957,6 +957,49 @@ $ ls ~/.m2
 				</screen>
 			</section>
 		</section>
+		<section id="repositories">
+			<title>repositories 仓库配置</title>
+			<section>
+				<title>默认仓库</title>
+				<screen>
+				<![CDATA[
+		<repository>
+			<id>mvnrepository</id>
+			<name>mvnrepository</name>
+			<url>http://www.mvnrepository.com/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+				]]>
+				</screen>
+				
+			</section>
+			<section id="maven.aliyun.com">
+				<title>阿里云仓库</title>
+				<screen>
+				<![CDATA[
+	<repositories>
+		<repository>
+			<id>alimaven</id>
+			<name>aliyun maven</name>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>				
+				]]>
+				</screen>
+			</section>
+		</section>
 		<section id="dependencies">
 			<title>dependencies</title>
 			<screen>

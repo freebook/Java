@@ -142,10 +142,23 @@ apply plugin: 'java'
 		<section>
 			<title>repositories</title>
 			<screen>
+			<![CDATA[
 repositories {
     mavenCentral()
-}
+}			
+			]]>
 			</screen>
+			<para>配置阿里云仓库</para>
+			<screen>
+			<![CDATA[
+allprojects {
+    repositories {
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+    }
+}			
+			]]>
+			</screen>
+			
 		</section>
 		<section>
 			<title>dependencies</title>

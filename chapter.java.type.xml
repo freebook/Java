@@ -612,6 +612,30 @@ ISO 8601扩展格式 YYYY-MM-DDTHH:mm:ss.sssZ
 			]]>
 			</screen>
 		</section>
+		<section id="date.LocalDateTime">
+			<title>LocalDateTime</title>
+			<programlisting>
+			<![CDATA[
+	LocalDateTime localDateTime = LocalDateTime.of(2016, 1, 1, 13, 55);
+	ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Shanghai"));
+	Date date = Date.from(zonedDateTime.toInstant());	
+		
+	Instant instant = Instant.ofEpochMilli(date.getTime());
+    LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+    Instant instant = ldt.toInstant(ZoneOffset.UTC);
+    Date date = Date.from(instant);		
+				
+			]]>
+			</programlisting>
+		</section>
+		<section id="date.ZonedDateTime">
+			<title>ZonedDateTime</title>
+			<programlisting>
+			<![CDATA[
+Date.from(java.time.ZonedDateTime.now().toInstant());			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="array">
 		<title>Array</title>
@@ -1037,6 +1061,27 @@ str = new StringBuffer(str).insert(str.length()-2, ".").toString();
 			}
 			}
 		</screen>
+	</section>
+	<section id="byte">
+		<title>byte 类型</title>
+		<section id="">
+			<title>string2byte</title>
+			<programlisting>
+			<![CDATA[
+	byte[] bytes = "Helloworld!!! - http://www.netkiller.cn".getBytes();		
+			]]>
+			</programlisting>
+		</section>
+		<section id="byte2string">
+			<title>byte[] to String</title>
+			<programlisting>
+			<![CDATA[
+	byte[] bytes = "Helloworld!!! - http://www.netkiller.cn".getBytes();
+	String str = new String(bytes, StandardCharsets.UTF_8);
+	System.out.println(str);
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>
 

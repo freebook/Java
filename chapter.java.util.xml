@@ -632,8 +632,8 @@ Locale locale = Locale.getDefault();	// 默认语言
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
-		<title></title>
+	<section id="java.util.ResourceBundle">
+		<title>ResourceBundle</title>
 		<programlisting>
 		<![CDATA[
 java.util.ResourceBundle resourceBundle = java.util.ResourceBundle.getBundle("message");
@@ -658,4 +658,34 @@ String username = in.next();
 		]]>
 		</programlisting>
 	</section>
+
+	<section id="java.util.UUID">
+		<title>UUID</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.example.uuid;
+
+import java.util.UUID;
+
+public class UuidTest {
+
+	public UuidTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		UUID uuid = UUID.randomUUID();
+		String randomUUIDString = uuid.toString();
+
+		System.out.println("Random UUID String = " + randomUUIDString);
+		System.out.println("UUID version       = " + uuid.version());
+		System.out.println("UUID variant       = " + uuid.variant());
+	}
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
+
 </section>

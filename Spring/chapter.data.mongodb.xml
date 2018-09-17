@@ -1,6 +1,6 @@
 <section id="spring-data-mongodb"><!-- <?dbhtml dir="mongodb" ?> -->
 	<title>Spring Data MongoDB</title>
-	
+
 	<section id="SpringDataMongoDB">
 		<title>Example Spring Data MongoDB</title>
 		<section>
@@ -309,6 +309,33 @@ public class MultilevelDirectSellingTradingRebate {
 }
 		]]>
 		</programlisting>
+		<section>
+			<title>@Id</title>
+			<programlisting>
+			<![CDATA[
+	@Id
+	private String id;		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>@Version</title>
+			<programlisting>
+			<![CDATA[
+	@Version 
+	private Long version;			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>@Field 定义字段名</title>
+			<programlisting>
+			<![CDATA[
+@Field("url")
+private String link;			
+			]]>
+			</programlisting>
+		</section>
 		<section id="index">
 			<title>@Indexed</title>
 			<para>索引</para>
@@ -332,6 +359,7 @@ public class MultilevelDirectSellingTradingRebate {
 		<section id="DateTimeFormat">
 			<title>@DateTimeFormat</title>
 			<programlisting>
+			<![CDATA[
 @DateTimeFormat( pattern = "yyyy-MM-dd" )
 private Date birthday
 
@@ -340,13 +368,45 @@ private final Calendar datetime;
 
 @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 private Date date;
+
+@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+private Date createdDate = new Date();			
+			]]>
+			</programlisting>
+		</section>
+		<section id="">
+			<title>@JsonFormat 格式化 json 时间格式</title>
+			<para>默认 json 中的时间格式是这样的</para>
+			<screen>
+			<![CDATA[
+"createDate":"2018-09-11T07:34:20.106+0000","updateDate":"2018-09-11T07:34:20.106+0000"			
+			]]>
+			</screen>
+			<para>@JsonFormat 可以格式化 json 返回的时间格式。</para>
+			<programlisting>
+			<![CDATA[
+@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
+			]]>
+			</programlisting>
+			<para>格式化后</para>
+			<programlisting>
+			<![CDATA[
+"createDate":"2018-09-11 07:42:44","updateDate":"2018-09-11 07:42:44"			
+			]]>
+			</programlisting>
+			<para>解决时区问题，MongoDb 默认使用UTC,显示时间相差8小时</para>
+			<programlisting>
+			<![CDATA[
+@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")	
+private Date createdDate = new Date();			
+			]]>
 			</programlisting>
 		</section>
 		<section id="NumberFormat">
 			<title>@NumberFormat</title>
 			<programlisting>
-@NumberFormat(style=Style.CURRENCY)
-private double money;
+				@NumberFormat(style=Style.CURRENCY)
+				private double money;
 			</programlisting>
 		</section>
 		<section id="Enum">
@@ -496,10 +556,10 @@ Page<User> findByLastname(String lastname, Pageable pageable);
 			</programlisting>
 			<para>URL翻页参数，每次返回10条记录</para>
 			<screen>
-第一页 http://localhost:8080/v1/withdraw/read/10/1.json
-第二页 http://localhost:8080/v1/withdraw/read/10/2.json
-...
-第五页 http://localhost:8080/v1/withdraw/read/10/5.json
+				第一页 http://localhost:8080/v1/withdraw/read/10/1.json
+				第二页 http://localhost:8080/v1/withdraw/read/10/2.json
+				...
+				第五页 http://localhost:8080/v1/withdraw/read/10/5.json
 			</screen>
 		</section>
 		<section id="@Query">
@@ -509,10 +569,10 @@ Page<User> findByLastname(String lastname, Pageable pageable);
 
 			]]>
 			</programlisting>
-		</section>		
+		</section>
 	</section>
-	
-	
+
+
 	<section id="mongoTemplate.Query">
 		<title>mongoTemplate</title>
 		<section id="is">
@@ -552,6 +612,20 @@ List<User> users = mongoTemplate.find(query, User.class);
 Query query = new Query();
 query.addCriteria(Criteria.where("age").lt(30).gt(20));
 List<User> users = mongoTemplate.find(query,User.class);
+			]]>
+			</programlisting>
+			<para>查找日期范围</para>
+			<programlisting>
+			<![CDATA[
+Date start = DateUtil.convertStringToDateTime("2014-02-10 20:38:44");
+Date end = DateUtil.convertStringToDateTime("2014-02-10 20:38:50");
+					
+Query query = new Query();
+Criteria criteria = Criteria.where("delflag").is(false);
+criteria.and("modifyDate").gte(start).lte(end);
+query.addCriteria(criteria);
+query.limit(10);
+			
 			]]>
 			</programlisting>
 		</section>
@@ -626,7 +700,7 @@ query.with(pageableRequest);
 		</section>
 		<section id="newAggregation">
 			<title>newAggregation</title>
-			
+
 			<programlisting>
 			<![CDATA[
 		MultilevelDirectSellingAccountRewardsSettlementDetails multilevelDirectSellingAccountRewardsSettlementDetails = new MultilevelDirectSellingAccountRewardsSettlementDetails();
@@ -655,5 +729,5 @@ query.with(pageableRequest);
 			</programlisting>
 		</section>
 	</section>
-	
+
 </section>

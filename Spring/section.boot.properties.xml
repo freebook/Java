@@ -132,7 +132,7 @@ server.tomcat.accesslog.suffix=.log
 				server.compression.min-response-size=1024
 			</screen>
 		</section>
-		<section>
+		<section id="erver.servlet.context-path">
 			<title>server.servlet.context-path</title>
 			<screen>
 				server.servlet.context-path=/your
@@ -151,7 +151,8 @@ server.tomcat.accesslog.suffix=.log
 				server.ssl.key-store-provider设定key store的提供者.
 				server.ssl.key-store-type 设定key store的类型.
 				server.ssl.protocol 使用的SSL协议，默认: TLS
-				server.ssl.trust-store 持有SSL certificates的Trust store.
+				server.ssl.trust-store 持有SSL certificates的Trust
+				store.
 				server.ssl.trust-store-password访问trust store的密码.
 				server.ssl.trust-store-provider设定trust store的提供者.
 				server.ssl.trust-store-type 指定trust store的类型.
@@ -175,6 +176,16 @@ server.tomcat.accesslog.suffix=.log
 				server.ssl.keyAlias=springboot
 				server.ssl.keyPassword=123456
 				server.ssl.keyStore=/www/ssl/spring
+			</screen>
+		</section>
+		<section id="id=" spring.servlet.multipart ">
+			<title>上传限制</title>
+			<screen>
+			<![CDATA[
+spring.servlet.multipart.max-file-size=2MB
+spring.servlet.multipart.max-request-size=10MB
+spring.http.multipart.enabled=false			
+			]]>
 			</screen>
 		</section>
 	</section>
