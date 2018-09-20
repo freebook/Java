@@ -409,7 +409,7 @@ public class Application extends SpringBootServletInitializer {
 			<![CDATA[
 server.name=Linux
 server.host=192.168.0.1,172.16.0.1			
-			]]>				
+			]]>
 			</screen>
 			<screen>
 			<![CDATA[
@@ -457,8 +457,10 @@ server.host=192.168.0.1,172.16.0.1
 			</programlisting>
 			<para>test.properties</para>
 			<programlisting>
-				name=Neo
-				age=30
+			<![CDATA[
+name=Neo
+age=30			
+			]]>
 			</programlisting>
 			<programlisting>
 			<![CDATA[
@@ -513,7 +515,9 @@ public class TestController {
 			<title>@EnableConfigurationProperties 引用自定义 *.properties 配置文件</title>
 			<para>Application.java 涮锅配置NetkillerProperties.java是 @ComponentScan 扫描范围，可以不用声明下面注解。</para>
 			<screen>
-				@EnableConfigurationProperties(NetkillerProperties.class)
+			<![CDATA[
+@EnableConfigurationProperties(NetkillerProperties.class)	
+			]]>
 			</screen>
 			<programlisting>
 			<![CDATA[
@@ -685,21 +689,27 @@ netkiller.home=http://www.netkiller.cn
 			<title>spring.profiles.active 参数切换配置文件</title>
 			<para>首先我们准备三个配置文件</para>
 			<screen>
-				src/main/resource/application-development.properties
-				src/main/resource/application-testing.properties
-				src/main/resource/application-production.properties
+			<![CDATA[
+src/main/resource/application-development.properties
+src/main/resource/application-testing.properties
+src/main/resource/application-production.properties			
+			]]>
 			</screen>
 			<para>使用下面--spring.profiles.active参数切换运行环境配置文件</para>
 			<screen>
-				java -jar application.jar --spring.profiles.active=development
-				java -jar application.jar --spring.profiles.active=testing
-				java -jar application.jar --spring.profiles.active=production
+			<![CDATA[
+java -jar application.jar --spring.profiles.active=development
+java -jar application.jar --spring.profiles.active=testing
+java -jar application.jar --spring.profiles.active=production			
+			]]>
 			</screen>
 			<para>分别为三个环境打包</para>
 			<screen>
-				mvn clean package -Pdevelopment
-				mvn clean package -Ptesting
-				mvn clean package -Pproduction
+			<![CDATA[
+mvn clean package -Pdevelopment
+mvn clean package -Ptesting
+mvn clean package -Pproduction			
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -1709,7 +1719,7 @@ public class RedisMessagePublisher {
 				</programlisting>
 			</section>
 		</section>
-		
+
 	</section>
 	<section id="cache">
 		<title>Spring boot with Caching</title>
@@ -3380,7 +3390,7 @@ public class ScheduledTasks {
 			</screen>
 		</section>
 	</section>
-	
+
 
 
 	<section id="hessian">
@@ -4873,7 +4883,7 @@ public class ExecutorConfig {
 			
 			]]>
 			</programlisting>
-			
+
 			<programlisting>
 			<![CDATA[
 @Service
@@ -4914,7 +4924,7 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 }
 			]]>
 			</programlisting>
-			
+
 		</section>
 	</section>
 	<section id="lombok">
