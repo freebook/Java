@@ -400,7 +400,7 @@ public class Application extends SpringBootServletInitializer {
 		]]>
 		</programlisting>
 	</section>
-	<section id="Properties">
+	<section id="properties">
 		<title>Properties</title>
 		<section>
 			<title>@Value 注解</title>
