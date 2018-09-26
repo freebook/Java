@@ -355,6 +355,347 @@ private String link;
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title>索引排序方式</title>
+				<programlisting>
+				<![CDATA[
+@Indexed(name = "first_name_index", direction = IndexDirection.DESCENDING)		
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>索引过期时间设置</title>
+				<programlisting>
+				<![CDATA[
+@Indexed(name = "expire_after_seconds_index", expireAfterSeconds = 10)
+private LocalDateTime updateDate;				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="@CompoundIndex">
+			<title>@CompoundIndex 复合索引</title>
+			<programlisting>
+			<![CDATA[
+@Document
+@CompoundIndexes({
+    @CompoundIndex(name = "email_age", def = "{'email.id' : 1, 'age': 1}")
+})
+public class User {
+    //
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+@Document
+@CompoundIndexes({
+  @CompoundIndex(def = "{'firstName':1, 'salary':-1}", name = "compound_index_1"),
+  @CompoundIndex(def = "{'secondName':1, 'profession':1}", name = "compound_index_2")
+})
+public class Person {
+  @Id private String id;
+  private String firstName;
+  private String secondName;
+  private LocalDateTime dateOfBirth;
+  private Address address;
+  private String profession;
+  private int salary;
+  // constructor
+  // getters and setters
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="@Transient">
+			<title>@Transient 丢弃数据，不存到 mongodb</title>
+			<programlisting>
+			<![CDATA[
+public class User {
+     
+    @Transient
+    private Integer age;
+
+    // standard getter and setter
+ 
+}	
+			]]>
+			</programlisting>
+		</section>
+		<section id="@DBRef">
+			<title>@DBRef 做外外键引用</title>
+			<section>
+				<title>Article 类</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.domain;
+
+import java.util.List;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class Article {
+
+	private String title; // 名称
+	private String description; // 描述
+	private String tag; // 类型
+	@DBRef
+	private List<Hypermedia> hypermedia; // 图片，视频
+
+	public Article() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public List<Hypermedia> getHypermedia() {
+		return hypermedia;
+	}
+
+	public void setHypermedia(List<Hypermedia> hypermedia) {
+		this.hypermedia = hypermedia;
+	}
+
+	@Override
+	public String toString() {
+		return "Article [title=" + title + ", description=" + description + ", tag=" + tag + ", hypermedia=" + hypermedia + "]";
+	}
+
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Hypermedia 类</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.domain;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class Hypermedia {
+
+	@Id
+	private String id;
+	private String hash;
+	private String name;
+	private String size;
+
+	public Hypermedia() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Hypermedia(String hash, String name, String size) {
+		this.hash = hash;
+		this.name = name;
+		this.size = size;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	@Override
+	public String toString() {
+		return "Hypermedia [hash=" + hash + ", name=" + name + ", size=" + size + "]";
+	}
+
+}
+
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>MongoRepository</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.repository;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import api.domain.Article;
+
+public interface ArticleRepository extends MongoRepository<Article, String> {
+
+}
+
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.repository;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import api.domain.Hypermedia;
+
+public interface HypermediaRepository extends MongoRepository<Hypermedia, String> {
+
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>RestController</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.restful;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import api.domain.Article;
+import api.domain.Hypermedia;
+import api.repository.ArticleRepository;
+import api.repository.HypermediaRepository;
+
+@RestController
+@RequestMapping("/article")
+public class ArticleRestController {
+
+	@Autowired
+	private ArticleRepository articleRepository;
+
+	@Autowired
+	private HypermediaRepository hypermediaRepository;
+
+	public ArticleRestController() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@GetMapping("/save")
+	public Article save() {
+
+		Article article = new Article();
+		article.setTitle("标题");
+		article.setDescription("摘要");
+		article.setTag("标签");
+
+		Hypermedia hypermedia = new Hypermedia("AAA", "BBB", "CCC");
+		hypermediaRepository.save(hypermedia);
+
+		List<Hypermedia> hypermedias = new ArrayList<Hypermedia>();
+		hypermedias.add(hypermedia);
+
+		article.setHypermedia(hypermedias);
+
+		articleRepository.save(article);
+
+		System.out.println(article);
+
+		return article;
+	}
+
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>运行结果</title>
+				<programlisting>
+				<![CDATA[
+neo@MacBook-Pro ~ % curl -s -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" -X GET ${URL}/article/save | jq
+{
+  "title": "标题",
+  "description": "摘要",
+  "tag": "标签",
+  "hypermedia": [
+    {
+      "hash": "AAA",
+      "name": "BBB",
+      "size": "CCC"
+    }
+  ]
+}
+				]]>
+				</programlisting>
+				<para>MongoDB 结果</para>
+				<para>db.getCollection('article').find({})</para>
+				<screen>
+				<![CDATA[
+/* 1 */
+{
+    "_id" : ObjectId("5bab66f8c92782395817cb05"),
+    "title" : "标题",
+    "description" : "摘要",
+    "tag" : "标签",
+    "hypermedia" : [ 
+        {
+            "$ref" : "hypermedia",
+            "$id" : ObjectId("5bab66f8c92782395817cb04")
+        }
+    ],
+    "_class" : "cn.netkiller.api.domain.Article"
+}				
+				]]>
+				</screen>
+				<para>db.getCollection('hypermedia').find({})</para>
+				<screen>
+				<![CDATA[
+/* 1 */
+{
+    "_id" : ObjectId("5bab66b9c927823951f4f5fe"),
+    "hash" : "AAA",
+    "name" : "BBB",
+    "size" : "CCC",
+    "_class" : "api.domain.Hypermedia"
+}				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="DateTimeFormat">
 			<title>@DateTimeFormat</title>
@@ -374,7 +715,7 @@ private Date createdDate = new Date();
 			]]>
 			</programlisting>
 		</section>
-		<section id="">
+		<section id="@JsonFormat 日期格式化">
 			<title>@JsonFormat 格式化 json 时间格式</title>
 			<para>默认 json 中的时间格式是这样的</para>
 			<screen>
@@ -573,49 +914,72 @@ Page<User> findByLastname(String lastname, Pageable pageable);
 	</section>
 
 
-	<section id="mongoTemplate.Query">
+	<section id="mongoTemplate">
 		<title>mongoTemplate</title>
-		<section id="is">
-			<title>is</title>
+		<section id="mongoTemplate.insert">
+			<title>Insert</title>
 			<programlisting>
+			<![CDATA[
+BSONObject personBsonObj = BasicDBObjectBuilder.start()
+                .add("name","Neo Chen")
+                .add("age",27)
+                .add("address",null).get();
+
+mongoTemplate.insert(personBsonObj,"personCollection");
+			]]>
+			</programlisting>
+			<para>document in the db:</para>
+			<screen>
+			<![CDATA[
+db.personCollection.findOne().pretty();
+{"age":21,"name":"John Doe";"address":null}*			
+			]]>
+			</screen>
+		</section>
+		<section id="mongoTemplate.query">
+			<title>Query</title>
+
+			<section id="is">
+				<title>is</title>
+				<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.addCriteria(Criteria.where("name").is("Neo"));
 List<User> users = mongoTemplate.find(query, User.class);		
 			]]>
-			</programlisting>
-		</section>
-		<section id="regex">
-			<title>Regex 正则表达式搜索</title>
-			<para>查询以N开头的名字</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="regex">
+				<title>Regex 正则表达式搜索</title>
+				<para>查询以N开头的名字</para>
+				<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.addCriteria(Criteria.where("name").regex("^N"));
 List<User> users = mongoTemplate.find(query,User.class);	
 			]]>
-			</programlisting>
-			<para>查询以o结尾的名字</para>
-			<programlisting>
+				</programlisting>
+				<para>查询以o结尾的名字</para>
+				<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.addCriteria(Criteria.where("name").regex("o$"));
 List<User> users = mongoTemplate.find(query, User.class);
 			]]>
-			</programlisting>
-		</section>
-		<section id="ltgt">
-			<title>lt 和 gt</title>
-			<para>查询年龄小于 &lt; 30 并 &gt; 20 的用户</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="ltgt">
+				<title>lt 和 gt</title>
+				<para>查询年龄小于 &lt; 30 并 &gt; 20 的用户</para>
+				<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.addCriteria(Criteria.where("age").lt(30).gt(20));
 List<User> users = mongoTemplate.find(query,User.class);
 			]]>
-			</programlisting>
-			<para>查找日期范围</para>
-			<programlisting>
+				</programlisting>
+				<para>查找日期范围</para>
+				<programlisting>
 			<![CDATA[
 Date start = DateUtil.convertStringToDateTime("2014-02-10 20:38:44");
 Date end = DateUtil.convertStringToDateTime("2014-02-10 20:38:50");
@@ -627,12 +991,12 @@ query.addCriteria(criteria);
 query.limit(10);
 			
 			]]>
-			</programlisting>
-		</section>
-		<section id="between">
-			<title>between</title>
-			<para>实现一个区间条件 new Criteria("createdDate").gte(beginDate).lte(endDate)</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="between">
+				<title>between</title>
+				<para>实现一个区间条件 new Criteria("createdDate").gte(beginDate).lte(endDate)</para>
+				<programlisting>
 			<![CDATA[
 	public boolean AccountDeposit(Date beginDate, Date endDate) {
 
@@ -654,11 +1018,11 @@ query.limit(10);
 		return true;
 	}
 			]]>
-			</programlisting>
-		</section>
-		<section id="Criteria">
-			<title>Criteria</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="Criteria">
+				<title>Criteria</title>
+				<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.addCriteria(
@@ -675,33 +1039,33 @@ for (Foo foo : result) {
     System.out.println("result - " + foo);
 }			
 			]]>
-			</programlisting>
-		</section>
-		<section id="sort">
-			<title>Sort</title>
-			<para>按照年龄排序</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="sort">
+				<title>Sort</title>
+				<para>按照年龄排序</para>
+				<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.with(new Sort(Sort.Direction.ASC, "age"));
 List<User> users = mongoTemplate.find(query,User.class);
 			]]>
-			</programlisting>
-		</section>
-		<section id="PageRequest">
-			<title>Query + PageRequest</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="PageRequest">
+				<title>Query + PageRequest</title>
+				<programlisting>
 			<![CDATA[
 final Pageable pageableRequest = new PageRequest(0, 2);
 Query query = new Query();
 query.with(pageableRequest);
 			]]>
-			</programlisting>
-		</section>
-		<section id="newAggregation">
-			<title>newAggregation</title>
+				</programlisting>
+			</section>
+			<section id="newAggregation">
+				<title>newAggregation</title>
 
-			<programlisting>
+				<programlisting>
 			<![CDATA[
 		MultilevelDirectSellingAccountRewardsSettlementDetails multilevelDirectSellingAccountRewardsSettlementDetails = new MultilevelDirectSellingAccountRewardsSettlementDetails();
 		multilevelDirectSellingAccountRewardsSettlementDetails.setLoginname("111");
@@ -726,8 +1090,18 @@ query.with(pageableRequest);
 		AggregationResults<MultilevelDirectSellingAccountRewardsSettlementDetails> results = mongoTemplate.aggregate(aggregation, MultilevelDirectSellingAccountRewardsSettlementDetails.class, MultilevelDirectSellingAccountRewardsSettlementDetails.class);		
 		System.out.println(results.getRawResults().get("result").toString());
 			]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="indexOps">
+			<title>indexOps</title>
+			<programlisting>
+			<![CDATA[
+mongoOps.indexOps(User.class).ensureIndex(new Index().on("name", Direction.ASC));			
+			]]>
 			</programlisting>
 		</section>
 	</section>
+
 
 </section>
