@@ -309,6 +309,25 @@ public class MultilevelDirectSellingTradingRebate {
 }
 		]]>
 		</programlisting>
+		<section id="@Document">
+			<title>指定表名</title>
+			<para>默认使用 class 作为表名</para>
+			<programlisting>
+			<![CDATA[
+@Document
+public class Multilevel {
+	...
+	...
+}			
+			]]>
+			</programlisting>
+			<para>指定特别表名</para>
+			<programlisting>
+			<![CDATA[
+@Document(collection = "author")			
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>@Id</title>
 			<programlisting>
@@ -907,7 +926,10 @@ Page<User> findByLastname(String lastname, Pageable pageable);
 			<title>@Query</title>
 			<programlisting>
 			<![CDATA[
-
+public interface PersonRepository extends MongoRepository<Person, String> {
+	@Query("{ 'name' : ?0 }")
+	List<Person> findWithQuery(String userId);
+}
 			]]>
 			</programlisting>
 		</section>
