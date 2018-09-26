@@ -1483,9 +1483,42 @@ public class UploadRestController {
 }
 		]]>
 		</programlisting>
-		<screen>
-		<![CDATA[]]>
-		</screen>
+		<para>由于上传文件名可能存在空格等特殊字符，这里使用UUID替代文件名</para>
+		<programlisting>
+		<![CDATA[
+	@PostMapping(value = "/file")
+	public RestfulResponse file(@RequestParam("file") MultipartFile[] files) {
+		List<Object> filelist = new ArrayList<Object>();
+		try {
+
+			for (MultipartFile file : files) {
+			
+				UUID uuid = UUID.randomUUID();
+				String filename = String.format("%s/%s.%s", folder, uuid.toString(), this.getExtensionName(filename));
+
+				File tmpfile = new File(filename);
+				String filepath = tmpfile.getPath();
+				System.out.println(filepath);
+				file.transferTo(tmpfile);
+				filelist.add(tmpfile.toString());
+			}
+			return new RestfulResponse(true, 0, null, filelist);
+		} catch (Exception e) {
+			return new RestfulResponse(false, 0, e.getMessage(), null);
+		}
+	}
+
+	private String getExtensionName(String filename) {
+		if ((filename != null) && (filename.length() > 0)) {
+			int dot = filename.lastIndexOf('.');
+			if ((dot > -1) && (dot < (filename.length() - 1))) {
+				return filename.substring(dot + 1);
+			}
+		}
+		return filename;
+	}	
+		]]>
+		</programlisting>
 		
 	</section>
 </section>

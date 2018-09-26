@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="index"><?dbhtml dir="java/io" ?>
 	<title>IO</title>
+	<section id="File">
+		<title>取出文件名中的扩展名</title>
+		<programlisting>
+		<![CDATA[
+	File file = new File("HelloWorld.jpeg");
+	String fileName = file.getName();
+	String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+	System.out.println(suffix);
+		
+		]]>
+		</programlisting>
+		<section id="getAbsolutePath()">
+			<title>getAbsolutePath() 获取绝对路径</title>
+			<programlisting>
+			<![CDATA[
+	File configFile = new File(System.getProperty("user.dir") + configPath);
+	System.out.printf("configFile : %s\n", configFile.getAbsolutePath());			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="File.createTempFile">
 		<title>临时文件</title>
 		<programlisting>
@@ -79,6 +100,23 @@ public class Main {
     BufferedWriter bw = new BufferedWriter( fw );
     bw.write( text );
     bw.close( );		
+		]]>
+		</programlisting>
+	</section>
+	<section id="InputStreamReader">
+		<title>InputStreamReader</title>
+		<programlisting>
+		<![CDATA[
+InputStreamReader stream = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));		
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title>获得 Resource 下文件路径</title>
+		<programlisting>
+		<![CDATA[
+String path = Main.class.getClassLoader().getResource("netkiller-config.yaml").getPath();
+String path = Main.class.getClassLoader().getResource("netkiller-config.yaml").getPath();
 		]]>
 		</programlisting>
 	</section>
