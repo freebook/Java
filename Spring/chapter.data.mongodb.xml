@@ -1,6 +1,6 @@
 <section id="spring-data-mongodb"><!-- <?dbhtml dir="mongodb" ?> -->
 	<title>Spring Data MongoDB</title>
-
+	<para><ulink url="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/" /></para>
 	<section id="SpringDataMongoDB">
 		<title>Example Spring Data MongoDB</title>
 		<section>

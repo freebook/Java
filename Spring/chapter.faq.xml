@@ -1300,7 +1300,7 @@ If you want an embedded database please put a supported one on the classpath. If
 		</screen>
 
 	</section>
-	<section id="">
+	<section>
 		<title>Spring boot / Spring cloud 时区差8个小时</title>
 		<para>经过检查：操作系统时区 CST，数据库是 SYSTEM，Spring boot 获取时间相差8个小时。</para>
 		<para>分析：认为是 @JsonFormat 格式化造成的。</para>
@@ -1487,5 +1487,10 @@ public class Article implements Serializable {
 
 			]]>
 		</programlisting>
+	</section>
+	<section>
+		<title>@Value 取不到值</title>
+		<para>在构造方法中引用@value为null，由于spring实例化顺序为先执行构造方法，再注入成员变量，所以取值为null。</para>
+		<para>调用spring组件时使用new对象，而不是@Autowired。</para>
 	</section>
 </section>

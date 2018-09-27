@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="application.properties">
 	<title>application.properties</title>
-	<para>配置资源文件位置，默认application.properties是放在jar包中的，通过spring.config.location可以制定外部配置文件，这样更便于运维。</para>
-	<screen>
-	<![CDATA[
+	<para>
+		<ulink url="https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html" />
+	</para>
+
+	<section id="spring.config.location">
+		<title>启动指定参数</title>
+		<para>配置资源文件位置，默认application.properties是放在jar包中的，通过spring.config.location可以制定外部配置文件，这样更便于运维。</para>
+		<screen>
+		<![CDATA[
 java -jar demo.jar --spring.config.location=/opt/config/application.properties
-	]]>
-	</screen>
+		]]>
+		</screen>
+	</section>
 	<section>
 		<title>加载排除</title>
 		<programlisting>

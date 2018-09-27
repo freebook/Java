@@ -1338,7 +1338,7 @@ public class ArrayListExample {
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>静态 List</title>
 		<programlisting>
 			<![CDATA[
 	public static List<String> list = new ArrayList<String>();
@@ -1351,6 +1351,22 @@ public class ArrayListExample {
 	}			
 				
 			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>List.of()</title>
+		<programlisting>
+		<![CDATA[
+List<String> strings = List.of("first", "second");		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Set.of()</title>
+		<programlisting>
+		<![CDATA[
+Set<Integer> ints = Set.of(1, 2, 3);		
+		]]>
 		</programlisting>
 	</section>
 </section>
@@ -1551,6 +1567,4 @@ public class TestLinkedHashMap {
 		</programlisting>
 	</section>
 </section>
-<section>
-	<title>数据结构</title>
-</section>
+

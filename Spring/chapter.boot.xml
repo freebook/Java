@@ -3,10 +3,10 @@
 	<title>Spring Boot</title>
 	<para>注意以下使用 Spring boot 2.0.2</para>
 	&section.boot.quickstart.xml;
-	<section id="">
+	<section>
 		<title>Maven 插件</title>
-		<section id="">
-			<title></title>
+		<section>
+			<title>resource</title>
 			<para>将 resource 添加应用程序</para>
 			<screen>
 			<![CDATA[
@@ -400,6 +400,9 @@ public class Application extends SpringBootServletInitializer {
 		]]>
 		</programlisting>
 	</section>
+	
+	&section.boot.properties.xml;
+	
 	<section id="properties">
 		<title>Properties</title>
 		<section>
@@ -4944,6 +4947,5 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 		]]>
 		</programlisting>
 	</section>
-	&section.boot.properties.xml;
 
 </chapter>
