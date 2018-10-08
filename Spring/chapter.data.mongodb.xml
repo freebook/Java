@@ -1,6 +1,8 @@
 <section id="spring-data-mongodb"><!-- <?dbhtml dir="mongodb" ?> -->
 	<title>Spring Data MongoDB</title>
-	<para><ulink url="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/" /></para>
+	<para>
+		<ulink url="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/" />
+	</para>
 	<section id="SpringDataMongoDB">
 		<title>Example Spring Data MongoDB</title>
 		<section>
@@ -388,6 +390,22 @@ private String link;
 				<![CDATA[
 @Indexed(name = "expire_after_seconds_index", expireAfterSeconds = 10)
 private LocalDateTime updateDate;				
+				]]>
+				</programlisting>
+			</section>
+			<section id="@GeoSpatialIndex">
+				<title>@GeoSpatialIndex 地理位置索引</title>
+				<para>点数据索引</para>
+				<programlisting>
+				<![CDATA[
+	@GeoSpatialIndexed
+	private GeoJsonPoint location; // GPS 定位信息
+				]]>
+				</programlisting>
+				<para>2D 数据索引</para>
+				<programlisting>
+				<![CDATA[
+@GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)				
 				]]>
 				</programlisting>
 			</section>
@@ -823,6 +841,20 @@ private Date createdDate = new Date();
 			]]>
 			</programlisting>
 		</section>
+		<section id="mongodb.geojson">
+			<title>GeoJson 数据类型</title>
+			<programlisting>
+			<![CDATA[
+	@GeoSpatialIndexed
+	private GeoJsonPoint location; // GPS 地址位置
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+location = new GeoJsonPoint(Double.valueOf(longitude), Double.valueOf(latitude));			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="MongoRepository">
 		<title>MongoRepository</title>
@@ -862,6 +894,14 @@ repository.save(new City("Shenzhen", "China"));
 	public long count() {
 		return repository.count();
 	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="existsById">
+			<title>existsById()</title>
+			<programlisting>
+			<![CDATA[
+memberRepository.existsById(id);			
 			]]>
 			</programlisting>
 		</section>
@@ -1125,5 +1165,71 @@ mongoOps.indexOps(User.class).ensureIndex(new Index().on("name", Direction.ASC))
 		</section>
 	</section>
 
+	<section id="GeoJsonDeserializer">
+		<title>GeoJson 反序列化</title>
+		<para>正常情况下是不需要做反序列化操作的。如花你想测试，打印一些信息可以这样做。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.api.config;
 
+import java.io.IOException;
+
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class GeoJsonDeserializer extends JsonDeserializer<GeoJsonPoint> {
+
+	@Override
+	public GeoJsonPoint deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+
+		final JsonNode tree = jsonParser.getCodec().readTree(jsonParser);
+		final String type = tree.get("type").asText();
+		final JsonNode coordsNode = tree.get("coordinates");
+
+		System.out.println(tree.toString());
+		System.out.println(type);
+		System.out.println(coordsNode.toString());
+
+		double x = 0;
+		double y = 0;
+		if ("Point".equalsIgnoreCase(type)) {
+			x = coordsNode.get(0).asDouble();
+			y = coordsNode.get(1).asDouble();
+		} else {
+			System.out.println(String.format("No logic present to deserialize %s ", tree.asText()));
+		}
+
+		final GeoJsonPoint point = new GeoJsonPoint(x, y);
+
+		return point;
+	}
+}
+
+		]]>
+		</programlisting>
+		<para>使用 @JsonDeserialize 指定反序列化 Class </para>
+		<programlisting>
+		<![CDATA[
+@Document
+public class Address {
+	@Id
+	private String id;
+	// @GeoSpatialIndexed
+	@JsonDeserialize(using = GeoJsonDeserializer.class)
+	private GeoJsonPoint location; // GPS 定位信息
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="springbot.mongodb.faq">
+		<title>FAQ</title>
+		<section>
+			<title>location object expected, location array not in correct format; nested exception is com.mongodb.MongoWriteException: location object expected, location array not in correct format</title>
+			<para>GeoJsonPoint 可能设置了索引，且有些数据部正确。</para>
+		</section>
+	</section>
 </section>
