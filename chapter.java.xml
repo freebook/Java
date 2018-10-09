@@ -208,4 +208,5 @@ Process proc =Runtime.getRuntime().exec("ls",null, new File("/bin"));
 	&chapter.java.thread.xml;
 	&chapter.javax.script.xml;
 	&chapter.javax.crypto.xml;
+	&chapter.java.security.xml;
 </chapter>
