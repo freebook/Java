@@ -261,7 +261,7 @@ public class TrackerController {
 			</screen>
 		</section>
 	</section>
-	<section id="document">
+	<section id="@Document">
 		<title>@Document</title>
 		<para>复杂的 @Document 数据类型定义</para>
 		<programlisting>
@@ -330,7 +330,7 @@ public class Multilevel {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="@Id">
 			<title>@Id</title>
 			<programlisting>
 			<![CDATA[
@@ -339,7 +339,7 @@ public class Multilevel {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="@Version">
 			<title>@Version</title>
 			<programlisting>
 			<![CDATA[
@@ -348,7 +348,7 @@ public class Multilevel {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="@Field">
 			<title>@Field 定义字段名</title>
 			<programlisting>
 			<![CDATA[
@@ -357,8 +357,11 @@ private String link;
 			]]>
 			</programlisting>
 		</section>
-		<section id="index">
+		<section id="@Indexed">
 			<title>@Indexed</title>
+			<para>
+				<ulink url="https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/index/Indexed.html" />
+			</para>
 			<para>索引</para>
 			<section>
 				<title>普通索引</title>
@@ -381,6 +384,19 @@ private String link;
 				<programlisting>
 				<![CDATA[
 @Indexed(name = "first_name_index", direction = IndexDirection.DESCENDING)		
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>稀疏索引</title>
+				<para>稀疏索引允许唯一索引存在多个 null 值</para>
+				<programlisting>
+				<![CDATA[
+	@Indexed(unique = true, sparse = true)
+	private String uuid;
+	
+	@Indexed(unique = true, sparse = true)
+	private String transactionId = null;
 				]]>
 				</programlisting>
 			</section>
