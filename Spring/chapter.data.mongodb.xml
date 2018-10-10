@@ -409,22 +409,7 @@ private LocalDateTime updateDate;
 				]]>
 				</programlisting>
 			</section>
-			<section id="@GeoSpatialIndex">
-				<title>@GeoSpatialIndex 地理位置索引</title>
-				<para>点数据索引</para>
-				<programlisting>
-				<![CDATA[
-	@GeoSpatialIndexed
-	private GeoJsonPoint location; // GPS 定位信息
-				]]>
-				</programlisting>
-				<para>2D 数据索引</para>
-				<programlisting>
-				<![CDATA[
-@GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)				
-				]]>
-				</programlisting>
-			</section>
+			
 		</section>
 		<section id="@CompoundIndex">
 			<title>@CompoundIndex 复合索引</title>
@@ -458,6 +443,44 @@ public class Person {
   // getters and setters
 }			
 			]]>
+			</programlisting>
+		</section>
+		<section id="@TextIndexed">
+			<title>@TextIndexed</title>
+			<programlisting>
+			<![CDATA[
+@Document(language = "spanish")
+class SomeEntity {
+
+    @TextIndexed String foo;
+
+    @Language String lang;
+
+    Nested nested;
+}
+
+class Nested {
+
+    @TextIndexed(weight=5) String bar;
+    String roo;
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="@GeoSpatialIndex">
+			<title>@GeoSpatialIndex 地理位置索引</title>
+			<para>点数据索引</para>
+			<programlisting>
+				<![CDATA[
+	@GeoSpatialIndexed
+	private GeoJsonPoint location; // GPS 定位信息
+				]]>
+			</programlisting>
+			<para>2D 数据索引</para>
+			<programlisting>
+				<![CDATA[
+@GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)				
+				]]>
 			</programlisting>
 		</section>
 		<section id="@Transient">
