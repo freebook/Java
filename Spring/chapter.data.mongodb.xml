@@ -965,6 +965,15 @@ location = new GeoJsonPoint(Double.valueOf(longitude), Double.valueOf(latitude))
 	</section>
 	<section id="MongoRepository">
 		<title>MongoRepository</title>
+		<section>
+			<title>扫描仓库接口</title>
+			<para>默认不需要设置，除非你的包不在当前包下，或者命令不是 repository。</para>
+			<programlisting>
+			<![CDATA[
+@EnableMongoRepositories(basePackages = "cn.netkiller.repository")		
+			]]>
+			</programlisting>
+		</section>
 		<section id="findAll">
 			<title>findAll()</title>
 			<programlisting>
@@ -1004,6 +1013,14 @@ repository.save(new City("Shenzhen", "China"));
 			]]>
 			</programlisting>
 		</section>
+		<section id="Repository.exists">
+			<title></title>
+			<programlisting>
+			<![CDATA[
+boolean isExists = userRepository.exists(user.getId());			
+			]]>
+			</programlisting>
+		</section>
 		<section id="existsById">
 			<title>existsById()</title>
 			<programlisting>
@@ -1021,6 +1038,49 @@ List<User> findByName(String name);
 List<User> users = userRepository.findByName("Eric");
 			]]>
 			</programlisting>
+		</section>
+		<section id="findsort">
+			<title>findAll with Sort</title>
+			<programlisting>
+			<![CDATA[
+List<User> users = userRepository.findAll(new Sort(Sort.Direction.ASC, "name"));			
+			]]>
+			</programlisting>
+		</section>
+		<section id="findpage">
+			<title>FindAll with Pageable</title>
+			<programlisting>
+			<![CDATA[
+Pageable pageable = PageRequest.of(0, 1);
+Page<User> page = userRepository.findAll(pageable);
+List<User> users = pages.getContent();	
+			]]>
+			</programlisting>
+			<section id="PageRequest">
+				<title>PageRequest - springboot 1.x 旧版本</title>
+				<programlisting>
+			<![CDATA[
+Page<User> findByLastname(String lastname, Pageable pageable);			
+			]]>
+				</programlisting>
+				<programlisting>
+			<![CDATA[
+	@RequestMapping(value = "read/{size}/{page}", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
+	@ResponseStatus(HttpStatus.OK)
+	public List<Withdraw> readPage(@PathVariable int size, @PathVariable int page){
+		PageRequest pageRequest = new PageRequest(page-1,size);
+		return repository.findAll(pageRequest).getContent();
+	}
+			]]>
+				</programlisting>
+				<para>URL翻页参数，每次返回10条记录</para>
+				<screen>
+					第一页 http://localhost:8080/v1/withdraw/read/10/1.json
+					第二页 http://localhost:8080/v1/withdraw/read/10/2.json
+					...
+					第五页 http://localhost:8080/v1/withdraw/read/10/5.json
+				</screen>
+			</section>
 		</section>
 		<section id="StartingWith">
 			<title>StartingWith 和 EndingWith</title>
@@ -1044,31 +1104,7 @@ List<User> users = userRepository.findByAgeBetween(20, 50);
 			]]>
 			</programlisting>
 		</section>
-		<section id="PageRequest">
-			<title>PageRequest</title>
-			<programlisting>
-			<![CDATA[
-Page<User> findByLastname(String lastname, Pageable pageable);			
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-	@RequestMapping(value = "read/{size}/{page}", method = RequestMethod.GET, produces = { "application/xml", "application/json" })
-	@ResponseStatus(HttpStatus.OK)
-	public List<Withdraw> readPage(@PathVariable int size, @PathVariable int page){
-		PageRequest pageRequest = new PageRequest(page-1,size);
-		return repository.findAll(pageRequest).getContent();
-	}
-			]]>
-			</programlisting>
-			<para>URL翻页参数，每次返回10条记录</para>
-			<screen>
-				第一页 http://localhost:8080/v1/withdraw/read/10/1.json
-				第二页 http://localhost:8080/v1/withdraw/read/10/2.json
-				...
-				第五页 http://localhost:8080/v1/withdraw/read/10/5.json
-			</screen>
-		</section>
+		
 		<section id="@Query">
 			<title>@Query</title>
 			<programlisting>
@@ -1085,8 +1121,50 @@ public interface PersonRepository extends MongoRepository<Person, String> {
 
 	<section id="mongoTemplate">
 		<title>mongoTemplate</title>
+		<para>导入与模板相关的包</para>
+		<programlisting>
+		<![CDATA[
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;		
+		]]>
+		</programlisting>
+		<para>注入 MongoTemplate 对象</para>
+		<programlisting>
+		<![CDATA[
+	@Autowired
+	private MongoTemplate mongoTemplate;		
+		]]>
+		</programlisting>
+		<section id="mongoTemplate.save">
+			<title>Save 保存</title>
+			<programlisting>
+			<![CDATA[
+User user = new User();
+user.setName("Netkiller"); 
+mongoTemplate.save(user, "user");			
+			]]>
+			</programlisting>
+			<para>更新数据</para>
+			<programlisting>
+			<![CDATA[
+user = mongoTemplate.findOne(Query.query(Criteria.where("name").is("Jam")), User.class);
+user.setName("Neo");
+mongoTemplate.save(user, "user");	
+			]]>
+			</programlisting>
+		</section>
+
 		<section id="mongoTemplate.insert">
 			<title>Insert</title>
+			<programlisting>
+			<![CDATA[
+User user = new User();
+user.setName("Neo");
+mongoTemplate.insert(user, "user");			
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
 BSONObject personBsonObj = BasicDBObjectBuilder.start()
@@ -1105,63 +1183,105 @@ db.personCollection.findOne().pretty();
 			]]>
 			</screen>
 		</section>
-		<section id="mongoTemplate.query">
-			<title>Query</title>
-
-			<section id="is">
-				<title>is</title>
-				<programlisting>
+		<section id="mongoTemplate.updateFirst">
+			<title>更新第一条</title>
+			<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.addCriteria(Criteria.where("name").is("Neo"));
-List<User> users = mongoTemplate.find(query, User.class);		
+Update update = new Update();
+update.set("name", "Netkiller");
+mongoTemplate.updateFirst(query, update, User.class);			
 			]]>
+			</programlisting>
+		</section>
+		<section id="mongoTemplate.updateMulti">
+			<title>更新所有数据</title>
+			<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(Criteria.where("name").is("Neo"));
+Update update = new Update();
+update.set("name", "Jerry");
+mongoTemplate.updateMulti(query, update, User.class);			
+			]]>
+			</programlisting>
+		</section>
+		<section id="mongoTemplate.findAndModify">
+			<title>查找并保存</title>
+			<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(Criteria.where("name").is("Luck"));
+Update update = new Update();
+update.set("name", "Lisa");
+User user = mongoTemplate.findAndModify(query, update, User.class);			
+			]]>
+			</programlisting>
+		</section>
+		<section id="mongoTemplate.upsert">
+			<title>upsert</title>
+			<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(Criteria.where("name").is("Green"));
+Update update = new Update();
+update.set("name", "Tom");
+mongoTemplate.upsert(query, update, User.class);			
+			]]>
+			</programlisting>
+		</section>
+		<section id="mongoTemplate.remove">
+			<title>删除</title>
+			<programlisting>
+			<![CDATA[
+User user = new User();
+user.setId("5bbf091efd9557069c4a25c5")			
+mongoTemplate.remove(user, "user");			
+			]]>
+			</programlisting>
+		</section>
+		<section id="mongoTemplate.findOne">
+			<title>查找一条数据</title>
+			<programlisting>
+			<![CDATA[
+
+public Person findOneByName(String name) {
+   Query query = new Query();
+   query.addCriteria(Criteria.where("name").is(name));
+   return mongoTemplate.findOne(query, Person.class);
+}		
+			]]>
+			</programlisting>
+		</section>
+		<section id="mongoTemplate.find">
+			<title>查找所有数据</title>
+			<programlisting>
+			<![CDATA[
+public List<Person> findByName(String name) {
+   Query query = new Query();
+   query.addCriteria(Criteria.where("name").is(name));
+   return mongoTemplate.find(query, Person.class);
+}				
+			]]>
+			</programlisting>
+		</section>
+		<section id="mongoTemplate.query">
+			<title>Query</title>
+			<section id="query.skip.limit">
+				<title>翻页</title>
+				<programlisting>
+				<![CDATA[
+public List<Person> getAllPersonPaginated(int pageNumber, int pageSize) {
+   Query query = new Query();
+   query.skip(pageNumber * pageSize);
+   query.limit(pageSize);
+   return mongoTemplate.find(query, Person.class);
+}			
+				]]>
 				</programlisting>
 			</section>
-			<section id="regex">
-				<title>Regex 正则表达式搜索</title>
-				<para>查询以N开头的名字</para>
-				<programlisting>
-			<![CDATA[
-Query query = new Query();
-query.addCriteria(Criteria.where("name").regex("^N"));
-List<User> users = mongoTemplate.find(query,User.class);	
-			]]>
-				</programlisting>
-				<para>查询以o结尾的名字</para>
-				<programlisting>
-			<![CDATA[
-Query query = new Query();
-query.addCriteria(Criteria.where("name").regex("o$"));
-List<User> users = mongoTemplate.find(query, User.class);
-			]]>
-				</programlisting>
-			</section>
-			<section id="ltgt">
-				<title>lt 和 gt</title>
-				<para>查询年龄小于 &lt; 30 并 &gt; 20 的用户</para>
-				<programlisting>
-			<![CDATA[
-Query query = new Query();
-query.addCriteria(Criteria.where("age").lt(30).gt(20));
-List<User> users = mongoTemplate.find(query,User.class);
-			]]>
-				</programlisting>
-				<para>查找日期范围</para>
-				<programlisting>
-			<![CDATA[
-Date start = DateUtil.convertStringToDateTime("2014-02-10 20:38:44");
-Date end = DateUtil.convertStringToDateTime("2014-02-10 20:38:50");
-					
-Query query = new Query();
-Criteria criteria = Criteria.where("delflag").is(false);
-criteria.and("modifyDate").gte(start).lte(end);
-query.addCriteria(criteria);
-query.limit(10);
-			
-			]]>
-				</programlisting>
-			</section>
+
 			<section id="between">
 				<title>between</title>
 				<para>实现一个区间条件 new Criteria("createdDate").gte(beginDate).lte(endDate)</para>
@@ -1189,9 +1309,69 @@ query.limit(10);
 			]]>
 				</programlisting>
 			</section>
-			<section id="Criteria">
-				<title>Criteria</title>
+		</section>
+		<section id="Criteria">
+			<title>Criteria</title>
+			
+			<section id="Criteria.is">
+				<title>is</title>
 				<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(Criteria.where("name").is("Neo"));
+List<User> users = mongoTemplate.find(query, User.class);		
+			]]>
+				</programlisting>
+			</section>
+			<section id="Criteria.regex">
+				<title>Regex 正则表达式搜索</title>
+				<para>查询以N开头的名字</para>
+				<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(Criteria.where("name").regex("^N"));
+List<User> users = mongoTemplate.find(query,User.class);	
+			]]>
+				</programlisting>
+				<para>查询以o结尾的名字</para>
+				<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(Criteria.where("name").regex("o$"));
+List<User> users = mongoTemplate.find(query, User.class);
+			]]>
+				</programlisting>
+			</section>
+			<section id="Criteria.ltgt">
+				<title>lt 和 gt</title>
+				<para>查询年龄小于 &lt; 30 并 &gt; 20 的用户</para>
+				<programlisting>
+			<![CDATA[
+Query query = new Query();
+query.addCriteria(Criteria.where("age").lt(30).gt(20));
+List<User> users = mongoTemplate.find(query,User.class);
+			]]>
+				</programlisting>
+				<para>查找日期范围</para>
+				<programlisting>
+			<![CDATA[
+Date start = DateUtil.convertStringToDateTime("2014-02-10 20:38:44");
+Date end = DateUtil.convertStringToDateTime("2014-02-10 20:38:50");
+					
+Query query = new Query();
+Criteria criteria = Criteria.where("delflag").is(false);
+criteria.and("modifyDate").gte(start).lte(end);
+query.addCriteria(criteria);
+query.limit(10);
+			
+			]]>
+				</programlisting>
+			</section>
+			<section id="Criteria.exists">
+				<title></title>
+				<programlisting>
+				<![CDATA[
+			<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.addCriteria(
@@ -1208,9 +1388,66 @@ for (Foo foo : result) {
     System.out.println("result - " + foo);
 }			
 			]]>
+			</programlisting>
+			</section>
+			<section id="Criteria.in">
+				<title>包含</title>
+				<programlisting>
+				<![CDATA[
+public List<Person> findByFavoriteBooks(String favoriteBook) {
+   Query query = new Query();
+   query.addCriteria(Criteria.where("favoriteBooks").in(favoriteBook));
+   return mongoTemplate.find(query, Person.class);
+}				
+				]]>
 				</programlisting>
 			</section>
-			<section id="sort">
+		</section>
+		<section id="Update">
+			<title>Update</title>
+			<section id="Update.set">
+				<title>set</title>
+				<programlisting>
+				<![CDATA[
+Update update = new Update();
+update.set("name", "Netkiller");				
+				]]>
+				</programlisting>
+			</section>
+			<section id="Update.push">
+				<title>追加数据</title>
+				<programlisting>
+				<![CDATA[
+	Query query = Query.query(Criteria.where("id").is("5bbf091efd9557069c4a25c5"));
+	Update update = new Update().push("author", new Author("neo", "chen"));
+	mongoTemplate.updateFirst(query, update, Article.class);				
+				]]>
+				</programlisting>
+			</section>
+			<section id="">
+				<title></title>
+				<programlisting>
+				<![CDATA[
+
+				]]>
+				</programlisting>
+			</section>
+			
+			<section id="Update.inc">
+				<title>inc</title>
+				<programlisting>
+				<![CDATA[
+public void updateMultiplePersonAge() {
+   Query query = new Query();
+   Update update = new Update().inc("age", 1);
+   mongoTemplate.findAndModify(query, update, Person.class);;
+}
+				]]>
+				</programlisting>
+			</section>
+			
+		</section>
+		<section id="sort">
 				<title>Sort</title>
 				<para>按照年龄排序</para>
 				<programlisting>
@@ -1220,8 +1457,7 @@ query.with(new Sort(Sort.Direction.ASC, "age"));
 List<User> users = mongoTemplate.find(query,User.class);
 			]]>
 				</programlisting>
-			</section>
-			<section id="PageRequest">
+			</section><section id="PageRequest">
 				<title>Query + PageRequest</title>
 				<programlisting>
 			<![CDATA[
@@ -1230,8 +1466,7 @@ Query query = new Query();
 query.with(pageableRequest);
 			]]>
 				</programlisting>
-			</section>
-			<section id="newAggregation">
+			</section><section id="newAggregation">
 				<title>newAggregation</title>
 
 				<programlisting>
@@ -1261,14 +1496,81 @@ query.with(pageableRequest);
 			]]>
 				</programlisting>
 			</section>
-		</section>
 		<section id="indexOps">
-			<title>indexOps</title>
+			<title>创建索引</title>
 			<programlisting>
 			<![CDATA[
 mongoOps.indexOps(User.class).ensureIndex(new Index().on("name", Direction.ASC));			
 			]]>
 			</programlisting>
+		</section>
+		<section id="mongoTemplate.subobject">
+			<title>子对象操作</title>
+			<section>
+				<title>List 类型</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.domain;
+
+import java.util.List;
+
+import javax.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class Article {
+
+	@Id
+	private String id;
+	private String title;
+	private String description;
+
+	List<Author> author;
+	public static class Author {
+		private String id;
+		private String firstname;
+		private String lastname;
+
+		public Author(String firstname, String lastname) {
+			this.firstname = firstname;
+			this.lastname = lastname;
+		}
+	}
+}
+				]]>
+				</programlisting>
+				<para>更新</para>
+				<screen>
+				<![CDATA[
+db.getCollection('foo').update({"author.firstname":"neo"},{"$set":{"author.$.firstname":"netkiller"}})					
+				]]>
+				</screen>
+				<para>更新数据</para>
+				<programlisting>
+				<![CDATA[
+	Query query = Query.query(Criteria.where("author.firstname").is("neo"));
+	Update update = new Update().set("author.$.firstname", "netkiller");
+	mongoTemplate.updateFirst(query, update, Article.class);
+				]]>
+				</programlisting>
+				<para>追加数据</para>
+				<programlisting>
+				<![CDATA[
+	Query query = Query.query(Criteria.where("id").is("5bbf091efd9557069c4a25c5"));
+	Update update = new Update().push("author", new Author("neo", "chen"));
+	mongoTemplate.updateFirst(query, update, Article.class);				
+				]]>
+				</programlisting>
+				<para>删除数据</para>
+				<programlisting>
+				<![CDATA[
+		Query query = Query.query(Criteria.where("id").is("5bbf091efd9557069c4a25c5"));
+		Update update = new Update().pull("author", new Author("jerry", "lee"));
+		mongoTemplate.updateFirst(query, update, Article.class);				
+				]]>
+				</programlisting>
+			</section>
+
 		</section>
 	</section>
 
