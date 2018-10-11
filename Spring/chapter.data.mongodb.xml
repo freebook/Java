@@ -1424,11 +1424,24 @@ update.set("name", "Netkiller");
 				]]>
 				</programlisting>
 			</section>
-			<section id="">
-				<title></title>
+			<section id="Update.update">
+				<title>更新数据</title>
 				<programlisting>
 				<![CDATA[
-
+	Query query = Query.query(Criteria.where("classId").is("1").and("Students.studentId").is("1"));
+    Update update = Update.update("Students.$.name", "lisa");
+    mongoTemplate.upsert(query, update, "class");
+				]]>
+				</programlisting>
+			</section>
+			<section id="Update.unset">
+				<title>删除数据</title>
+				<programlisting>
+				<![CDATA[
+	Query query = Query.query(Criteria.where("classId").is("1").and("Students.studentId").is("3"));
+	Update update = new Update();
+	update.unset("Students.$");
+	mongoTemplate.updateFirst(query, update, "class");				
 				]]>
 				</programlisting>
 			</section>
@@ -1445,7 +1458,18 @@ public void updateMultiplePersonAge() {
 				]]>
 				</programlisting>
 			</section>
-			
+			<section id="Update.addToSet">
+				<title>update.addToSet</title>
+				<programlisting>
+				<![CDATA[
+Query query = Query.query(Criteria.where("classId").is("1"));
+Student student = new Student("1", "lisa", 3, "girl");
+Update update = new Update();
+update.addToSet("Students", student);
+mongoTemplate.upsert(query, update, "class");				
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="sort">
 				<title>Sort</title>
