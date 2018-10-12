@@ -413,8 +413,10 @@ private LocalDateTime updateDate;
 		</section>
 		<section id="@CompoundIndex">
 			<title>@CompoundIndex 复合索引</title>
-			<programlisting>
-			<![CDATA[
+			<section>
+				<title>普通复合索引</title>
+				<programlisting>
+				<![CDATA[
 @Document
 @CompoundIndexes({
     @CompoundIndex(name = "email_age", def = "{'email.id' : 1, 'age': 1}")
@@ -422,10 +424,10 @@ private LocalDateTime updateDate;
 public class User {
     //
 }			
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
 @Document
 @CompoundIndexes({
   @CompoundIndex(def = "{'firstName':1, 'salary':-1}", name = "compound_index_1"),
@@ -442,8 +444,26 @@ public class Person {
   // constructor
   // getters and setters
 }			
-			]]>
-			</programlisting>
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>唯一复合索引</title>
+				<para>唯一复合索引：楼层和房号不能相同，不然就是同一个房间了</para>
+				<programlisting>
+				<![CDATA[
+@CompoundIndexes({ 
+    @CompoundIndex(name = "floor_num", def = "{'floor' : 1, 'num': 1}",unique=true) 
+})				
+				]]>
+				</programlisting>
+				<para>不允许同名</para>
+				<programlisting>
+				<![CDATA[
+@CompoundIndexes({ @CompoundIndex(name = "username", def = "{'firstname' : 1, 'lastname': 1}", unique = true) })		
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="@TextIndexed">
 			<title>@TextIndexed</title>
@@ -1014,7 +1034,7 @@ repository.save(new City("Shenzhen", "China"));
 			</programlisting>
 		</section>
 		<section id="Repository.exists">
-			<title></title>
+			<title>exists() 判断是否存在</title>
 			<programlisting>
 			<![CDATA[
 boolean isExists = userRepository.exists(user.getId());			
