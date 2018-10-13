@@ -283,34 +283,7 @@ public static void main(String[] args) {
 			]]>
 			</programlisting>
 		</section>
-		<section id="cors">
-			<title>CORS 跨域请求</title>
-			<programlisting>
-			<![CDATA[
-    public @Bean WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**");
-            }
-        };
-    }			
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
- 	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
-    }			
-			]]>
-			</programlisting>
-		</section>
+		
 		<section id="scan">
 			<title>实体与仓库扫描</title>
 			<programlisting>

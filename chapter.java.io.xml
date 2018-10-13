@@ -21,6 +21,22 @@
 			]]>
 			</programlisting>
 		</section>
+		<section id="File.mkdir()">
+			<title>创建目录 mkdir()</title>
+			<programlisting>
+			<![CDATA[
+//判断cache目录是否存在的代码，如果不存在则创建cache目录
+String path="/tmp/cache";
+File dirname = new File(path);
+
+//目录不存在  
+if (!dirname.isDirectory()) 
+{ 
+     dirname.mkdir(); //创建目录
+} 			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="File.createTempFile">
 		<title>临时文件</title>

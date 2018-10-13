@@ -3,6 +3,111 @@
 	<title>Spring MVC</title>
 	<para>Spring MVC 有两种启动模式，一种是传统Tomcat，需要配置很多XML文件。另一种方式是采用 Spring Boot 需要些一个Java程序，不需要写xml文件，这个程序会帮助你处理启动所需的一切，并且采用嵌入方式启动 Tomcat 或者 Jetty.</para>
 	<para>两种方式各有优缺点，Tomcat 方式配置繁琐，但是可以使用虚拟机，同一个IP地址使用不同域名访问，出现不同的内容。而Spring Boot一个应用一个容器一个端口，比不得不通过端口来区分应用。</para>
+
+	<section id="@EnableWebMvc">
+		<title>@EnableWebMvc</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+@Configuration
+@EnableWebMvc
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
+
+	@Bean
+	public InternalResourceViewResolver viewResolver() {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("WEB-INF/jsp/");
+		resolver.setSuffix(".jsp");
+		return resolver;
+	}
+
+}
+		]]>
+		</programlisting>
+		<section id="cors">
+			<title>CORS 跨域请求</title>
+			<programlisting>
+			<![CDATA[
+@Configuration
+public class CorsConfiguration
+{
+    @Bean
+    public WebMvcConfigurer corsConfigurer()
+    {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");
+            }
+        };
+    }
+}		
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+ 	@Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+            }
+        };
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Spring MVC CORS with WebMvcConfigurerAdapter</title>
+			<programlisting>
+			<![CDATA[
+@Configuration
+@EnableWebMvc
+public class CorsConfiguration extends WebMvcConfigurerAdapter
+{
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods("GET", "POST");
+    }
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+@Configuration
+@EnableWebMvc
+public class AppConfig extends WebMvcConfigurerAdapter {
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+	  registry.addMapping("/info/**")
+	   	  .allowedOrigins("http://localhost:8080", "http://localhost:8000")
+		  .allowedMethods("POST", "GET",  "PUT", "OPTIONS", "DELETE")
+		  .allowedHeaders("X-Auth-Token", "Content-Type")
+		  .exposedHeaders("custom-header1", "custom-header2")
+		  .allowCredentials(false)
+		  .maxAge(4800);
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+	
 	&section.mvc.controller.xml;	
 	&section.mvc.view.xml;
 

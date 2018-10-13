@@ -702,6 +702,16 @@ public class ArrayToString {
 			]]>
 			</programlisting>
 		</section>
+		<section id="">
+			<title></title>
+			<programlisting>
+			<![CDATA[
+String[] array = {"neo", "chen"};
+String string = String.join(",", array)
+// 输出结果 "neo,chen"		
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="float">
 		<title>float</title>

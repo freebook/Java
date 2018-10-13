@@ -1,5 +1,5 @@
 <section id="spring-data-jpa"><!-- <?dbhtml dir="jpa" ?> -->
-	<title>Spring Data JPA</title>
+	<title>Spring Data MySQL</title>
 	<section id="engine">
 		<title>选择数据库表引擎</title>
 		<para>正常创建表会使用数据库默认引擎，有时数据库默认引擎并不是我们需要的，通过下面配置可以指定表引擎</para>
@@ -54,7 +54,7 @@ uniqueConstraints={@UniqueConstraint(columnNames={"name","email"}),@UniqueConstr
 
 			</section>
 		</section>
-		<section id="id">
+		<section id="@Id">
 			<title>@Id</title>
 			<para>ID 字段，数据库中的主键。</para>
 			<screen>
@@ -128,7 +128,7 @@ CREATE TABLE "transactions_postion" (
 			]]>
 			</screen>
 		</section>
-		<section id="Column">
+		<section id="@Column">
 			<title>@Column</title>
 			<screen>
 				unique 属性表示该字段是否为唯一标识，默认为false。如果表中有一个字段需要唯一标识，则既可以使用该标记，也可以使用@Table标记中的@UniqueConstraint。
@@ -163,11 +163,13 @@ CREATE TABLE "transactions_postion" (
 			<section>
 				<title>创建于更新控制</title>
 				<screen>
-					@Column(name = "ctime", nullable = false, insertable = false, updatable = false)
+				<![CDATA[
+	@Column(name = "ctime", nullable = false, insertable = false, updatable = false)				
+				]]>
 				</screen>
 			</section>
-			<section id="">
-				<title></title>
+			<section>
+				<title>TEXT 类型</title>
 				<programlisting>
 				<![CDATA[
 	private String subject;

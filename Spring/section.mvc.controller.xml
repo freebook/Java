@@ -466,24 +466,43 @@ public class UploadRestController {
 }
 			]]>
 			</programlisting>
-		</section>
-		<para>操作演示，首先创建一个文件</para>
-		<screen>
-		<![CDATA[
+			<para>操作演示，首先创建一个文件</para>
+			<screen>
+			<![CDATA[
 echo "Helloworld!!!" > hello.txt
-		]]>
-		</screen>
-		<para>上传该文件</para>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			<para>上传该文件</para>
+			<screen>
+			<![CDATA[
 neo@MacBook-Pro /tmp % curl "http://localhost:8080/upload/add" \                           
     -X POST \
     -H "Content-Type: multipart/form-data" \
     -F file=@"hello.txt"
 
 file uploaded
-		]]>
-		</screen>
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>@RequestParam - POST 数组</title>
+			<para>HTTP 头</para>
+			<screen>
+			<![CDATA[
+picture[]: gather/293a93baa02cb18a840631bac1f9eeb20b7d436f.jpeg
+picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+	@PostMapping("/save")
+	public String save(@RequestParam(value = "picture[]", required = true) String[] picture) {
+		return String.join(",", picture);
+	}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="@RequestBody">
@@ -709,19 +728,65 @@ public class Pathinfo {
 
 	<section id="@CrossOrigin">
 		<title>@CrossOrigin</title>
-		<screen>
-			@CrossOrigin(origins = "http://localhost:9000")
-			@GetMapping("/greeting")
-			public Greeting
-			greeting(@RequestParam(required=false,
-			defaultValue="World") String
-			name) {
-			System.out.println("==== in greeting ====");
-			return new
-			Greeting(counter.incrementAndGet(), String.format(template,
-			name));
-			}
-		</screen>
+		<programlisting>
+		<![CDATA[
+	@CrossOrigin(origins = "http://localhost:9000")
+	@GetMapping("/greeting")
+	public Greeting	greeting(@RequestParam(required=false, defaultValue="World") String name) {
+		System.out.println("==== in greeting ====");
+		return new Greeting(counter.incrementAndGet(), String.format(template,name));
+	}		
+		]]>
+		</programlisting>
+
+		<programlisting>
+		<![CDATA[
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RestController
+public class HomeController
+{
+    @GetMapping(path="/")
+    public String home() {
+        return "home";
+    }
+}		
+		]]>
+		</programlisting>
+		<para>全局放行所有轻松，方法权限单独控制</para>
+		<programlisting>
+		<![CDATA[
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class HomeController
+{
+    @CrossOrigin(origins = "http://example.com")
+    @GetMapping(path="/")
+    public String home() {
+        return "home";
+    }
+}		
+		]]>
+		</programlisting>
+		<section>
+			<title>maxAge</title>
+			<programlisting>
+			<![CDATA[
+@CrossOrigin(origins = {"http://localhost:8585"}, maxAge = 4800, allowCredentials = "false")
+@RestController
+@RequestMapping("/info")
+public class PersonController {
+	@Autowired
+	private PersonService service;
+	@CrossOrigin(origins = {"http://localhost:8080"}, maxAge = 6000)
+	@RequestMapping("home")
+	public List<Person> show() {
+		List<Person> list = service.getAllPerson();
+		return list;
+ 	}
+} 
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="@SessionAttributes">
 		<title>@SessionAttributes</title>
@@ -1519,6 +1584,6 @@ public class UploadRestController {
 	}	
 		]]>
 		</programlisting>
-		
+
 	</section>
 </section>
