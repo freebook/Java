@@ -61,13 +61,7 @@ security.basic.enabled=false
 	</section>
 	<section id="EnableWebSecurity">
 		<title>EnableWebSecurity</title>
-		<section id="HttpSecurity">
-			<title>访问控制列表（Access Control List，ACL）</title>
-			<para>放行所有请求</para>
-			<programlisting>
-http.authorizeRequests().antMatchers("/**" ).permitAll();		
-			</programlisting>
-			<programlisting>
+		<programlisting>
 			<![CDATA[
 package cn.netkiller.config;
 
@@ -114,12 +108,175 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 			]]>
+		</programlisting>
+	</section>
+	<section id="HttpSecurity">
+		<title>访问控制列表（Access Control List，ACL）</title>
+
+		<section id="antMatchers">
+			<title>antMatchers</title>
+			<para>/** 表示放行所有请求URL</para>
+			<programlisting>
+			<![CDATA[
+http.authorizeRequests().antMatchers("/**" ).permitAll();		
+			]]>
+			</programlisting>
+			<para>匹配精确的URL地址 "/","/products","/product/show/*","/css/**" </para>
+			<programlisting>
+			<![CDATA[
+	@Override
+	protected void configure(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity
+            .authorizeRequests().antMatchers("/","/products","/product/show/*","/css/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin().loginPage("/login").permitAll()
+            .and()
+            .logout().permitAll();
+ 
+   httpSecurity.csrf().disable();
+   httpSecurity.headers().frameOptions().disable();
+}			
+			]]>
 			</programlisting>
 		</section>
-		<section id="WebSecurity">
-			<title>WebSecurity</title>
-			<para>用于Web静态资源的权限控制</para>
+		<section id="httpBasic">
+			<title>HTTP Auth</title>
 			<programlisting>
+			<![CDATA[
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/ping","/v1/*/ping","/v1/public/**" ).permitAll()
+		.anyRequest().authenticated()
+		.and().rememberMe().and().httpBasic()
+		.and().csrf().disable();
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="HttpMethod">
+			<title>Rest</title>
+			<programlisting>
+			<![CDATA[
+protected void configure(HttpSecurity http) throws Exception {
+    http
+      .csrf().disable()
+      .authorizeRequests()
+        .antMatchers(HttpMethod.POST, "/api/**").authenticated()
+        .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
+        .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
+        .anyRequest().permitAll()
+        .and()
+      .httpBasic().and()
+      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+}
+			]]>
+			</programlisting>
+		</section>
+		<section id="hasRole">
+			<title>hasRole</title>
+			<programlisting>
+			<![CDATA[
+		
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+       
+      http.authorizeRequests()
+        .antMatchers("/", "/member").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
+        .and().formLogin().loginPage("/login")
+        .usernameParameter("sso").passwordParameter("password")
+        .and().exceptionHandling().accessDeniedPage("/403");
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section id="hasAnyRole">
+			<title>hasAnyRole()</title>
+			<programlisting>
+			<![CDATA[
+ 	@Autowired
+    private AccessDeniedHandler accessDeniedHandler;
+    			
+	@Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http.csrf().disable()
+                .authorizeRequests()
+					.antMatchers("/", "/home", "/about").permitAll()
+					.antMatchers("/admin/**").hasAnyRole("ADMIN")
+					.antMatchers("/user/**").hasAnyRole("USER")
+					.anyRequest().authenticated()
+                .and()
+                .formLogin()
+					.loginPage("/login")
+					.permitAll()
+					.and()
+                .logout()
+					.permitAll()
+					.and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="frameOptions">
+			<title>X-Frame-Options 安全</title>
+			<para>X-Frame-Options: SAMEORIGIN</para>
+			<programlisting>
+		<![CDATA[
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+			// ...
+			.headers()
+				.frameOptions().sameOrigin()
+				.httpStrictTransportSecurity().disable();
+	}
+}		
+		]]>
+			</programlisting>
+
+			<para>安全配置 X-FRAME-OPTIONS 指定允许iframe访问的域名</para>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.api.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http.headers().frameOptions().disable().addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM netkiller.cn")).and().
+			csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/","/ping","/v1/*/ping","/public/**","/your/**" ).permitAll()
+			.antMatchers("/v1/**").authenticated().
+			anyRequest().permitAll().and().
+			httpBasic();
+	}
+
+}
+		]]>
+			</programlisting>
+		</section>
+
+	</section>
+
+	<section id="WebSecurity">
+		<title>WebSecurity</title>
+		<para>用于Web静态资源的权限控制</para>
+		<programlisting>
 			<![CDATA[
 package com.example.api.config;
 
@@ -152,60 +309,33 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
 }
 			]]>
-			</programlisting>
-		</section>
-		<section id="httpBasic">
-			<title>HTTP Auth</title>		
+		</programlisting>
+		<para>启动 Springboot 可以看到类似日志</para>
+		<screen>
+		<![CDATA[
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/**/json'], []
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/about'], []
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/test/hello'], []
+2018-10-12 18:01:40.693  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/web/**'], []		
+		]]>
+		</screen>
+		<section>
+			<title>正则匹配</title>
 			<programlisting>
 			<![CDATA[
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/ping","/v1/*/ping","/v1/public/**" ).permitAll()
-		.anyRequest().authenticated()
-		.and().rememberMe().and().httpBasic()
-		.and().csrf().disable();
-	}
-			]]>
-			</programlisting>	
-		</section>
-		<section id="HttpMethod">
-			<title>Rest</title>		
-			<programlisting>
-			<![CDATA[
-protected void configure(HttpSecurity http) throws Exception {
-    http
-      .csrf().disable()
-      .authorizeRequests()
-        .antMatchers(HttpMethod.POST, "/api/**").authenticated()
-        .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
-        .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
-        .anyRequest().permitAll()
-        .and()
-      .httpBasic().and()
-      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-}
-			]]>
-			</programlisting>	
-		</section>
-		<section id="hasRole">
-			<title>hasRole</title>
-			<programlisting>
-			<![CDATA[
-		
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-       
-      http.authorizeRequests()
-        .antMatchers("/", "/member").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
-        .and().formLogin().loginPage("/login")
-        .usernameParameter("sso").passwordParameter("password")
-        .and().exceptionHandling().accessDeniedPage("/403");
-    }
+@Override
+public void configure(WebSecurity web) throws Exception {
+    web.ignoring().regexMatchers(XXXXX);
+}			
 			]]>
 			</programlisting>
 		</section>
-		<section id="withUser">
-			<title>Add User</title>
+	</section>
+
+	<section id="AuthenticationManagerBuilder">
+		<title>AuthenticationManagerBuilder</title>
+		<section>
+			<title>添加用户</title>
 			<programlisting>
 			<![CDATA[
 	@Autowired
@@ -217,7 +347,27 @@ protected void configure(HttpSecurity http) throws Exception {
     }
 			]]>
 			</programlisting>
+
+		</section>
+
+		<section id="withUser">
+			<title>添加多个用户，并指定角色</title>
+
 			<para>添加多个用户</para>
+
+			<programlisting>
+			<![CDATA[
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+        auth.inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER")
+                .and()
+                .withUser("admin").password("password").roles("ADMIN");
+    }		
+			]]>
+			</programlisting>
+
 			<programlisting>
 			<![CDATA[
 	
@@ -236,6 +386,7 @@ protected void configure(HttpSecurity http) throws Exception {
 			</programlisting>
 		</section>
 	</section>
+
 	<section id="getAuthentication">
 		<title>获取当前用户</title>
 		<programlisting>
@@ -245,55 +396,5 @@ String currentPrincipalName = authentication.getName();
 		]]>
 		</programlisting>
 	</section>
-	<section id="frameOptions">
-		<title>HTTP 安全</title>
-		<para>X-Frame-Options: SAMEORIGIN</para>
-		<programlisting>
-		<![CDATA[
-@EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			// ...
-			.headers()
-				.frameOptions().sameOrigin()
-				.httpStrictTransportSecurity().disable();
-	}
-}		
-		]]>
-		</programlisting>
-		
-		<para>安全配置 X-FRAME-OPTIONS 指定允许iframe访问的域名</para>
-		<programlisting>
-		<![CDATA[
-package cn.netkiller.api.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
-
-@Configuration
-@EnableWebSecurity
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-
-		http.headers().frameOptions().disable().addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM netkiller.cn")).and().
-			csrf().disable()
-			.authorizeRequests()
-			.antMatchers("/","/ping","/v1/*/ping","/public/**","/your/**" ).permitAll()
-			.antMatchers("/v1/**").authenticated().
-			anyRequest().permitAll().and().
-			httpBasic();
-	}
-
-}
-		]]>
-		</programlisting>
-	</section>
+	
 </chapter>	

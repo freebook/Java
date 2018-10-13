@@ -1133,6 +1133,9 @@ public interface PersonRepository extends MongoRepository<Person, String> {
 	@Query("{ 'name' : ?0 }")
 	List<Person> findWithQuery(String userId);
 }
+
+	@Query(value = "{'statusHistories':{$elemMatch:{'status':{$in:['PROCESSABLE']}}},'created' : { '$gt' : { '$date' : ':?0' } , '$lt' : { '$date' : ':?1'}}}", count = true)
+	Long countMe(@Param("dateFrom") Date datefrom, @Param("dateTo") Date dateTo);
 			]]>
 			</programlisting>
 		</section>

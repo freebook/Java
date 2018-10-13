@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="java.security">
 	<title>java.security</title>
+	<section id="Security.getAlgorithms">
+		<title>列出 Java 支持的数字摘要算法</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.security;
+
+import java.security.Security;
+import java.util.Set;
+
+public class ListMessageDigest {
+
+	public static void main(String[] args) {
+
+		// List of available MessageDigest Algorithms
+		Set<String> messageDigest = Security.getAlgorithms("MessageDigest");
+		messageDigest.forEach(x -> System.out.println(x));
+
+	}
+
+}		
+		]]>
+		</programlisting>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+SHA3-512
+SHA-384
+SHA
+SHA3-384
+SHA-224
+SHA-512/256
+SHA-256
+MD2
+SHA-512/224
+SHA3-256
+SHA-512
+MD5
+SHA3-224		
+		]]>
+		</screen>
+	</section>
 	<section id="filesum">
 		<title>计算文件的 MD5，SHA 等 HASH 值</title>
 		<programlisting>

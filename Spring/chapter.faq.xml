@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="faq">
+<chapter id="faq">
 	<title>FAQ</title>
 
 	<section>
@@ -375,4 +375,4 @@ public class Article implements Serializable {
 		<para>在构造方法中引用@value为null，由于spring实例化顺序为先执行构造方法，再注入成员变量，所以取值为null。</para>
 		<para>调用spring组件时使用new对象，而不是@Autowired。</para>
 	</section>
-</section>
+</chapter>

@@ -1065,7 +1065,7 @@ HQIDAQAB
 		</programlisting>
 	</section>
 </section>
-<section>
+<section id="oauth2.ios">
 	<title>Apple iOS 访问 Oauth2</title>
 	<programlisting>
 	<![CDATA[
