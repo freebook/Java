@@ -219,6 +219,24 @@ ${ id } <br>
 
 		</section>
 		<section>
+			<title>默认值</title>
+			<para>required 设置参数不是必须的</para>
+			<programlisting>
+			<![CDATA[
+@PathVariable(required = false) String id			
+			]]>
+			</programlisting>
+			<para>设置多个映射</para>
+			<programlisting>
+			<![CDATA[
+@RequestMapping(value = {"/organization/{pageNumber}", "/organization"} , method = RequestMethod.GET)
+public String list(@PathVariable(required = false) Integer pageNumber, ModelMap modelMap){
+...
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>URL 传递 Date 类型</title>
 			<para>http://localhost:7000/history/2016-09-28%2000:00:00/</para>
 			<programlisting>

@@ -2155,10 +2155,61 @@ In --- 等价于 SQL 中的 "in"，比如 findByUsernameIn(Collection<String> us
 NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<String> userList) ，方法的参数可以是 Collection 类型，也可以是数组或者不定长
 		]]>
 		</screen>
-		<section id="">
+		<section id="CrudRepository">
+			<title>CrudRepository</title>
+			<para>CrudRepository 接口提供了最基本的对实体类的添删改查操作</para>
+			<screen>
+		<![CDATA[
+T save(T entity);								//保存单个实体 
+Iterable<T> save(Iterable<? extends T> entities);//保存集合        
+T findOne(ID id);								//根据id查找实体         
+boolean exists(ID id);							//根据id判断实体是否存在         
+Iterable<T> findAll();							//查询所有实体,不用或慎用!         
+long count();									//查询实体数量         
+void delete(ID id);								//根据Id删除实体         
+void delete(T entity);							//删除一个实体 
+void delete(Iterable<? extends T> entities);		//删除一个实体的集合         
+void deleteAll();								//删除所有实体,不用或慎用! 		
+		]]>
+			</screen>
+
+
+		</section>
+		<section id="JpaRepository">
+			<title>JpaRepository</title>
+			<para>
+				<ulink url="https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html" />
+			</para>
+			<screen>
+		<![CDATA[
+Modifier and Type	Method and Description
+void	deleteAllInBatch()
+Deletes all entities in a batch call.
+void	deleteInBatch(Iterable<T> entities)
+Deletes the given entities in a batch which means it will create a single Query.
+List<T>	findAll() 
+<S extends T>
+List<S>	findAll(Example<S> example) 
+<S extends T>
+List<S>	findAll(Example<S> example, Sort sort) 
+List<T>	findAll(Sort sort) 
+List<T>	findAllById(Iterable<ID> ids) 
+void	flush()
+Flushes all pending changes to the database.
+T	getOne(ID id)
+Returns a reference to the entity with the given identifier.
+<S extends T>
+List<S>	saveAll(Iterable<S> entities) 
+<S extends T>
+S	saveAndFlush(S entity)
+Saves an entity and flushes changes instantly.		
+		]]>
+			</screen>
+		</section>
+		<section id="jpa.find">
 			<title>findByXXX</title>
 			<programlisting>
-		<![CDATA[
+			<![CDATA[
 	@Autowired
 	private ArticleRepository articleRepository;
 
@@ -2190,10 +2241,9 @@ NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<
 	}
 		]]>
 			</programlisting>
-		</section>
-		<section >
-			<title>Boolean</title>
-			<programlisting>
+			<section>
+				<title>传 Boolean 参数</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.wallet.repository.fcoin;
 
@@ -2213,13 +2263,12 @@ public interface FcoinRepository extends CrudRepository<Fcoin, String> {
 	List<Fcoin> findByAirdrop(boolean airdrop, Pageable pageable);
 
 }
-
 			]]>
-			</programlisting>
-		</section>
-		<section id="eunm">
-			<title>传递枚举参数</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="eunm">
+				<title>Eunm 传递枚举参数</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.repository;
 
@@ -2234,21 +2283,86 @@ public interface StatisticsHistoryRepostitory extends CrudRepository<StatisticsH
 
 }
 			]]>
-			</programlisting>
-			<para></para>
-			<programlisting>
+				</programlisting>
+				<para></para>
+				<programlisting>
 			<![CDATA[
 	@Autowired
 	private StatisticsHistoryRepostitory statisticsHistoryRepostitory;			
 			
 	statisticsHistoryRepostitory.findByMemberIdAndStatisticsIdAndType(uid, id, type);
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-		<section id="pageable">
-			<title>翻页操作</title>
+		<section id="jpa.count">
+			<title>count 操作</title>
 			<programlisting>
 			<![CDATA[
+public interface UserRepository extends CrudRepository<User, Long> {
+
+    Long countByFirstName(String firstName);
+
+    @Transactional
+    Long deleteByFirstName(String firstName);
+
+    @Transactional
+    List<User> removeByFirstName(String firstName);
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section id="OrderBy">
+			<title>OrderBy</title>
+			<programlisting>
+			<![CDATA[
+public List<StudentEntity> findAllByOrderByIdAsc();
+public List<StudentEntity> findAllByOrderByIdDesc();
+List<RecentRead> findByMemberIdOrderByIdDesc(int memberId, Pageable pageable);
+			]]>
+			</programlisting>
+		</section>
+		<section id="GreaterThan">
+			<title>GreaterThan</title>
+			<programlisting>
+			<![CDATA[
+package schedule.repository;
+
+import java.util.Date;
+
+import org.springframework.data.repository.CrudRepository;
+
+import common.domain.CmsTrash;
+
+public interface CmsTrashRepository extends CrudRepository<CmsTrash, Integer> {
+
+	Iterable<CmsTrash> findBySiteIdAndTypeOrderByCtimeASC(int siteId, String string);
+
+	Iterable<CmsTrash> findBySiteIdAndTypeAndCtimeGreaterThanOrderByCtimeASC(int siteId, String string, Date date);
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+
+		<section id="pageable">
+			<title>PageRequest 翻页操作</title>
+			<para>翻页返回数据可以选择 Iterable/List 或者 Page。 </para>
+			<para>Iterable/List 只返回数据，不含页码等数据</para>
+			<para>Page 返回数据和页码等数据</para>
+
+			<screen>
+			<![CDATA[
+PageRequest(int page, int size, Sort sort)  Deprecated. 
+use PageRequest.of(int, int, Sort) instead.			
+			]]>
+			</screen>
+			<section>
+				<title>PageRequest.of</title>
+				<programlisting>
+				<![CDATA[
 package cn.netkiller.api.repository;
 
 import java.util.List;
@@ -2263,11 +2377,11 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Long> 
 	List<RecentRead> findByMemberId(long id, Pageable pageable);
 
 }
-			]]>
-			</programlisting>
-			<para>Top 10 实例</para>
-			<programlisting>
-			<![CDATA[
+				]]>
+				</programlisting>
+				<para>Top 10 实例</para>
+				<programlisting>
+				<![CDATA[
 	@RequestMapping("/recent/read/list/{id}")
 	public List<RecentRead> recentList(@PathVariable long id) {
 		int page = 0;
@@ -2275,23 +2389,63 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Long> 
 		List<RecentRead> recentRead = recentReadRepostitory.findByMemberId(id, new PageRequest(page, limit));
 		return recentRead;
 	}
-			]]>
-			</programlisting>
-			<para>注意 PageRequest(int page, int size) 在新版 Spring boot 2.x 中已经废弃请使用 PageRequest.of(page, size) 替代</para>
-			<programlisting>
-			<![CDATA[
+				]]>
+				</programlisting>
+				<para>注意 PageRequest(int page, int size) 在新版 Spring boot 2.x 中已经废弃请使用 PageRequest.of(page, size) 替代</para>
+				<programlisting>
+				<![CDATA[
 List<Fcoin> fcoins = fcoinRepository.findByAirdrop(false, PageRequest.of(0, size));
-			]]>
-			</programlisting>
-			<screen>
-			<![CDATA[
-PageRequest(int page, int size, Sort sort)  Deprecated. 
-use PageRequest.of(int, int, Sort) instead.			
-			]]>
-			</screen>
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Pageable</title>
+				<para>接口实现 PagingAndSortingRepository</para>
+				<programlisting>
+				<![CDATA[
+package api.repository.h5;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import api.domain.User;
+
+public interface GatherRepository extends PagingAndSortingRepository<User, Integer> {
+
+}
+				
+				]]>
+				</programlisting>
+				<para>控制器添加 Pageable pageable 参数</para>
+				<programlisting>
+				<![CDATA[
+	@RequestMapping("/browse")
+	public ModelAndView browse(Pageable pageable) {
+		Page<User> users = userRepository.findAll(pageable);
+		
+		System.out.println(users.toString());
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("users", users.getContent());
+		mv.addObject("number", users.getNumber());
+		mv.addObject("size", users.getSize());
+		mv.addObject("totalPages", users.getTotalPages());
+		mv.setViewName("table");
+
+		return mv;
+	}				
+				]]>
+				</programlisting>
+				<screen>
+				<![CDATA[
+排序 /browse?sort=id,desc
+每页返回数量 /browse?size=10
+返回第二页5条数据 /browse?size=5&page=1
+返回第二页5条数据，ID倒序排序 /browse?size=5&page=1&sort=id,desc				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="sort">
-			<title>排序操作操作</title>
+			<title>Sort 排序操作操作</title>
 			<programlisting>
 			<![CDATA[
 List<UserModel> findByName(String name, Sort sort);
@@ -2305,16 +2459,7 @@ repostitory.findByName("Neo", sort);
 			]]>
 			</programlisting>
 		</section>
-		<section id="OrderBy">
-			<title>OrderBy</title>
-			<programlisting>
-			<![CDATA[
-public List<StudentEntity> findAllByOrderByIdAsc();
-public List<StudentEntity> findAllByOrderByIdDesc();
-List<RecentRead> findByMemberIdOrderByIdDesc(int memberId, Pageable pageable);
-			]]>
-			</programlisting>
-		</section>
+		
 		<section id="Query">
 			<title>Query</title>
 			<section>
@@ -2564,7 +2709,7 @@ public interface TransactionHistoryRepository extends CrudRepository<Transaction
 				<![CDATA[
 @Query(value = "select u.userName, ui.name, ui.gender, ui.description from UserInfo ui, User u where u.id = ui.userId")
 public List<Object> getCustomField();
-				]]>				
+				]]>
 				</programlisting>
 			</section>
 			<section>
@@ -2597,7 +2742,7 @@ public class MyModel implements Serializable {
 public List<MyModel> getAllRecord();
 				]]>
 				</programlisting>
-				
+
 			</section>
 		</section>
 		<section id="Transactional">
@@ -2677,92 +2822,4 @@ interface UserRepository extends Repository<User, Long> {
 			</programlisting>
 		</section>
 	</section>
-	<section id="CrudRepository">
-		<title>CrudRepository</title>
-		<para>CrudRepository 接口提供了最基本的对实体类的添删改查操作</para>
-		<screen>
-		<![CDATA[
-T save(T entity);								//保存单个实体 
-Iterable<T> save(Iterable<? extends T> entities);//保存集合        
-T findOne(ID id);								//根据id查找实体         
-boolean exists(ID id);							//根据id判断实体是否存在         
-Iterable<T> findAll();							//查询所有实体,不用或慎用!         
-long count();									//查询实体数量         
-void delete(ID id);								//根据Id删除实体         
-void delete(T entity);							//删除一个实体 
-void delete(Iterable<? extends T> entities);		//删除一个实体的集合         
-void deleteAll();								//删除所有实体,不用或慎用! 		
-		]]>
-		</screen>
-		<programlisting>
-		<![CDATA[
-public interface UserRepository extends CrudRepository<User, Long> {
-
-    Long countByFirstName(String firstName);
-
-    @Transactional
-    Long deleteByFirstName(String firstName);
-
-    @Transactional
-    List<User> removeByFirstName(String firstName);
-
-}
-		]]>
-		</programlisting>
-		<section id="GreaterThan">
-			<title>GreaterThan</title>
-			<programlisting>
-			<![CDATA[
-package schedule.repository;
-
-import java.util.Date;
-
-import org.springframework.data.repository.CrudRepository;
-
-import common.domain.CmsTrash;
-
-public interface CmsTrashRepository extends CrudRepository<CmsTrash, Integer> {
-
-	Iterable<CmsTrash> findBySiteIdAndTypeOrderByCtimeASC(int siteId, String string);
-
-	Iterable<CmsTrash> findBySiteIdAndTypeAndCtimeGreaterThanOrderByCtimeASC(int siteId, String string, Date date);
-
-}
-			
-			]]>
-			</programlisting>
-		</section>
-	</section>
-	<section id="JpaRepository">
-		<title>JpaRepository</title>
-		<para>
-			<ulink url="https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html" />
-		</para>
-		<screen>
-		<![CDATA[
-Modifier and Type	Method and Description
-void	deleteAllInBatch()
-Deletes all entities in a batch call.
-void	deleteInBatch(Iterable<T> entities)
-Deletes the given entities in a batch which means it will create a single Query.
-List<T>	findAll() 
-<S extends T>
-List<S>	findAll(Example<S> example) 
-<S extends T>
-List<S>	findAll(Example<S> example, Sort sort) 
-List<T>	findAll(Sort sort) 
-List<T>	findAllById(Iterable<ID> ids) 
-void	flush()
-Flushes all pending changes to the database.
-T	getOne(ID id)
-Returns a reference to the entity with the given identifier.
-<S extends T>
-List<S>	saveAll(Iterable<S> entities) 
-<S extends T>
-S	saveAndFlush(S entity)
-Saves an entity and flushes changes instantly.		
-		]]>
-		</screen>
-	</section>
-
 </section>

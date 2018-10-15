@@ -48,7 +48,7 @@
 			]]>
 			</programlisting>
 		</section>
-	
+
 	</section>
 
 	<section id="thymeleaf">
@@ -91,7 +91,7 @@
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section>
 			<title>controller</title>
 			<programlisting>
@@ -118,7 +118,7 @@ public class HelloController {
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section>
 			<title>HTML5 Template</title>
 			<programlisting>
@@ -136,7 +136,79 @@ public class HelloController {
 			]]>
 			</programlisting>
 		</section>
+		<section id="thymeleaf.table">
+			<title>thymeleaf 渲染表格</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/list")
+	public ModelAndView list() {
 
+		Iterable<User> users = userRepository.findAll();
+
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("users", users);
+		mv.setViewName("table");
+		return mv;
+	}			
+			]]>
+			</programlisting>
+			<para>模板文件</para>
+			<programlisting>
+			<![CDATA[
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>用户登记</title>
+</head>
+<body>
+	<h1>Welcome to Thymeleaf</h1>
+	<table border="1" width="100%">
+		<tr>
+			<td>ID</td>
+			<td>姓名</td>
+			<td>联系方式</td>
+			<td>详细地址</td>
+			<td>图片</td>
+		</tr>
+		<tr th:each="user : ${users}">
+			<td th:text="${user.id}"></td>
+			<td th:text="${user.name}"></td>
+			<td th:text="${user.tel}"></td>
+			<td th:text="${user.address}"></td>
+			<td th:text="${user.picture}"></td>
+		</tr>
+	</table>
+</body>
+</html>			
+			]]>
+			</programlisting>
+		</section>
+		<section id="thymeleaf.url">
+			<title>URL 链接</title>
+			<programlisting>
+			<![CDATA[
+	<span th:text="${number+1}"></span> /
+	<span th:text="${totalPages}"></span>
+
+	<a href="#"
+		th:href="@{/api/user/browse?sort=id,desc&size=10(page=${number-1})}">上一页</a>
+	<a href="#"
+		th:href="@{/api/user/browse?sort=id,desc&size=10(page=${number+1})}">下一页</a>			
+			]]>
+			</programlisting>
+		</section>
+		<section id="strings.arraySplit">
+			<title>拆分字符串</title>
+			<para>pictures 是一个以逗号分割得字符串。我们需要拆分并逐条显示。</para>
+			<programlisting>
+			<![CDATA[
+	<div th:unless="${picture == null}">
+		<a th:each="pic : ${#strings.arraySplit(pictures, ',')}" href="#" th:href="${pic}"> <img src="#" th:src="${pic}" height="64" /></a>
+	</div>			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="freemarker">

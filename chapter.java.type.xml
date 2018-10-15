@@ -701,8 +701,20 @@ public class ArrayToString {
 }
 			]]>
 			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+String[][] deepArray = new String[][] {{"John", "Mary"}, {"Alice", "Bob"}};
+System.out.println(Arrays.toString(deepArray));
+//output: [[Ljava.lang.String;@106d69c, [Ljava.lang.String;@52e922]
+System.out.println(Arrays.deepToString(deepArray));		
+
+Output:
+[[John, Mary], [Alice, Bob]]	
+			]]>
+			</programlisting>
 		</section>
-		<section id="">
+		<section id="String.join">
 			<title></title>
 			<programlisting>
 			<![CDATA[
