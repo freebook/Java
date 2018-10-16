@@ -393,21 +393,45 @@ server.host=192.168.0.1,172.16.0.1
 	private String name;
  			]]>
 			</screen>
-			<para>默认值</para>
-			<screen>
-			<![CDATA[
-	@Value("${server.name:Windows}") 如果application.properties没有配置server.name那么默认值将是 Windows
-	private String name;
-	
-	@Value("${app.name:@null}") // app.name = null
- 	private String name;			
-			]]>
-			</screen>
+
 			<para>处理逗号分割得值</para>
 			<screen>
 			<![CDATA[
  	@Value("#{'${server.host}'.split(',')}") 
  	private List<String> host;			
+			]]>
+			</screen>
+			<para>默认值</para>
+			<screen>
+			<![CDATA[
+@Value("${server.name:Windows}") 如果application.properties没有配置server.name那么默认值将是 Windows
+private String name;
+				
+@Value("${some.key:my default value}")
+private String stringWithDefaultValue;
+			
+@Value("${some.key:true}")
+private boolean booleanWithDefaultValue;
+
+@Value("${some.key:42}")
+private int intWithDefaultValue;			
+
+@Value("${some.key:one,two,three}")
+private String[] stringArrayWithDefaults;
+ 
+@Value("${some.key:1,2,3}")
+private int[] intArrayWithDefaults;
+
+// Using SpEL
+@Value("#{systemProperties['some.key'] ?: 'my default system property value'}")
+private String spelWithDefaultValue;
+			]]>
+			</screen>
+			<para>Null 默认值</para>
+			<screen>
+			<![CDATA[
+	@Value("${app.name:@null}") // app.name = null
+ 	private String name;			
 			]]>
 			</screen>
 		</section>
@@ -2768,8 +2792,8 @@ public class EmailRestController extends CommonRestController {
 			</screen>
 		</section>
 	</section>
-	
-	
+
+
 
 
 

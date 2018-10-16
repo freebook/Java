@@ -203,20 +203,28 @@ public String getContent() {
 		<section id="@NotNull">
 			<title>@NotNull 不能为空声明</title>
 			<programlisting>
-				@NotNull
-				public String username;
+			<![CDATA[
+	@NotNull
+	public String username;			
+			]]>
+				
 			</programlisting>
 		</section>
 		<section id="DateTimeFormat">
 			<title>@DateTimeFormat 处理日期时间格式</title>
 			<programlisting>
-				public java.sql.Date createdate; 创建日期 YYYY-MM-DD
-				public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
+			<![CDATA[
+	public java.sql.Date createdate; 创建日期 YYYY-MM-DD
+	public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
+			]]>
 			</programlisting>
 			<para>Json默认为 yyyy-MM-ddTHH:mm:ss 注意日期与时间中间的T，修改日期格式将T去掉</para>
 			<screen>
-				@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-				@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+			<![CDATA[
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date createDate;
+			]]>
 			</screen>
 		</section>
 		<section id="time">

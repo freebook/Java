@@ -197,6 +197,12 @@ public class HelloController {
 		th:href="@{/api/user/browse?sort=id,desc&size=10(page=${number+1})}">下一页</a>			
 			]]>
 			</programlisting>
+			<para>拼接 URL 的方法</para>
+			<programlisting>
+			<![CDATA[
+<img src="#" th:src="${'https://img.netkiller.cn/' + pic}" height="128" th:target="_blank" />			
+			]]>
+			</programlisting>
 		</section>
 		<section id="strings.arraySplit">
 			<title>拆分字符串</title>
