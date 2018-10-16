@@ -215,6 +215,65 @@ public class HelloController {
 			]]>
 			</programlisting>
 		</section>
+		<section id="">
+			<title>日期格式化</title>
+			<programlisting>
+			<![CDATA[
+	<span th:text="${#dates.format(createDate, 'yyyy-MM-dd HH:mm')}"></span	
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+
+// java.util.Date 处理
+
+${#dates.day(date)}
+${#dates.month(date)}
+${#dates.monthName(date)}
+${#dates.monthNameShort(date)}
+${#dates.year(date)}
+${#dates.dayOfWeek(date)}
+${#dates.dayOfWeekName(date)}
+${#dates.dayOfWeekNameShort(date)}
+${#dates.hour(date)}
+${#dates.minute(date)}
+${#dates.second(date)}
+${#dates.millisecond(date)}
+
+
+// java.time 时间处理
+${#temporals.day(date)}
+${#temporals.month(date)}
+${#temporals.monthName(date)}
+${#temporals.monthNameShort(date)}
+${#temporals.year(date)}
+${#temporals.dayOfWeek(date)}
+${#temporals.dayOfWeekName(date)}
+${#temporals.dayOfWeekNameShort(date)}
+${#temporals.hour(date)}
+${#temporals.minute(date)}
+${#temporals.second(date)}
+${#temporals.millisecond(date)}
+
+// 处理天实例
+
+<p th:text="${#dates.day(standardDate)}"></p>
+<p th:text="${#temporals.day(localDateTime)}"></p>
+<p th:text="${#temporals.day(localDate)}"></p>
+
+// 处理周实例
+
+<p th:text="${#dates.dayOfWeekName(standardDate)}"></p>
+<p th:text="${#temporals.dayOfWeekName(localDateTime)}"></p>
+<p th:text="${#temporals.dayOfWeekName(localDate)}"></p>
+
+// 处理秒实例
+
+<p th:text="${#dates.second(standardDate)}"></p>
+<p th:text="${#temporals.second(localDateTime)}"></p>			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="freemarker">

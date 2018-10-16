@@ -207,7 +207,16 @@ public String getContent() {
 	@NotNull
 	public String username;			
 			]]>
-				
+
+			</programlisting>
+		</section>
+		<section id="">
+			<title>@JsonIgnore 返回json是不含有该字段</title>
+			<programlisting>
+			<![CDATA[
+	@JsonIgnore
+	private String entityName = this.getClass().getSimpleName();	
+			]]>
 			</programlisting>
 		</section>
 		<section id="DateTimeFormat">
@@ -2074,6 +2083,55 @@ public interface UserTokenRepository extends JpaRepository<UserToken, UserTokenP
 		]]>
 		</programlisting>
 	</section>
+	<section id="@EnableJpaAuditing">
+		<title>@EnableJpaAuditing 开启 JPA 审计功能</title>
+		<programlisting>
+		<![CDATA[
+@SpringBootApplication
+@EnableJpaAuditing
+public class Application {
+    
+    public static void main(String[] args) throws Exception {
+        SpringApplication.run(Application .class, args);
+    }
+}		
+		]]>
+		</programlisting>
+		<para>在需要审计实体中加入 @EntityListeners(AuditingEntityListener.class)</para>
+		<programlisting>
+		<![CDATA[
+@EntityListeners(AuditingEntityListener.class)
+public class Member  implements Serializable {
+
+    private static final long serialVersionUID = -6163675075289529459L;
+
+    @JsonIgnore
+    String entityName = this.getClass().getSimpleName();
+
+    @CreatedBy
+    String createdBy;
+
+    @LastModifiedBy
+    String modifiedBy;
+    /**
+     * 实体创建时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    protected Date dateCreated = new Date();
+
+    /**
+     * 实体修改时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
+    protected Date dateModified = new Date();
+
+     #省略getter setter
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="Inheritance">
 		<title>实体集成</title>
 		<para>B、C 类继承 A 所有属性，并且主键均为数据库（auto_increment）</para>
@@ -2467,7 +2525,7 @@ repostitory.findByName("Neo", sort);
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section id="Query">
 			<title>Query</title>
 			<section>
