@@ -169,6 +169,42 @@ exit $?
 			]]>
 			</screen>
 		</section>
+		<section id="war">
+			<title>编译用于Tomcat的 War</title>
+			<programlisting>
+			<![CDATA[
+package demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+public class Application extends SpringBootServletInitializer {
+
+    private static Class<Application> applicationClass = Application.class;
+    
+    public static void main(String[] args) {
+        SpringApplication.run(applicationClass, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
+    }
+}		
+			]]>
+			</programlisting>
+		</section>
+
 	</section>
 
 	<section id="SpringApplication">
@@ -338,41 +374,7 @@ public class Application {
 		</section>
 	</section>
 
-	<section id="war">
-		<title>编译用于Tomcat的 War</title>
-		<programlisting>
-		<![CDATA[
-package demo;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@Configuration
-@ComponentScan
-@EnableAutoConfiguration
-public class Application extends SpringBootServletInitializer {
-
-    private static Class<Application> applicationClass = Application.class;
-    
-    public static void main(String[] args) {
-        SpringApplication.run(applicationClass, args);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(applicationClass);
-    }
-}		
-		]]>
-		</programlisting>
-	</section>
+	
 	
 	&section.boot.properties.xml;
 
@@ -726,147 +728,7 @@ mvn clean package -Pproduction
 		</section>
 	</section>
 	&section.boot.logging.xml;
-	<section id="service">
-		<title>Service</title>
-		<section>
-			<title>Application</title>
-			<para>@ComponentScan({ "web", "rest","service" }) 一定要包含 Service 目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。</para>
-			<programlisting>
-			<![CDATA[
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.authentication.UserCredentials;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-
-import com.mongodb.Mongo;
-
-import pojo.ApplicationConfiguration;
-
-@Configuration
-@SpringBootApplication
-@EnableConfigurationProperties(ApplicationConfiguration.class)
-@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@ComponentScan({ "web", "rest","service" })
-@EnableMongoRepositories
-public class Application {
 	
-	@SuppressWarnings("deprecation")
-	public @Bean MongoDbFactory mongoDbFactory() throws Exception {
-		UserCredentials userCredentials = new UserCredentials("finance", "your_password");
-		return new SimpleMongoDbFactory(new Mongo("mdb.netkiller.cn"), "finance", userCredentials);
-	}
-
-	public @Bean MongoTemplate mongoTemplate() throws Exception {
-		return new MongoTemplate(mongoDbFactory());
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-
-}
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>定义接口</title>
-			<para>TestService 接口</para>
-			<programlisting>
-			<![CDATA[
-package service;
-
-public interface TestService {
-
-	public String getName();
-	public String toString();
-	public String helloUser(String user);
-}
-
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>实现接口</title>
-			<para>实现 TestService 接口</para>
-			<programlisting>
-			<![CDATA[
-package service.impl;
-
-import org.springframework.stereotype.Component;
-
-import service.TestService;
-
-@Component
-public class TestServiceImpl implements TestService {
-
-	public String name = "Test";
-
-	public void TestService() {
-
-	}
-
-	@Override
-	public String helloUser(String user) {
-		return "hello " + user;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public String toString() {
-		return "TestServiceImpl [config=" + this.name + "]";
-	}
-
-}
-
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>调用 Service</title>
-			<para>控制器中调用 Service</para>
-			<programlisting>
-			<![CDATA[
-package web;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import domain.City;
-import pojo.ApplicationConfiguration;
-import repository.CityRepository;
-import service.TestService;
-
-@Controller
-public class IndexController {
-	
-	@Autowired
-    private TestService testService;
-	
-	@RequestMapping("/service")
-	@ResponseBody
-	public String service() {
-		return testService.helloUser("Neo");
-	}
-
-}
-			]]>
-			</programlisting>
-		</section>
-	</section>
 	<section id="ViewResolver">
 		<title>Spring boot with Webpage</title>
 		<subtitle> ViewResolver </subtitle>
@@ -3269,9 +3131,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableScheduling
 public class Application {
 
-public static void main(String[] args) {
-SpringApplication.run(Application.class, args);
-}
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 
 }
 				]]>
@@ -3298,61 +3160,51 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledTasks {
 
-private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
-private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-public final static long ONE_DAY = 24 * 60 * 60 * 1000;
-public final static long ONE_HOUR = 60 * 60 * 1000;
-
-public ScheduledTasks() {
-// TODO Auto-generated constructor stub
-}
-
-@Scheduled(fixedRate = 5000) //5秒运行一次调度任务
-public void echoCurrentTime() {
-log.info("The time is now {}", dateFormat.format(new Date()));
-}
-
-@Scheduled(fixedRate = ONE_DAY)
-public void scheduledTask() {
-System.out.println("每隔一天执行一次调度任务");
-}
-
-@Scheduled(fixedDelay = ONE_HOUR)
-public void scheduleTask2() {
-System.out.println("运行完后隔一小时就执行任务");
-}
-
-@Scheduled(initialDelay = 1000, fixedRate = 5000)
-public void doSomething() {
-// something that should execute periodically
-}
-
-@Scheduled(cron = "0 0/1 * * * ? ")
-public void ScheduledTask3() {
-System.out.println(" 每隔一分钟执行一次任务");
-}
+	private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	public final static long ONE_DAY = 24 * 60 * 60 * 1000;
+	public final static long ONE_HOUR = 60 * 60 * 1000;
+	
+	public ScheduledTasks() {
+	// TODO Auto-generated constructor stub
+	}
+	
+	@Scheduled(fixedRate = 5000) //5秒运行一次调度任务
+		public void echoCurrentTime() {
+		log.info("The time is now {}", dateFormat.format(new Date()));
+	}
+	
+	@Scheduled(fixedRate = ONE_DAY)
+		public void scheduledTask() {
+		System.out.println("每隔一天执行一次调度任务");
+	}
+	
+	@Scheduled(fixedDelay = ONE_HOUR)
+		public void scheduleTask2() {
+		System.out.println("运行完后隔一小时就执行任务");
+	}
+	
+	@Scheduled(initialDelay = 1000, fixedRate = 5000)
+	public void doSomething() {
+		// something that should execute periodically
+	}
+	
+	@Scheduled(cron = "0 0/1 * * * ? ")
+		public void ScheduledTask3() {
+		System.out.println(" 每隔一分钟执行一次任务");
+	}
 
 }
 			]]>
 			</programlisting>
-			<para>@Scheduled参数说明</para>
-			<screen>
-				@Scheduled注解有一些参数，用于配置计划任务执行频率，执行时段等。
-
-				cron ：cron表达式，e.g. {@code "0 * * * * ？"}从前到后依次表示秒 分 时 日 月 年
-				zone：设置时区，指明计划任务运行在哪个时区下，默认为空，采用操作系统默认时区
-				fixedDelay：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以long类型复制
-				fixedDelayString：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以String类型赋值
-				fixedRate：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以long类型赋值
-				fixedRateString：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以String类型赋值
-				initialDelay：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以long类型赋值
-				initialDelayString：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以String赋值
-			</screen>
+			
 		</section>
 		<section>
 			<title>查看日志</title>
 			<programlisting>
-				tail -f spring.log
+			<![CDATA[
+tail -f spring.log			
+			]]>
 			</programlisting>
 		</section>
 		<section>
@@ -3423,6 +3275,21 @@ mis.schedule.enabled=true
 
 		<section id="scheduled">
 			<title>@Scheduled 详解</title>
+			<para>@Scheduled参数说明</para>
+			<screen>
+			<![CDATA[
+@Scheduled注解有一些参数，用于配置计划任务执行频率，执行时段等。
+
+cron ：cron表达式，e.g. {@code "0 * * * * ？"}从前到后依次表示秒 分 时 日 月 年
+zone：设置时区，指明计划任务运行在哪个时区下，默认为空，采用操作系统默认时区
+fixedDelay：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以long类型复制
+fixedDelayString：同一个计划任务两次执行间隔固定时间，单位毫秒，上次执行结束到下次开始执行的时间，以String类型赋值
+fixedRate：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以long类型赋值
+fixedRateString：以一个固定频率执行，单位毫秒，表示每隔多久执行一次，以String类型赋值
+initialDelay：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以long类型赋值
+initialDelayString：延迟启动计划任务，单位毫秒，表示执行第一次计划任务前先延迟一段时间，以String赋值
+			]]>
+			</screen>
 			<para></para>
 			<para>cron表达式使用空格分隔的时间元素。</para>
 			<screen>

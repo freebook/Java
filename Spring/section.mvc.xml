@@ -110,7 +110,147 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	
 	&section.mvc.controller.xml;	
 	&section.mvc.view.xml;
+	<section id="service">
+		<title>Service</title>
+		<section>
+			<title>Application</title>
+			<para>@ComponentScan({ "web", "rest","service" }) 一定要包含 Service 目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。</para>
+			<programlisting>
+			<![CDATA[
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.authentication.UserCredentials;
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import com.mongodb.Mongo;
+
+import pojo.ApplicationConfiguration;
+
+@Configuration
+@SpringBootApplication
+@EnableConfigurationProperties(ApplicationConfiguration.class)
+@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
+@ComponentScan({ "web", "rest","service" })
+@EnableMongoRepositories
+public class Application {
+	
+	@SuppressWarnings("deprecation")
+	public @Bean MongoDbFactory mongoDbFactory() throws Exception {
+		UserCredentials userCredentials = new UserCredentials("finance", "your_password");
+		return new SimpleMongoDbFactory(new Mongo("mdb.netkiller.cn"), "finance", userCredentials);
+	}
+
+	public @Bean MongoTemplate mongoTemplate() throws Exception {
+		return new MongoTemplate(mongoDbFactory());
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>定义接口</title>
+			<para>TestService 接口</para>
+			<programlisting>
+			<![CDATA[
+package service;
+
+public interface TestService {
+
+	public String getName();
+	public String toString();
+	public String helloUser(String user);
+}
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>实现接口</title>
+			<para>实现 TestService 接口</para>
+			<programlisting>
+			<![CDATA[
+package service.impl;
+
+import org.springframework.stereotype.Component;
+
+import service.TestService;
+
+@Component
+public class TestServiceImpl implements TestService {
+
+	public String name = "Test";
+
+	public void TestService() {
+
+	}
+
+	@Override
+	public String helloUser(String user) {
+		return "hello " + user;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public String toString() {
+		return "TestServiceImpl [config=" + this.name + "]";
+	}
+
+}
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>调用 Service</title>
+			<para>控制器中调用 Service</para>
+			<programlisting>
+			<![CDATA[
+package web;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import domain.City;
+import pojo.ApplicationConfiguration;
+import repository.CityRepository;
+import service.TestService;
+
+@Controller
+public class IndexController {
+	
+	@Autowired
+    private TestService testService;
+	
+	@RequestMapping("/service")
+	@ResponseBody
+	public String service() {
+		return testService.helloUser("Neo");
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="spring.mvc.i18n">
 		<title>i18n 国际化</title>
 		<section>
