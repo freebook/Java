@@ -1124,7 +1124,7 @@ List<User> users = userRepository.findByAgeBetween(20, 50);
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section id="@Query">
 			<title>@Query</title>
 			<programlisting>
@@ -1335,7 +1335,7 @@ public List<Person> getAllPersonPaginated(int pageNumber, int pageSize) {
 		</section>
 		<section id="Criteria">
 			<title>Criteria</title>
-			
+
 			<section id="Criteria.is">
 				<title>is</title>
 				<programlisting>
@@ -1391,11 +1391,9 @@ query.limit(10);
 				</programlisting>
 			</section>
 			<section id="Criteria.exists">
-				<title></title>
+				<title>exists()</title>
 				<programlisting>
 				<![CDATA[
-			<programlisting>
-			<![CDATA[
 Query query = new Query();
 query.addCriteria(
     new Criteria().andOperator(
@@ -1410,8 +1408,8 @@ System.out.println("query - " + query.toString());
 for (Foo foo : result) {
     System.out.println("result - " + foo);
 }			
-			]]>
-			</programlisting>
+				]]>
+				</programlisting>
 			</section>
 			<section id="Criteria.in">
 				<title>包含</title>
@@ -1468,7 +1466,7 @@ update.set("name", "Netkiller");
 				]]>
 				</programlisting>
 			</section>
-			
+
 			<section id="Update.inc">
 				<title>inc</title>
 				<programlisting>
@@ -1495,28 +1493,30 @@ mongoTemplate.upsert(query, update, "class");
 			</section>
 		</section>
 		<section id="sort">
-				<title>Sort</title>
-				<para>按照年龄排序</para>
-				<programlisting>
+			<title>Sort</title>
+			<para>按照年龄排序</para>
+			<programlisting>
 			<![CDATA[
 Query query = new Query();
 query.with(new Sort(Sort.Direction.ASC, "age"));
 List<User> users = mongoTemplate.find(query,User.class);
 			]]>
-				</programlisting>
-			</section><section id="PageRequest">
-				<title>Query + PageRequest</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section id="PageRequest">
+			<title>Query + PageRequest</title>
+			<programlisting>
 			<![CDATA[
 final Pageable pageableRequest = new PageRequest(0, 2);
 Query query = new Query();
 query.with(pageableRequest);
 			]]>
-				</programlisting>
-			</section><section id="newAggregation">
-				<title>newAggregation</title>
+			</programlisting>
+		</section>
+		<section id="newAggregation">
+			<title>newAggregation</title>
 
-				<programlisting>
+			<programlisting>
 			<![CDATA[
 		MultilevelDirectSellingAccountRewardsSettlementDetails multilevelDirectSellingAccountRewardsSettlementDetails = new MultilevelDirectSellingAccountRewardsSettlementDetails();
 		multilevelDirectSellingAccountRewardsSettlementDetails.setLoginname("111");
@@ -1541,8 +1541,8 @@ query.with(pageableRequest);
 		AggregationResults<MultilevelDirectSellingAccountRewardsSettlementDetails> results = mongoTemplate.aggregate(aggregation, MultilevelDirectSellingAccountRewardsSettlementDetails.class, MultilevelDirectSellingAccountRewardsSettlementDetails.class);		
 		System.out.println(results.getRawResults().get("result").toString());
 			]]>
-				</programlisting>
-			</section>
+			</programlisting>
+		</section>
 		<section id="indexOps">
 			<title>创建索引</title>
 			<programlisting>
