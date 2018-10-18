@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="type">
 	<title>类型</title>
+	<para>数据类型的最大值和最小值。</para>
+	<screen>
+	<![CDATA[
+
+基本类型：int 二进制位数：32
+包装类：java.lang.Integer
+最小值：Integer.MIN_VALUE= -2147483648 （-2的31次方）
+最大值：Integer.MAX_VALUE= 2147483647  （2的31次方-1）
+
+基本类型：short 二进制位数：16
+包装类：java.lang.Short
+最小值：Short.MIN_VALUE=-32768 （-2的15此方）
+最大值：Short.MAX_VALUE=32767 （2的15次方-1）
+
+基本类型：long 二进制位数：64
+包装类：java.lang.Long
+最小值：Long.MIN_VALUE=-9223372036854775808 （-2的63次方）
+最大值：Long.MAX_VALUE=9223372036854775807 （2的63次方-1）
+
+基本类型：float 二进制位数：32
+包装类：java.lang.Float
+最小值：Float.MIN_VALUE=1.4E-45 （2的-149次方）
+最大值：Float.MAX_VALUE=3.4028235E38 （2的128次方-1）
+
+基本类型：double 二进制位数：64
+包装类：java.lang.Double
+最小值：Double.MIN_VALUE=4.9E-324 （2的-1074次方）
+最大值：Double.MAX_VALUE=1.7976931348623157E308 （2的1024次方-1）	
+	]]>
+	</screen>
 	<section id="integer">
 		<title>Integer</title>
 		<programlisting>
@@ -1101,6 +1131,297 @@ str = new StringBuffer(str).insert(str.length()-2, ".").toString();
 	byte[] bytes = "Helloworld!!! - http://www.netkiller.cn".getBytes();
 	String str = new String(bytes, StandardCharsets.UTF_8);
 	System.out.println(str);
+			]]>
+			</programlisting>
+		</section>
+		<section id="int2byte">
+			<title>int to byte array</title>
+			<programlisting>
+			<![CDATA[
+private byte[] bigIntToByteArray( final int i ) {
+    BigInteger bigInt = BigInteger.valueOf(i);      
+    return bigInt.toByteArray();
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+private byte[] intToByteArray ( final int i ) throws IOException {      
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    DataOutputStream dos = new DataOutputStream(bos);
+    dos.writeInt(i);
+    dos.flush();
+    return bos.toByteArray();
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+private byte[] intToBytes( final int i ) {
+    ByteBuffer bb = ByteBuffer.allocate(4); 
+    bb.putInt(i); 
+    return bb.array();
+}						
+			]]>
+			</programlisting>
+			<para>位移操作</para>
+			<programlisting>
+			<![CDATA[
+private static byte[] intToBytes(final int a) {
+    return new byte[] {
+        (byte)((data >> 24) & 0xff),
+        (byte)((data >> 16) & 0xff),
+        (byte)((data >> 8) & 0xff),
+        (byte)((data >> 0) & 0xff),
+    };
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="byte2int">
+			<title>byte array to int</title>
+			<programlisting>
+			<![CDATA[
+private int convertByteArrayToInt(byte[] intBytes){
+    ByteBuffer byteBuffer = ByteBuffer.wrap(intBytes);
+    return byteBuffer.getInt();
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+private int convertByteArrayToInt(byte[] data) {
+    if (data == null || data.length != 4) return 0x0;
+    // ----------
+    return (int)( // NOTE: type cast not necessary for int
+            (0xff & data[0]) << 24  |
+            (0xff & data[1]) << 16  |
+            (0xff & data[2]) << 8   |
+            (0xff & data[3]) << 0
+            );
+}			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+	public static byte[] intToByte32(int num) {
+        byte[] arr = new byte[32];
+        for (int i = 31; i >= 0; i--) {
+            // &1 也可以改为num&0x01,表示取最地位数字.
+            arr[i] = (byte) (num & 1);
+            // 右移一位.
+            num >>= 1;
+        }
+        return arr;
+    }
+
+			
+	public static int byte32ToInt(byte[] arr) {
+        if (arr == null || arr.length != 32) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且长度是32!");
+        }
+        int sum = 0;
+        for (int i = 0; i < 32; ++i) {
+            sum |= (arr[i] << (31 - i));
+        }
+        return sum;
+    }			
+			]]>
+			</programlisting>
+			<para>int array to byte array</para>
+			<programlisting>
+			<![CDATA[
+private byte[] convertIntArrayToByteArray(int[] data) {
+        if (data == null) return null;
+        // ----------
+        byte[] byts = new byte[data.length * 4];
+        for (int i = 0; i < data.length; i++)
+            System.arraycopy(convertIntToByteArray(data[i]), 0, byts, i * 4, 4);
+        return byts;
+    }			
+			]]>
+			</programlisting>
+			<para>byte array to int array</para>
+			<programlisting>
+			<![CDATA[
+public int[] convertByteArrayToIntArray(byte[] data) {
+        if (data == null || data.length % 4 != 0) return null;
+        // ----------
+        int[] ints = new int[data.length / 4];
+        for (int i = 0; i < ints.length; i++)
+            ints[i] = ( convertByteArrayToInt(new byte[] {
+                    data[(i*4)],
+                    data[(i*4)+1],
+                    data[(i*4)+2],
+                    data[(i*4)+3],
+            } ));
+        return ints;
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="byte2char">
+			<title>byte2char</title>
+			<programlisting>
+			<![CDATA[
+	byte b1 = 65;
+    // char ch = b1;  
+          
+    char ch = (char) b1;
+ 
+    System.out.println("byte value: " + b1);             // prints 65
+    System.out.println("Converted char value: " + ch);   // prints A (ASCII is 65 for A)			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+	public static char byte2ToChar(byte[] arr) {
+        if (arr == null || arr.length != 2) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
+        }
+        return (char) (((char) (arr[0] << 8)) | ((char) arr[1]));
+    }			
+    
+    public static byte[] charToByte2(char c) {
+        byte[] arr = new byte[2];
+        arr[0] = (byte) (c >> 8);
+        arr[1] = (byte) (c & 0xff);
+        return arr;
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section id="longToByte64">
+			<title>longToByte64</title>
+			<programlisting>
+			<![CDATA[
+    public static byte[] longToByte64(long sum) {
+        byte[] arr = new byte[64];
+        for (int i = 63; i >= 0; i--) {
+            arr[i] = (byte) (sum & 1);
+            sum >>= 1;
+        }
+        return arr;
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="byte64ToLong">
+			<title>byte64ToLong</title>
+			<programlisting>
+			<![CDATA[
+	public static long byte8ToLong(byte[] arr) {
+        if (arr == null || arr.length != 8) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是8位!");
+        }
+        return (long) (((long) (arr[0] & 0xff) << 56) | ((long) (arr[1] & 0xff) << 48) | ((long) (arr[2] & 0xff) << 40)
+                        | ((long) (arr[3] & 0xff) << 32) | ((long) (arr[4] & 0xff) << 24)
+                        | ((long) (arr[5] & 0xff) << 16) | ((long) (arr[6] & 0xff) << 8) | ((long) (arr[7] & 0xff)));
+    }
+    			
+	public static byte[] longToByte8(long sum) {
+        byte[] arr = new byte[8];
+        arr[0] = (byte) (sum >> 56);
+        arr[1] = (byte) (sum >> 48);
+        arr[2] = (byte) (sum >> 40);
+        arr[3] = (byte) (sum >> 32);
+        arr[4] = (byte) (sum >> 24);
+        arr[5] = (byte) (sum >> 16);
+        arr[6] = (byte) (sum >> 8);
+        arr[7] = (byte) (sum & 0xff);
+        return arr;
+    }
+    			
+	public static long byte64ToLong(byte[] arr) {
+        if (arr == null || arr.length != 64) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且长度是64!");
+        }
+        long sum = 0L;
+        for (int i = 0; i < 64; ++i) {
+            sum |= ((long) arr[i] << (63 - i));
+        }
+        return sum;
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="short2byte">
+			<title>short2byte</title>
+			<programlisting>
+			<![CDATA[
+    public static byte[] shortToByte16(short s) {
+        byte[] arr = new byte[16];
+        for (int i = 15; i >= 0; i--) {
+            arr[i] = (byte) (s & 1);
+            s >>= 1;
+        }
+        return arr;
+    }
+
+    public static short byte16ToShort(byte[] arr) {
+        if (arr == null || arr.length != 16) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且长度为16!");
+        }
+        short sum = 0;
+        for (int i = 0; i < 16; ++i) {
+            sum |= (arr[i] << (15 - i));
+        }
+        return sum;
+    }			
+    
+    public static short byte2ToShort(byte[] arr) {
+        if (arr != null && arr.length != 2) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
+        }
+        return (short) (((short) arr[0] << 8) | ((short) arr[1] & 0xff));
+    }
+    
+    public static byte[] shortToByte2(Short s) {
+        byte[] arr = new byte[2];
+        arr[0] = (byte) (s >> 8);
+        arr[1] = (byte) (s & 0xff);
+        return arr;
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section id="byte8ToDouble">
+			<title>byte8ToDouble</title>
+			<programlisting>
+			<![CDATA[
+	public static double byte8ToDouble(byte[] arr) {
+        if (arr == null || arr.length != 8) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是8位!");
+        }
+        long l = byte8ToLong(arr);
+        return Double.longBitsToDouble(l);
+    }
+
+    public static byte[] doubleToByte8(double i) {
+        long j = Double.doubleToLongBits(i);
+        return longToByte8(j);
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="byte4ToFloat">
+			<title>byte4ToFloat</title>
+			<programlisting>
+			<![CDATA[
+    public static float byte4ToFloat(byte[] arr) {
+        if (arr == null || arr.length != 4) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是4位!");
+        }
+        int i = byte4ToInt(arr);
+        return Float.intBitsToFloat(i);
+    }
+
+    public static byte[] floatToByte4(float f) {
+        int i = Float.floatToIntBits(f);
+        return intToByte4(i);
+    }			
 			]]>
 			</programlisting>
 		</section>
