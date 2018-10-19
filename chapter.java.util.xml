@@ -687,5 +687,13 @@ public class UuidTest {
 		]]>
 		</programlisting>
 	</section>
-
+	<section id="Arrays.equals">
+		<title>Arrays.equals 判断两个数组是否相等</title>
+		<para>static boolean equals(type[] a, type[] b)</para>
+		<programlisting>
+		<![CDATA[
+Arrays.equals(array1, array2)		
+		]]>
+		</programlisting>
+	</section>
 </section>

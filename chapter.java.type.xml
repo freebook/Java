@@ -1134,8 +1134,24 @@ str = new StringBuffer(str).insert(str.length()-2, ".").toString();
 			]]>
 			</programlisting>
 		</section>
+		<section id="BigInteger2byte">
+			<title>BigInteger2byte</title>
+			<programlisting>
+			<![CDATA[
+BigInteger b= new BigInteger('300');
+byte bytes= b.byteValue();			
+			]]>
+			</programlisting>
+		</section>
 		<section id="int2byte">
 			<title>int to byte array</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+int a= 120;
+byte b= (byte)a;			
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
 private byte[] bigIntToByteArray( final int i ) {
@@ -1422,6 +1438,40 @@ public int[] convertByteArrayToIntArray(byte[] data) {
         int i = Float.floatToIntBits(f);
         return intToByte4(i);
     }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="unsigned-byte">
+			<title>无符号 byte</title>
+			<programlisting>
+			<![CDATA[
+byte b= -120;
+int a= bytes & 0xff;
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+byte a = (byte)234;
+System.out.println(a);
+
+上面的代码，结果是-22，因为java中byte是有符号的，byte范围是-128~127。
+
+如果想输出234，该怎么做呢，首先想到的是将a 赋给大一点的类型，如下：
+
+byte a = (byte)234;
+int i = a&0xff;
+System.out.println(i);
+
+原因是 0xff是int，占4个字节，a是byte，占1个字节，进行&操作的细节如下：
+
+   00000000 00000000 00000000 11101010    (a)
+&
+   00000000 00000000 00000000 11111111    (0xff)
+---------------------------------------------------------------------
+=  00000000 00000000 00000000 11101010
+
+结果是int，但是符号位是0，说明是正数，最后就是正整数234.	
 			]]>
 			</programlisting>
 		</section>

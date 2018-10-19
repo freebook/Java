@@ -238,7 +238,7 @@ public class PrintWriterTest {
 		</programlisting>
 	</section>
 	<section id="file.binary">
-		<title>二进制文件操作入门</title>
+		<title>二进制文件</title>
 		<section id="binary.int">
 			<title>理解二进制文件</title>
 			<para>我们运行下面一段程序，向文件 netkiller.bin 中写入一个整形数值 1 ，然后观察文件变化</para>
@@ -426,7 +426,7 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 1 -b netkiller.bin
 00000000: 01100001  a			
 			]]>
 			</screen>
-			<para>从 ASCII 表中查出 01100001	十进制 97 十六进制	 61 对应字母 	a</para>
+			<para>从 ASCII 表中查出 01100001 十进制 97 十六进制 61 对应字母 a</para>
 			<para>写入一段字符串</para>
 			<programlisting>
 			<![CDATA[
@@ -1000,9 +1000,12 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 			</screen>
 		</section>
 		<section id="binary.exmaple">
-			<title>所有类型演示一遍</title>
-			<programlisting>
-			<![CDATA[
+			<title>二进制文件操作演示</title>
+			<section>
+				<title>所有类型演示一遍</title>
+
+				<programlisting>
+				<![CDATA[
 		String filename = "netkiller.bin";
 		DataOutputStream out = new DataOutputStream(new FileOutputStream(filename));
 		out.writeInt(1024);
@@ -1043,12 +1046,12 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 		System.out.println(name);
 		System.out.println(in.readUTF());
 		System.out.println(in.readUTF());		
-			]]>
-			</programlisting>
-			<para>需要注意的一点是 out.writeChars("陈景峰"); 写入char字符串，在读取的时候你需要知道字符串的长度。然后循环取出char数据。</para>
-			<para>二进制文件内容</para>
-			<screen>
-			<![CDATA[
+				]]>
+				</programlisting>
+				<para>需要注意的一点是 out.writeChars("陈景峰"); 写入char字符串，在读取的时候你需要知道字符串的长度。然后循环取出char数据。</para>
+				<para>二进制文件内容</para>
+				<screen>
+				<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 00000000: 00000000 00000000 00000100 00000000 00000000 11111111 00000000 00000000  ........
 00000008: 00000000 00010111 01001000 01110110 11101000 00000000 01000000 01001000  ..Hv..@H
@@ -1063,11 +1066,11 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 00000050: 01110010 00101110 01100011 01101110 10001111 11011001 01100110 00101111  r.cn..f/
 00000058: 01100111 00000000 01010100 00001110 01001110 00000000 10001000 01001100  g.T.N..L
 00000060: 00000000 00001101 00000000 00001010                                      ....			
-			]]>
-			</screen>
-			<para>16 进制编辑器更好阅读一些</para>
-			<screen>
-			<![CDATA[
+				]]>
+				</screen>
+				<para>16 进制编辑器更好阅读一些</para>
+				<screen>
+				<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % hexdump -C netkiller.bin 
 00000000  00 00 04 00 00 ff 00 00  00 17 48 76 e8 00 40 48  |..........Hv..@H|
 00000010  f5 c3 40 09 21 fb 54 43  ce 28 01 00 a5 96 48 66  |..@.!.TC.(....Hf|
@@ -1077,8 +1080,61 @@ neo@MacBook-Pro ~/workspace/netkiller % hexdump -C netkiller.bin
 00000050  72 2e 63 6e 8f d9 66 2f  67 00 54 0e 4e 00 88 4c  |r.cn..f/g.T.N..L|
 00000060  00 0d 00 0a                                       |....|
 00000064			
-			]]>
-			</screen>
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>检查文件是否是 png 文件</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.io;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+
+public class PngFile {
+
+	private static InputStream inputStream;
+
+	public PngFile() {
+	}
+
+	public static void main(String[] args) throws FileNotFoundException {
+
+		int[] pngSignature = { 137, 80, 78, 71, 13, 10, 26, 10 };
+
+		try {
+			inputStream = new FileInputStream("/Users/neo/Downloads/NBRC.png");
+
+			byte[] headerBytes = new byte[8];
+			inputStream.read(headerBytes);
+
+			// for (byte b : headerBytes) {
+			// System.out.println(b);
+			// }
+
+			int[] pngHeader = new int[8];
+
+			for (int i = 0; i < headerBytes.length; i++) {
+				pngHeader[i] = (int) headerBytes[i] & 0xff;
+			}
+
+			if (Arrays.equals(pngHeader, pngSignature)) {
+				System.out.println("This is a PNG file! ");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}				
+				]]>
+				</programlisting>
+			</section>
 		</section>
 	</section>
 </section>

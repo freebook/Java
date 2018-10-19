@@ -1059,6 +1059,18 @@ List<User> users = userRepository.findByName("Eric");
 			]]>
 			</programlisting>
 		</section>
+		<section id="findAllOrderBy">
+			<title>findAll with OrderBy</title>
+			<section>
+				<title>order by boolean 布尔型数据排序</title>
+				<para>因为 boolean 数据 true = 1, false = 0 所以 ASC false 会排列在前面。所有很多时候而我们需要 DESC 排序</para>
+				<programlisting>
+				<![CDATA[
+List<ShippingAddress> shippingAddress = shippingAddressRepository.findAllByMemberIdOrderByDefaultsDesc(memberId);			
+				]]>
+				</programlisting>
+			</section>
+		</section>
 		<section id="findsort">
 			<title>findAll with Sort</title>
 			<programlisting>
@@ -1207,7 +1219,8 @@ db.personCollection.findOne().pretty();
 			</screen>
 		</section>
 		<section id="mongoTemplate.updateFirst">
-			<title>更新第一条</title>
+			<title>updateFirst 修改符合条件第一条记录</title>
+			<para>updateFirst 修改符合条件第一条记录</para>
 			<programlisting>
 			<![CDATA[
 Query query = new Query();
@@ -1219,7 +1232,8 @@ mongoTemplate.updateFirst(query, update, User.class);
 			</programlisting>
 		</section>
 		<section id="mongoTemplate.updateMulti">
-			<title>更新所有数据</title>
+			<title>updateMulti 修改符合条件的所有</title>
+			<para>更新所有数据</para>
 			<programlisting>
 			<![CDATA[
 Query query = new Query();
@@ -1243,7 +1257,7 @@ User user = mongoTemplate.findAndModify(query, update, User.class);
 			</programlisting>
 		</section>
 		<section id="mongoTemplate.upsert">
-			<title>upsert</title>
+			<title>upsert - 修改符合条件时如果不存在则添加</title>
 			<programlisting>
 			<![CDATA[
 Query query = new Query();
@@ -1251,6 +1265,11 @@ query.addCriteria(Criteria.where("name").is("Green"));
 Update update = new Update();
 update.set("name", "Tom");
 mongoTemplate.upsert(query, update, User.class);			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+mongoTemplate.upsert(new Query(Criteria.where("age").is("18")), new Update().set("name", "neo"), collectionName);			
 			]]>
 			</programlisting>
 		</section>
@@ -1491,6 +1510,18 @@ mongoTemplate.upsert(query, update, "class");
 				]]>
 				</programlisting>
 			</section>
+		</section>
+		<section id="BasicUpdate">
+			<title>BasicUpdate</title>
+			<para>BasicUpdate 是底层更新可操作，需要手动实现$set等语句</para>
+			<programlisting>
+			<![CDATA[
+BasicDBObject basicDBObject = new BasicDBObject();  
+basicDBObject.put("$set", new BasicDBObject("date","2018-09-09"));  
+Update update = new BasicUpdate(basicDBObject);  
+mongoTemplate.updateFirst(new Query(Criteria.where("nickname").is("netkiller")), update,collectionName);  			
+			]]>
+			</programlisting>
 		</section>
 		<section id="sort">
 			<title>Sort</title>
