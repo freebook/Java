@@ -1475,6 +1475,41 @@ System.out.println(i);
 			]]>
 			</programlisting>
 		</section>
+		<section id="byte2hex">
+			<title>byte to hex</title>
+			<programlisting>
+			<![CDATA[
+byte bv = 10;
+String hexString = Integer.toHexString(bv);			
+			]]>
+			</programlisting>
+		</section>
+		<section id="bytes2hex">
+			<title>byte[] to hex</title>
+			<programlisting>
+			<![CDATA[
+byte bytes[] = {(byte)0, (byte)0, (byte)134, (byte)0, (byte)61};
+System.out.println(javax.xml.bind.DatatypeConverter.printHexBinary(bytes));			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+public static String byteArrayToHex(byte[] bytes) {
+   StringBuilder sb = new StringBuilder(a.length * 2);
+   for(byte b: bytes)
+      sb.append(String.format("%02x", b));
+   return sb.toString();
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+BigInteger n = new BigInteger(byteArray);
+String hexa = n.toString(16));			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>
 

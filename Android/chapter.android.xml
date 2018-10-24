@@ -2,23 +2,61 @@
 <chapter id="index"><?dbhtml dir="android" ?>
 	<title>Android</title>
 
-<section>
-	<title>Android Studio</title>
-	<para></para>
-	<screen>
-	</screen>
-</section>
-
-<section id="AndroidManifest.xml">
-	<title>AndroidManifest.xml</title>
 	<section>
-		<title>开启网络</title>
-		<screen>
+		<title>Android Studio</title>
+		<section id="">
+			<title>卸载 Android Studio</title>
+			<para>卸载 Mac Android Studio</para>
+			<screen>
+	<![CDATA[
+rm -Rf /Applications/Android\ Studio.app
+rm -Rf ~/Library/Preferences/AndroidStudio*
+rm ~/Library/Preferences/com.google.android.studio.plist
+rm -Rf ~/Library/Application\ Support/AndroidStudio*
+rm -Rf ~/Library/Logs/AndroidStudio*
+rm -Rf ~/Library/Caches/AndroidStudio*	
+rm -Rf ~/Library/Android*
+	]]>
+			</screen>
+			<para>删除 Projects</para>
+			<screen>
+	<![CDATA[
+rm -Rf ~/AndroidStudioProjects	
+	]]>
+			</screen>
+			<para>删除 gradle</para>
+			<screen>
+	<![CDATA[
+rm -rf ~/.gradle	
+	]]>
+			</screen>
+			<para>卸载Android Virtual Devices(AVDs) and *.keystore.</para>
+			<screen>
+	<![CDATA[
+rm -Rf ~/.android	
+	]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>代码格式化</title>
+			<screen>
+		<![CDATA[
+Option + Command + L		
+		]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="AndroidManifest.xml">
+		<title>AndroidManifest.xml</title>
+		<section>
+			<title>开启网络</title>
+			<screen>
 		<![CDATA[
 <uses-permission android:name="android.permission.INTERNET" />		
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,16 +84,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>	
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
-<section>
-	<title>Layout</title>
-	<section>
-		<title></title>
-		<screen>
-setContentView(R.layout.view);		
-		</screen>
-	</section>
-</section>
+
+	&chapter.android.layout.xml;
+	&chapter.android.okhttp.xml;
+	&chapter.android.faq.xml;
 </chapter>

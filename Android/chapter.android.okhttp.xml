@@ -1,0 +1,541 @@
+<chapter id="okhttp">
+	<title>OkHttp - An HTTP & HTTP/2 client for Android and Java applications</title>
+	<para>
+		<ulink url="http://square.github.io/okhttp/" />
+	</para>
+	<section id="okhttp.Gradle">
+		<title>Gradle</title>
+		<para>再 app/build.gradle 文件中增加依赖包</para>
+		<screen>
+		<![CDATA[
+implementation 'com.squareup.okhttp3:okhttp:3.11.0'		
+		]]>
+		</screen>
+		<para>app/build.gradle</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/build.gradle
+		
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "cn.netkiller.okhttp"
+        minSdkVersion 28
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+}
+		
+		]]>
+		</screen>
+	</section>
+	<section id="okhttp.AndroidManifest.xml">
+		<title></title>
+		<para>在 app/src/main/AndroidManifest.xml 文件中增加</para>
+		<screen>
+		<![CDATA[
+<uses-permission android:name="android.permission.INTERNET" />		
+		]]>
+		</screen>
+		<para>否则 okhttp 无法访问网络，添加后的效果如下。</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/AndroidManifest.xml 
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.okhttp">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>		
+		]]>
+		</screen>
+	</section>
+	<section id="okhttp.http">
+		<title>okhttp 默认是 HTTPS 开启 HTTP</title>
+		<para>如果你尝试使用 http 链接 OkHttp3 就抛出异常: CLEARTEXT communication to " + host + " not permitted by network security policy</para>
+		<para>开发过程中由于 https ssl 需要购买证书，费用较高，通常测试环境我们仍然使用 http 下面方法是开启 http 模式，</para>
+		<para>创建文件 res/xml/network_security_config.xml 内容如下</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/network_security_config.xml 
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+    </domain-config>
+</network-security-config>		
+		]]>
+		</screen>
+		<para>再 app/src/main/AndroidManifest.xml 文件中增加 android:networkSecurityConfig="@xml/network_security_config"</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.okhttp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:networkSecurityConfig="@xml/network_security_config">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>		
+		]]>
+		</screen>
+	</section>
+	<section id="okhttp.get">
+		<title>GET</title>
+		<programlisting>
+		<![CDATA[
+	OkHttpClient client = new OkHttpClient();
+ 
+    Request request = new Request.Builder()
+            .url("http://www.netkiller.cn")
+            .build();
+ 
+    Response response = client.newCall(request).execute();
+    if (!response.isSuccessful()) {
+        throw new IOException("服务器端错误: " + response);
+    }
+ 
+    Headers responseHeaders = response.headers();
+    for (int i = 0; i < responseHeaders.size(); i++) {
+        System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+    }
+ 
+    System.out.println(response.body().string());		
+		]]>
+		</programlisting>
+	</section>
+	<section id="okhttp.post">
+		<title>POST</title>
+
+		<para>POST RAW Json 数据</para>
+		<programlisting>
+		<![CDATA[
+public static final MediaType JSON
+    = MediaType.parse("application/json; charset=utf-8");
+
+OkHttpClient client = new OkHttpClient();
+
+String post(String url, String json) throws IOException {
+  RequestBody body = RequestBody.create(JSON, json);
+  Request request = new Request.Builder()
+      .url(url)
+      .post(body)
+      .build();
+  Response response = client.newCall(request).execute();
+  return response.body().string();
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="okhttp.addheader">
+		<title>http header</title>
+		<para>添加Http头</para>
+		<programlisting>
+		<![CDATA[
+Request request = new Request.Builder()
+        .url(url)
+        .addHeader("CLIENT", "AD")
+        .addHeader("USERID", "343")
+        .build();		
+		]]>
+		</programlisting>
+		<para>覆盖 HTTP 头</para>
+		<programlisting>
+		<![CDATA[
+        Request request = new Request.Builder()
+                .header("Authorization", "replace this text with your token")
+                .url(url)
+                .build();		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+public class Headers {
+   public static void main(String[] args) throws IOException {
+    OkHttpClient client = new OkHttpClient();
+ 
+    Request request = new Request.Builder()
+            .url("http://www.netkiller.cn")
+            .header("User-Agent", "Apple Mac")
+            .addHeader("Accept", "text/html")
+            .build();
+ 
+    Response response = client.newCall(request).execute();
+    if (!response.isSuccessful()) {
+        throw new IOException("服务器端错误: " + response);
+    }
+ 
+    System.out.println(response.header("Server"));
+    System.out.println(response.headers("Set-Cookie"));
+   }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="okhttp.auth">
+		<title>HTTP Base Auth</title>
+		<programlisting>
+		<![CDATA[
+        OkHttpClient client = new OkHttpClient.Builder().authenticator(
+                new Authenticator(){
+                    public Request authenticate(Route route, Response response) {
+                        String credential = Credentials.basic("api","secret");
+                        return response.request().newBuilder().header("Authorization", credential).build();
+                    }
+                }
+        ).build();		
+		]]>
+		</programlisting>
+	</section>
+	<section id="HttpUrl.Builder">
+		<title>HttpUrl.Builder 组装 URL 地址参数</title>
+		<para>使用字符串拼接 URL地址特别容易出错</para>
+		<programlisting>
+		<![CDATA[
+String url = "https://www.netkiller.cn/article?username="+ username + "&category="+ category;		
+		]]>
+		</programlisting>
+		<para>较好的处理方式是使用 HttpUrl.Builder</para>
+		<programlisting>
+		<![CDATA[
+		HttpUrl.Builder builder = HttpUrl.parse("https://www.netkiller.cn/article").newBuilder();
+        builder.addQueryParameter("username", "netkiller");
+        builder.addQueryParameter("category", "android");
+        String url = builder.build().toString();
+
+        Log.d("okhttp", url);		
+		]]>
+		</programlisting>
+		<para>输出结果</para>
+		<screen>
+		<![CDATA[
+https://www.netkiller.cn/article?username=netkiller&category=android		
+		]]>
+		</screen>
+	</section>
+	<section id="okhttp.Activity">
+		<title>Android Activity Example</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.okhttp;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class HttpActivity extends AppCompatActivity {
+
+    TextView textView;
+    private Handler mHandler;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_http);
+        
+        textView = (TextView) findViewById(R.id.textView);
+
+        mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                textView.setText((String) msg.obj);
+            }
+        };
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url("http://192.168.0.185:8080/member/json").build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("okhttp", "Connect timeout. " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String text = response.body().string();
+                Log.d("okhttp", "HTTP Code " + response.code() + " TEXT " + text);
+
+                Message msg = new Message();
+                msg.what = 0;
+                msg.obj = text;
+                mHandler.sendMessage(msg);
+
+            }
+        });
+
+    }
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="oauth2.android">
+		<title>Android Oauth2 + Jwt example</title>
+		<para></para>
+		<programlisting>
+	<![CDATA[
+package cn.netkiller.okhttp.pojo;
+
+public class Oauth {
+    private String access_token;
+    private String token_type;
+    private String refresh_token;
+    private String expires_in;
+    private String scope;
+    private String jti;
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
+    }
+
+    public String getToken_type() {
+        return token_type;
+    }
+
+    public void setToken_type(String token_type) {
+        this.token_type = token_type;
+    }
+
+    public String getRefresh_token() {
+        return refresh_token;
+    }
+
+    public void setRefresh_token(String refresh_token) {
+        this.refresh_token = refresh_token;
+    }
+
+    public String getExpires_in() {
+        return expires_in;
+    }
+
+    public void setExpires_in(String expires_in) {
+        this.expires_in = expires_in;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public String getJti() {
+        return jti;
+    }
+
+    public void setJti(String jti) {
+        this.jti = jti;
+    }
+
+    @Override
+    public String toString() {
+        return "Oauth{" +
+                "access_token='" + access_token + '\'' +
+                ", token_type='" + token_type + '\'' +
+                ", refresh_token='" + refresh_token + '\'' +
+                ", expires_in='" + expires_in + '\'' +
+                ", scope='" + scope + '\'' +
+                ", jti='" + jti + '\'' +
+                '}';
+    }
+}	
+	]]>
+		</programlisting>
+		<para>Activity 文件</para>
+		<programlisting>
+	<![CDATA[
+package cn.netkiller.okhttp;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import cn.netkiller.okhttp.pojo.Oauth;
+import okhttp3.Authenticator;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Credentials;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.Route;
+
+public class Oauth2jwtActivity extends AppCompatActivity {
+
+    private TextView token;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_oauth2jwt);
+
+        token = (TextView) findViewById(R.id.token);
+
+        try {
+            get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static Oauth accessToken() throws IOException {
+
+
+        OkHttpClient client = new OkHttpClient.Builder().authenticator(
+                new Authenticator() {
+                    public Request authenticate(Route route, Response response) {
+                        String credential = Credentials.basic("api", "secret");
+                        return response.request().newBuilder().header("Authorization", credential).build();
+                    }
+                }
+        ).build();
+
+        String url = "https://api.netkiller.cn/oauth/token";
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("grant_type", "password")
+                .add("username", "blockchain")
+                .add("password", "123456")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        if (!response.isSuccessful()) {
+            throw new IOException("服务器端错误: " + response);
+        }
+
+        Gson gson = new Gson();
+        Oauth oauth = gson.fromJson(response.body().string(), Oauth.class);
+        Log.i("oauth", oauth.toString());
+        return oauth;
+    }
+
+    public void get() throws IOException {
+
+
+        OkHttpClient client = new OkHttpClient.Builder().authenticator(
+                new Authenticator() {
+                    public Request authenticate(Route route, Response response) throws IOException {
+                        return response.request().newBuilder().header("Authorization", "Bearer " + accessToken().getAccess_token()).build();
+                    }
+                }
+        ).build();
+
+        String url = "https://api.netkiller.cn/misc/compatibility";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                call.cancel();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                final String myResponse = response.body().string();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i("oauth", myResponse);
+                        token.setText(myResponse);
+                    }
+                });
+
+            }
+        });
+    }
+
+}
+	]]>
+		</programlisting>
+	</section>
+</chapter>

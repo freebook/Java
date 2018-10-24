@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.android.xml		 		SYSTEM "chapter.android.xml">
+<!ENTITY chapter.android.layout.xml 		SYSTEM "chapter.android.layout.xml">
+<!ENTITY chapter.android.okhttp.xml		 	SYSTEM "chapter.android.okhttp.xml">
+<!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">

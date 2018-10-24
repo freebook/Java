@@ -1,0 +1,83 @@
+<chapter id="android.faq">
+	<title></title>
+	<section id="CLEARTEXT">
+		<title>java.net.UnknownServiceException: CLEARTEXT communication to 192.168.0.185 not permitted by network security policy</title>
+		<para>okhttp 默认使用 https 链接服务器，如果使用 http 会抛出现上面的异常</para>
+		<screen>
+		<![CDATA[
+if (!Platform.get().isCleartextTrafficPermitted(host)) {
+      throw new RouteException(new UnknownServiceException(
+          "CLEARTEXT communication to " + host + " not permitted by network security policy"));
+}		
+		]]>
+		</screen>
+		<para>创建文件 res/xml/network_security_config.xml 内容如下</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/network_security_config.xml 
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>	
+		]]>
+		</screen>
+		<para>再 app/src/main/AndroidManifest.xml 文件中增加 android:networkSecurityConfig="@xml/network_security_config"</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.okhttp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:networkSecurityConfig="@xml/network_security_config">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>		
+		]]>
+		</screen>
+	</section>
+	<section id="android.os.NetworkOnMainThreadException">
+		<title>Caused by: android.os.NetworkOnMainThreadException</title>
+		<para>主线程不能访问网络，在访问网络的代码前面添加如下代码即可：</para>
+		<screen>
+		<![CDATA[
+StrictMode.ThreadPolicy policy= new StrictMode.ThreadPolicy.Builder().permitAll().build();
+StrictMode.setThreadPolicy(policy);		
+		]]>
+		</screen>
+		<para>或者写在 setContentView(R.layout.activity_main); 后面</para>
+		<para>另一种方式是在线程中执行</para>
+		<screen>
+		<![CDATA[
+       new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    String json = get("http://192.168.0.185:8080/member/json");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();		
+		]]>
+		</screen>
+	</section>
+</chapter>
