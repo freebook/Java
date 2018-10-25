@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.nfc">
+	<title>NFC (Near field communication)</title>
+	<section id="nfc.AndroidManifest.xml">
+		<title>AndroidManifest.xml 文件配置</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.nfc">
+    <!--<uses-sdk android:minSdkVersion="14"/>-->
+    <uses-permission android:name="android.permission.NFC" />
+    <!-- 要求当前设备必须要有NFC芯片 -->
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="NFC 初始化工具"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+
+                <!--<data android:mimeType="text/plain" />-->
+                <!--<data android:mimeType="*/*" />-->
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>		
+		]]>
+		</programlisting>
+	</section>
+	<section id="nfc.loyout">
+		<title>Loyout 文件</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/ndefMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:text="message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="NDEF Message : "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ndefMessage">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NFC UID" />
+
+            <TextView
+                android:id="@+id/uid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UID"
+                tools:layout_editor_absoluteX="146dp"
+                tools:layout_editor_absoluteY="71dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NFC Tag" />
+
+            <TextView
+                android:id="@+id/nfcTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tag"
+                tools:layout_editor_absoluteX="179dp"
+                tools:layout_editor_absoluteY="83dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NFC Size" />
+
+            <TextView
+                android:id="@+id/size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="size"
+                tools:layout_editor_absoluteX="179dp"
+                tools:layout_editor_absoluteY="150dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NDEF Type" />
+
+            <TextView
+                android:id="@+id/schema"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="schema"
+                tools:layout_editor_absoluteX="168dp"
+                tools:layout_editor_absoluteY="257dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NDEF charset" />
+
+            <TextView
+                android:id="@+id/charset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="charset"
+                tools:layout_editor_absoluteX="163dp"
+                tools:layout_editor_absoluteY="304dp" />
+
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NDEF Lang" />
+
+            <TextView
+                android:id="@+id/language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="lang"
+                tools:layout_editor_absoluteX="163dp"
+                tools:layout_editor_absoluteY="331dp" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="79dp"
+                android:layout_height="wrap_content"
+                android:text="Status" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="289dp"
+                android:layout_height="wrap_content"
+                android:text="status"
+                tools:layout_editor_absoluteX="90dp"
+                tools:layout_editor_absoluteY="404dp" />
+
+
+        </TableRow>
+    </TableLayout>
+
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="8dp"
+        android:text="NDEF Message write :"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <TextView
+        android:id="@+id/ndefWrite"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    <Switch
+        android:id="@+id/switchWrite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:text="NDEF Message write"
+        android:textOff="NDEF Message write Off"
+        android:textOn="NDEF Message write On"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ndefWrite" />
+
+</android.support.constraint.ConstraintLayout>		
+		]]>
+		</programlisting>
+	</section>
+	<section id="nfc.Activity">
+		<title>Activity 文件</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.nfc;
+
+
+import android.nfc.FormatException;
+import android.nfc.NdefRecord;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
+
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
+import android.os.Parcelable;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.util.UUID;
+
+public class MainActivity extends AppCompatActivity {
+
+    private NfcAdapter nfcAdapter;
+    private PendingIntent pendingIntent;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        final TextView status = (TextView) findViewById(R.id.status);
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            System.out.println("**** NFC ERROR ****");
+            status.setText("NFC is not available.");
+            return;
+        } else if (!nfcAdapter.isEnabled()) {
+            status.setText("请开启系统NFC功能");
+        }
+
+        status.setText("Start...");
+
+        pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+
+        final Switch switchWrite = (Switch) findViewById(R.id.switchWrite);
+
+        switchWrite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    status.setText(switchWrite.getTextOn().toString());
+                } else {
+                    status.setText(switchWrite.getTextOff().toString());
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        nfcAdapter.disableForegroundDispatch(this);
+    }
+
+
+    //当窗口的创建模式是singleTop或singleTask时调用，用于取代onCreate方法
+    //当NFC标签靠近手机，建立连接后调用
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        TextView status = (TextView) findViewById(R.id.status);
+        TextView type = (TextView) findViewById(R.id.nfcTag);
+        TextView size = (TextView) findViewById(R.id.size);
+        TextView uidTextView = (TextView) findViewById(R.id.uid);
+        TextView ndefMessage = (TextView) findViewById(R.id.ndefMessage);
+        TextView schema = (TextView) findViewById(R.id.schema);
+        TextView charset = (TextView) findViewById(R.id.charset);
+        TextView language = (TextView) findViewById(R.id.language);
+        TextView ndefWrite = (TextView) findViewById(R.id.ndefWrite);
+        Switch switchWrite = (Switch) findViewById(R.id.switchWrite);
+
+
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+        if (switchWrite.isChecked()) {
+
+            UUID uuid = UUID.randomUUID();
+            try {
+                write(uuid.toString(), tag);
+                ndefWrite.setText(uuid.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (FormatException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            status.setText("Read NDEF Message...");
+
+            byte[] uid = tag.getId();
+            BigInteger n = new BigInteger(uid);
+            String hex = n.toString(16);
+            uidTextView.setText(hex);
+
+            Ndef ndef = Ndef.get(tag);
+            String log = ndef.getType() + "\n最大数据容量：" + ndef.getMaxSize() + " bytes\n\n";
+            System.out.println(log);
+            type.setText(ndef.getType());
+            size.setText(ndef.getMaxSize() + " bytes");
+
+            Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            if (rawMessages != null) {
+                NdefMessage[] messages = new NdefMessage[rawMessages.length];
+                for (int i = 0; i < rawMessages.length; i++) {
+                    messages[i] = (NdefMessage) rawMessages[i];
+                }
+                byte[] payload = messages[0].getRecords()[0].getPayload();
+
+                try {
+
+                    String tagId = new String(messages[0].getRecords()[0].getType());
+                    schema.setText(tagId);
+
+                    String encoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+                    charset.setText(encoding);
+
+                    int languageCodeLength = payload[0] & 0x3f;
+                    String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+
+
+//                    String lang = new String(payload, 1, payload[0] & 0063, "US-ASCII");
+                    language.setText(languageCode);
+
+//                    String text = new String(messages[0].getRecords()[0].getPayload());
+                    String text = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, encoding);
+                    ndefMessage.setText(text);
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        } else {
+            status.setText("NOT NDEF Messages tag");
+        }
+    }
+
+
+    private void write(String text, Tag tag) throws IOException, FormatException {
+        NdefRecord[] records = {createRecord(text)};
+        NdefMessage message = new NdefMessage(records);
+        // Get an instance of Ndef for the tag.
+        Ndef ndef = Ndef.get(tag);
+        // Enable I/O
+        ndef.connect();
+        // Write the message
+        ndef.writeNdefMessage(message);
+        // Close the connection
+        ndef.close();
+    }
+
+    private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
+        String lang = "en";
+        byte[] textBytes = text.getBytes();
+        byte[] langBytes = lang.getBytes("US-ASCII");
+        int langLength = langBytes.length;
+        int textLength = textBytes.length;
+        byte[] payload = new byte[1 + langLength + textLength];
+
+        // set status byte (see NDEF spec for actual bits)
+        payload[0] = (byte) langLength;
+
+        // copy langbytes and textbytes into payload
+        System.arraycopy(langBytes, 0, payload, 1, langLength);
+        System.arraycopy(textBytes, 0, payload, 1 + langLength, textLength);
+
+        NdefRecord recordNFC = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], payload);
+
+        return recordNFC;
+    }
+
+}		
+		]]>
+		</programlisting>
+	</section>
+</chapter>

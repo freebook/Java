@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="android" ?>
-	<title>Android</title>
-
-	<section>
-		<title>Android Studio</title>
-		<section id="">
-			<title>卸载 Android Studio</title>
-			<para>卸载 Mac Android Studio</para>
-			<screen>
+<chapter id="android.studio">
+	<title>Android Studio</title>
+	<section id="">
+		<title>卸载 Android Studio</title>
+		<para>卸载 Mac Android Studio</para>
+		<screen>
 	<![CDATA[
 rm -Rf /Applications/Android\ Studio.app
 rm -Rf ~/Library/Preferences/AndroidStudio*
@@ -17,46 +14,46 @@ rm -Rf ~/Library/Logs/AndroidStudio*
 rm -Rf ~/Library/Caches/AndroidStudio*	
 rm -Rf ~/Library/Android*
 	]]>
-			</screen>
-			<para>删除 Projects</para>
-			<screen>
+		</screen>
+		<para>删除 Projects</para>
+		<screen>
 	<![CDATA[
 rm -Rf ~/AndroidStudioProjects	
 	]]>
-			</screen>
-			<para>删除 gradle</para>
-			<screen>
+		</screen>
+		<para>删除 gradle</para>
+		<screen>
 	<![CDATA[
 rm -rf ~/.gradle	
 	]]>
-			</screen>
-			<para>卸载Android Virtual Devices(AVDs) and *.keystore.</para>
-			<screen>
+		</screen>
+		<para>卸载Android Virtual Devices(AVDs) and *.keystore.</para>
+		<screen>
 	<![CDATA[
 rm -Rf ~/.android	
 	]]>
-			</screen>
-		</section>
-		<section id="">
-			<title>代码格式化</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="">
+		<title>代码格式化</title>
+		<screen>
 		<![CDATA[
 Option + Command + L		
 		]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
+</chapter>
 
-	<section id="AndroidManifest.xml">
-		<title>AndroidManifest.xml</title>
-		<section>
-			<title>开启网络</title>
-			<screen>
+<chapter id="AndroidManifest.xml">
+	<title>AndroidManifest.xml</title>
+	<section>
+		<title>开启网络</title>
+		<screen>
 		<![CDATA[
 <uses-permission android:name="android.permission.INTERNET" />		
 		]]>
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -84,11 +81,12 @@ Option + Command + L
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>	
 		]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
+</chapter>
+
 	&chapter.android.config.xml;
 	&chapter.android.layout.xml;
 	&chapter.android.okhttp.xml;
+	&chapter.android.nfc.xml;
 	&chapter.android.faq.xml;
-</chapter>

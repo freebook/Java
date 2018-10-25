@@ -171,7 +171,7 @@ key=value&other=data
 			</screen>
 			<screen>
 			<![CDATA[
-		String url = "http://192.168.0.185:8080/oauth/token";
+		String url = "https://api.netkiller.cn/oauth/token";
 
 		OkHttpClient client = new OkHttpClient();
 
@@ -457,7 +457,7 @@ public class HttpActivity extends AppCompatActivity {
         };
 
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url("http://192.168.0.185:8080/member/json").build();
+        Request request = new Request.Builder().url("https://api.netkiller.cn/member/json").build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -484,9 +484,9 @@ public class HttpActivity extends AppCompatActivity {
 	</section>
 	<section id="oauth2.android">
 		<title>Android Oauth2 + Jwt example</title>
-		<para></para>
+		<para>Oauth 返回数据，通过 Gson 的 fromJson 存储到下面类中。</para>
 		<programlisting>
-	<![CDATA[
+		<![CDATA[
 package cn.netkiller.okhttp.pojo;
 
 public class Oauth {
@@ -557,11 +557,11 @@ public class Oauth {
                 '}';
     }
 }	
-	]]>
+		]]>
 		</programlisting>
 		<para>Activity 文件</para>
 		<programlisting>
-	<![CDATA[
+		<![CDATA[
 package cn.netkiller.okhttp;
 
 import android.support.v7.app.AppCompatActivity;
@@ -681,9 +681,65 @@ public class Oauth2jwtActivity extends AppCompatActivity {
         });
     }
 
+	public void post() throws IOException {
+
+
+        OkHttpClient client = new OkHttpClient.Builder().authenticator(
+                new Authenticator() {
+                    public Request authenticate(Route route, Response response) throws IOException {
+                        return response.request().newBuilder().header("Authorization", "Bearer " + accessToken().getAccess_token()).build();
+                    }
+                }
+        ).build();
+
+        String url = "https://api.netkiller.cn/history/create";
+
+        String json = "{\n" +
+                "  \"assetsId\": \"5bced71c432c001c6ea31924\",\n" +
+                "  \"title\": \"添加信息\",\n" +
+                "  \"message\": \"信息内容\",\n" +
+                "  \"status\": \"录入\"\n" +
+                "}";
+
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, json);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                call.cancel();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                final String myResponse = response.body().string();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+//                        Gson gson = new Gson();
+//                        Oauth oauth = gson.fromJson(myResponse, Oauth.class);
+//                        Log.i("oauth", oauth.toString());
+
+                        token.setText(myResponse);
+                    }
+                });
+
+            }
+        });
+    }
+
 }
-	]]>
+		]]>
 		</programlisting>
+		<para>上面的例子演示了，怎样获取 access token 以及 HTTP 基本操作 GET 和 POST，再Restful接口中还可能会用到 PUT, DELETE 等等，原来相同，这里就不在演示。</para>
 	</section>
 	<section id="okhttp.h2">
 		<title>HTTP/2</title>

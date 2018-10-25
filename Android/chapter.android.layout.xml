@@ -1,4 +1,4 @@
-<section>
+<chapter id="android.layout">
 	<title>Layout</title>
 	<section>
 		<title>setContentView()</title>
@@ -283,4 +283,4 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
 		</programlisting>
 	</section>
 
-</section>
+</chapter>
