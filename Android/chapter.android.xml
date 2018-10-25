@@ -87,7 +87,7 @@ Option + Command + L
 			</screen>
 		</section>
 	</section>
-
+	&chapter.android.config.xml;
 	&chapter.android.layout.xml;
 	&chapter.android.okhttp.xml;
 	&chapter.android.faq.xml;

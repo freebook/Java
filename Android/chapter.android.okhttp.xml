@@ -161,12 +161,49 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/networ
 	</section>
 	<section id="okhttp.post">
 		<title>POST</title>
+		<section>
+			<title>POST Form Data</title>
+			<para>from 数据如下</para>
+			<screen>
+			<![CDATA[
+key=value&other=data			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+		String url = "http://192.168.0.185:8080/oauth/token";
 
-		<para>POST RAW Json 数据</para>
-		<programlisting>
-		<![CDATA[
-public static final MediaType JSON
-    = MediaType.parse("application/json; charset=utf-8");
+		OkHttpClient client = new OkHttpClient();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("grant_type", "password")
+                .add("username", "netkiller")
+                .add("password", "123456")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        if (!response.isSuccessful()) {
+            throw new IOException("服务器端错误: " + response);
+        }
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>POST RAW JSON</title>
+			<para>POST RAW Json 数据，数据的形态这样的</para>
+			<screen>
+			<![CDATA[
+{"key":"value"}
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
 OkHttpClient client = new OkHttpClient();
 
@@ -179,32 +216,70 @@ String post(String url, String json) throws IOException {
   Response response = client.newCall(request).execute();
   return response.body().string();
 }		
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>数据流提交</title>
+			<programlisting>
+			<![CDATA[
+OkHttpClient client = new OkHttpClient();
+final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/plain");
+final String postBody = "Hello World";
+
+RequestBody requestBody = new RequestBody() {
+    @Override
+    public MediaType contentType() {
+        return MEDIA_TYPE_TEXT;
+    }
+    @Override
+    public void writeTo(BufferedSink sink) throws IOException {
+        sink.writeUtf8(postBody);
+    }
+    @Override
+    public long contentLength() throws IOException {
+        return postBody.length();
+    }
+};
+
+Request request = new Request.Builder()
+        .url("https://www.google.com")
+        .post(requestBody)
+        .build();
+Response response = client.newCall(request).execute();
+if (!response.isSuccessful()) {
+    throw new IOException("服务器端错误: " + response);
+}
+System.out.println(response.body().string());			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="okhttp.addheader">
-		<title>http header</title>
-		<para>添加Http头</para>
-		<programlisting>
-		<![CDATA[
+		<title>http header 相关设置</title>
+		<section id="">
+			<title>设置 HTTP 头</title>
+			<para>添加Http头</para>
+			<programlisting>
+			<![CDATA[
 Request request = new Request.Builder()
         .url(url)
         .addHeader("CLIENT", "AD")
         .addHeader("USERID", "343")
         .build();		
-		]]>
-		</programlisting>
-		<para>覆盖 HTTP 头</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<para>覆盖 HTTP 头</para>
+			<programlisting>
+			<![CDATA[
         Request request = new Request.Builder()
                 .header("Authorization", "replace this text with your token")
                 .url(url)
                 .build();		
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
 public class Headers {
    public static void main(String[] args) throws IOException {
     OkHttpClient client = new OkHttpClient();
@@ -224,8 +299,80 @@ public class Headers {
     System.out.println(response.headers("Set-Cookie"));
    }
 }		
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Cookie 管理</title>
+			<programlisting>
+			<![CDATA[
+OkHttpClient mHttpClient = new OkHttpClient.Builder().cookieJar(new CookieJar() {
+    private final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
+    @Override
+    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+        cookieStore.put(url.host(), cookies);
+    }
+    @Override
+    public List<Cookie> loadForRequest(HttpUrl url) {
+        List<Cookie> cookies = cookieStore.get(url.host());
+        return cookies != null ? cookies : new ArrayList<Cookie>();
+    }
+}).build();			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>禁用缓存</title>
+			<programlisting>
+			<![CDATA[
+Request request = new Request.Builder()
+    .cacheControl(new CacheControl.Builder().noCache().build())
+    .url(url)
+    .build();			
+			]]>
+			</programlisting>
+		</section>
+		<section id="">
+			<title>设置缓存 max-age</title>
+			<programlisting>
+			<![CDATA[
+// 等同于 nocache			
+Request request = new Request.Builder()
+    .cacheControl(new CacheControl.Builder()
+        .maxAge(0, TimeUnit.SECONDS)
+        .build())
+    .url("https://www.netkiller.cn")
+    .build();
+    
+// 设置缓存 365 天
+Request request = new Request.Builder()
+    .cacheControl(new CacheControl.Builder()
+        .maxStale(365, TimeUnit.DAYS)
+        .build())
+    .url("https://www.netkiller.cn")
+    .build();    	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>强制缓存</title>
+			<programlisting>
+			<![CDATA[
+Request request = new Request.Builder()
+    .cacheControl(new CacheControl.Builder()
+        .onlyIfCached()
+        .build())
+    .url("https://www.netkiller.cn/helloworld.txt")
+    .build();
+Response forceCacheResponse = client.newCall(request).execute();
+if (forceCacheResponse.code() != 504) {
+  // The resource was cached! Show it.
+} else {
+  // The resource was not cached.
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="okhttp.auth">
 		<title>HTTP Base Auth</title>
@@ -537,5 +684,87 @@ public class Oauth2jwtActivity extends AppCompatActivity {
 }
 	]]>
 		</programlisting>
+	</section>
+	<section id="okhttp.h2">
+		<title>HTTP/2</title>
+		<para>首先确认你的服务器是支持 HTTP2，HTTP2配置方法可以参考 《Netkiller Web 手札》</para>
+		<para>下面是我的例子仅供参考，Nginx 开启 http2 代理后面的 Spring Cloud 接口。</para>
+		<screen>
+		<![CDATA[
+server {
+    listen       80;
+    listen 443 ssl http2;
+    server_name  api.netkiller.cn;
+
+    ssl_certificate ssl/netkiller.cn.crt;
+    ssl_certificate_key ssl/netkiller.cn.key;
+    ssl_session_cache shared:SSL:20m;
+    ssl_session_timeout 60m;
+
+    charset utf-8;
+    access_log  /var/log/nginx/api.netkiller.cn.access.log;
+
+    error_page  497              https://$host$uri?$args;
+
+    if ($scheme = http) {
+        return 301 https://$server_name$request_uri;
+    }
+
+    location / {
+		proxy_pass   http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+		proxy_set_header    Host    $host;
+		proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;	
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}		
+		]]>
+		</screen>
+		<para>安卓程序如下</para>
+		<programlisting>
+		<![CDATA[
+		String url = "https://api.netkiller.cn/member/json";
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("okhttp", "Connect timeout. " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String text = response.body().string();
+                Log.d("okhttp", "HTTP Code " + response.code() + " TEXT " + text);
+                Log.d("okhttp", "Protocol: " + response.protocol());
+            }
+        });
+		]]>
+		</programlisting>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+D/okhttp: HTTP Code 200 TEXT {"status":false,"reason":"","code":0,"data":{"id":null,"username":"12322228888","mobile":"12322228888","password":"123456","wechat":"微信ID","role":"Organization","captcha":null,"createDate":"2018-10-25 09:25:23","updateDate":null}}
+    Protocol: h2
+		]]>
+		</screen>
+		<para>输出 h2 表示当前接口与服务器连接是通过 http2 完成。</para>
+
 	</section>
 </chapter>

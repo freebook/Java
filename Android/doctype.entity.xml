@@ -2,4 +2,5 @@
 <!ENTITY chapter.android.xml		 		SYSTEM "chapter.android.xml">
 <!ENTITY chapter.android.layout.xml 		SYSTEM "chapter.android.layout.xml">
 <!ENTITY chapter.android.okhttp.xml		 	SYSTEM "chapter.android.okhttp.xml">
+<!ENTITY chapter.android.config.xml		 	SYSTEM "chapter.android.config.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">

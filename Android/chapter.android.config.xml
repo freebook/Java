@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.config">
+	<title>配置文件</title>
+	<section id="android.config.properties">
+		<title>*.properties 文件</title>
+		<para>创建 properties 文件 res/config/development.properties</para>
+		<screen>
+		<![CDATA[
+api_url=https://api.netkiller.cn/v1/
+api_key=123456		
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.app;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+public final class Config {
+    private static final String TAG = "Config";
+
+    public static String getKey(Context context, String name) {
+        Resources resources = context.getResources();
+
+        try {
+            InputStream rawResource = resources.openRawResource(R.config.development);
+            Properties properties = new Properties();
+            properties.load(rawResource);
+            return properties.getProperty(name);
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Unable to find the config file: " + e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to open config file.");
+        }
+
+        return null;
+    }
+}		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+String apiUrl = Config.getKey(this, "api_url");
+String apiKey = Config.getKey(this, "api_key");		
+		]]>
+		</screen>
+	</section>
+	<section id="android.config.AndroidManifest.xml">
+		<title>再 AndroidManifest.xml 使用 meta-data element 定义</title>
+		<programlisting>
+		<![CDATA[
+...
+<application ...>
+    ...
+	...
+    <meta-data android:name="api_url" android:value="https://api.netkiller.cn/v1/"/>
+    <meta-data android:name="api_key" android:value="123456"/>
+</application>		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+public static String getMetaData(Context context, String name) {
+    try {
+        ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        Bundle bundle = ai.metaData;
+        return bundle.getString(name);
+    } catch (PackageManager.NameNotFoundException e) {
+        Log.e(TAG, "Unable to load meta-data: " + e.getMessage());
+    }
+    return null;
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+String apiUrl = getMetaData(this, "api_url");
+String apiKey = getMetaData(this, "api_key");		
+		]]>
+		</programlisting>
+	</section>
+	<section id="android.config.build.gradle">
+		<title>再 build.gradle 文件中配置 productFlavors</title>
+		<screen>
+		<![CDATA[
+productFlavors {
+    prod {
+        buildConfigField 'String', 'API_URL', '"https://api.netkiller.cn/v1/"'
+        buildConfigField 'String', 'API_KEY', '"123456"'
+    }
+}
+		]]>
+		</screen>
+		<para>引用 config 方法</para>
+		<programlisting>
+		<![CDATA[
+String apiUrl = BuildConfig.API_URL;
+String apiKey = BuildConfig.API_KEY;
+		]]>
+		</programlisting>		
+	</section>
+</chapter>
