@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.studio">
+	<title>Android Studio</title>
+	<section id="android.studio.uninstall">
+		<title>卸载 Android Studio</title>
+		<para>卸载 Mac Android Studio</para>
+		<screen>
+	<![CDATA[
+rm -Rf /Applications/Android\ Studio.app
+rm -Rf ~/Library/Preferences/AndroidStudio*
+rm ~/Library/Preferences/com.google.android.studio.plist
+rm -Rf ~/Library/Application\ Support/AndroidStudio*
+rm -Rf ~/Library/Logs/AndroidStudio*
+rm -Rf ~/Library/Caches/AndroidStudio*	
+rm -Rf ~/Library/Android*
+	]]>
+		</screen>
+		<para>删除 Projects</para>
+		<screen>
+	<![CDATA[
+rm -Rf ~/AndroidStudioProjects	
+	]]>
+		</screen>
+		<para>删除 gradle</para>
+		<screen>
+	<![CDATA[
+rm -rf ~/.gradle	
+	]]>
+		</screen>
+		<para>卸载Android Virtual Devices(AVDs) and *.keystore.</para>
+		<screen>
+	<![CDATA[
+rm -Rf ~/.android	
+	]]>
+		</screen>
+	</section>
+	<section id="">
+		<title>代码格式化</title>
+		<screen>
+		<![CDATA[
+Option + Command + L		
+		]]>
+		</screen>
+	</section>
+</chapter>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.storage">
+	<title>SharedPreferences</title>
+	<para>SharedPreferences是Android中的数据存储技术，常用来存储一些轻量级的数据。</para>
+	<para>实际上SharedPreferences是 NoSQL 数据库，用于处理的key-value键值对存储，类似Windows 系统的注册表，Linux 系统里的 Berkeley DB (bdb) 以及衍生出的 dba,mdb 这类 hash 表数据库。</para>
+	<section id="SharedPreferences.Mode">
+		<title>操作模式</title>
+		<programlisting>
+		<![CDATA[
+Context.MODE_PRIVATE：为默认操作模式,代表该文件是私有数据,只能被应用本身访问,在该模式下,写入的内容会覆盖原文件的内容
+Context.MODE_APPEND：模式会检查文件是否存在,存在就往文件追加内容,否则就创建新文件.
+Context.MODE_WORLD_READABLE和Context.MODE_WORLD_WRITEABLE用来控制其他应用是否有权限读写该文件.
+MODE_WORLD_READABLE：表示当前文件可以被其他应用读取.
+MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入.		
+		]]>
+		</programlisting>
+	</section>
+	<section id="SharedPreferences.Put">
+		<title>保存数据</title>
+		<programlisting>
+		<![CDATA[
+        Button buttonPut = (Button) findViewById(R.id.buttonPut);
+
+        buttonPut.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                //实例化SharedPreferences对象
+                SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
+
+                //实例化SharedPreferences.Editor对象
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                //用putString的方法保存数据
+                editor.putString("name", "Neo");
+                editor.putString("nickname", "netkiller");
+                editor.putBoolean("sex", true);
+                editor.putInt("age", 30);
+                editor.putFloat("tall", 180.23f);
+                Set<String> books = new HashSet<String>();
+                books.add("Netkiller Linux 手札");
+                books.add("Netkiller Java 手札");
+                books.add("Netkiller Android 手札");
+                editor.putStringSet("books", books);
+
+                //提交当前数据
+                editor.commit();
+
+            }
+        });
+
+		]]>
+		</programlisting>
+	</section>
+	<section id="SharedPreferences.Get">
+		<title>读取数据</title>
+		<programlisting>
+		<![CDATA[
+        Button buttonGet = (Button) findViewById(R.id.buttonGet);
+
+        buttonGet.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                //实例化SharedPreferences对象
+                SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
+
+                //使用getString方法获得value，
+                String name = sharedPreferences.getString("name", "");
+                String nickname = sharedPreferences.getString("nickname", "");
+                boolean sex = sharedPreferences.getBoolean("sex", false);
+                int age = sharedPreferences.getInt("age", 0);
+                float tall = sharedPreferences.getFloat("tall", 0f);
+                Set<String> books = sharedPreferences.getStringSet("books", null);
+
+                Log.i("SharedPreferences", String.format("%s,%s,%s,%s,%s,%s", name, nickname, sex, age, tall, books.toString()));
+
+            }
+        });
+		
+		]]>
+		</programlisting>
+	</section>
+	<section id="sharedPreferences.contains">
+		<title>通过 key 查询数据是否存在</title>
+		<programlisting>
+		<![CDATA[
+		SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
+		if (sharedPreferences.contains("nickname")) {
+            Log.i("SharedPreferences", sharedPreferences.getString("nickname", ""));
+        }else{
+            Log.i("SharedPreferences", "key: nickname 不存在");
+        }
+		
+		]]>
+		</programlisting>
+	</section>
+	<section id="SharedPreferences.editor.remove">
+		<title>删除数据</title>
+		<programlisting>
+		<![CDATA[
+	SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
+	SharedPreferences.Editor editor = sharedPreferences.edit();
+
+    editor.remove("nickname");
+    editor.commit();
+    
+    Log.i("SharedPreferences", sharedPreferences.getAll().toString());
+		]]>
+		</programlisting>
+	</section>
+	<section id="SharedPreferences.editor.clear">
+		<title>清空数据</title>
+		<programlisting>
+		<![CDATA[
+	SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
+	SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.clear();
+    editor.commit();
+
+    Log.i("SharedPreferences", sharedPreferences.getAll().toString());		
+		]]>
+		</programlisting>
+	</section>
+	<section id="SharedPreferences.object">
+		<title>对象存储</title>
+		<para>对象存储，需要将对象序列化，然后反序列化</para>
+	</section>
+	<section id="SharedPreferences.xml">
+		<title>SharedPreferences 读取物理存储文件</title>
+		<para>SharedPreferences 的数据存储再一个 xml 文件中，他的地址是：</para>
+		<programlisting>
+		<![CDATA[
+//<package name>应替换成应用的包名, <name>
+File xmlFile = new File("/data/data/<package name>/shared_prefs/<name>.xml");		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+   <string name="name">陈景峰</string>
+   <string name="nickname">netkiller</string>
+   <int name="age" value="30" />
+</map>
+		]]>
+		</programlisting>
+	</section>
+</chapter>
