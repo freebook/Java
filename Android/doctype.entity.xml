@@ -4,5 +4,7 @@
 <!ENTITY chapter.android.layout.xml 		SYSTEM "chapter.android.layout.xml">
 <!ENTITY chapter.android.okhttp.xml		 	SYSTEM "chapter.android.okhttp.xml">
 <!ENTITY chapter.android.config.xml		 	SYSTEM "chapter.android.config.xml">
+<!ENTITY chapter.android.schedule.xml	 	SYSTEM "chapter.android.schedule.xml">
 <!ENTITY chapter.android.nfc.xml		 	SYSTEM "chapter.android.nfc.xml">
+
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">

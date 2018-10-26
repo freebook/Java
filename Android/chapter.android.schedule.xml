@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.schedule">
+	<title>Schedule 计划任务</title>
+	<section id="time.timetask">
+		<title>Time 和 TimerTask 定时刷新</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.okhttp;
+
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ScheduleActivity extends AppCompatActivity {
+
+    private TextView clock;
+
+    final Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    update(msg.obj.toString());
+                    break;
+            }
+        }
+
+        void update(String c) {
+
+            clock.setText(c);
+        }
+    };
+
+    Timer timer = new Timer();
+    TimerTask task = new TimerTask() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        public void run() {
+            Message message = new Message();
+            message.what = 1;
+            message.obj = dateFormat.format(new Date());
+            handler.sendMessage(message);
+        }
+    };
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_schedule);
+
+        clock = (TextView) findViewById(R.id.clock);
+        clock.setText("Today is ...");
+        timer.schedule(task, 1000 * 5, 1000); //启动timer
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+
+    }
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title>使用 Runnable 和 Handler 实现定时执行</title>
+		<para>原理是使用 handler.postDelayed 延迟 Runnable 的运行时间</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.okhttp;
+
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class RunnableActivity extends AppCompatActivity {
+
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        public void run() {
+            this.update();
+            handler.postDelayed(this, 1000);// 1000 ms = 1s 间隔1秒
+        }
+
+        void update() {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            time.setText(dateFormat.format(new Date()));
+        }
+    };
+    private TextView time;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_runnable);
+
+        time = (TextView) findViewById(R.id.time);
+        time.setText("Start...");
+
+        handler.postDelayed(runnable, 1000 * 5); // 5 秒后开始
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
+    }
+
+}		
+		]]>
+		</programlisting>
+	</section>
+</chapter>

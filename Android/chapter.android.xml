@@ -88,5 +88,6 @@ Option + Command + L
 	&chapter.android.config.xml;
 	&chapter.android.layout.xml;
 	&chapter.android.okhttp.xml;
+	&chapter.android.schedule.xml;
 	&chapter.android.nfc.xml;
 	&chapter.android.faq.xml;
