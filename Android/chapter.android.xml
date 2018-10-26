@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.studio">
 	<title>Android Studio</title>
-	<section id="">
+	<section id="android.studio.uninstall">
 		<title>卸载 Android Studio</title>
 		<para>卸载 Mac Android Studio</para>
 		<screen>
@@ -44,50 +44,12 @@ Option + Command + L
 	</section>
 </chapter>
 
-<chapter id="AndroidManifest.xml">
-	<title>AndroidManifest.xml</title>
-	<section>
-		<title>开启网络</title>
-		<screen>
-		<![CDATA[
-<uses-permission android:name="android.permission.INTERNET" />		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.netkiller.android.myapplication">
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
-            </intent-filter>
-        </activity>
-
-    </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-</manifest>	
-		]]>
-		</screen>
-	</section>
-</chapter>
-
+	&chapter.android.manifest.xml;
 	&chapter.android.config.xml;
 	&chapter.android.layout.xml;
 	&chapter.android.okhttp.xml;
 	&chapter.android.schedule.xml;
+	&chapter.android.locale.xml;
 	&chapter.android.nfc.xml;
 	&chapter.android.faq.xml;

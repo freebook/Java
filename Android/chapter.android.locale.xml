@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.i18n">
+	<title>Internationalization i18n with Android (国际化)</title>
+	<section>
+		<title>创建国际化文件</title>
+		<para>进入 Android Studio 文件菜单 File -> New -> New Resource File</para>
+		<graphic format="png" fileref="../images/android/studio/NewResourceFile.png" srccredit="neo" width="" />
+		<para>在左侧列表中找到 Locale 点击 “>>” 按钮</para>
+		<graphic format="png" fileref="../images/android/studio/Locale.png" srccredit="neo" width="" />
+		<para>选择国家后，点击 OK 按钮即可。</para>
+		<graphic format="png" fileref="../images/android/studio/Locale-res.png" srccredit="neo" width="" />
+		<para>资源文件夹中已经显示出国际化文件，上面并有对应的国旗。</para>
+		<para>查看项目文件夹</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/AndroidStudioProjects/locale % find app/src/main/res | grep values
+app/src/main/res/values-zh-rCN
+app/src/main/res/values-zh-rCN/strings.xml
+app/src/main/res/values
+app/src/main/res/values/colors.xml
+app/src/main/res/values/dimens.xml
+app/src/main/res/values/styles.xml
+app/src/main/res/values/strings.xml		
+		]]>
+		</screen>
+	</section>
+	<section id="locale.strings.xml">
+		<title>strings.xml 文件</title>
+		<programlisting>
+		<![CDATA[
+<resources>
+    <string name="app_name">Netkiller</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+</resources>		
+		]]>
+		</programlisting>
+	</section>
+	<section id="locale.translations">
+		<title>翻译语言</title>
+		<para>再 res/values/strings 目录上面单击鼠标右键，打开 Open Translations Editor 翻译编辑器。</para>
+		<graphic format="png" fileref="../images/android/studio/OpenTranslationsEditor.png" srccredit="neo" width="" />
+		<para>单击地球图标，添加 zh-cn 语言</para>
+		<graphic format="png" fileref="../images/android/studio/TranslationsEditor.png" srccredit="neo" width="" />
+		<para>现在就可以对照翻译语言包文件了。</para>
+	</section>
+	<section id="locale.getString">
+		<title>引用国际化文件</title>
+		<programlisting>
+		<![CDATA[
+String test = "Sign Up";
+
+String test = getResources().getString(R.string.sign_up);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+R.string.browserSentence = "You are using $1%s to browse the Internet.";
+
+String browser = getString(R.string.browserSentence, browser.getBrowser());		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+TextView textView = new TextView(this);
+TextView.setText(“Sign Up”);
+
+TextView textView = new TextView(this);
+textView.setText(R.string.sign_up);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<TextView
+ android:layout_width="wrap_content"
+ android:layout_height="wrap_content"
+ android:text="Hello World!" />
+
+<TextView
+ android:layout_width="wrap_content"
+ android:layout_height="wrap_content"
+ android:text="@string/hello_world" />
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title>切换语言</title>
+		<programlisting>
+		<![CDATA[
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        Configuration configuration = getResources().getConfiguration();
+        configuration.setLocale(locale);
+        getResources().updateConfiguration(configuration, metrics);
+        
+        //重新启动 Activity
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+		]]>
+		</programlisting>
+	</section>
+</chapter>

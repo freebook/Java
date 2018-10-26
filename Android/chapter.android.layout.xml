@@ -40,7 +40,7 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section id="Intent">
 		<title>Activity 间数据传递</title>
 		<para></para>
 		<programlisting>
@@ -60,8 +60,8 @@ String name=bundle.getString("name");
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
-		<title></title>
+	<section id="Button">
+		<title>Button</title>
 		<programlisting>
 		<![CDATA[
 public class MainActivity extends AppCompatActivity {

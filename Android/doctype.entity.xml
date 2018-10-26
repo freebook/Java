@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY part.android.xml			 		SYSTEM "part.android.xml">
 <!ENTITY chapter.android.xml		 		SYSTEM "chapter.android.xml">
+<!ENTITY chapter.android.manifest.xml 		SYSTEM "chapter.android.manifest.xml">
 <!ENTITY chapter.android.layout.xml 		SYSTEM "chapter.android.layout.xml">
 <!ENTITY chapter.android.okhttp.xml		 	SYSTEM "chapter.android.okhttp.xml">
 <!ENTITY chapter.android.config.xml		 	SYSTEM "chapter.android.config.xml">
 <!ENTITY chapter.android.schedule.xml	 	SYSTEM "chapter.android.schedule.xml">
 <!ENTITY chapter.android.nfc.xml		 	SYSTEM "chapter.android.nfc.xml">
-
+<!ENTITY chapter.android.locale.xml		 	SYSTEM "chapter.android.locale.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">
