@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.camera">
+	<title>相机与相册</title>
+	<section id="camera.manifest">
+		<title>manifest 文件</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.camera">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>		
+		]]>
+		</programlisting>
+	</section>
+	<section id="camera.layout">
+		<title>layout</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/buttonOpenCamera"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="拍照立即显示"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAlbum"
+        app:layout_constraintEnd_toStartOf="@+id/buttonSavePhoto"
+        app:layout_constraintHorizontal_bias="0.283"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPicture"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/buttonSavePhoto"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"
+        android:text="拍照存储后显示"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAlbum"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPicture"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageViewPicture"
+        android:layout_width="338dp"
+        android:layout_height="366dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/buttonAlbum"
+        android:layout_width="352dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Album"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>		
+		]]>
+		</programlisting>
+	</section>
+	<section id="camera.activity">
+		<title>Activity</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.camera;
+
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private ImageView imageViewPicture;
+    private Button buttonOpenCamera;
+    private Button buttonSavePhoto;
+    private Button buttonAlbum;
+
+    private static int REQUEST_CAMERA = 1;
+    private static int REQUEST_PHOTO = 2;
+    private static int REQUEST_ALBUM = 3;
+    private String imagePath;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        imageViewPicture = (ImageView) findViewById(R.id.imageViewPicture);
+        buttonOpenCamera = (Button) findViewById(R.id.buttonOpenCamera);
+        buttonSavePhoto = (Button) findViewById(R.id.buttonSavePhoto);
+        buttonAlbum = (Button) findViewById(R.id.buttonAlbum);
+
+        buttonOpenCamera.setOnClickListener(this);
+        buttonSavePhoto.setOnClickListener(this);
+        buttonAlbum.setOnClickListener(this);
+
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        Intent intent;
+        switch (view.getId()) {
+            case R.id.buttonOpenCamera:
+                // 拍照并显示图片
+                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 启动系统相机
+                startActivityForResult(intent, REQUEST_CAMERA);
+                break;
+            case R.id.buttonSavePhoto:
+
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    TextView textView = (TextView) findViewById(R.id.textView);
+                    textView.setText("SD 卡不存在，请插入 SD 卡！");
+
+//                    imagePath = getDataDir().getAbsolutePath();
+//                    imagePath = getDir("tmp.png", MODE_PRIVATE).getAbsolutePath();
+//                    File dir = new File(imagePath);
+//                    if (!dir.exists()) {
+//                        boolean result = dir.mkdirs();
+//                        Log.d("album", "dir.mkdirs() -> " + imagePath);
+//                    }
+
+                } else {
+                    imagePath = Environment.getExternalStorageDirectory().getPath();// 获取SD卡路径
+                    imagePath = imagePath + "/" + "temp.png";// 指定路径
+
+                    Log.d("album", imagePath);
+
+                    // 拍照后存储并显示图片
+                    intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 启动系统相机
+                    Uri photoUri = Uri.fromFile(new File(imagePath)); // 传递路径
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);// 更改系统默认存储路径
+                    startActivityForResult(intent, REQUEST_PHOTO);
+                }
+
+                break;
+            case R.id.buttonAlbum:
+
+                intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 3);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) { // 如果返回数据
+            if (requestCode == REQUEST_CAMERA) { // 判断请求码是否为REQUEST_CAMERA,如果是代表是这个页面传过去的，需要进行获取
+                Bundle bundle = data.getExtras(); // 从data中取出传递回来缩略图的信息，图片质量差，适合传递小图片
+                Bitmap bitmap = (Bitmap) bundle.get("data"); // 将data中的信息流解析为Bitmap类型
+                imageViewPicture.setImageBitmap(bitmap);// 显示图片
+            } else if (requestCode == REQUEST_PHOTO) {
+                Log.i("photo", imagePath);
+                FileInputStream fileInputStream = null;
+                try {
+                    fileInputStream = new FileInputStream(imagePath); // 根据路径获取数据
+                    Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+                    imageViewPicture.setImageBitmap(bitmap);// 显示图片
+                    fileInputStream.close();// 关闭流
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (requestCode == REQUEST_ALBUM) {
+
+                Bitmap bitmap = null;
+
+                //外界的程序访问ContentProvider所提供数据 可以通过ContentResolver接口
+                ContentResolver resolver = getContentResolver();
+                Uri originalUri = data.getData();        //获得图片的uri
+
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(resolver, originalUri);        //显得到bitmap图片
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //获取图片的路径：
+                Log.i("album", String.valueOf(originalUri));
+
+                imageViewPicture.setImageBitmap(bitmap);
+            }
+        }
+    }
+
+}		
+		]]>
+		</programlisting>
+	</section>
+</chapter>

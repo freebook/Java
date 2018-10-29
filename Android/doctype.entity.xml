@@ -10,4 +10,6 @@
 <!ENTITY chapter.android.nfc.xml		 	SYSTEM "chapter.android.nfc.xml">
 <!ENTITY chapter.android.locale.xml		 	SYSTEM "chapter.android.locale.xml">
 <!ENTITY chapter.android.storage.xml	 	SYSTEM "chapter.android.storage.xml">
+<!ENTITY chapter.android.camera.xml	 		SYSTEM "chapter.android.camera.xml">
+<!ENTITY chapter.android.environment.xml	SYSTEM "chapter.android.environment.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">

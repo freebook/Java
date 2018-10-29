@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.environment">
+	<title>Environment</title>
+	<section id="">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+Environment.getExternalStorageDirectory().getAbsolutePath();		
+		]]>
+		</programlisting>
+	</section>
+	<section id="">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+        Log.i("Environment", "getRootDirectory(): "
+                + Environment.getRootDirectory().toString());
+        Log.i("Environment", "getDataDirectory(): "
+                + Environment.getDataDirectory().toString());
+        Log.i("Environment", "getDownloadCacheDirectory(): "
+                + Environment.getDownloadCacheDirectory().toString());
+        Log.i("Environment", "getExternalStorageDirectory(): "
+                + Environment.getExternalStorageDirectory().toString());
+
+        Log.i("Environment","getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES): "
+                        + Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES).toString());
+		
+		]]>
+		</programlisting>
+	</section>
+</chapter>

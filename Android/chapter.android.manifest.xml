@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="AndroidManifest.xml">
 	<title>AndroidManifest.xml</title>
+	<section id="android:minSdkVersion">
+		<title></title>
+		<screen>
+		<![CDATA[
+<uses-sdk
+        android:minSdkVersion="26"
+        android:targetSdkVersion="28" />		
+		]]>
+		</screen>
+	</section>
 	<section>
 		<title>开启网络</title>
 		<screen>
@@ -38,7 +48,7 @@
 		]]>
 		</screen>
 	</section>
-	<section id="">
+	<section id="manifest.storage">
 		<title>文件存储权限</title>
 		<programlisting>
 		<![CDATA[
@@ -47,7 +57,7 @@
 		]]>
 		</programlisting>	
 	</section>
-	<section id="">
+	<section id="manifest.camera">
 		<title>相机权限</title>
 		<programlisting>
 		<![CDATA[

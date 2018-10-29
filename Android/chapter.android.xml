@@ -3,9 +3,11 @@
 	&chapter.android.manifest.xml;
 	&chapter.android.config.xml;
 	&chapter.android.layout.xml;
-	&chapter.android.okhttp.xml;
+	&chapter.android.environment.xml;
 	&chapter.android.schedule.xml;
 	&chapter.android.locale.xml;
 	&chapter.android.storage.xml;
+	&chapter.android.camera.xml;
+	&chapter.android.okhttp.xml;
 	&chapter.android.nfc.xml;
 	&chapter.android.faq.xml;
