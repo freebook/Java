@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.misc">
+	<title>Misc</title>
+	<section id="thread.sleep">
+		<title>Sleep</title>
+		<programlisting>
+		<![CDATA[
+            try {
+
+                Thread.sleep(10000);
+
+            } catch (InterruptedException e) {
+
+                Log.e("Location", e.getMessage());
+
+            }		
+		]]>
+		</programlisting>
+	</section>
+</chapter>

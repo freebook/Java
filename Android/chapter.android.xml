@@ -8,6 +8,7 @@
 	&chapter.android.locale.xml;
 	&chapter.android.storage.xml;
 	&chapter.android.camera.xml;
+	&chapter.android.location.xml;
 	&chapter.android.okhttp.xml;
 	&chapter.android.phone.xml;
 	&chapter.android.nfc.xml;
