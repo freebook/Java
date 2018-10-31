@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
+	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+<!-- http://www.oasis-open.org/docbook/xml/5.0b5/dtd/docbook.dtd -->
+	
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
+	%common.doctype.entity.xml;
+	
+	<!ENTITY book.info.abstract.xml 	SYSTEM "../../Developer/book.info.abstract.xml">
+
+	<!ENTITY % doctype.entity.xml 		SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+	
+]>
+<book xml:base="http://netkiller.sourceforge.net/centos/"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Android 手札</title>
+		<subtitle>http://www.netkiller.cn/android/index.html</subtitle>
+		
+		&book.info.author.xml;
+
+		<edition>$Revision: 606 $</edition>
+  		<pubdate>2018-10</pubdate>
+
+		<copyright>
+			<year>2018</year>
+			<holder>Neo Chan</holder>
+		</copyright>
+		<releaseinfo>
+			<remark>$Id: book.xml 606 2013-05-29 09:52:58Z netkiller $</remark>
+		</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+
+		<keywordset>
+			<keyword>Android, Google Play</keyword>
+		</keywordset>
+	</info>
+
+	&book.dedication.xml;
+	&book.preface.xml;
+
+	&chapter.android.xml;
+	
+	&book.appendix.xml;
+
+</book>
