@@ -9,5 +9,6 @@
 	&chapter.android.storage.xml;
 	&chapter.android.camera.xml;
 	&chapter.android.okhttp.xml;
+	&chapter.android.phone.xml;
 	&chapter.android.nfc.xml;
 	&chapter.android.faq.xml;

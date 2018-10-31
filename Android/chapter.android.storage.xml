@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.storage">
-	<title>SharedPreferences</title>
-	<para>SharedPreferences是Android中的数据存储技术，常用来存储一些轻量级的数据。</para>
-	<para>实际上SharedPreferences是 NoSQL 数据库，用于处理的key-value键值对存储，类似Windows 系统的注册表，Linux 系统里的 Berkeley DB (bdb) 以及衍生出的 dba,mdb 这类 hash 表数据库。</para>
-	<section id="SharedPreferences.Mode">
-		<title>操作模式</title>
-		<programlisting>
+	<title>存储</title>
+	<section id="SharedPreferences">
+		<title>SharedPreferences</title>
+
+		<para>SharedPreferences是Android中的数据存储技术，常用来存储一些轻量级的数据。</para>
+		<para>实际上SharedPreferences是 NoSQL 数据库，用于处理的key-value键值对存储，类似Windows 系统的注册表，Linux 系统里的 Berkeley DB (bdb) 以及衍生出的 dba,mdb 这类 hash 表数据库。</para>
+		<section id="SharedPreferences.Mode">
+			<title>操作模式</title>
+			<programlisting>
 		<![CDATA[
 Context.MODE_PRIVATE：为默认操作模式,代表该文件是私有数据,只能被应用本身访问,在该模式下,写入的内容会覆盖原文件的内容
 Context.MODE_APPEND：模式会检查文件是否存在,存在就往文件追加内容,否则就创建新文件.
@@ -13,11 +16,11 @@ Context.MODE_WORLD_READABLE和Context.MODE_WORLD_WRITEABLE用来控制其他应�
 MODE_WORLD_READABLE：表示当前文件可以被其他应用读取.
 MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入.		
 		]]>
-		</programlisting>
-	</section>
-	<section id="SharedPreferences.Put">
-		<title>保存数据</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="SharedPreferences.Put">
+			<title>保存数据</title>
+			<programlisting>
 		<![CDATA[
         Button buttonPut = (Button) findViewById(R.id.buttonPut);
 
@@ -49,11 +52,11 @@ MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入.
         });
 
 		]]>
-		</programlisting>
-	</section>
-	<section id="SharedPreferences.Get">
-		<title>读取数据</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="SharedPreferences.Get">
+			<title>读取数据</title>
+			<programlisting>
 		<![CDATA[
         Button buttonGet = (Button) findViewById(R.id.buttonGet);
 
@@ -77,11 +80,11 @@ MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入.
         });
 		
 		]]>
-		</programlisting>
-	</section>
-	<section id="sharedPreferences.contains">
-		<title>通过 key 查询数据是否存在</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="sharedPreferences.contains">
+			<title>通过 key 查询数据是否存在</title>
+			<programlisting>
 		<![CDATA[
 		SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
 		if (sharedPreferences.contains("nickname")) {
@@ -91,11 +94,11 @@ MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入.
         }
 		
 		]]>
-		</programlisting>
-	</section>
-	<section id="SharedPreferences.editor.remove">
-		<title>删除数据</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="SharedPreferences.editor.remove">
+			<title>删除数据</title>
+			<programlisting>
 		<![CDATA[
 	SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
 	SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -105,11 +108,11 @@ MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入.
     
     Log.i("SharedPreferences", sharedPreferences.getAll().toString());
 		]]>
-		</programlisting>
-	</section>
-	<section id="SharedPreferences.editor.clear">
-		<title>清空数据</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="SharedPreferences.editor.clear">
+			<title>清空数据</title>
+			<programlisting>
 		<![CDATA[
 	SharedPreferences sharedPreferences = getSharedPreferences("test", Activity.MODE_PRIVATE);
 	SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -118,23 +121,23 @@ MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入.
 
     Log.i("SharedPreferences", sharedPreferences.getAll().toString());		
 		]]>
-		</programlisting>
-	</section>
-	<section id="SharedPreferences.object">
-		<title>对象存储</title>
-		<para>对象存储，需要将对象序列化，然后反序列化</para>
-	</section>
-	<section id="SharedPreferences.xml">
-		<title>SharedPreferences 读取物理存储文件</title>
-		<para>SharedPreferences 的数据存储再一个 xml 文件中，他的地址是：</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="SharedPreferences.object">
+			<title>对象存储</title>
+			<para>对象存储，需要将对象序列化，然后反序列化</para>
+		</section>
+		<section id="SharedPreferences.xml">
+			<title>SharedPreferences 读取物理存储文件</title>
+			<para>SharedPreferences 的数据存储再一个 xml 文件中，他的地址是：</para>
+			<programlisting>
 		<![CDATA[
 //<package name>应替换成应用的包名, <name>
 File xmlFile = new File("/data/data/<package name>/shared_prefs/<name>.xml");		
 		]]>
-		</programlisting>
-		<para></para>
-		<programlisting>
+			</programlisting>
+			<para></para>
+			<programlisting>
 		<![CDATA[
 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
 <map>
@@ -143,6 +146,22 @@ File xmlFile = new File("/data/data/<package name>/shared_prefs/<name>.xml");
    <int name="age" value="30" />
 </map>
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+	</section>
+	<section id="android.sdcard">
+		<title>SD Card</title>
+		<section>
+			<title>SD Card 状态</title>
+
+			<programlisting>
+			<![CDATA[
+	if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    TextView textView = (TextView) findViewById(R.id.textView);
+                    textView.setText("SD 卡不存在，请插入 SD 卡！");
+                }		
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>

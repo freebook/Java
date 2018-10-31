@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.phone">
+	<title>电话</title>
+	<section id="">
+		<title>SIM 卡状态</title>
+		<screen>
+		<![CDATA[
+		TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(context.TELEPHONY_SERVICE);
+
+        if(telephonyManager.getSimState() == TelephonyManager.SIM_STATE_READY){
+            return true;
+        }else{
+            return false;
+        }
+
+		]]>
+		</screen>
+	</section>
+</chapter>

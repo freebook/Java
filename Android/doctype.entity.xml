@@ -12,4 +12,5 @@
 <!ENTITY chapter.android.storage.xml	 	SYSTEM "chapter.android.storage.xml">
 <!ENTITY chapter.android.camera.xml	 		SYSTEM "chapter.android.camera.xml">
 <!ENTITY chapter.android.environment.xml	SYSTEM "chapter.android.environment.xml">
+<!ENTITY chapter.android.phone.xml			SYSTEM "chapter.android.phone.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">
