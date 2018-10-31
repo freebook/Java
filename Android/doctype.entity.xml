@@ -4,6 +4,7 @@
 <!ENTITY chapter.android.studio.xml	 		SYSTEM "chapter.android.studio.xml">
 <!ENTITY chapter.android.manifest.xml 		SYSTEM "chapter.android.manifest.xml">
 <!ENTITY chapter.android.layout.xml 		SYSTEM "chapter.android.layout.xml">
+<!ENTITY chapter.android.toast.xml	 		SYSTEM "chapter.android.toast.xml">
 <!ENTITY chapter.android.environment.xml	SYSTEM "chapter.android.environment.xml">
 <!ENTITY chapter.android.okhttp.xml		 	SYSTEM "chapter.android.okhttp.xml">
 <!ENTITY chapter.android.config.xml		 	SYSTEM "chapter.android.config.xml">

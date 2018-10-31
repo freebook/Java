@@ -3,6 +3,7 @@
 	&chapter.android.manifest.xml;
 	&chapter.android.config.xml;
 	&chapter.android.layout.xml;
+	&chapter.android.toast.xml;
 	&chapter.android.environment.xml;
 	&chapter.android.schedule.xml;
 	&chapter.android.locale.xml;
