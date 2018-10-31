@@ -125,19 +125,17 @@ public class SecondActivity extends AppCompatActivity {
 		<title>ListView</title>
 		<section id="ListView.array">
 			<title>Array</title>
-
-
 			<programlisting>
-	<![CDATA[
+			<![CDATA[
         String[] list = Arrays.asList("Apple", "Banana", "Orange", "Watermelon",
                 "Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango";
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,data);
         ListView listView = (ListView) findViewById(R.id.history);
         listView.setAdapter(adapter);	
-	]]>
+			]]>
 			</programlisting>
 			<programlisting>
-	<![CDATA[
+			<![CDATA[
     <ListView
         android:id="@+id/history"
         android:layout_width="368dp"
@@ -145,24 +143,24 @@ public class SecondActivity extends AppCompatActivity {
         android:scrollbars="horizontal"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="59dp" />	
-	]]>
+			]]>
 			</programlisting>
 		</section>
-		<section id="">
-			<title></title>
+		<section id="ListView.List">
+			<title>List</title>
 			<programlisting>
-		<![CDATA[
+			<![CDATA[
 		List<String> list = Arrays.asList("Apple", "Banana", "Orange", "Watermelon","Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,list);
         ListView listView = (ListView) findViewById(R.id.history);
         listView.setAdapter(adapter);        		
-		]]>
+			]]>
 			</programlisting>
 		</section>
 		<section id="setOnItemClickListener">
 			<title>setOnItemClickListener()</title>
 			<programlisting>
-		<![CDATA[
+			<![CDATA[
         List<String> list = Arrays.asList("Text 文本", "URL 网址", "电话号码", "短信","开启应用", "地址", "日历", "图片", "邮箱", "GPS 坐标");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,list);
         final ListView listView = (ListView) findViewById(R.id.schemaList);
@@ -177,10 +175,10 @@ public class SecondActivity extends AppCompatActivity {
                 Log.e("WRITE","position="+position+", text="+text);
             }
         });	
-		]]>
+			]]>
 			</programlisting>
 		</section>
-		<section id="">
+		<section id="ListView.implements">
 			<title>用接口方法实现</title>
 			<programlisting>
 		<![CDATA[
