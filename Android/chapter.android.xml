@@ -13,5 +13,7 @@
 	&chapter.android.location.xml;
 	&chapter.android.okhttp.xml;
 	&chapter.android.phone.xml;
+	&chapter.android.broadcast.xml;
 	&chapter.android.nfc.xml;
+	&chapter.android.singleton.xml;
 	&chapter.android.faq.xml;

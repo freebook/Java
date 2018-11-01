@@ -16,4 +16,6 @@
 <!ENTITY chapter.android.voice.xml	 		SYSTEM "chapter.android.voice.xml">
 <!ENTITY chapter.android.location.xml 		SYSTEM "chapter.android.location.xml">
 <!ENTITY chapter.android.phone.xml			SYSTEM "chapter.android.phone.xml">
+<!ENTITY chapter.android.broadcast.xml		SYSTEM "chapter.android.broadcast.xml">
+<!ENTITY chapter.android.singleton.xml		SYSTEM "chapter.android.singleton.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">
