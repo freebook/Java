@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.i18n">
 	<title>Internationalization i18n with Android (国际化)</title>
-	<section>
+	<section id="android.i18n.new">
 		<title>创建国际化文件</title>
 		<para>进入 Android Studio 文件菜单 File -> New -> New Resource File</para>
 		<graphic format="png" fileref="../images/android/studio/NewResourceFile.png" srccredit="neo" width="" />
@@ -84,7 +84,7 @@ textView.setText(R.string.sign_up);
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section id="android.i18n.switch">
 		<title>切换语言</title>
 		<programlisting>
 		<![CDATA[
