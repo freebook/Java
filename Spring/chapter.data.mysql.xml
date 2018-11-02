@@ -207,15 +207,37 @@ public String getContent() {
 	@NotNull
 	public String username;			
 			]]>
-
 			</programlisting>
 		</section>
-		<section id="">
+		<section id="@JsonIgnore">
 			<title>@JsonIgnore 返回json是不含有该字段</title>
 			<programlisting>
 			<![CDATA[
 	@JsonIgnore
 	private String entityName = this.getClass().getSimpleName();	
+			]]>
+			</programlisting>
+		</section>
+		<section id="@Temporal">
+			<title>@Temporal 日期定义</title>
+			<programlisting>
+			<![CDATA[
+@Entity
+public class Article {
+ 
+    @Id
+    @GeneratedValue
+    Integer id;
+  
+    @Temporal(TemporalType.DATE)
+    Date publicationDate;
+  
+    @Temporal(TemporalType.TIME)
+    Date publicationTime;
+  
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creationDateTime;
+}			
 			]]>
 			</programlisting>
 		</section>

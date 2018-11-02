@@ -4,7 +4,7 @@
 
 	&chapter.data.redis.xml;
 	&chapter.data.mongodb.xml;
-	&chapter.data.jpa.xml;
+	&chapter.data.mysql.xml;
 	&chapter.data.jdbc.xml;
 	
 <section id="elasticsearch">

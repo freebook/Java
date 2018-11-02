@@ -1128,6 +1128,7 @@ List<User> users = userRepository.findByNameEndingWith("o");
 		</section>
 		<section id="Between">
 			<title>Between</title>
+			<para>数值范围</para>
 			<programlisting>
 			<![CDATA[
 List<User> findByAgeBetween(int ageGT, int ageLT);
@@ -1135,8 +1136,26 @@ List<User> findByAgeBetween(int ageGT, int ageLT);
 List<User> users = userRepository.findByAgeBetween(20, 50);
 			]]>
 			</programlisting>
-		</section>
+			<para>日期范围，取值 e.g. 2018-07-04 00:00:00 and 2018-07-04 23:59:59</para>
+			<programlisting>
+			<![CDATA[
+List<Member> findByCreatedDateBetween(DateTime start, DateTime end);	
 
+List<Member> findByCreatedDate(@Temporal(TemporalType.DATE) Date date);		
+			]]>
+			</programlisting>
+		</section>
+		<section id="Before.After">
+			<title>Before / After</title>
+			<programlisting>
+			<![CDATA[
+List<Assets> findAllByUpdateDateBefore(Date yesterday);
+List<Assets> findAllByUpdateDateBeforeAndStatus(Date yesterday, String status);
+
+List<Assets> findAllByUpdateDateAfter(Date yesterday);
+			]]>
+			</programlisting>
+		</section>
 		<section id="@Query">
 			<title>@Query</title>
 			<programlisting>
