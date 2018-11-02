@@ -206,4 +206,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		]]>
 		</programlisting>
 	</section>
+	<section id="">
+		<title></title>
+		<programlisting>
+		<![CDATA[
+<uses-permission android:name="android.permission.SEND_SMS" />		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	private void sendSMS(String phoneNumber,String message){
+        if(PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber)){  
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:"+phoneNumber));            
+            intent.putExtra("sms_body", message);            
+            startActivity(intent);  
+        }  
+    }  		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	public void sendSMS(String phoneNumber,String message){  
+        android.telephony.SmsManager smsManager = android.telephony.SmsManager.getDefault();  
+        //拆分短信内容，手机短信长度有限制    
+        List<String> divideContents = smsManager.divideMessage(message);   
+        for (String text : divideContents) {    
+            smsManager.sendTextMessage(phoneNumber, null, text, sentPI, deliverPI);    
+        }  
+    }		
+		]]>
+		</programlisting>
+	</section>
 </chapter>
