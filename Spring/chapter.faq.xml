@@ -375,4 +375,14 @@ public class Article implements Serializable {
 		<para>在构造方法中引用@value为null，由于spring实例化顺序为先执行构造方法，再注入成员变量，所以取值为null。</para>
 		<para>调用spring组件时使用new对象，而不是@Autowired。</para>
 	</section>
+	<section id="faq.springboot.2.1.0">
+		<title>Spring boot 2.1.0</title>
+		<para>application.properties 需要加入下面参数，否则 @Bean 不允许。</para>
+		<screen>
+		<![CDATA[
+spring.main.allow-bean-definition-overriding=true		
+		]]>
+		</screen>
+		<para>另外 MySQL驱动必须使用最新的 com.mysql.cj.jdbc.Driver</para>
+	</section>
 </chapter>
