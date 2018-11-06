@@ -1,4 +1,379 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.broadcast">
 	<title>消息广播</title>
+	<para>安卓中有两种广播，一种是系统发出的广播信息，例如网络改变，电池的电量低等等，另一种是用户发出的广播信息。</para>
+	<para>Android 中的广播类型可以分为两种类型，标准广播和有序广播。</para>
+	<para>标准广播（Normal broadcasts）：标准广播是一种完全异步执行的广播，在广播发出之后，所有的广播接收器几乎会在同一时刻接收到这条广播消息。这种广播效率比较高，但同时也意味着它是无法被截断的。</para>
+	<para>有序广播（Ordered broadcasts）：有序广播则是一种同步执行的广播，在广播发出之后，同一时刻只会有一个广播接收器能够收到这条广播消息，当这个广播接收器中的逻辑执行完毕之后，广播才会继续传递。</para>
+	<screen>
+	<![CDATA[
+android.intent.action.BATTERY_CHANGED	持久广播含充电状态，级别，以及其他相关的电池信息。
+android.intent.action.BATTERY_LOW		显示设备的电池电量低。
+android.intent.action.BATTERY_OKAY		指示电池正在低点后但没有问题。
+android.intent.action.BOOT_COMPLETED	一次播出后，系统已完成启动。
+android.intent.action.BUG_REPORT		显示活动报告的错误。
+android.intent.action.CALL				执行呼叫由数据指定某人。
+android.intent.action.CALL_BUTTON		用户按下“呼叫”按钮进入拨号器或其他适当的用户界面发出呼叫。
+android.intent.action.DATE_CHANGED		日期改变。
+android.intent.action.REBOOT			有设备重启。	
+	]]>
+	</screen>
+	<section id="broadcast.registerReceiver">
+		<title>动态注册</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.broadcast;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private IntentFilter intentFilter;
+    private MyBroadcastReceiver myBroadcastReceiver;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        intentFilter = new IntentFilter();
+        //为过滤器添加处理规则
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        myBroadcastReceiver = new MyBroadcastReceiver();
+        //注册广播接收器
+        registerReceiver(myBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //注销动态的广播接收器
+        unregisterReceiver(myBroadcastReceiver);
+    }
+
+    //自定义内部类，继承 BroadcastReceiver
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "网络状态已改变", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+		
+		]]>
+		</programlisting>
+		<para>现在尝试改变网络状态，例如开启或关闭飞行模式，程序会弹出 "网络状态已改变"。</para>
+		<para>我的测试环境是 Android 9 Pie 没有加入下面的权限仍然能工作</para>
+		<programlisting>
+		<![CDATA[
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />		
+		]]>
+		</programlisting>
+		<para>优化程序</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.broadcast;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.BatteryManager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private IntentFilter intentFilter;
+    private MyBroadcastReceiver myBroadcastReceiver;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        intentFilter = new IntentFilter();
+        //为过滤器添加处理规则
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        intentFilter.addAction(Intent.ACTION_BATTERY_LOW);
+
+        myBroadcastReceiver = new MyBroadcastReceiver();
+        //注册广播接收器
+        registerReceiver(myBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //注销动态的广播接收器
+        unregisterReceiver(myBroadcastReceiver);
+    }
+
+    //自定义内部类，继承 BroadcastReceiver
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            //判断是否联网
+            if (networkInfo != null && networkInfo.isConnected()) {
+                Toast.makeText(context, "网络已连接", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "网络不可用", Toast.LENGTH_SHORT).show();
+            }
+
+            int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                    status == BatteryManager.BATTERY_STATUS_FULL;
+
+            if (isCharging) {
+                Toast.makeText(context, "正在充电", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "电池已经充满", Toast.LENGTH_SHORT).show();
+            }
+
+            int chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+            boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
+            boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
+            if (usbCharge) {
+                Toast.makeText(context, "USB 充电", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="broadcast.static">
+		<title>静态注册</title>
+		<para>Android Studio 选择 File - New - Other - Broadcast Receiver</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.broadcast">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+
+        </receiver>
+    </application>
+
+</manifest>		
+		]]>
+		</programlisting>
+		<para>MyReceiver 集成 BroadcastReceiver 在 onReceive 中写入你的业务逻辑。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.broadcast;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
+
+public class MyReceiver extends BroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Toast.makeText(context, "程序已启动，接收到系统启动广播", Toast.LENGTH_SHORT).show();
+    }
+}
+		
+		]]>
+		</programlisting>
+		<para>现在重启 Android 模拟器，启动后虽然 App 并没有进入，但是屏幕底部会看到 "程序已启动，接收到系统启动广播"</para>
+	</section>
+	<section id="broadcast.user">
+		<title>自定义用户消息广播</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.broadcast;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private IntentFilter intentFilter;
+    private TextView textView;
+    private MyBroadcastReceiver myBroadcastReceiver;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("cn.netkiller.broadcast.MESSAGE");
+        myBroadcastReceiver = new MyBroadcastReceiver();
+        //注册广播接收器
+        registerReceiver(myBroadcastReceiver, intentFilter);
+
+        textView = (TextView) findViewById(R.id.textView);
+
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //把要发送的广播值传入Intent对象
+                Intent intent = new Intent("cn.netkiller.broadcast.MESSAGE");
+                intent.putExtra("msg", "Helloworld");
+                //调用Context的 sendBroadcast()方法发送广播
+                sendBroadcast(intent);
+                textView.setText("Send");
+
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //注销动态的广播接收器
+        unregisterReceiver(myBroadcastReceiver);
+    }
+
+    //自定义内部类，继承 BroadcastReceiver
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String data = intent.getStringExtra("msg");
+            Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="broadcast.local">
+		<title>本地广播</title>
+		<para>上面讲的系统广播是全局的，任何APP都能接收到你的广播，这样就很容易引起APP的安全性问题。很多时候我们只想接收来自本应用程序发出的广播。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.broadcast;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView textView;
+    private IntentFilter intentFilter;
+    private LocalBroadcastManager localBroadcastManager;
+    private MyBroadcastReceiver myBroadcastReceiver;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //获取LocalBroadcastManger 单li实例
+        localBroadcastManager = localBroadcastManager.getInstance(this);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("cn.netkiller.broadcast.MESSAGE");
+        myBroadcastReceiver = new MyBroadcastReceiver();
+        //注册本地广播接收器
+        localBroadcastManager.registerReceiver(myBroadcastReceiver, intentFilter);
+
+        textView = (TextView) findViewById(R.id.textView);
+
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                textView.setText("Send");
+
+                Intent intent = new Intent();
+                intent.setAction("cn.netkiller.broadcast.MESSAGE");
+                intent.putExtra("msg", "http://www.netkiller.cn");
+                //发送本地广播
+                localBroadcastManager.sendBroadcast(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //注销本地广播接收器
+        localBroadcastManager.unregisterReceiver(myBroadcastReceiver);
+    }
+
+    //自定义内部类，继承 BroadcastReceiver
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String data = intent.getStringExtra("msg");
+            Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+}
+		
+		]]>
+		</programlisting>
+	</section>
 </chapter>
