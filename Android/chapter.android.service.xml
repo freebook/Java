@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.service">
+	<title>Service</title>
+	<section id="service.basic">
+		<title>Service的基本用法</title>
+		<section id="service.manifest">
+			<title>manifest 文件</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.service">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true"></service>
+    </application>
+
+</manifest>			
+			]]>
+			</programlisting>
+			<para>这段代码不是手工加入的，只需在 Android Studio 中选择 File - New - Service - Service 创建 Service 会自动加入下面代码</para>
+			<programlisting>
+			<![CDATA[
+<service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true"></service>			
+			]]>
+			</programlisting>
+		</section>
+		<section id="service.myservice">
+			<title>创建 Service</title>
+			<para>在 Android Studio 中选择 File - New - Service - Service 创建 Service</para>
+			<para>MyService继承自Service，并重写父类的onCreate()、onStartCommand()和onDestroy()方法</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.util.Log;
+
+public class MyService extends Service {
+    public MyService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("Service", "onCreate() executed");
+        Log.d("Service", "MyService thread id is " + Thread.currentThread().getId());
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("Service", "onStartCommand() executed");
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("Service", "onDestroy() executed");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+}
+
+			]]>
+			</programlisting>
+			<para>onCreate() Service 创建的时候执行，已经创建的Service不会再执行</para>
+			<para>onStartCommand() 任何时候，只要执行 startService(intent); 便会执行</para>
+			<para>onDestroy() 停止的时候执行</para>
+		</section>
+		<section id="service.layout">
+			<title>Layout 代码</title>
+			<para>在布局文件中加入了两个按钮，一个用于启动Service，一个用于停止Service</para>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="368dp"
+        android:layout_height="229dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <Button
+            android:id="@+id/startService"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start service" />
+
+        <Button
+            android:id="@+id/stopService"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stop service" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>			
+			]]>
+			</programlisting>
+		</section>
+		<section id="service.activity">
+			<title>Activity 代码</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Button startService;
+    private Button stopService;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        startService = (Button) findViewById(R.id.startService);
+        stopService = (Button) findViewById(R.id.stopService);
+        startService.setOnClickListener(this);
+        stopService.setOnClickListener(this);
+
+        Log.d("Service", "MainActivity thread id is " + Thread.currentThread().getId());
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+        switch (v.getId()) {
+            case R.id.startService:
+                intent = new Intent(this, MyService.class);
+                startService(intent);
+                break;
+            case R.id.stopService:
+                intent = new Intent(this, MyService.class);
+                stopService(intent);
+                break;
+            default:
+                break;
+        }
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="service.thread">
+		<title>Service 中启动线程</title>
+		<programlisting>
+		<![CDATA[
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d("Service", "onStartCommand() begin");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 开始执行后台任务
+                Log.d("Service", "onStartCommand() executed");
+            }
+        }).start();
+
+        Log.d("Service", "onStartCommand() end");
+
+        return super.onStartCommand(intent, flags, startId);
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section id="service.activity">
+		<title>Service和Activity通信</title>
+		<section>
+			<title>Layout</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="368dp"
+        android:layout_height="229dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <Button
+            android:id="@+id/startService"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start service" />
+
+        <Button
+            android:id="@+id/stopService"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stop service" />
+
+        <Button
+            android:id="@+id/bindService"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bind Service" />
+
+        <Button
+            android:id="@+id/unbindService"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Unbind Service" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Service</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+
+public class MyService extends Service {
+
+    private MyBinder myBinder = new MyBinder();
+
+    public MyService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("Service", "onCreate() executed");
+        Log.d("Service", "MyService thread id is " + Thread.currentThread().getId());
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d("Service", "onStartCommand() begin");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 开始执行后台任务
+                Log.d("Service", "onStartCommand() executed");
+            }
+        }).start();
+
+        Log.d("Service", "onStartCommand() end");
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("Service", "onDestroy() executed");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return myBinder;
+    }
+
+    class MyBinder extends Binder {
+
+        public void startTask() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // 执行具体的任务
+                    Log.d("Service", "startTask()");
+                }
+            }).start();
+        }
+
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Activity</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Button startService;
+    private Button stopService;
+    private Button bindService;
+    private Button unbindService;
+
+    private MyService.MyBinder myBinder;
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            myBinder = (MyService.MyBinder) service;
+            myBinder.startTask();
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        startService = (Button) findViewById(R.id.startService);
+        stopService = (Button) findViewById(R.id.stopService);
+        startService.setOnClickListener(this);
+        stopService.setOnClickListener(this);
+
+        bindService = (Button) findViewById(R.id.bindService);
+        unbindService = (Button) findViewById(R.id.unbindService);
+        bindService.setOnClickListener(this);
+        unbindService.setOnClickListener(this);
+
+        Log.d("Service", "MainActivity thread id is " + Thread.currentThread().getId());
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+        switch (v.getId()) {
+            case R.id.startService:
+                intent = new Intent(this, MyService.class);
+                startService(intent);
+                break;
+            case R.id.stopService:
+                intent = new Intent(this, MyService.class);
+                stopService(intent);
+                break;
+            case R.id.bindService:
+                Intent bindIntent = new Intent(this, MyService.class);
+                bindService(bindIntent, connection, BIND_AUTO_CREATE);
+                break;
+            case R.id.unbindService:
+                unbindService(connection);
+                break;
+            default:
+                break;
+        }
+    }
+}
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</chapter>
