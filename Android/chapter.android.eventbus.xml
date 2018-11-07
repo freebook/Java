@@ -179,4 +179,488 @@ public class MainActivity extends AppCompatActivity {
 		</section>
 	</section>
 
+	<section id="StickyEvents">
+		<title>Sticky Events</title>
+		<para>Sticky Events 可以理解为Message做了持久化，直到Message被消费为止。无需注册即可发送Message。</para>
+		<para>下面的例子：在MainActivity发送事件，在StickyActivity里注册并且接收事件</para>
+		<screen>
+		<![CDATA[
+
+A. MainActivity 发送事件：
+
+EventBus.getDefault().postSticky( "我发射了");
+
+B. StickyActivity 接收事件 
+
+1. 注册
+
+EventBus.getDefault().register( this );
+
+2. 事件接收
+
+	@Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onMessageEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }
+
+3. 取消注册
+
+EventBus.getDefault().unregister( this ) ;	
+		]]>
+		</screen>
+		<section>
+			<title>MainActivity</title>
+			<para>Layout</para>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+</android.support.constraint.ConstraintLayout>			
+			]]>
+			</programlisting>
+			<para>MainActivity</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.eventbus;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import cn.netkiller.eventbus.pojo.MessageEvent;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().postSticky(new MessageEvent("Hello everyone!"));
+                startActivity(new Intent(MainActivity.this, StickyActivity.class));
+            }
+        });
+
+    }
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>StickyActivity</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StickyActivity">
+
+</android.support.constraint.ConstraintLayout>			
+			]]>
+			</programlisting>
+			<para>StickyActivity</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.eventbus;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import cn.netkiller.eventbus.pojo.MessageEvent;
+
+public class StickyActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sticky);
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onMessageEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>MessageEvent</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.eventbus.pojo;
+
+public class MessageEvent {
+    public final String message;
+
+    public MessageEvent(String message) {
+        this.message = message;
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="ThreadMode">
+		<title>线程模型</title>
+		<para>EventBus 有四种线程模型（ThreadMode） </para>
+		<screen>
+		<![CDATA[
+POSTING（默认）：如果使用事件处理函数指定了线程模型为POSTING，那么该事件在哪个线程发布出来的，事件处理函数就会在这个线程中运行，也就是说发布事件和接收事件在同一个线程。在线程模型为POSTING的事件处理函数中尽量避免执行耗时操作，因为它会阻塞事件的传递，甚至有可能会引起应用程序无响应（ANR）。
+MAIN：事件的处理会在UI线程中执行。事件处理时间不能太长，长了会ANR的。
+BACKGROUND：如果事件是在UI线程中发布出来的，那么该事件处理函数就会在新的线程中运行，如果事件本来就是子线程中发布出来的，那么该事件处理函数直接在发布事件的线程中执行。在此事件处理函数中禁止进行UI更新操作。
+ASYNC：无论事件在哪个线程发布，该事件处理函数都会在新建的子线程中执行，同样，此事件处理函数中禁止进行UI更新操作。		
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ThreadModeActivity">
+
+    <Button
+        android:id="@+id/buttonSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonThread"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Send Thread"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSend" />
+</android.support.constraint.ConstraintLayout>		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.eventbus;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+public class ThreadModeActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_thread_mode);
+
+        EventBus.getDefault().register(this);
+
+        findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("EventBus Thread : ", Thread.currentThread().getName());
+                EventBus.getDefault().post("http://www.netkiller.cn");
+            }
+        });
+
+        findViewById(R.id.buttonThread).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("EventBus Thread : ", Thread.currentThread().getName());
+                        EventBus.getDefault().post("http://www.netkiller.cn");
+
+                    }
+                }).start();
+
+            }
+        });
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onMessageEventPostThread(String event) {
+        Log.d("EventBus PostThread", "Message： " + event + "  thread: " + Thread.currentThread().getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEventMainThread(String event) {
+        Log.d("EventBus MainThread", "Message： " + event + "  thread: " + Thread.currentThread().getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEventBackgroundThread(String event) {
+        Log.d("EventBus BackgroundThread", "Message： " + event + "  thread: " + Thread.currentThread().getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onMessageEventAsync(String event) {
+        Log.d("EventBus Async", "Message： " + event + "  thread: " + Thread.currentThread().getName());
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+}
+		]]>
+		</programlisting>
+		<para>在 main 线程中发布消息</para>
+		<screen>
+		<![CDATA[
+D/EventBus Thread :: main
+D/EventBus Async: Message： http://www.netkiller.cn  thread: pool-1-thread-1
+D/EventBus MainThread: Message： http://www.netkiller.cn  thread: main
+D/EventBus PostThread: Message： http://www.netkiller.cn  thread: main
+D/EventBus BackgroundThread: Message： http://www.netkiller.cn  thread: pool-1-thread-2		
+		]]>
+		</screen>
+		<para>在线程中发布消息</para>
+		<screen>
+		<![CDATA[
+D/EventBus Thread :: Thread-2
+D/EventBus BackgroundThread: Message： http://www.netkiller.cn  thread: Thread-2
+D/EventBus PostThread: Message： http://www.netkiller.cn  thread: Thread-2
+D/EventBus Async: Message： http://www.netkiller.cn  thread: pool-1-thread-1
+D/EventBus MainThread: Message： http://www.netkiller.cn  thread: main		
+		]]>
+		</screen>
+	</section>
+	<section id="EventBus.builder">
+		<title>配置 EventBus </title>
+		<para>上面章节中的例子EventBus实例中采用默认方式</para>
+		<programlisting>
+		<![CDATA[
+EventBus.getDefault().register(this);		
+		]]>
+		</programlisting>
+		<para>这种方式的获取到的EventBus的都是默认属性，有时候并不能满足我们的要求，这时候我们可以通过EventBusBuilder来个性化配置EventBus的属性。</para>
+		<programlisting>
+		<![CDATA[
+// 创建默认的EventBus对象，相当于EventBus.getDefault()。
+
+EventBus installDefaultEventBus()：
+// 添加由EventBus“注释预处理器生成的索引
+EventBuilder addIndex(SubscriberInfoIndex index)：
+// 默认情况下，EventBus认为事件类有层次结构（订户超类将被通知）
+EventBuilder eventInheritance(boolean eventInheritance)：
+// 定义一个线程池用于处理后台线程和异步线程分发事件
+EventBuilder executorService(java.util.concurrent.ExecutorService executorService)：
+// 设置忽略订阅索引，即使事件已被设置索引，默认为false
+EventBuilder ignoreGeneratedIndex(boolean ignoreGeneratedIndex)：
+// 打印没有订阅消息，默认为true
+EventBuilder logNoSubscriberMessages(boolean logNoSubscriberMessages)：
+// 打印订阅异常，默认true
+EventBuilder logSubscriberExceptions(boolean logSubscriberExceptions)：
+// 设置发送的的事件在没有订阅者的情况时，EventBus是否保持静默，默认true
+EventBuilder sendNoSubscriberEvent(boolean sendNoSubscriberEvent)：
+// 发送分发事件的异常，默认true
+EventBuilder sendSubscriberExceptionEvent(boolean sendSubscriberExceptionEvent)：
+// 在3.0以前，接收处理事件的方法名以onEvent开头，方法名称验证避免不是以此开头，启用严格的方法验证（默认：false）
+EventBuilder strictMethodVerification(java.lang.Class<?> clazz)
+// 如果onEvent***方法出现异常，是否将此异常分发给订阅者（默认：false）
+EventBuilder throwSubscriberException(boolean throwSubscriberException)
+		]]>
+		</programlisting>
+		<para>我的实例参考</para>
+		<programlisting>
+		<![CDATA[
+EventBus eventBus = EventBus.builder().eventInheritance(true)
+    .ignoreGeneratedIndex(false)
+    .logNoSubscriberMessages(true)
+    .logSubscriberExceptions(false)
+    .sendNoSubscriberEvent(true)
+    .sendSubscriberExceptionEvent(true)
+    .throwSubscriberException(false)
+    .strictMethodVerification(true)
+    .build();
+eventBus.register(this);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="EventBus.priority">
+		<title>事件优先级</title>
+		<para>priority 数值越大优先级又高</para>
+		<programlisting>
+		<![CDATA[
+	// MainActivity
+	@Subscribe(priority = 2)
+    public void onMessageEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }
+
+	// SecondActivity
+	@Subscribe(priority = 1)
+    public void onMessageSecondEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }	
+		]]>
+		</programlisting>
+		<para>时间拦截，MainActivity 收到信息后调用 EventBus.getDefault().cancelEventDelivery(event); 之后所有订阅将收不到信息。</para>
+		<programlisting>
+		<![CDATA[
+	// MainActivity
+	@Subscribe(priority = 2)
+    public void onMessageEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+        EventBus.getDefault().cancelEventDelivery(event);
+    }
+
+	// SecondActivity
+	@Subscribe(priority = 1)
+    public void onMessageSecondEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }
+		]]>
+		</programlisting>
+	</section>
+	<section id="ThrowableFailureEvent">
+		<title>捕获异常事件</title>
+		<para>在 init() 中加入你的业务逻辑，根据需要，在特定的情况下使用 throw new Exception("异常信息"); 抛出异常。异常会被 hrowableFailureEvent(ThrowableFailureEvent event) 捕获到。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.eventbus;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.greenrobot.eventbus.util.AsyncExecutor;
+import org.greenrobot.eventbus.util.ThrowableFailureEvent;
+
+import cn.netkiller.eventbus.pojo.MessageEvent;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        EventBus.getDefault().register(this);
+
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AsyncExecutor.create().execute(
+                        new AsyncExecutor.RunnableEx() {
+                            @Override
+                            public void run() throws Exception {
+                                init();
+                                EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
+                            }
+                        }
+                );
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void init() throws Exception {
+        // ...
+        throw new Exception("实际发送异常");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void hrowableFailureEvent(ThrowableFailureEvent event) {
+        Log.d("EventBus", "hrowableFailureEvent: " + event.getThrowable().getMessage());
+        Toast.makeText(this, event.getThrowable().getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
 </chapter>
