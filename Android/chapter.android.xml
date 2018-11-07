@@ -10,11 +10,12 @@
 	&chapter.android.storage.xml;
 	&chapter.android.camera.xml;
 	&chapter.android.voice.xml;
-	&chapter.android.location.xml;
-	&chapter.android.okhttp.xml;
+	&chapter.android.location.xml;	
 	&chapter.android.phone.xml;
 	&chapter.android.broadcast.xml;
 	&chapter.android.service.xml;
 	&chapter.android.nfc.xml;
+	&chapter.android.okhttp.xml;
+	&chapter.android.eventbus.xml;
 	&chapter.android.singleton.xml;
 	&chapter.android.faq.xml;

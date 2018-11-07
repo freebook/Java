@@ -1,5 +1,5 @@
 <chapter id="android.layout">
-	<title>Layout</title>
+	<title>UI Layout</title>
 	<section>
 		<title>setContentView()</title>
 		<screen>
@@ -280,5 +280,26 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
 	]]>
 		</programlisting>
 	</section>
-
+	
+	<section id="GardView">
+		<title>GardView</title>
+	</section>
+	<section id="GridView">
+		<title>GridView</title>
+	</section>
+	<section id="ProgressBar">
+		<title>ProgressBar</title>
+	</section>
+	<section id="ImageView">
+		<title>ImageView</title>
+	</section>
+	<section id="Fragment">
+		<title>Fragment</title>
+	</section>
+	<section id="Dialog">
+		<title>Dialog</title>
+	</section>
+	<section id="Menu">
+		<title>Menu</title>
+	</section>
 </chapter>

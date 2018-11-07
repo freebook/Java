@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="EventBus">
+	<title>EventBus</title>
+	<para>
+		<ulink url="http://greenrobot.org/eventbus" />
+	</para>
+	<section>
+		<title>快速开始一个演示例子</title>
+		<para>操作 EventBus 只需四个步骤</para>
+		<screen>
+		<![CDATA[
+1. 注册事件
+
+EventBus.getDefault().register( this );
+
+2. 取消注册
+
+EventBus.getDefault().unregister( this );
+
+3. 订阅事件
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }
+
+4. 发送数据
+
+EventBus.getDefault().post( "我发射了");
+		
+		]]>
+		</screen>
+		<section>
+			<title>添加 EventBus 依赖到项目Gradle文件</title>
+			<para>Gradle:</para>
+			<screen>
+			<![CDATA[
+implementation 'org.greenrobot:eventbus:3.1.1'		
+			]]>
+			</screen>
+			<para>完整的例子</para>
+			<screen>
+			<![CDATA[
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "cn.netkiller.eventbus"
+        minSdkVersion 26
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>创建 MessageEvent 类</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.eventbus.pojo;
+
+public class MessageEvent {
+    public final String message;
+
+    public MessageEvent(String message) {
+        this.message = message;
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Layout</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+</android.support.constraint.ConstraintLayout>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Activity</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.eventbus;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import cn.netkiller.eventbus.pojo.MessageEvent;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        EventBus.getDefault().register(this);
+
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
+            }
+        });
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //取消注册 , 防止Activity内存泄漏
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+
+</chapter>
