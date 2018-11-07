@@ -12,7 +12,7 @@ Publisher：事件发布者，可以在任意线程、任意位置发布Event，
 Subscriber：事件订阅者，接收并处理事件，需要通过register(this)进行注册，而在类销毁时要使用unregister(this)方法解注册。每个Subscriber可以定义一个或多个事件处理方法，其方法名可以自定义，但需要添加@Subscribe的注解，并指明ThreadMode（不写默认为Posting）。	
 	]]>
 	</screen>
-	<section>
+	<section id="EventBus.Gradle">
 		<title>添加 EventBus 依赖到项目Gradle文件</title>
 		<para>Gradle:</para>
 		<screen>
@@ -55,7 +55,7 @@ dependencies {
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="EventBus.getingstart">
 		<title>快速开始一个演示例子</title>
 		<para>操作 EventBus 只需四个步骤</para>
 		<screen>
@@ -190,14 +190,14 @@ public class MainActivity extends AppCompatActivity {
 
 	<section id="StickyEvents">
 		<title>Sticky Events</title>
-		<para>Sticky Events 可以理解为Message做了持久化，直到Message被消费为止。无需注册即可发送Message。</para>
+		<para>Sticky Events 粘性事件可以理解为Message做了持久化，直到Message被消费为止。无需注册即可发送Message。</para>
 		<para>下面的例子：在MainActivity发送事件，在StickyActivity里注册并且接收事件</para>
 		<screen>
 		<![CDATA[
 
 A. MainActivity 发送事件：
 
-EventBus.getDefault().postSticky( "我发射了");
+EventBus.getDefault().postSticky(new MessageEvent("http://www.netkiller.cn"));
 
 B. StickyActivity 接收事件 
 
@@ -360,6 +360,21 @@ public class MessageEvent {
     public MessageEvent(String message) {
         this.message = message;
     }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="removeStickyEvent">
+			<title>删除粘性事件</title>
+			<programlisting>
+			<![CDATA[
+MessageEvent stickyEvent = EventBus.getDefault().getStickyEvent(MessageEvent.class);
+
+// Better check that an event was actually posted before
+if(stickyEvent != null) {
+	// "Consume" the sticky event
+	EventBus.getDefault().removeStickyEvent(stickyEvent);
+	// Now do something with it
 }			
 			]]>
 			</programlisting>
