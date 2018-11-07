@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.os">
+	<title>Android OS 包</title>
+	<section id="android.os.Process.myTid">
+		<title>进程ID</title>
+		<programlisting>
+		<![CDATA[
+android.os.Process.myTid()		
+		]]>
+		</programlisting>
+	</section>
+</chapter>
