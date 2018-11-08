@@ -10,6 +10,7 @@
 	&chapter.android.storage.xml;
 	&chapter.android.camera.xml;
 	&chapter.android.voice.xml;
+	&chapter.android.media.xml;
 	&chapter.android.location.xml;	
 	&chapter.android.phone.xml;
 	&chapter.android.broadcast.xml;

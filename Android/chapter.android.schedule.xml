@@ -78,7 +78,7 @@ public class ScheduleActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section id="Handler.Runnable">
 		<title>使用 Runnable 和 Handler 实现定时执行</title>
 		<para>原理是使用 handler.postDelayed 延迟 Runnable 的运行时间</para>
 		<programlisting>

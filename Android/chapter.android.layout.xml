@@ -1,16 +1,18 @@
 <chapter id="android.layout">
 	<title>UI Layout</title>
 	<section>
-		<title>setContentView()</title>
-		<screen>
-		<![CDATA[
-setContentView(R.layout.view);
-		]]>
-		</screen>
-	</section>
-	<section id="startActivity">
-		<title>startActivity()</title>
-		<programlisting>
+		<title>切换UI</title>
+		<section id="setContentView">
+			<title></title>
+			<programlisting>
+			<![CDATA[
+setContentView(R.layout.view);			
+			]]>
+			</programlisting>
+		</section>
+		<section id="startActivity">
+			<title>startActivity()</title>
+			<programlisting>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,9 +26,9 @@ setContentView(R.layout.view);
 
 </manifest>		
 		]]>
-		</programlisting>
-		<para></para>
-		<programlisting>
+			</programlisting>
+			<para></para>
+			<programlisting>
 		<![CDATA[
 		Button button = (Button) findViewById(R.id.writeButton);
 
@@ -38,12 +40,12 @@ setContentView(R.layout.view);
             }
         });		
 		]]>
-		</programlisting>
-	</section>
-	<section id="Intent">
-		<title>Activity 间数据传递</title>
-		<para></para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="Intent">
+			<title>Activity 间数据传递</title>
+			<para></para>
+			<programlisting>
 		<![CDATA[
 Intent it = new Intent(Activity.Main.this, Activity2.class);
 Bundle bundle=new Bundle();
@@ -51,15 +53,18 @@ bundle.putString("name", "This is from MainActivity!");
 it.putExtras(bundle);
 startActivity(it);		
 		]]>
-		</programlisting>
-		<para>获取数据</para>
-		<programlisting>
+			</programlisting>
+			<para>获取数据</para>
+			<programlisting>
 		<![CDATA[
 Bundle bundle=getIntent().getExtras();
 String name=bundle.getString("name");		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
+	
+	
 	<section id="Button">
 		<title>Button</title>
 		<programlisting>
@@ -119,6 +124,53 @@ public class SecondActivity extends AppCompatActivity {
 }		
 		]]>
 		</programlisting>
+		<section id="OnClickListener">
+			<title>实现 OnClickListener 接口</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.video;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Button buttonVideoView;
+    private Button buttonSurfaceView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        buttonVideoView = (Button) findViewById(R.id.buttonVideoView);
+        buttonVideoView.setOnClickListener(this);
+
+        buttonSurfaceView = (Button) findViewById(R.id.buttonSurfaceView);
+        buttonSurfaceView.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+        switch (v.getId()) {
+            case R.id.buttonVideoView:
+                startActivity(new Intent(MainActivity.this, VideoViewActivity.class));
+                break;
+            case R.id.buttonSurfaceView:
+
+                break;
+            default:
+                break;
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="ListView">

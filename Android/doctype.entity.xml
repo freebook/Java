@@ -14,6 +14,7 @@
 <!ENTITY chapter.android.storage.xml	 	SYSTEM "chapter.android.storage.xml">
 <!ENTITY chapter.android.camera.xml	 		SYSTEM "chapter.android.camera.xml">
 <!ENTITY chapter.android.voice.xml	 		SYSTEM "chapter.android.voice.xml">
+<!ENTITY chapter.android.media.xml	 		SYSTEM "chapter.android.media.xml">
 <!ENTITY chapter.android.location.xml 		SYSTEM "chapter.android.location.xml">
 <!ENTITY chapter.android.phone.xml			SYSTEM "chapter.android.phone.xml">
 <!ENTITY chapter.android.broadcast.xml		SYSTEM "chapter.android.broadcast.xml">

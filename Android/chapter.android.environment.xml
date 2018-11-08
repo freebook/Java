@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.environment">
 	<title>Environment</title>
-	<section id="">
+	<section>
 		<title></title>
 		<programlisting>
 		<![CDATA[
@@ -9,7 +9,7 @@ Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section>
 		<title></title>
 		<programlisting>
 		<![CDATA[
@@ -17,7 +17,7 @@ Environment.getExternalStorageDirectory().getAbsolutePath();
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section>
 		<title></title>
 		<programlisting>
 		<![CDATA[
