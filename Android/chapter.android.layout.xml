@@ -124,6 +124,14 @@ public class SecondActivity extends AppCompatActivity {
 }		
 		]]>
 		</programlisting>
+		<section id="Button.setEnabled">
+			<title>启用禁用</title>
+			<programlisting>
+			<![CDATA[
+myButton.setEnabled(false);			
+			]]>
+			</programlisting>
+		</section>
 		<section id="OnClickListener">
 			<title>实现 OnClickListener 接口</title>
 			<programlisting>
