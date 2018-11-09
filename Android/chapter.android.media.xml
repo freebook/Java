@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.media">
 	<title>多媒体开发</title>
+	<section id="MediaPlayer">
+		<title>MediaPlayer</title>
+		<para>播放一段特效声音，例如铃音，可以在点击按钮德时候调用 playSound()</para>
+		<programlisting>
+		<![CDATA[
+	private void playSound(){
+
+        MediaPlayer mediaPlayer = MediaPlayer.create(FlashLightActivity.this, R.raw.alert);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                // TODO Auto-generated method stub
+                mediaPlayer.release();
+            }
+        });
+        mediaPlayer.start();
+    }		
+		]]>
+		</programlisting>
+	</section>
 	<section id="VideoView">
 		<title>VideoView 开发</title>
 		<para>VideoView，用于播放一段视频媒体，它继承了SurfaceView，位于"android.widget.VideoView"，是一个视频控件。</para>
