@@ -51,7 +51,7 @@ dependencies {
 		</screen>
 	</section>
 	<section id="okhttp.AndroidManifest.xml">
-		<title></title>
+		<title>AndroidManifest.xml 开启网络访问权限</title>
 		<para>在 app/src/main/AndroidManifest.xml 文件中增加</para>
 		<screen>
 		<![CDATA[

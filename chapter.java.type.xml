@@ -1510,6 +1510,42 @@ String hexa = n.toString(16));
 			]]>
 			</programlisting>
 		</section>
+		<section id="byte[]">
+			<title>连接两个 byte[]</title>
+			<programlisting>
+			<![CDATA[
+byte[] one = { 1, 2, 3 };
+byte[] two = { 6, 8, 9 };
+int length = one.Length + two.Length;
+byte[] sum = new byte[length];
+one.CopyTo(sum,0);
+two.CopyTo(sum,one.Length);			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+byte[] one = { 1, 2, 3 };
+byte[] two = { 6, 8, 9 };
+List<byte> list1 = new List<byte>(one);
+List<byte> list2 = new List<byte>(two);
+list1.AddRange(list2);
+byte[] sum2 = list1.ToArray();			
+			]]>
+			</programlisting>
+		</section>
+		<section id="list.byte">
+			<title>List&lt;Byte&gt; to byte[]</title>
+			<programlisting>
+			<![CDATA[
+		List<Byte> byteList = new ArrayList<Byte>();
+        byteList.add((byte) 1);
+        byteList.add((byte) 2);
+        byteList.add((byte) 3);
+        byte[] byteArray = Bytes.toArray(byteList);
+        System.out.println(Arrays.toString(byteArray));			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>
 
