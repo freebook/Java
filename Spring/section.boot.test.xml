@@ -2,7 +2,7 @@
 <chapter id="index"><?dbhtml dir="test" ?>
 	<title>SpringBootTest</title>
 	<section id="springboot.test.maven">
-		<title></title>
+		<title>Maven 依赖</title>
 		<screen>
 		<![CDATA[
 		<dependency>
