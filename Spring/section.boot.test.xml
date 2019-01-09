@@ -80,7 +80,42 @@ public class WalletTest {
 			<title>Assert.assertTrue</title>
 		</section>
 	</section>
-	<section id="">
+	<section>
+		<title>JPA 测试</title>
+		<programlisting>
+		<![CDATA[
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(Application.class)
+public class ApplicationTests {
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private MessageRepository messageRepository;
+
+    @Test
+    public void test() throws Exception {
+
+        userRepository.save(new User("Neo", 10));
+        userRepository.save(new User("Jam", 20));
+        userRepository.save(new User("Tom", 30));
+        userRepository.save(new User("Sam", 40));
+        userRepository.save(new User("Leo", 50));
+
+        Assert.assertEquals(5, userRepository.findAll().size());
+
+        messageRepository.save(new Message("Neo", "How are you?"));
+        messageRepository.save(new Message("Jam", "Hi!"));
+        messageRepository.save(new Message("Sam", "What's going on?"));
+
+        Assert.assertEquals(3, messageRepository.findAll().size());
+
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="MockMvc">
 		<title>Controller单元测试</title>
 		<para>创建测试类，在测试类的类头部添加：@RunWith(SpringRunner.class)、@SpringBootTest、@ AutoConfigureMockMvc注解，在测试方法的前添加@Test，最后选择方法右键run运行。</para>
 		<para>使用@Autowired 注入MockMvc，在方法中使用 mvc测试功能。示例：</para>
@@ -136,38 +171,46 @@ public class StudentControllerTest {
 		</programlisting>
 	</section>
 
-	<section>
-		<title>JPA 测试</title>
+	
+	<section id="WebTestClient">
+		<title>WebTestClient</title>
 		<programlisting>
 		<![CDATA[
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(Application.class)
-public class ApplicationTests {
+package cn.netkiller.webflux;
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MessageRepository messageRepository;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-    @Test
-    public void test() throws Exception {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class WebfluxApplicationTests {
 
-        userRepository.save(new User("Neo", 10));
-        userRepository.save(new User("Jam", 20));
-        userRepository.save(new User("Tom", 30));
-        userRepository.save(new User("Sam", 40));
-        userRepository.save(new User("Leo", 50));
+	@Test
+	public void contextLoads() {
+	}
 
-        Assert.assertEquals(5, userRepository.findAll().size());
+	private WebTestClient webTestClient;
 
-        messageRepository.save(new Message("Neo", "How are you?"));
-        messageRepository.save(new Message("Jam", "Hi!"));
-        messageRepository.save(new Message("Sam", "What's going on?"));
+	@Before
+	public void setUp() {
+		this.webTestClient = WebTestClient.bindToServer().baseUrl("http://localhost:8080").build();
+	}
 
-        Assert.assertEquals(3, messageRepository.findAll().size());
+	@Test
+	public void sample() throws Exception {
+		this.webTestClient.get().uri("/").exchange().expectStatus().isOk().expectBody(String.class).isEqualTo("Hello world!");
+	}
 
-    }
-}		
+	@Test
+	public void client() {
+
+	}
+}
+		
 		]]>
 		</programlisting>
 	</section>

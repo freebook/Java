@@ -1,0 +1,63 @@
+<section id="webflux.router">
+	<title>WebFlux Router</title>
+	<section id="router.component">
+		<title>Component 原件</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.webflux.component;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+import reactor.core.publisher.Mono;
+
+@Component
+public class HelloWorldHandler {
+
+	public HelloWorldHandler() {
+	}
+
+	public Mono<ServerResponse> helloWorld(ServerRequest request) {
+		return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).body(BodyInserters.fromObject("Hello World!!!"));
+	}
+}
+
+		]]>
+		</programlisting>
+	</section>
+	<section id="router.config">
+		<title>路由配置</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.webflux.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.server.RequestPredicates;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+import cn.netkiller.webflux.component.HelloWorldHandler;
+
+@Configuration
+public class WebFluxRouter {
+
+	public WebFluxRouter() {
+	}
+
+	@Bean
+	public RouterFunction<ServerResponse> routeHelloWorld(HelloWorldHandler helloWorldHandler) {
+
+		return RouterFunctions.route(RequestPredicates.GET("/hello").and(RequestPredicates.accept(MediaType.TEXT_PLAIN)), helloWorldHandler::helloWorld);
+	}
+}
+		
+		]]>
+		</programlisting>
+	</section>
+</section>

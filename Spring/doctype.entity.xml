@@ -26,5 +26,9 @@
 <!ENTITY chapter.cloud.config.xml		SYSTEM "chapter.cloud.config.xml">
 <!ENTITY chapter.cloud.netflix.xml		SYSTEM "chapter.cloud.netflix.xml">
 <!ENTITY chapter.cloud.faq.xml			SYSTEM "chapter.cloud.faq.xml">
+
+<!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">
+<!ENTITY section.webflux.xml			SYSTEM "section.webflux.xml">
+
 <!ENTITY chapter.faq.xml				SYSTEM "chapter.faq.xml">
 <!ENTITY section.miscellaneous.xml		SYSTEM "section.miscellaneous.xml">

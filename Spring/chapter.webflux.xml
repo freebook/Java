@@ -1,0 +1,136 @@
+<chapter id="webflux"><?dbhtml dir="WebFlux" ?>
+	<title>WebFlux</title>
+	<section id="webflux.helloworld">
+		<title>Getting Started</title>
+		<section>
+			<title>Maven</title>
+			<screen>
+    		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.1.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>webflux</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>webflux</name>
+	<description>Demo webflux project for Spring Boot</description>
+
+	<properties>
+		<java.version>11</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.restdocs</groupId>
+			<artifactId>spring-restdocs-mockmvc</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+    		
+    		]]>
+			</screen>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+    		<![CDATA[
+package cn.netkiller.webflux;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class WebfluxApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(WebfluxApplication.class, args);
+	}
+
+}
+    		
+    		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>RestController</title>
+			<programlisting>
+    		<![CDATA[
+package cn.netkiller.webflux;
+
+import org.reactivestreams.Publisher;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import reactor.core.publisher.Mono;
+
+@RestController
+public class TestController {
+
+	public TestController() {
+
+	}
+
+	@GetMapping("/")
+	@ResponseBody
+	public Publisher<String> index() {
+		return Mono.just("Hello world!");
+	}
+
+}
+    		
+    		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~/webflux % mvn spring-boot:run			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % curl http://localhost:8080
+Hello world!% 
+			]]>
+			</screen>
+			
+		</section>
+	</section>
+	
+	&section.webflux.xml;
+	
+</chapter>
