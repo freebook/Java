@@ -1102,17 +1102,41 @@ str = new StringBuffer(str).insert(str.length()-2, ".").toString();
 	</section>
 	<section id="enum">
 		<title>enum</title>
-		<screen>
-			class EnumExample1{
+		<programlisting>
+		<![CDATA[
+class EnumExample1{
 
-			public enum Season { WINTER, SPRING, SUMMER, FALL }
-
-			public static void main(String[] args) {
-			for (Season s : Season.values())
+	public enum Season { WINTER, SPRING, SUMMER, FALL }
+	
+	public static void main(String[] args) {
+		for (Season s : Season.values())
 			System.out.println(s);
-			}
-			}
+	}
+}		
+		]]>
+		</programlisting>
+		<screen>
+			
 		</screen>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.api.util;
+
+public enum HttpMethod {
+    GET("GET"), POST("POST"), PUT("PUT"), PATCH("PATCH"), DELETE("DELETE");
+
+    private String value;
+
+    private HttpMethod(String value) {
+        this.value = value;
+    }
+
+    public String toString() {
+        return value;
+    }
+}		
+		]]>
+		</programlisting>
 	</section>
 	<section id="byte">
 		<title>byte 类型</title>

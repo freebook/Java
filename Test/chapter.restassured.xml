@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="RestAssured">
+	<title>Rest Assured</title>
+	<section id="">
+		<title>打印出 response 的 body</title>
+		<programlisting>
+		<![CDATA[
+	@Test()
+    public void getHttpTest() {
+        Response response = given()
+                .get("http://www.netkiller.cn"); 
+        response.print();
+    }
+		]]>
+		</programlisting>
+	</section>
+</chapter>
