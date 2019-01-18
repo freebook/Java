@@ -308,9 +308,70 @@ assertNotNull	判断给定的对象引用是否不为 null
 			</programlisting>
 		</section>
 	</section>
-	<section id="">
-		<title>Junit4 输出格式定义</title>
-		<programlisting>
+	<section id="junit4">
+		<title>Junit4</title>
+		<section id="junit4.html.report">
+			<title>生成 HTML 报告</title>
+			<screen>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>demo</groupId>
+	<artifactId>junit4</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>junit4</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.1</version>
+				<configuration>
+					<useSystemClassLoader>false</useSystemClassLoader>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.22.1</version>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
+
+			]]>
+			</screen>
+			<para>生成报告</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~/workspace/junit4 % mvn surefire-report:report-only
+			]]>
+			</screen>
+		</section>
+		<section id="junit4.format">
+			<title>Junit4 输出格式定义</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.api.test;
 
@@ -362,8 +423,8 @@ public class ApiTestRunner extends BlockJUnit4ClassRunner {
 	}
 }
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.api.test;
 
@@ -380,9 +441,9 @@ public @interface Api {
     public String uri() default "/";
 }
 		]]>
-		</programlisting>
-		<para></para>
-		<programlisting>
+			</programlisting>
+			<para></para>
+			<programlisting>
 		<![CDATA[
 public interface ProfessionalCategory {
     String name = "Professional";
@@ -392,6 +453,7 @@ public interface EnterpriseCategory {
     String name = "Enterprise";
 }		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
 </chapter>
