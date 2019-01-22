@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="JaCoCo">
+<chapter id="JaCoCo">
 	<title>JaCoCo - Java code coverage tool</title>
 	<section id="jacoco.maven">
 		<title>Maven</title>
@@ -119,6 +119,7 @@ target/site/jacoco/jacoco.xml
 	</section>
 	<section id="jacoco.gradle">
 		<title>Gradle</title>
+		<para>https://docs.gradle.org/current/userguide/jacoco_plugin.html</para>
 		<para>plugins 中加入 id 'jacoco'</para>
 		<screen>
 		<![CDATA[
@@ -246,4 +247,4 @@ jacocoTestReport {
 		</screen>
 	</section>
 	
-</section>
+</chapter>
