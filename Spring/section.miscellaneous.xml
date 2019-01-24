@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="miscellaneous">
 	<title>Miscellaneous</title>
-	<section id="">
+	<section id="ObjectToJson">
 		<title>Object to Json</title>
 		<programlisting>
 		<![CDATA[
@@ -19,7 +19,7 @@ String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section id="JsonToObject">
 		<title>Json To Object</title>
 		<programlisting>
 		<![CDATA[
