@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <section id="oauth2">
 	<title>Spring boot with Oauth2</title>
-	<para>下面例子由三个项目组成，分别是 tools, server, client。</para>
-	<para>其中 tools 是密码生成工具</para>
-	<section>
-		<title>Maven</title>
-		<programlisting>
+	<section id="oauth2.password">
+		<title>Spring boot with Oauth2 - Password</title>
+		<para>下面例子由三个项目组成，分别是 tools, server, client。</para>
+		<para>其中 tools 是密码生成工具</para>
+		<para>
+			<ulink url="https://tools.ietf.org/html/rfc6749" />
+		</para>
+		<section>
+			<title>Maven</title>
+			<programlisting>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -85,12 +89,12 @@
 	</build>
 </project>			
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Password tools</title>
-		<para>Maven</para>
-		<screen>
+			</programlisting>
+		</section>
+		<section>
+			<title>Password tools</title>
+			<para>Maven</para>
+			<screen>
 			<![CDATA[
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
@@ -119,9 +123,9 @@
 </project>
 			
 			]]>
-		</screen>
-		<para>下面的代码用于生成 Spring security 所用的密码</para>
-		<programlisting>
+			</screen>
+			<para>下面的代码用于生成 Spring security 所用的密码</para>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.oauth.tools;
 
@@ -145,9 +149,9 @@ public class App {
 	}
 }			
 			]]>
-		</programlisting>
-		<para>运行后生成类似的密码</para>
-		<programlisting>
+			</programlisting>
+			<para>运行后生成类似的密码</para>
+			<programlisting>
 			<![CDATA[
 $2a$10$IrDG5Yr3CGorEg9gKG8smeRLnNUieCVyBCJHA80U6h20HDFCxd43W
 $2a$10$wseh5xFv1L3a3uHQId0MAOqAN0rKKcuX.RDaBPQ.pV/hsr80TqwxO
@@ -160,13 +164,13 @@ $2a$10$69wSpyJQvjzJY7ou5PFWlOlEIecQukHV9WEq0nebsz5V6IZKfOVv2
 $2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS
 $2a$10$0/o4cRN2.tmnc58sH.N4WOsreVI6sWlPl4CCBrmUfJ332TMfRzA42
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Server</title>
+			</programlisting>
+		</section>
 		<section>
-			<title>Maven</title>
-			<programlisting>
+			<title>Server</title>
+			<section>
+				<title>Maven</title>
+				<programlisting>
 				<![CDATA[
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -195,11 +199,11 @@ $2a$10$0/o4cRN2.tmnc58sH.N4WOsreVI6sWlPl4CCBrmUfJ332TMfRzA42
 </project>
 				
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>application.properties</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>application.properties</title>
+				<programlisting>
 				<![CDATA[
 server.port=8000
 server.contextPath=/api
@@ -228,11 +232,11 @@ spring.jpa.hibernate.ddl-auto=create-drop
 #spring.jpa.hibernate.ddl-auto=validate
 #spring.jpa.show-sql=true				
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>EnableAuthorizationServer</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>EnableAuthorizationServer</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.oauth.server.config;
 
@@ -283,20 +287,20 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
 }
 				
 				]]>
-			</programlisting>
-			<para>Spring boot 2.0</para>
-			<programlisting>
+				</programlisting>
+				<para>Spring boot 2.0</para>
+				<programlisting>
 			<![CDATA[
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory().withClient("api").secret(passwordEncoder().encode("secret")).accessTokenValiditySeconds(expiration).scopes("read", "write").authorizedGrantTypes("password", "refresh_token").resourceIds("resource");
 	}			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>EnableResourceServer</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>EnableResourceServer</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.oauth.server.config;
 
@@ -340,11 +344,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 }
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Entity Table</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>Entity Table</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.oauth.server.model;
 
@@ -416,11 +420,11 @@ public class User implements UserDetails {
 
 }
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>UserRepository</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>UserRepository</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.oauth.server.repository;
 
@@ -441,11 +445,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 }
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>UserService</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>UserService</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.oauth.server.service;
 
@@ -469,11 +473,11 @@ public class UserService implements UserDetailsService {
 	}
 }				
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>TestRestController</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>TestRestController</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.oauth.server.controller;
 
@@ -500,29 +504,29 @@ public class TestRestController {
 	}
 }
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>数据库初始化</title>
-			<para>在 src/main/resources 目录创建 data.sql 文件</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>数据库初始化</title>
+				<para>在 src/main/resources 目录创建 data.sql 文件</para>
+				<programlisting>
 				<![CDATA[
 INSERT INTO users (user_id, username, password, enabled) VALUES 
 	('1', 'netkiller@msn.com', '$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS', true);
 				]]>
-			</programlisting>
-			<para>此处密码 $2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS 请使用上面提供的工具生成。</para>
-		</section>
-		<section>
-			<title>Test</title>
-			<para>启动 Spring boot Server 项目</para>
-			<screen>
+				</programlisting>
+				<para>此处密码 $2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS 请使用上面提供的工具生成。</para>
+			</section>
+			<section>
+				<title>Test</title>
+				<para>启动 Spring boot Server 项目</para>
+				<screen>
 				<![CDATA[
 mvn spring-boot:run
 				]]>
-			</screen>
-			<para>启动后 Spring boot 会导入 data.sql 文件</para>
-			<screen>
+				</screen>
+				<para>启动后 Spring boot 会导入 data.sql 文件</para>
+				<screen>
 				<![CDATA[
 mysql> select * from users where username="netkiller@msn.com";
 +---------+---------+--------------------------------------------------------------+-------------------+
@@ -532,8 +536,8 @@ mysql> select * from users where username="netkiller@msn.com";
 +---------+---------+--------------------------------------------------------------+-------------------+
 1 row in set (0.00 sec)
 				]]>
-			</screen>
-			<programlisting>
+				</screen>
+				<programlisting>
 				<![CDATA[
 MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@msn.com&password=123456' http://localhost:8000/api/oauth/token
 {"access_token":"5bc0ee89-cd6d-47be-b31f-89c9e028159b","token_type":"bearer","refresh_token":"5107c09b-de85-4faf-8396-941572cf30d2","expires_in":3599,"scope":"read write"}MacBook-Pro:Application neo$ 
@@ -541,25 +545,25 @@ MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=pas
 MacBook-Pro:Application neo$ curl -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 5bc0ee89-cd6d-47be-b31f-89c9e028159b" -X GET http://localhost:8000/api/test/hello
 Hello world !
 				]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section>
-	<section id="oauth.client">
-		<title>Spring boot with Oauth2 RestTemplate</title>
-		<section id="oauth.client.maven">
-			<title>Maven</title>
-			<programlisting>
+		<section id="oauth.client">
+			<title>Spring boot with Oauth2 RestTemplate</title>
+			<section id="oauth.client.maven">
+				<title>Maven</title>
+				<programlisting>
 				<![CDATA[
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 		</dependency>
 				]]>
-			</programlisting>
-		</section>
-		<section id="oauth2.client.configure">
-			<title>OAuth2ClientConfiguration.java</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.configure">
+				<title>OAuth2ClientConfiguration.java</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.config;
 
@@ -613,11 +617,11 @@ public class OAuth2ClientConfiguration {
 
 }
 				]]>
-			</programlisting>
-		</section>
-		<section id="oauth2.client.app">
-			<title>Application.java</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.app">
+				<title>Application.java</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller;
 
@@ -635,19 +639,19 @@ public class Application {
 }				
 				]]>
 
-			</programlisting>
-		</section>
-		<section id="oauth2.client.application.properties">
-			<title>application.properties</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.application.properties">
+				<title>application.properties</title>
+				<programlisting>
 				<![CDATA[
 security.basic.enabled=false
 				]]>
-			</programlisting>
-		</section>
-		<section id="oauth2.client.controller">
-			<title>Controller</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.controller">
+				<title>Controller</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.controller;
 
@@ -675,27 +679,27 @@ public class TestController {
 }
 				
 				]]>
-			</programlisting>
-		</section>
-		<section id="oauth2.client.test">
-			<title>Test</title>
-			<screen>
+				</programlisting>
+			</section>
+			<section id="oauth2.client.test">
+				<title>Test</title>
+				<screen>
 				<![CDATA[
 neo@MacBook-Pro ~/deployment % curl http://localhost:8080
 
 OK
 				]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
+
 	</section>
 
-</section>
-
-<section id="oauth2.jwt">
-	<title>Spring boot with Oauth2 jwt</title>
-	<section>
-		<title>Maven</title>
-		<screen>
+	<section id="oauth2.jwt">
+		<title>Spring boot with Oauth2 jwt</title>
+		<section>
+			<title>Maven</title>
+			<screen>
 		<![CDATA[
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -712,9 +716,9 @@ OK
 			<artifactId>spring-security-jwt</artifactId>
 		</dependency>	
 		]]>
-		</screen>
-		<para>如果是 Springboot 2.0.4 需要制定版本号</para>
-		<screen>
+			</screen>
+			<para>如果是 Springboot 2.0.4 需要制定版本号</para>
+			<screen>
 		<![CDATA[
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
@@ -749,12 +753,12 @@ OK
 		</dependency>
 		
 		]]>
-		</screen>
-	</section>
+			</screen>
+		</section>
 
-	<section>
-		<title>Authorization Server</title>
-		<programlisting>
+		<section>
+			<title>Authorization Server</title>
+			<programlisting>
 		<![CDATA[
 package api.config;
 
@@ -837,11 +841,11 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
 
 }		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Resource Server</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Resource Server</title>
+			<programlisting>
 		<![CDATA[
 package api.config;
 
@@ -892,11 +896,11 @@ public class ResourceServerConfigurer extends ResourceServerConfigurerAdapter {
 
 }		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Web Security</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Web Security</title>
+			<programlisting>
 		<![CDATA[
 package api.config;
 
@@ -934,62 +938,62 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 }		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>插入数据</title>
-		<para></para>
-		<screen>
+			</programlisting>
+		</section>
+		<section>
+			<title>插入数据</title>
+			<para></para>
+			<screen>
 		<![CDATA[
 INSERT INTO `user` (username, password, enabled) VALUES ('netkiller@msn.com', '$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS', true);		
 		]]>
-		</screen>
+			</screen>
 
-	</section>
-	<section>
-		<title>使用 CURL 测试 JWT</title>
-		<screen>
+		</section>
+		<section>
+			<title>使用 CURL 测试 JWT</title>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % curl -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@msn.com&password=123456' http://localhost:8080/oauth/token
 {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzb3VyY2UiXSwiZXhwIjoxNTM1MTE4MzYxLCJ1c2VyX25hbWUiOiJuZXRraWxsZXJAbXNuLmNvbSIsImp0aSI6ImM5YzA4ODczLWZlMTctNGM2My05MDA1LTIzZGJlNTE1NTQ0YiIsImNsaWVudF9pZCI6ImFwaSIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdfQ.ydxJQKtdBNWHELL8_aXVoZETNMygXs8T1HQ5XWDBELA","token_type":"bearer","refresh_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzb3VyY2UiXSwidXNlcl9uYW1lIjoibmV0a2lsbGVyQG1zbi5jb20iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwiYXRpIjoiYzljMDg4NzMtZmUxNy00YzYzLTkwMDUtMjNkYmU1MTU1NDRiIiwiZXhwIjoxNTM1MTE4MzYxLCJqdGkiOiI3ODJiNmY2NC0xYzdiLTQ0YWYtOThlZC1iZDk3Y2QzYzE1NjEiLCJjbGllbnRfaWQiOiJhcGkifQ.16QUHOrVPUBF97E_972AcLA83zEK7UzaI424PeAmX6E","expires_in":3599,"scope":"read write","jti":"c9c08873-fe17-4c63-9005-23dbe515544b"}
 		]]>
-		</screen>
-		<para>复制 access_token 粘贴到 Authorization: Bearer 后面</para>
-		<screen>
+			</screen>
+			<para>复制 access_token 粘贴到 Authorization: Bearer 后面</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % curl -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYmxvY2tjaGFpbiJdLCJleHAiOjE1MzUxMTkyMTUsInVzZXJfbmFtZSI6Im5ldGtpbGxlckBtc24uY29tIiwianRpIjoiZTNjYmIxNTItYmFkZS00MGM1LTkxOGItZjJjMzZiYTBiMTE2IiwiY2xpZW50X2lkIjoiYXBpIiwic2NvcGUiOlsicmVhZCIsIndyaXRlIl19.ophWAvIT1ZmWCIQyAgyuzmQ98TJsN49OeR3CBSJ_X54" -X GET http://localhost:8080/test/mongo
 {"id":"5b800709e18a211e83c7f355","name":"Netkiller"}		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>测试 Shell</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>测试 Shell</title>
+			<screen>
 		<![CDATA[
 URL=http://localhost:8080
 TOKEN=$(curl -s  -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@msn.com&password=123456' ${URL}/oauth/token | sed 's/.*"access_token":"\([^"]*\)".*/\1/g')
 
 curl -s -k -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" -X GET ${URL}/test/hello.json
 		]]>
-		</screen>
-	</section>
-	<section id="refresh_token">
-		<title>refresh_token</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="refresh_token">
+			<title>refresh_token</title>
+			<screen>
 		<![CDATA[
 curl -s  -X POST --user 'api:secret' -d 'grant_type=refresh_token&client_id=api&client_secret=secret&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYmxvY2tjaGFpbiJdLCJ1c2VyX25hbWUiOiJibG9ja2NoYWluIiwic2NvcGUiOlsicmVhZCIsIndyaXRlIl0sImF0aSI6ImU2OGE4ODUzLWJlODUtNGUwNy1hYzE0LTM0MDI1ZDBiZGY0ZiIsImV4cCI6MTU0MDM4MzA5NCwianRpIjoiY2JjNTk2ZWMtOTkyZi00NmQ2LWFiZGYtMTcyYWFiZmEwNDFiIiwiY2xpZW50X2lkIjoiYXBpIn0.PqsGl5Dm8WBqwbhHf-LqmUP1toCpsFS4gLeOP2bMwR4' ${URL}/oauth/token		
 		]]>
-		</screen>
-	</section>
-	
-</section>
+			</screen>
+		</section>
 
-<section id="oauth2.jwt.keypair">
-	<title>Spring boot with Oauth2 jwt 非对称证书</title>
-	<section>
-		<title>创建证书</title>
-		<para>创建证书 keytool -genkeypair -alias jwt -keyalg RSA -keypass passw0rd -keystore jwt.jks -storepass passw0rd	</para>
-		<programlisting>
+	</section>
+
+	<section id="oauth2.jwt.keypair">
+		<title>Spring boot with Oauth2 jwt 非对称证书</title>
+		<section>
+			<title>创建证书</title>
+			<para>创建证书 keytool -genkeypair -alias jwt -keyalg RSA -keypass passw0rd -keystore jwt.jks -storepass passw0rd	</para>
+			<programlisting>
 		<![CDATA[
 neo@MacBook-Pro /tmp/oauth % keytool -genkeypair -alias jwt -keyalg RSA -keypass passw0rd -keystore jwt.jks -storepass passw0rd
 What is your first and last name?
@@ -1007,18 +1011,18 @@ What is the two-letter country code for this unit?
 Is CN=Neo Chen, OU=netkiller.cn, O=netkiller.cn, L=Shenzhen, ST=Guangdong, C=CN correct?
   [no]:  yes	
 		]]>
-		</programlisting>
-		<para>该命令将生成一个名为jwt.jks的文件，其中包含我们的密钥 - 公钥和私钥。 还要牢记keypass和storepass密码。</para>
-		<para>导出公钥，接下来，我们需要从刚刚生成的JKS中导出我们的公钥，我们可以使用下面的命令来实现：</para>
-		<screen>
+			</programlisting>
+			<para>该命令将生成一个名为jwt.jks的文件，其中包含我们的密钥 - 公钥和私钥。 还要牢记keypass和storepass密码。</para>
+			<para>导出公钥，接下来，我们需要从刚刚生成的JKS中导出我们的公钥，我们可以使用下面的命令来实现：</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro /tmp/oauth % keytool -list -rfc --keystore jwt.jks | openssl x509 -inform pem -pubkey -out certificate.crt > public.crt
 
 Enter keystore password:  passw0rd
 		]]>
-		</screen>
-		<para>公钥内容</para>
-		<screen>
+			</screen>
+			<para>公钥内容</para>
+			<screen>
 		<![CDATA[
 -----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj6ePdDwBrHKX3kNFnbve
@@ -1030,12 +1034,12 @@ JkNRTHLky6afx8MNobakz1Ab9K7cjD8De6LwScwMQMFU46traN/3Fw0lZFxKkpay
 HQIDAQAB
 -----END PUBLIC KEY-----		
 		]]>
-		</screen>
-		<para>复制 jwt.jks 和 public.crt 到 src/main/resources 目录下</para>
-	</section>
-	<section>
-		<title>Authorization Server</title>
-		<programlisting>
+			</screen>
+			<para>复制 jwt.jks 和 public.crt 到 src/main/resources 目录下</para>
+		</section>
+		<section>
+			<title>Authorization Server</title>
+			<programlisting>
 		<![CDATA[
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
@@ -1045,11 +1049,11 @@ HQIDAQAB
 		return converter;
 	}		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Resource Server</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Resource Server</title>
+			<programlisting>
 		<![CDATA[
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
@@ -1069,12 +1073,12 @@ HQIDAQAB
 		return converter;
 	}		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
-</section>
-<section id="oauth2.ios">
-	<title>Apple iOS 访问 Oauth2</title>
-	<programlisting>
+	<section id="oauth2.ios">
+		<title>Apple iOS 访问 Oauth2</title>
+		<programlisting>
 	<![CDATA[
 //
 //  AppDelegate.m
@@ -1201,9 +1205,9 @@ HQIDAQAB
 @end
 
 	]]>
-	</programlisting>
-	<para>Post 出去的数据是 Raw 格式。</para>
-	<programlisting>
+		</programlisting>
+		<para>Post 出去的数据是 Raw 格式。</para>
+		<programlisting>
 	<![CDATA[
 AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 //申明返回的结果是json类型
@@ -1223,12 +1227,12 @@ NSString *url=@"http://xxxxx";
     NSLog(@"Error: %@", error);
 }];		
 	]]>
-	</programlisting>
-</section>
-<section id="oauth2.android">
-	<title>Android Oauth2 + Jwt example</title>
-	<para></para>
-	<programlisting>
+		</programlisting>
+	</section>
+	<section id="oauth2.android">
+		<title>Android Oauth2 + Jwt example</title>
+		<para></para>
+		<programlisting>
 	<![CDATA[
 package cn.netkiller.okhttp.pojo;
 
@@ -1301,9 +1305,9 @@ public class Oauth {
     }
 }	
 	]]>
-	</programlisting>
-	<para>Activity 文件</para>
-	<programlisting>
+		</programlisting>
+		<para>Activity 文件</para>
+		<programlisting>
 	<![CDATA[
 package cn.netkiller.okhttp;
 
@@ -1426,6 +1430,7 @@ public class Oauth2jwtActivity extends AppCompatActivity {
 
 }
 	]]>
-	</programlisting>
-</section>
+		</programlisting>
+	</section>
 
+</section>
