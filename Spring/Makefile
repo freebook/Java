@@ -7,7 +7,7 @@ DOCBOOK=spring
 PUBLIC_HTML=~/public_html
 PROJECT_DIR=$(WORKSPACE)/$(PROJECT)
 HTML_DIR=$(PUBLIC_HTML)/$(DOCBOOK)
-HTMLHELP_DIR=~/htmlhelp/$(DOCBOOK)
+HTMLHELP_DIR=~/htmlhelp/$(DOCBOOK)/htmlhelp
 
 all: html htmlhelp rpm
 

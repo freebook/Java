@@ -96,6 +96,12 @@ $ mvn package
 $ ls target/*.war
 target/www.netkiller.cn-0.0.1-SNAPSHOT.war
 			]]></screen>
+			<para>防止出现脏数据，可以先 clean 然后再打包，同时为了加快打包速度，逃过测试</para>
+			<screen>
+			<![CDATA[
+mvn clean package -Dmaven.test.skip=true			
+			]]>
+			</screen>
 		</section>
 		<section id="install">
 			<title>install</title>
@@ -977,7 +983,7 @@ $ ls ~/.m2
 		</repository>
 				]]>
 				</screen>
-				
+
 			</section>
 			<section id="maven.aliyun.com">
 				<title>阿里云仓库</title>
