@@ -7,6 +7,8 @@
 		<title>Spring Cloud Finchley</title>
 		<para>Spring Cloud Finchley 是 Zuul 的替代品</para>
 	</section>
+	&chapter.cloud.stream.xml;
+	&chapter.cloud.sleuth.xml;
 <section id="spring.cloud.properties">
 	<title>Spring Cloud 相关的 application.properties 配置</title>
 		<section id="spring.cloud.bootstrap.enabled">

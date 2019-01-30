@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="SpringCloudSleuth">
+	<title>Spring Cloud Sleuth</title>
+	<para>分布式链路追踪工具</para>
+</section>
