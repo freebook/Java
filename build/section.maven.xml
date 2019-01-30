@@ -30,6 +30,19 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/mave
 	</section>
 	<section id="cli">
 		<title>Maven 命令</title>
+		<section id="">
+			<title>参数</title>
+			<para>多线程下载 -Dmaven.artifact.threads=10 默认是 5</para>
+			<screen>
+			<![CDATA[
+mvn -Dmaven.artifact.threads=10 test
+
+您可以使用MAVEN_OPTS环境变量。例如：
+
+export MAVEN_OPTS = -Dmaven.artifact.threads = 10
+			]]>
+			</screen>
+		</section>
 		<section id="help">
 			<title>help</title>
 			<para>查看可用的pom定义</para>
@@ -67,6 +80,18 @@ $ mvn clean
 			<screen><![CDATA[
 $ mvn compile
 			]]></screen>
+			<section id="maven.compile.fork">
+				<title>多线程编译</title>
+				<para>增加编译-Dmaven.compile.fork=true 参数，用以指明多线程进行编译</para>
+				<para>增加 -T 1C 参数，表示每个CPU核心跑一个工程</para>
+				<screen>
+				<![CDATA[
+mvn clean package -T 1C -Dmaven.test.skip=true  -Dmaven.compile.fork=true				
+				]]>
+				</screen>
+				<para>-T 4 是直接指定4线程</para>
+				<para>-T 1C 表示CPU线程的倍数, 现在现在1个物理CPU，有4个核心，8个线程。那么此时-T 1C 就是8线程。</para>
+			</section>
 		</section>
 		<section id="test">
 			<title>test</title>
