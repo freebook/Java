@@ -110,6 +110,12 @@ $ mvn test
 mvn -D maven.test.skip=true package
 			]]>
 			</screen>
+			<para>忽略测试失败</para>
+			<screen>
+			<![CDATA[
+mvn test -Dmaven.test.failure.ignore			
+			]]>
+			</screen>
 		</section>
 		<section id="package">
 			<title>package</title>

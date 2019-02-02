@@ -1432,5 +1432,22 @@ public class Oauth2jwtActivity extends AppCompatActivity {
 	]]>
 		</programlisting>
 	</section>
-
+	<section id="oauth2">
+		<title>Principal</title>
+		<programlisting>
+		<![CDATA[
+@RestController
+public class ResourceController {
+    @GetMapping("/getResource")
+    public String getResource(Principal principal) {
+        return "SUCCESS, 当前用户：" + principal.getName();
+    }
+    @RequestMapping("/user")
+  	public Principal user(Principal principal) {
+    	return principal;
+	}
+}		
+		]]>
+		</programlisting>
+	</section>
 </section>
