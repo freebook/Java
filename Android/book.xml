@@ -13,7 +13,7 @@
 	%doctype.entity.xml;
 	
 ]>
-<book xml:base="http://netkiller.sourceforge.net/centos/"
+<book xml:base="http://www.netkiller.cn/android/"
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Android 手札</title>
@@ -25,7 +25,7 @@
   		<pubdate>2018-10</pubdate>
 
 		<copyright>
-			<year>2018</year>
+			<year>2018-2019</year>
 			<holder>Neo Chan</holder>
 		</copyright>
 		<releaseinfo>

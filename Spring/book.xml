@@ -13,7 +13,7 @@
 	%doctype.entity.xml;
 	
 ]>
-<book xml:base="http://netkiller.sourceforge.net/centos/"
+<book xml:base="http://www.netkiller.cn/spring/"
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Spring Cloud 手札</title>
