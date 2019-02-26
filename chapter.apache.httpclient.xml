@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section id="httpclient">
-		<title>Apache HttpClient</title>
-		<section id="maven">
-			<title>Maven</title>
-			<programlisting>
+<section id="httpclient">
+	<title>Apache HttpClient</title>
+	<section id="maven">
+		<title>Maven</title>
+		<programlisting>
 			<![CDATA[
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -34,13 +34,13 @@
 	</build>
 </project>			
 			]]>
-			</programlisting>
-		</section>
-		<section id="post">
-			<title>HTTP POST 操作</title>
-			<section>
-				<title>Post Data</title>
-				<programlisting>
+		</programlisting>
+	</section>
+	<section id="post">
+		<title>HTTP POST 操作</title>
+		<section>
+			<title>Post Data</title>
+			<programlisting>
 				<![CDATA[
 package cn.netkiller.httpclient;
 
@@ -113,12 +113,12 @@ public class HttpClientPost {
 }
 				
 				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>POST RAW 数据</title>
-			
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>POST RAW 数据</title>
+
+			<programlisting>
 				<![CDATA[
 import java.io.IOException;
 
@@ -162,12 +162,12 @@ public class HTTPREST {
 
 }
 				]]>
-				</programlisting>
-			</section>
-			<section id="httpclient.post.gbk">
-				<title>POST GBK 编码得数据</title>
-				<para>有些国内短信运营商发送短信的接口只能接收 GBK 编码，下面就是一个POST GBK编码数据的范例。</para>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section id="httpclient.post.gbk">
+			<title>POST GBK 编码得数据</title>
+			<para>有些国内短信运营商发送短信的接口只能接收 GBK 编码，下面就是一个POST GBK编码数据的范例。</para>
+			<programlisting>
 				<![CDATA[
 package api.test.sms;
 
@@ -239,40 +239,43 @@ public class SMS {
 }
 
 				]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
-		<section id="ssl">
-			<title>HTTPS</title>
-			<section>
-				<title>Get https 接口</title>
-				<para>环境 Nginx SSL(openssl自颁发)，nginx 通过proxy_pass连接  Tomcat</para>
-				<para>下面是 nginx 配置</para>
-				<screen>
+	</section>
+	<section id="ssl">
+		<title>HTTPS</title>
+		<section>
+			<title>Get https 接口</title>
+			<para>环境 Nginx SSL(openssl自颁发)，nginx 通过proxy_pass连接 Tomcat</para>
+			<para>下面是 nginx 配置</para>
+			<screen>
+			<![CDATA[
 server {
-    listen 443 ssl spdy;
-    server_name api.netkiller.cn;
+	listen 443 ssl spdy;
+	server_name api.netkiller.cn;
 
-    ssl_certificate /etc/nginx/ssl/api.netkiller.cn.crt;
-    ssl_certificate_key /etc/nginx/ssl/api.netkiller.cn.key;
-    ssl_session_cache shared:SSL:20m;
-    ssl_session_timeout 60m;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	ssl_certificate /etc/nginx/ssl/api.netkiller.cn.crt;
+	ssl_certificate_key /etc/nginx/ssl/api.netkiller.cn.key;
+	ssl_session_cache shared:SSL:20m;
+	ssl_session_timeout 60m;
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
-    charset utf-8;
-    access_log  /var/log/nginx/api.netkiller.cn.access.log;
-    error_log  /var/log/nginx/api.netkiller.cn.error.log;
+	charset utf-8;
+	access_log /var/log/nginx/api.netkiller.cn.access.log;
+	error_log /var/log/nginx/api.netkiller.cn.error.log;
 
-    location / {
-        proxy_pass      http://127.0.0.1:7000;
-        proxy_http_version 1.1;
-        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
+	location / {
+		proxy_pass http://127.0.0.1:7000;
+		proxy_http_version 1.1;
+		proxy_set_header X-Forwarded-For
+		$proxy_add_x_forwarded_for;
+	}
 
 }
-				</screen>
-				<para>下面是 Java 程序</para>
-				<programlisting>
+			]]>
+			</screen>
+			<para>下面是 Java 程序</para>
+			<programlisting>
 				<![CDATA[
 package cn.netkiller.example;
 
@@ -312,23 +315,16 @@ public class NginxAndOpenSSLAndTomcatAndHttpclient {
 	}
 }
 				]]>
-				</programlisting>
-				<para>如果遇到配置问题，可以看一下<ulink url="/www/index.html">《Netkiller Linux Web 手札》</ulink></para>
-			<!-- 
-/*
-    static
-    {
-       System.setProperty("javax.net.ssl.trustStore","/www/nginx/client1.jks");
-       System.setProperty("javax.net.ssl.trustStorePassword", "password");
-       System.setProperty("javax.net.ssl.keyStore", "/www/nginx/client1.jks");
-       System.setProperty("javax.net.ssl.keyStorePassword", "password");
-    }
-*/
-			 -->
-			 </section>
-			 <section>
-			 	<title>POST json 数据</title>
-			 	<programlisting>
+			</programlisting>
+			<para>
+				如果遇到配置问题，可以看一下
+				<ulink url="/www/index.html">《Netkiller Linux Web 手札》</ulink>
+			</para>
+			<!-- /* static { System.setProperty("javax.net.ssl.trustStore","/www/nginx/client1.jks"); System.setProperty("javax.net.ssl.trustStorePassword", "password"); System.setProperty("javax.net.ssl.keyStore", "/www/nginx/client1.jks"); System.setProperty("javax.net.ssl.keyStorePassword", "password"); } */ -->
+		</section>
+		<section>
+			<title>POST json 数据</title>
+			<programlisting>
 			 	<![CDATA[
 package cn.netkiller.example;
 
@@ -403,17 +399,130 @@ public class HttpClientSSLPost {
 
 }
 			 	]]>
-			 	</programlisting>
-			 </section>
+			</programlisting>
 		</section>
-		<section id="httpclient.faq">
-			<title>Host name 'api.netkiller.cn' does not match the certificate subject provided</title>
-			<para>这个问题是CN不匹配造成的，日志如下</para>
+	</section>
+	<section id="httpclient.http2">
+		<title>HTTP/2</title>
+		<para>HTTP/2实例</para>
+		<programlisting>
+		<![CDATA[
+    @Test
+    public void testHttp2() throws URISyntaxException, IOException, InterruptedException {
+        HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.SECURE)
+                .version(HttpClient.Version.HTTP_2)
+                .build()
+                .sendAsync(HttpRequest.newBuilder()
+                                .uri(new URI("https://http2.akamai.com/demo"))
+                                .GET()
+                                .build(),
+                        HttpResponse.BodyHandler.asString())
+                .whenComplete((resp,t) -> {
+                    if(t != null){
+                        t.printStackTrace();
+                    }else{
+                        System.out.println(resp.body());
+                        System.out.println(resp.statusCode());
+                    }
+                }).join();
+    }
+		]]>
+		</programlisting>
+	</section>
+	<section id="httpclient.java11">
+		<title>Java11</title>
+		<section>
+			<title>sync get</title>
 			<screen>
-Exception in thread "main" javax.net.ssl.SSLPeerUnverifiedException: Host name 'api.netkiller.cn' does not match the certificate subject provided by the peer (EMAILADDRESS=netkiller@msn.com, CN=netkiller.cn, OU=CF, O=CF, L=Shenzhen, ST=Guangdong, C=CN)
+			<![CDATA[
+	/**
+     * --add-modules jdk.incubator.httpclient
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws URISyntaxException
+     */
+    @Test
+    public void testGet() throws IOException, InterruptedException, URISyntaxException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(new URI("https://www.baidu.com"))
+                .header("User-Agent", "jdk 9 http client")
+                .GET()
+                .build();
+        HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandler.asString());
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+    }
+			]]>
 			</screen>
-			<para>解决方案一：重新做证书</para>
+		</section>
+		<section>
+			<title>async get</title>
 			<screen>
+			<![CDATA[
+    @Test
+    public void testAsyncGet() throws URISyntaxException, InterruptedException, ExecutionException {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("https://www.baidu.com"))
+                .GET()
+                .build();
+
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(request, HttpResponse.BodyHandler.asString());
+
+        response.whenComplete((resp,t) -> {
+            if(t != null){
+                t.printStackTrace();
+            }else{
+                System.out.println(resp.body());
+                System.out.println(resp.statusCode());
+            }
+        }).join();
+    }
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>post form</title>
+			<para>post form</para>
+			<screen>
+			<![CDATA[
+	@Test
+    public void testPostForm() throws URISyntaxException {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://www.w3school.com.cn/demo/demo_form.asp"))
+                .header("Content-Type","application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyProcessor.fromString("name1=value1&name2=value2"))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandler.asString())
+                .whenComplete((resp,t) -> {
+                    if(t != null){
+                        t.printStackTrace();
+                    }else{
+                        System.out.println(resp.body());
+                        System.out.println(resp.statusCode());
+                    }
+        }).join();
+    }
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="httpclient.faq">
+		<title>Host name 'api.netkiller.cn' does not match the certificate subject provided</title>
+		<para>这个问题是CN不匹配造成的，日志如下</para>
+		<screen>
+		<![CDATA[
+Exception in thread "main" javax.net.ssl.SSLPeerUnverifiedException: Host name 'api.netkiller.cn' does not match the certificate subject provided by the peer (EMAILADDRESS=netkiller@msn.com, CN=netkiller.cn, OU=CF, O=CF, L=Shenzhen, ST=Guangdong, C=CN)
+		]]>
+		</screen>
+		<para>解决方案一：重新做证书</para>
+		<screen>
+		<![CDATA[
 Country Name (2 letter code) [XX]:CN
 State or Province Name (full name) []:Guangdong
 Locality Name (eg, city) [Default City]:Shenzhen
@@ -421,7 +530,8 @@ Organization Name (eg, company) [Default Company Ltd]:CF
 Organizational Unit Name (eg, section) []:CF
 Common Name (eg, your name or your server's hostname) []:api.netkiller.cn
 Email Address []:netkiller@msn.com
-			</screen>
-			<para>解决方案二：是用CN上的域名链接</para>
-		</section>
+			]]>
+		</screen>
+		<para>解决方案二：是用CN上的域名链接</para>
 	</section>
+</section>

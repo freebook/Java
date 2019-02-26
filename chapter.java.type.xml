@@ -31,6 +31,16 @@
 最大值：Double.MAX_VALUE=1.7976931348623157E308 （2的1024次方-1）	
 	]]>
 	</screen>
+	<section id="">
+		<title>var 本地变量类型推断</title>
+		<programlisting>
+		<![CDATA[
+var javastack = "javastack";
+就等于：
+String javastack = "javastack";		
+		]]>
+		</programlisting>
+	</section>
 	<section id="integer">
 		<title>Integer</title>
 		<programlisting>
@@ -156,6 +166,23 @@ public static String frontCompWithZore(int sourceDate,int formatLength) {
 	</section>
 	<section id="string">
 		<title>String</title>
+		<para>Java 11 增加了一系列的字符串处理方法，如以下所示。</para>
+		<screen>
+		<![CDATA[
+// 判断字符串是否为空白
+" ".isBlank(); // true
+// 去除首尾空格
+" Javastack ".strip(); // "Javastack"
+// 去除尾部空格
+" Javastack ".stripTrailing(); // " Javastack"
+// 去除首部空格
+" Javastack ".stripLeading(); // "Javastack "
+// 复制字符串
+"Java".repeat(3);// "JavaJavaJava"
+// 行数统计
+"A\nB\nC".lines().count(); // 3
+		]]>
+		</screen>
 		<section id="random">
 			<title>随机字符串</title>
 			<programlisting>
@@ -294,6 +321,23 @@ hell
 				Timestamp ts = Timestamp.valueOf(time);
 			</programlisting>
 		</section>
+		<section id="String.strip">
+			<title>String.strip</title>
+			<para>java11对String类新增了strip，stripLeading以及stripTrailing方法，除了strip相关的方法还新增了isBlank、lines、repeat(int)等方法</para>
+			<screen>
+			<![CDATA[
+	@Test
+    public void testStrip(){
+        String text = "  \u2000a  b  ";
+        Assert.assertEquals("a  b",text.strip());
+        Assert.assertEquals("\u2000a  b",text.trim());
+        Assert.assertEquals("a  b  ",text.stripLeading());
+        Assert.assertEquals("  \u2000a  b",text.stripTrailing());
+    }
+			]]>
+			</screen>
+		</section>
+
 	</section>
 	<section id="long">
 		<title>类型转换</title>
@@ -1116,7 +1160,7 @@ class EnumExample1{
 		]]>
 		</programlisting>
 		<screen>
-			
+
 		</screen>
 		<programlisting>
 		<![CDATA[
@@ -1855,6 +1899,23 @@ List<String> strings = List.of("first", "second");
 		]]>
 		</programlisting>
 	</section>
+	<section id="List.copyOf()">
+		<title>List.copyOf()</title>
+		<screen>
+			<![CDATA[
+var list = List.of("Java", "Python", "C");
+var copy = List.copyOf(list);
+System.out.println(list == copy); // true
+			]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+var list = new ArrayList<String>();
+var copy = List.copyOf(list);
+System.out.println(list == copy); // false
+		]]>
+		</programlisting>
+	</section>
 	<section>
 		<title>Set.of()</title>
 		<programlisting>
@@ -1862,6 +1923,23 @@ List<String> strings = List.of("first", "second");
 Set<Integer> ints = Set.of(1, 2, 3);		
 		]]>
 		</programlisting>
+	</section>
+	<section id="Collection.toArray">
+		<title></title>
+		<para>Collection.toArray(IntFunction)</para>
+		<screen>
+		<![CDATA[
+	@Test
+    public void testCollectionToArray(){
+        Set<String> names = Set.of("Fred", "Wilma", "Barney", "Betty");
+        String[] copy = new String[names.size()];
+        names.toArray(copy);
+        System.out.println(Arrays.toString(copy));
+        System.out.println(Arrays.toString(names.toArray(String[]::new)));
+    }
+		]]>
+		</screen>
+
 	</section>
 </section>
 
@@ -2061,4 +2139,41 @@ public class TestLinkedHashMap {
 		</programlisting>
 	</section>
 </section>
+<section>
+	<title>Stream</title>
+	<para>增加单个参数构造方法，可为null</para>
+	<screen>
+	<![CDATA[
+Stream.ofNullable(null).count(); // 0		
+	]]>
+	</screen>
 
+	<para>增加 takeWhile 和 dropWhile 方法</para>
+	<screen>
+	<![CDATA[
+Stream.of(1, 2, 3, 2, 1)
+.takeWhile(n -> n < 3)
+.collect(Collectors.toList()); // [1, 2]
+	]]>
+	</screen>
+	<para>从开始计算，当 n &lt; 3 时就截止</para>
+	<screen>
+	<![CDATA[
+Stream.of(1, 2, 3, 2, 1)
+.dropWhile(n -> n < 3)
+.collect(Collectors.toList()); // [3, 2, 1]
+	]]>
+	</screen>
+</section>
+<section id="Optional">
+	<title>Optional</title>
+	<screen>
+	<![CDATA[
+Optional.of("javastack").orElseThrow(); // javastack
+Optional.of("javastack").stream().count(); // 1
+Optional.ofNullable(null)
+.or(() -> Optional.of("javastack"))
+.get(); // javastack
+	]]>
+	</screen>
+</section>

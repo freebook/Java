@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="java">
-	<title>Java</title>
+	<title>Java 11</title>
 	&chapter.jvm.xml;
 <section id="system">
 	<title>System</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="index"><?dbhtml dir="jvm" ?>
 	<title>JVM</title>
-	<section id="jdk">
+	<section id="jdk6">
 		<title>安装 Java 6</title>
 		<para>解压</para>
 		<screen>
@@ -50,6 +50,15 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 	</section>
 	<section id="java">
 		<title>java - Launches a Java application.</title>
+		<section id="java11">
+			<title>java 9~11</title>
+			<para>直接使用 java 命令运行 *.java 文件</para>
+			<screen>	
+			<![CDATA[
+java netkiller.java		
+			]]>
+			</screen>
+		</section>
 		<section id="java.verbose:class">
 			<title>-verbose:class 显示载入jar文件</title>
 			<programlisting>

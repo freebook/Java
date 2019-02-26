@@ -119,6 +119,20 @@ public class Main {
 		]]>
 		</programlisting>
 	</section>
+	<section id="inputStream.transferTo()">
+		<title>inputStream.transferTo()</title>
+		<screen>
+		<![CDATA[
+
+var classLoader = ClassLoader.getSystemClassLoader();
+var inputStream = classLoader.getResourceAsStream("hello.txt");
+var tmp = File.createTempFile("tmp", "txt");
+try (var outputStream = new FileOutputStream(tmp)) {
+    inputStream.transferTo(outputStream);
+}
+		]]>
+		</screen>
+	</section>
 	<section id="InputStreamReader">
 		<title>InputStreamReader</title>
 		<programlisting>
