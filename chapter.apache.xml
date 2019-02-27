@@ -4,7 +4,7 @@
 
 	<section id="org.apache.commons.lang3">
 		<title>org.apache.commons.lang3</title>
-		<section>
+		<section id="StringEscapeUtils">
 			<title>HTML 标签处理</title>
 			<programlisting>
 			<![CDATA[
@@ -29,7 +29,7 @@ public class LangTest {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="StringUtils">
 			<title>StringUtils.join 使用特定字符链接字符串</title>
 			<para>下面例子使用逗号链接字符串</para>
 			<programlisting>
@@ -38,6 +38,36 @@ org.apache.commons.lang.StringUtils.join(arraylist, ',')
 			]]>
 			</programlisting>
 		</section>
+		<section id="RandomStringUtils">
+			<title>RandomStringUtils</title>
+			<programlisting>
+			<![CDATA[
+	String project = RandomStringUtils.randomAlphanumeric(10);
+	System.out.print(project);			
+			]]>
+			</programlisting>
+			<para>随机输出 ASCII</para>
+			<screen>
+			<![CDATA[
+	System.out.println(RandomStringUtils.randomAscii(10));
+			]]>
+			</screen>
+			<para>随机输出数字</para>
+			<screen>
+			<![CDATA[
+	System.out.println(RandomStringUtils.randomNumeric(10));		
+			]]>
+
+			</screen>
+			<para>指定字符串随机输出</para>
+			<screen>
+			<![CDATA[
+	String project = RandomStringUtils.random(10, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ").toString();
+	System.out.println(project);
+			]]>
+			</screen>
+		</section>
+
 	</section>
-	&chapter.apache.httpclient.xml;
+	&section.apache.httpclient.xml;
 </chapter>
