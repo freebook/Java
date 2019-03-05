@@ -114,7 +114,7 @@ Helloworld!!!
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gradlew">
 		<title>gradle 命令</title>
 		<section>
 			<title>tasks 列出任务</title>
@@ -242,6 +242,17 @@ allprojects {
 		baseName = 'hello'
 		version = '0.1.0'
 	}
+			]]>
+			</screen>
+			<para>设置 Main-Class</para>
+			<screen>
+			<![CDATA[
+jar {
+    manifest {
+        attributes 'Main-Class': 'demo.Test'
+        attributes 'Class-Path': 'junit5.jar'
+    }
+}			
 			]]>
 			</screen>
 		</section>
