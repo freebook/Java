@@ -2343,5 +2343,36 @@ spring-boot:stop
 			]]>
 			</screen>
 		</section>
+		<section id="tomcat8-maven-plugin">
+			<title>tomcat8-maven-plugin</title>
+			<screen>
+			<![CDATA[
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat8-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>http://localhost:8082/manager/text</url>
+					<server>tomcat</server>
+					<username>admin</username>
+					<password>admin@123456</password>
+					<path>/${project.build.finalName}</path>
+					<!-- war文件路径缺省情况下指向target -->
+					<!--<warFile>${basedir}/target/${project.build.finalName}.war</warFile> -->
+				</configuration>
+			</plugin>		
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+mvn tomcat:deploy			
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
