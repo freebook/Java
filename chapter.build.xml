@@ -5,4 +5,5 @@
 	&section.maven.xml;
 	&section.gradle.xml;
 	&section.jitpack.xml;
+	&section.artifactory.xml;
 </chapter>

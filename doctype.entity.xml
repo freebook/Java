@@ -10,11 +10,14 @@
 <!ENTITY chapter.javax.crypto.xml		SYSTEM "chapter.javax.crypto.xml">
 <!ENTITY chapter.java.security.xml 		SYSTEM "chapter.java.security.xml">
 <!ENTITY chapter.java.reflect.xml 		SYSTEM "chapter.java.reflect.xml">
+
 <!ENTITY chapter.build.xml				SYSTEM "chapter.build.xml">
 <!ENTITY section.ant.xml				SYSTEM "build/section.ant.xml">
 <!ENTITY section.gradle.xml				SYSTEM "build/section.gradle.xml">
 <!ENTITY section.maven.xml				SYSTEM "build/section.maven.xml">
 <!ENTITY section.jitpack.xml			SYSTEM "build/section.jitpack.xml">
+<!ENTITY section.artifactory.xml		SYSTEM "build/section.artifactory.xml">
+<!ENTITY section.artifactory.xml		SYSTEM "build/section.artifactory.xml">
 
 <!ENTITY chapter.cache.xml			 	SYSTEM "chapter.cache.xml">
 
