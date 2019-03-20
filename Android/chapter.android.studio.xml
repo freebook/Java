@@ -79,7 +79,7 @@ dependencies {
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="sdkmanager">
 		<title>SDK Tools</title>
 		<screen>
 		<![CDATA[
@@ -148,6 +148,14 @@ Common Arguments:
 		]]>
 		</screen>
 		<section>
+			<title>接受 License</title>
+			<screen>
+			<![CDATA[
+$ yes|tools/bin/sdkmanager --licenses			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>查看 SDK 列表</title>
 			<screen>
 			<![CDATA[
@@ -194,5 +202,20 @@ bin/sdkmanager "platforms;android-26"
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section>
+		<title>命令行操作</title>
+		<para>会同时生成debug和release两个包</para>
+		<screen>
+		<![CDATA[
+./gradlew assemble
+		]]>
+		</screen>
+		<para>只生成release的包</para>
+		<screen>
+		<![CDATA[
+./gradlew assembleRelease
+		]]>
+		</screen>
 	</section>
 </chapter>
