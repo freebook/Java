@@ -4,19 +4,25 @@
 		<title>Git 仓库</title>
 		<para>克隆仓库</para>
 		<screen>
-			git clone https://github.com/netkiller/config.git
+		<![CDATA[
+git clone https://github.com/netkiller/config.git
+		]]>
 		</screen>
 		<para>创建配置文件 server-development.properties</para>
 		<screen>
-			vim server-development.properties
+		<![CDATA[
+vim server-development.properties
 
-			test.a=KKOOKK
-			message=Hello world
+test.a=KKOOKK
+message=Hello world
+		]]>
 		</screen>
 		<para>提交配置文件</para>
 		<screen>
-			git commit -a
-			git push
+		<![CDATA[
+git commit -a
+git push
+		]]>
 		</screen>
 		<para>配置文件格式</para>
 		<screen>
@@ -32,27 +38,35 @@
 		<section>
 			<title>分支</title>
 			<programlisting>
-				spring.cloud.config.label=mybranch
+			<![CDATA[
+spring.cloud.config.label=mybranch
+			]]>
 			</programlisting>
 		</section>
 		<section>
 			<title>HTTP Auth</title>
 			<programlisting>
-				spring.application.name=config-server
-				spring.cloud.config.server.git.uri=https://netkiller:xxxxxx@github.com/xyz/microservices-configs.git
+			<![CDATA[
+spring.application.name=config-server
+spring.cloud.config.server.git.uri=https://netkiller:xxxxxx@github.com/xyz/microservices-configs.git
+			]]>
 			</programlisting>
 			<para></para>
 			<programlisting>
-				spring.application.name=config-server
-				spring.cloud.config.server.git.uri=https://github.com/xyz/microservices-configs.git
-				spring.cloud.config.server.git.username=netkiller
-				spring.cloud.config.server.git.password=password
+			<![CDATA[
+spring.application.name=config-server
+spring.cloud.config.server.git.uri=https://github.com/xyz/microservices-configs.git
+spring.cloud.config.server.git.username=netkiller
+spring.cloud.config.server.git.password=password
+			]]>
 			</programlisting>
 		</section>
 		<section>
 			<title>basedir</title>
 			<programlisting>
-				spring.cloud.config.server.git.basedir=api/configs
+			<![CDATA[
+spring.cloud.config.server.git.basedir=api/configs
+			]]>
 			</programlisting>
 		</section>
 		<section>
@@ -224,8 +238,10 @@ public class Application {
 		<section>
 			<title>测试服务器</title>
 			<screen>
-				neo@netkiller $ curl http://localhost:8888/server-development.json
-				{"message":"Hello world","test":{"a":"KKOOKK"}}
+			<![CDATA[
+neo@netkiller $ curl http://localhost:8888/server-development.json
+{"message":"Hello world","test":{"a":"KKOOKK"}}
+			]]>	
 			</screen>
 		</section>
 	</section>
@@ -233,7 +249,6 @@ public class Application {
 		<title>Client</title>
 		<section>
 			<title>Maven pom.xml</title>
-
 			<programlisting>
 			<![CDATA[
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">

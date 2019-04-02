@@ -3,14 +3,12 @@
 <!ENTITY chapter.spring.xml				SYSTEM "chapter.spring.xml">
 <!ENTITY chapter.suite.xml				SYSTEM "chapter.suite.xml">
 <!ENTITY chapter.tomcat.xml				SYSTEM "chapter.tomcat.xml">
-<!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 
 <!ENTITY chapter.boot.xml				SYSTEM "chapter.boot.xml">
 <!ENTITY section.boot.kafka.xml			SYSTEM "section.boot.kafka.xml">
 <!ENTITY section.boot.properties.xml	SYSTEM "section.boot.properties.xml">
 <!ENTITY section.boot.quickstart.xml	SYSTEM "section.boot.quickstart.xml">
 <!ENTITY section.boot.logging.xml		SYSTEM "section.boot.logging.xml">
-<!ENTITY section.boot.oauth.xml			SYSTEM "section.boot.oauth.xml">
 <!ENTITY section.boot.restdocs.xml		SYSTEM "section.boot.restdocs.xml">
 <!ENTITY section.boot.datasource.xml	SYSTEM "section.boot.datasource.xml">
 <!ENTITY section.boot.test.xml			SYSTEM "section.boot.test.xml">
@@ -20,6 +18,9 @@
 <!ENTITY section.rest.xml				SYSTEM "section.rest.xml">
 <!ENTITY section.mvc.view.xml			SYSTEM "section.mvc.view.xml">
 <!ENTITY section.mvc.xml				SYSTEM "section.mvc.xml">
+
+<!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
+<!ENTITY section.security.oauth.xml		SYSTEM "section.security.oauth.xml">
 
 <!ENTITY chapter.data.xml				SYSTEM "chapter.data.xml">
 <!ENTITY chapter.data.mongodb.xml		SYSTEM "chapter.data.mongodb.xml">
@@ -32,6 +33,7 @@
 <!ENTITY chapter.cloud.netflix.xml		SYSTEM "chapter.cloud.netflix.xml">
 <!ENTITY chapter.cloud.stream.xml		SYSTEM "chapter.cloud.stream.xml">
 <!ENTITY chapter.cloud.sleuth.xml		SYSTEM "chapter.cloud.sleuth.xml">
+<!ENTITY chapter.cloud.consol.xml		SYSTEM "chapter.cloud.consol.xml">
 <!ENTITY chapter.cloud.faq.xml			SYSTEM "chapter.cloud.faq.xml">
 
 <!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">

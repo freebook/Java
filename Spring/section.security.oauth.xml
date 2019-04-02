@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="oauth2">
 	<title>Spring boot with Oauth2</title>
+	<section id="oauth2.doc">
+		<title>Oauth2 协议</title>
+		<section id="oauth.token">
+			<title>token</title>
+			<literallayout>
+				access_token：访问令牌，必选项。
+				token_type：令牌类型，该值大小写不敏感，必选项。
+				expires_in：过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。
+				refresh_token：更新令牌，用来获取下一次的访问令牌，可选项。
+				scope：权限范围，如果与客户端申请的范围一致，此项可省略。
+			</literallayout>
+		</section>
+
+		<section id="grant_type">
+			<title>grant_type</title>
+			<para>client_credentials</para>
+			<screen>
+				grant_type = 'client_credentials' 模式不需要用户去资源服务器登录并授权, 因为客户端(client)已经有了访问资源服务器的凭证(credentials).
+				所以当用户访问时,由client直接向资源服务器获取access_token并访问资源即可.
+			</screen>
+		</section>
+	</section>
+	
+	
 	<section id="oauth2.password">
 		<title>Spring boot with Oauth2 - Password</title>
 		<para>下面例子由三个项目组成，分别是 tools, server, client。</para>
@@ -1449,5 +1473,240 @@ public class ResourceController {
 }		
 		]]>
 		</programlisting>
+	</section>
+	<section id="oauth2.RestTemplate">
+		<title>RestTemplate 使用 HttpClient</title>
+		<section>
+			<title>Maven</title>
+			<programlisting>
+				<![CDATA[
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.netkiller</groupId>
+		<artifactId>oauth</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>client</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>client</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.3</version>
+		</dependency>
+	</dependencies>
+</project>
+
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>SpringBootApplication</title>
+			<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.client;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * Hello world!
+ *
+ */
+@SpringBootApplication
+public class Application {
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		SpringApplication.run(Application.class, args);
+	}
+}
+
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>ClientRestController</title>
+			<programlisting>
+				<![CDATA[
+package cn.netkiller.oauth.client.controller;
+
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2RestOperations;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+@RestController
+public class ClientRestController {
+	
+	@RequestMapping("/token")
+	public String token() {
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.set("Authorization","Bearer "+"6296057a-ed06-4899-9adc-1993ba7a4946");
+	    HttpEntity<String> entity = new HttpEntity<String>(headers);
+	    ResponseEntity<String> response = restTemplate.exchange("http://localhost:8000/api/test/hello.json",HttpMethod.GET,entity,String.class);
+	    System.out.println(response.getBody());
+		return response.getStatusCode().toString() + " " + response.getBody();
+	}
+}
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Test</title>
+			<para>首先获取 Token</para>
+			<screen>
+				<![CDATA[
+MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@msn.com&password=123456' http://localhost:8000/api/oauth/token
+{"access_token":"6296057a-ed06-4899-9adc-1993ba7a4946","token_type":"bearer","refresh_token":"b22d70db-3253-4f5f-9b6a-8714da23e14d","expires_in":2642,"scope":"read write"}
+				]]>
+			</screen>
+			<para>将Token写入到 http 头</para>
+			<screen>
+				headers.set("Authorization","Bearer "+"6296057a-ed06-4899-9adc-1993ba7a4946");
+			</screen>
+			<para>启动 client 项目</para>
+			<screen>
+				mvn spring-boot:run
+			</screen>
+			<para>curl 测试</para>
+			<screen>
+				MacBook-Pro:Application neo$ curl http://localhost:8080/client/token.json
+				200 Hello world !
+			</screen>
+		</section>
+	</section>
+	<section id="oauth.self-sign">
+		<title>自签名证书信任问题</title>
+		<subtitle>unable to find valid certification path to requested target</subtitle>
+		<programlisting>
+			<![CDATA[
+package example.controller;
+
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.oauth2.client.OAuth2RestOperations;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+
+@Controller
+public class TestController {
+	@Autowired
+	private OAuth2RestOperations restTemplate;
+
+	@GetMapping("/ssl")
+	@ResponseBody
+	public String ssl() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		String url = "https://api.netkiller.cn/news/list.json";
+
+		SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
+		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null, new NoopHostnameVerifier());
+		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+		HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+		httpComponentsClientHttpRequestFactory.setConnectTimeout(60000);
+		httpComponentsClientHttpRequestFactory.setReadTimeout(180000);
+
+		final RestTemplate restTemplate = new RestTemplate(httpComponentsClientHttpRequestFactory);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", "Bearer " + this.restTemplate.getAccessToken().getValue());
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+		return response.getBody();
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+
+	<section id="oauth2.faq">
+		<title>Oauth2 常见问题</title>
+		<section>
+			<title>修改 /oauth/token 路径</title>
+			<programlisting>
+			<![CDATA[
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer configurer) throws Exception {
+		configurer.authenticationManager(authenticationManager);
+		configurer.userDetailsService(userDetailsService);
+		configurer.pathMapping("/oauth/token","/oauth/token3");	//可以修改默认/oauth/token路径为 /oauth/token3
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>password 认证方式静态配置用户列表</title>
+			<programlisting>
+			<![CDATA[
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer configurer) throws Exception {
+		configurer.authenticationManager(authenticationManager);
+		configurer.userDetailsService(userDetailsService());
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		Map<String, String[]> users = new HashMap<String, String[]>() {
+			{
+				put("user", new String[] { "ROLE_USER" });
+				put("admin", new String[] { "ROLE_USER", "ROLE_ADMIN" });
+				put("client", new String[] { "ROLE_CLIENT" });
+				put("trust", new String[] { "ROLE_TRUSTED_CLIENT" });
+			}
+		};
+		String password = passwordEncoder().encode("123456");	// 设置默认密码
+		// TODO 这里需要自行定义访问数据库的扩展
+		return new UserDetailsService() {
+			@Override
+			public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+				String[] authList = users.containsKey(name) ? users.get(name) : new String[] { "ROLE_USER" };
+				User user = new User(name, password, AuthorityUtils.createAuthorityList(authList));
+				return user;
+			}
+		};
+
+	}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>

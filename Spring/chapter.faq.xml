@@ -385,4 +385,62 @@ spring.main.allow-bean-definition-overriding=true
 		</screen>
 		<para>另外 MySQL驱动必须使用最新的 com.mysql.cj.jdbc.Driver</para>
 	</section>
+	<section>
+		<title>Field authenticationManager in cn.netkiller.oauth2.config.AuthorizationServerConfigurer required a bean of type 'org.springframework.security.authentication.AuthenticationManager' that could not be found.</title>
+		<screen>
+		<![CDATA[
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field authenticationManager in cn.netkiller.oauth2.config.AuthorizationServerConfigurer required a bean of type 'org.springframework.security.authentication.AuthenticationManager' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
+
+
+Action:
+
+Consider defining a bean of type 'org.springframework.security.authentication.AuthenticationManager' in your configuration.		
+		]]>
+		</screen>
+		<para>注入 @Bean @Override public AuthenticationManager authenticationManagerBean() 即可解决</para>
+		<screen>
+		<![CDATA[
+package cn.netkiller.oauth2.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	public WebSecurityConfigurer() {
+		// TODO Auto-generated constructor stub
+	}
+
+	// 此处必须声明这个bean类，否则无法注入AuthenticationManager
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
+	protected void configure(HttpSecurity http) throws Exception {
+		http.formLogin().and().authorizeRequests().anyRequest().authenticated().and().logout().permitAll().and().csrf().disable();
+	}
+}
+		
+		]]>
+		</screen>
+	</section>
 </chapter>
