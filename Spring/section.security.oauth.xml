@@ -1456,24 +1456,7 @@ public class Oauth2jwtActivity extends AppCompatActivity {
 	]]>
 		</programlisting>
 	</section>
-	<section id="oauth2">
-		<title>Principal</title>
-		<programlisting>
-		<![CDATA[
-@RestController
-public class ResourceController {
-    @GetMapping("/getResource")
-    public String getResource(Principal principal) {
-        return "SUCCESS, 当前用户：" + principal.getName();
-    }
-    @RequestMapping("/user")
-  	public Principal user(Principal principal) {
-    	return principal;
-	}
-}		
-		]]>
-		</programlisting>
-	</section>
+	
 	<section id="oauth2.RestTemplate">
 		<title>RestTemplate 使用 HttpClient</title>
 		<section>
@@ -1657,7 +1640,43 @@ public class TestController {
 		]]>
 		</programlisting>
 	</section>
+	
+	<section id="oauth2">
+		<title>Principal</title>
+		<programlisting>
+		<![CDATA[
+@RestController
+public class ResourceController {
+    @GetMapping("/getResource")
+    public String getResource(Principal principal) {
+        return "SUCCESS, 当前用户：" + principal.getName();
+    }
+    @RequestMapping("/user")
+  	public Principal user(Principal principal) {
+    	return principal;
+	}
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>SecurityContextHolder 对象</title>
+		<screen>
+		<![CDATA[
+	@RequestMapping(value = "principal", method = RequestMethod.GET)
+    public Object getPrincipal() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal;
+    }
 
+    // 查询用户角色
+    @RequestMapping(value = "roles", method = RequestMethod.GET)
+    public Object getRoles() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    }		
+		]]>
+		</screen>
+	</section>
 	<section id="oauth2.faq">
 		<title>Oauth2 常见问题</title>
 		<section>
