@@ -2,7 +2,7 @@
 <chapter id="index"><?dbhtml dir="cloud" ?>
 	<title>Spring Cloud</title>
 	&chapter.cloud.config.xml;
-	&chapter.cloud.consol.xml;
+	&section.cloud.consol.xml;
 	&chapter.cloud.netflix.xml;
 	<section id="spring.cloud.finchley">
 		<title>Spring Cloud Finchley</title>

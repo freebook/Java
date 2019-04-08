@@ -33,7 +33,7 @@
 <!ENTITY chapter.cloud.netflix.xml		SYSTEM "chapter.cloud.netflix.xml">
 <!ENTITY chapter.cloud.stream.xml		SYSTEM "chapter.cloud.stream.xml">
 <!ENTITY chapter.cloud.sleuth.xml		SYSTEM "chapter.cloud.sleuth.xml">
-<!ENTITY chapter.cloud.consol.xml		SYSTEM "chapter.cloud.consol.xml">
+<!ENTITY section.cloud.consol.xml		SYSTEM "section.cloud.consol.xml">
 <!ENTITY chapter.cloud.faq.xml			SYSTEM "chapter.cloud.faq.xml">
 
 <!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">
