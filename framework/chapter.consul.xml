@@ -1,4 +1,387 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="consul">
 	<title>Consul</title>
+	<section>
+		<title>安装 Consol</title>
+		<section>
+			<title>二进制安装</title>
+			<screen>
+			<![CDATA[
+cd /tmp
+wget https://releases.hashicorp.com/consul/1.4.4/consul_1.4.4_linux_amd64.zip
+unzip consul_1.4.4_linux_amd64.zip
+mv consul /usr/local/bin/		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Docker 安装</title>
+			<para>https://hub.docker.com/_/consul</para>
+			<para></para>
+			<screen>
+			<![CDATA[
+docker run -d --name=dev-consul -e CONSUL_BIND_INTERFACE=eth0 consul
+			]]>
+			</screen>
+			<para>加入节点</para>
+			<screen>
+			<![CDATA[
+$ docker run -d -e CONSUL_BIND_INTERFACE=eth0 consul agent -dev -join=172.17.0.2
+$ docker run -d -e CONSUL_BIND_INTERFACE=eth0 consul agent -dev -join=172.17.0.2			
+			]]>
+			</screen>
+			<para>查看节点</para>
+			<screen>
+			<![CDATA[
+$ docker exec -t dev-consul consul members
+Node          Address          Status  Type    Build  Protocol  DC
+579db72c1ae1  172.17.0.3:8301  alive   server  0.6.3  2         dc1
+93fe2309ef19  172.17.0.4:8301  alive   server  0.6.3  2         dc1
+c9caabfd4c2a  172.17.0.2:8301  alive   server  0.6.3  2         dc1			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Docker compose</title>
+			<para>https://github.com/hashicorp/consul/blob/master/demo/docker-compose-cluster/docker-compose.yml</para>
+			<para>创建 docker-compose.yml 文件</para>
+			<screen>
+			<![CDATA[
+version: '3'
+
+services:
+
+  consul-agent-1: &consul-agent
+    image: consul:latest
+    networks:
+      - consul-demo
+    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-agent-2:
+    <<: *consul-agent
+
+  consul-agent-3:
+    <<: *consul-agent
+
+  consul-server-1: &consul-server
+    <<: *consul-agent
+    command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-server-2:
+    <<: *consul-server
+
+  consul-server-bootstrap:
+    <<: *consul-agent
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    command: "agent -server -bootstrap-expect 3 -ui -client 0.0.0.0"
+
+networks:
+  consul-demo:
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>检查 consul 是否可用</title>
+			<para>运行 consul 命令</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# consul
+Usage: consul [--version] [--help] <command> [<args>]
+
+Available commands are:
+    acl            Interact with Consul's ACLs
+    agent          Runs a Consul agent
+    catalog        Interact with the catalog
+    connect        Interact with Consul Connect
+    debug          Records a debugging archive for operators
+    event          Fire a new event
+    exec           Executes a command on Consul nodes
+    force-leave    Forces a member of the cluster to enter the "left" state
+    info           Provides debugging information for operators.
+    intention      Interact with Connect service intentions
+    join           Tell Consul agent to join cluster
+    keygen         Generates a new encryption key
+    keyring        Manages gossip layer encryption keys
+    kv             Interact with the key-value store
+    leave          Gracefully leaves the Consul cluster and shuts down
+    lock           Execute a command holding a lock
+    maint          Controls node or service maintenance mode
+    members        Lists the members of a Consul cluster
+    monitor        Stream logs from a Consul agent
+    operator       Provides cluster-level tools for Consul operators
+    reload         Triggers the agent to reload configuration files
+    rtt            Estimates network round trip time between nodes
+    services       Interact with services
+    snapshot       Saves, restores and inspects snapshots of Consul server state
+    tls            Builtin helpers for creating CAs and certificates
+    validate       Validate config files/directories
+    version        Prints the Consul version
+    watch          Watch for changes in Consul	
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>启动 Consol</title>
+		<para>开发者模式中启动Consul代理</para>
+		<screen>
+		<![CDATA[
+consul agent -dev        # -dev表示开发模式运行，另外还有-server表示服务模式运行		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# consul agent -dev
+==> Starting Consul agent...
+==> Consul agent running!
+           Version: 'v1.4.4'
+           Node ID: '19afebbb-c306-fa0b-10de-f53384204126'
+         Node name: 'localhost.localdomain'
+        Datacenter: 'dc1' (Segment: '<all>')
+            Server: true (Bootstrap: false)
+       Client Addr: [127.0.0.1] (HTTP: 8500, HTTPS: -1, gRPC: 8502, DNS: 8600)
+      Cluster Addr: 127.0.0.1 (LAN: 8301, WAN: 8302)
+           Encrypt: Gossip: false, TLS-Outgoing: false, TLS-Incoming: false
+
+==> Log data will now stream in as it occurs:
+
+    2019/04/08 06:01:33 [DEBUG] agent: Using random ID "19afebbb-c306-fa0b-10de-f53384204126" as node ID
+    2019/04/08 06:01:33 [WARN] agent: Node name "localhost.localdomain" will not be discoverable via DNS due to invalid characters. Valid characters include all alpha-numerics and dashes.
+    2019/04/08 06:01:33 [DEBUG] tlsutil: Update with version 1
+    2019/04/08 06:01:33 [DEBUG] tlsutil: OutgoingRPCWrapper with version 1
+    2019/04/08 06:01:33 [DEBUG] tlsutil: IncomingRPCConfig with version 1
+    2019/04/08 06:01:33 [DEBUG] tlsutil: OutgoingRPCWrapper with version 1
+    2019/04/08 06:01:33 [INFO] raft: Initial configuration (index=1): [{Suffrage:Voter ID:19afebbb-c306-fa0b-10de-f53384204126 Address:127.0.0.1:8300}]
+    2019/04/08 06:01:33 [INFO] raft: Node at 127.0.0.1:8300 [Follower] entering Follower state (Leader: "")
+    2019/04/08 06:01:33 [INFO] serf: EventMemberJoin: localhost.localdomain.dc1 127.0.0.1
+    2019/04/08 06:01:33 [INFO] serf: EventMemberJoin: localhost.localdomain 127.0.0.1
+    2019/04/08 06:01:33 [INFO] consul: Adding LAN server localhost.localdomain (Addr: tcp/127.0.0.1:8300) (DC: dc1)
+    2019/04/08 06:01:33 [DEBUG] agent/proxy: managed Connect proxy manager started
+    2019/04/08 06:01:33 [WARN] agent/proxy: running as root, will not start managed proxies
+    2019/04/08 06:01:33 [INFO] consul: Handled member-join event for server "localhost.localdomain.dc1" in area "wan"
+    2019/04/08 06:01:33 [INFO] agent: Started DNS server 127.0.0.1:8600 (udp)
+    2019/04/08 06:01:33 [INFO] agent: Started DNS server 127.0.0.1:8600 (tcp)
+    2019/04/08 06:01:33 [INFO] agent: Started HTTP server on 127.0.0.1:8500 (tcp)
+    2019/04/08 06:01:33 [INFO] agent: Started gRPC server on 127.0.0.1:8502 (tcp)
+    2019/04/08 06:01:33 [INFO] agent: started state syncer
+    2019/04/08 06:01:33 [WARN] raft: Heartbeat timeout from "" reached, starting election
+    2019/04/08 06:01:33 [INFO] raft: Node at 127.0.0.1:8300 [Candidate] entering Candidate state in term 2
+    2019/04/08 06:01:33 [DEBUG] raft: Votes needed: 1
+    2019/04/08 06:01:33 [DEBUG] raft: Vote granted from 19afebbb-c306-fa0b-10de-f53384204126 in term 2. Tally: 1
+    2019/04/08 06:01:33 [INFO] raft: Election won. Tally: 1
+    2019/04/08 06:01:33 [INFO] raft: Node at 127.0.0.1:8300 [Leader] entering Leader state
+    2019/04/08 06:01:33 [INFO] consul: cluster leadership acquired
+    2019/04/08 06:01:33 [INFO] consul: New leader elected: localhost.localdomain
+    2019/04/08 06:01:33 [INFO] connect: initialized primary datacenter CA with provider "consul"
+    2019/04/08 06:01:33 [DEBUG] consul: Skipping self join check for "localhost.localdomain" since the cluster is too small
+    2019/04/08 06:01:33 [INFO] consul: member 'localhost.localdomain' joined, marking health alive
+    2019/04/08 06:01:33 [DEBUG] agent: Skipping remote check "serfHealth" since it is managed automatically
+    2019/04/08 06:01:33 [INFO] agent: Synced node info
+    2019/04/08 06:01:36 [DEBUG] agent: Skipping remote check "serfHealth" since it is managed automatically
+    2019/04/08 06:01:36 [DEBUG] agent: Node info in sync
+    2019/04/08 06:01:36 [DEBUG] agent: Node info in sync		
+		]]>
+		</screen>
+		<para>启动成功之后访问：http://localhost:8500，可以看到 Consul 的管理界面</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# consul members
+Node                   Address         Status  Type    Build  Protocol  DC   Segment
+localhost.localdomain  127.0.0.1:8301  alive   server  1.4.4  2         dc1  <all>		
+		]]>
+		</screen>
+		<para>停止代理, 使用 Ctrl-C （中断信号）停止代理。停止代理后，你可以看到它脱离集群并且关闭的信息。</para>
+	</section>
+	<section>
+		<title>DNS</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# curl localhost:8500/v1/catalog/nodes
+[
+    {
+        "ID": "19afebbb-c306-fa0b-10de-f53384204126",
+        "Node": "localhost.localdomain",
+        "Address": "127.0.0.1",
+        "Datacenter": "dc1",
+        "TaggedAddresses": {
+            "lan": "127.0.0.1",
+            "wan": "127.0.0.1"
+        },
+        "Meta": {
+            "consul-network-segment": ""
+        },
+        "CreateIndex": 9,
+        "ModifyIndex": 10
+    }
+]
+
+[root@localhost ~]# dig @127.0.0.1 -p 8600 localhost.localdomain.node.consul
+
+; <<>> DiG 9.9.4-RedHat-9.9.4-73.el7_6 <<>> @127.0.0.1 -p 8600 localhost.localdomain.node.consul
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35446
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 2
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;localhost.localdomain.node.consul. IN	A
+
+;; ANSWER SECTION:
+localhost.localdomain.node.consul. 0 IN	A	127.0.0.1
+
+;; ADDITIONAL SECTION:
+localhost.localdomain.node.consul. 0 IN	TXT	"consul-network-segment="
+
+;; Query time: 127 msec
+;; SERVER: 127.0.0.1#8600(127.0.0.1)
+;; WHEN: Mon Apr 08 06:08:44 EDT 2019
+;; MSG SIZE  rcvd: 114
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>配置 Consol</title>
+		<section>
+			<title>允许远程访问</title>
+			<para>-client 0.0.0.0</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# consul agent -dev -client 0.0.0.0
+==> Starting Consul agent...
+==> Consul agent running!
+           Version: 'v1.4.4'
+           Node ID: '517cc076-d637-2894-1a82-ce612f7c9abc'
+         Node name: 'localhost.localdomain'
+        Datacenter: 'dc1' (Segment: '<all>')
+            Server: true (Bootstrap: false)
+       Client Addr: [0.0.0.0] (HTTP: 8500, HTTPS: -1, gRPC: 8502, DNS: 8600)
+      Cluster Addr: 127.0.0.1 (LAN: 8301, WAN: 8302)
+           Encrypt: Gossip: false, TLS-Outgoing: false, TLS-Incoming: false
+
+==> Log data will now stream in as it occurs:
+
+    2019/04/08 06:23:40 [DEBUG] agent: Using random ID "517cc076-d637-2894-1a82-ce612f7c9abc" as node ID
+    2019/04/08 06:23:40 [WARN] agent: Node name "localhost.localdomain" will not be discoverable via DNS due to invalid characters. Valid characters include all alpha-numerics and dashes.
+    2019/04/08 06:23:40 [DEBUG] tlsutil: Update with version 1
+    2019/04/08 06:23:40 [DEBUG] tlsutil: OutgoingRPCWrapper with version 1
+    2019/04/08 06:23:40 [DEBUG] tlsutil: IncomingRPCConfig with version 1
+    2019/04/08 06:23:40 [DEBUG] tlsutil: OutgoingRPCWrapper with version 1
+    2019/04/08 06:23:40 [INFO] raft: Initial configuration (index=1): [{Suffrage:Voter ID:517cc076-d637-2894-1a82-ce612f7c9abc Address:127.0.0.1:8300}]
+    2019/04/08 06:23:40 [INFO] serf: EventMemberJoin: localhost.localdomain.dc1 127.0.0.1
+    2019/04/08 06:23:40 [INFO] serf: EventMemberJoin: localhost.localdomain 127.0.0.1
+    2019/04/08 06:23:40 [INFO] raft: Node at 127.0.0.1:8300 [Follower] entering Follower state (Leader: "")
+    2019/04/08 06:23:40 [INFO] agent: Started DNS server 0.0.0.0:8600 (udp)
+    2019/04/08 06:23:40 [DEBUG] agent/proxy: managed Connect proxy manager started
+    2019/04/08 06:23:40 [WARN] agent/proxy: running as root, will not start managed proxies
+    2019/04/08 06:23:40 [INFO] agent: Started DNS server 0.0.0.0:8600 (tcp)
+    2019/04/08 06:23:40 [INFO] consul: Adding LAN server localhost.localdomain (Addr: tcp/127.0.0.1:8300) (DC: dc1)
+    2019/04/08 06:23:40 [INFO] consul: Handled member-join event for server "localhost.localdomain.dc1" in area "wan"
+    2019/04/08 06:23:40 [INFO] agent: Started HTTP server on [::]:8500 (tcp)
+    2019/04/08 06:23:40 [INFO] agent: started state syncer
+    2019/04/08 06:23:40 [INFO] agent: Started gRPC server on [::]:8502 (tcp)
+    2019/04/08 06:23:40 [WARN] raft: Heartbeat timeout from "" reached, starting election
+    2019/04/08 06:23:40 [INFO] raft: Node at 127.0.0.1:8300 [Candidate] entering Candidate state in term 2
+    2019/04/08 06:23:40 [DEBUG] raft: Votes needed: 1
+    2019/04/08 06:23:40 [DEBUG] raft: Vote granted from 517cc076-d637-2894-1a82-ce612f7c9abc in term 2. Tally: 1
+    2019/04/08 06:23:40 [INFO] raft: Election won. Tally: 1
+    2019/04/08 06:23:40 [INFO] raft: Node at 127.0.0.1:8300 [Leader] entering Leader state
+    2019/04/08 06:23:40 [INFO] consul: cluster leadership acquired
+    2019/04/08 06:23:40 [INFO] consul: New leader elected: localhost.localdomain
+    2019/04/08 06:23:40 [INFO] connect: initialized primary datacenter CA with provider "consul"
+    2019/04/08 06:23:40 [DEBUG] consul: Skipping self join check for "localhost.localdomain" since the cluster is too small
+    2019/04/08 06:23:40 [INFO] consul: member 'localhost.localdomain' joined, marking health alive
+    2019/04/08 06:23:40 [DEBUG] agent: Skipping remote check "serfHealth" since it is managed automatically
+    2019/04/08 06:23:40 [INFO] agent: Synced node info
+    2019/04/08 06:23:43 [DEBUG] agent: Skipping remote check "serfHealth" since it is managed automatically
+    2019/04/08 06:23:43 [DEBUG] agent: Node info in sync
+    2019/04/08 06:23:43 [DEBUG] agent: Node info in sync
+==> Failed to check for updates: Get https://checkpoint-api.hashicorp.com/v1/check/consul?arch=amd64&os=linux&signature=&version=1.4.4: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
+    2019/04/08 06:24:00 [DEBUG] http: Request GET /v1/catalog/datacenters (975.874µs) from=192.168.5.40:50888
+    2019/04/08 06:24:00 [DEBUG] http: Request GET /v1/catalog/datacenters (338.025µs) from=192.168.5.40:50888
+    2019/04/08 06:24:00 [DEBUG] http: Request GET /v1/internal/ui/services?dc=dc1 (560.884µs) from=192.168.5.40:50890			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="gossip">
+		<title>gossip 协议</title>
+		<para></para>
+		<section>
+			<title>查看节点信息</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# curl localhost:8500/v1/catalog/nodes
+[
+    {
+        "ID": "19afebbb-c306-fa0b-10de-f53384204126",
+        "Node": "localhost.localdomain",
+        "Address": "127.0.0.1",
+        "Datacenter": "dc1",
+        "TaggedAddresses": {
+            "lan": "127.0.0.1",
+            "wan": "127.0.0.1"
+        },
+        "Meta": {
+            "consul-network-segment": ""
+        },
+        "CreateIndex": 9,
+        "ModifyIndex": 10
+    }
+]
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看服务信息</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# curl http://localhost:8500/v1/catalog/service/spring-cloud-consul-producer
+[
+    {
+        "ID": "5e939007-dbaa-ccdd-915b-e00c494e8255",
+        "Node": "localhost.localdomain",
+        "Address": "127.0.0.1",
+        "Datacenter": "dc1",
+        "TaggedAddresses": {
+            "lan": "127.0.0.1",
+            "wan": "127.0.0.1"
+        },
+        "NodeMeta": {
+            "consul-network-segment": ""
+        },
+        "ServiceKind": "",
+        "ServiceID": "spring-cloud-consul-producer-8080",
+        "ServiceName": "spring-cloud-consul-producer",
+        "ServiceTags": [
+            "secure=false"
+        ],
+        "ServiceAddress": "192.168.5.40",
+        "ServiceWeights": {
+            "Passing": 1,
+            "Warning": 1
+        },
+        "ServiceMeta": {},
+        "ServicePort": 8080,
+        "ServiceEnableTagOverride": false,
+        "ServiceProxyDestination": "",
+        "ServiceProxy": {},
+        "ServiceConnect": {},
+        "CreateIndex": 12,
+        "ModifyIndex": 12
+    }
+]
+			
+			]]>
+			</screen>
+		</section>
+	</section>
 </chapter>

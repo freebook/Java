@@ -534,4 +534,31 @@ Email Address []:netkiller@msn.com
 		</screen>
 		<para>解决方案二：是用CN上的域名链接</para>
 	</section>
+	<section>
+		<title>HttpStatus</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.consul.controller;
+
+import org.apache.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestController {
+
+	public TestController() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@RequestMapping("/health")
+	public int health() {
+		return HttpStatus.SC_OK;
+	}
+}
+		
+		]]>
+		</programlisting>
+	</section>
 </section>
