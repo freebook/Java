@@ -4420,7 +4420,7 @@ public class Application {
 			]]>
 			</programlisting>
 		</section>
-		<section id="">
+		<section>
 			<title></title>
 			<programlisting>
 			<![CDATA[
@@ -4567,5 +4567,36 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+@Configuration
+public class TomcatConfiguration implements EmbeddedServletContainerCustomizer {
 
+	int ports[] = { 8080, 8081, 8082 };
+
+	@Override
+	public void customize(ConfigurableEmbeddedServletContainer configurableEmbeddedServletContainer) {
+
+		if (ports != null) {
+			// 判断如果是Tomcat才进行如下配置
+			if (configurableEmbeddedServletContainer instanceof TomcatEmbeddedServletContainerFactory) {
+
+				TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) configurableEmbeddedServletContainer;
+
+				for (int port : ports) {
+					// 一个Connecter监听一个端口,指定协议为HTTP/1.1
+					Connector httpConnector = new Connector("HTTP/1.1");
+					httpConnector.setPort(port);
+					tomcat.addAdditionalTomcatConnectors(httpConnector);
+				}
+
+			}
+		}
+	}
+}
+		]]>
+		</programlisting>
+	</section>
 </chapter>
