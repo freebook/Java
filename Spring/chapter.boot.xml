@@ -728,6 +728,121 @@ mvn clean package -Pproduction
 		</section>
 	</section>
 	&section.boot.logging.xml;
+	<section id="https">
+		<title>Spring boot with HTTPS SSL</title>
+		<section>
+			<title>生成自签名证书</title>
+			<programlisting>
+			<![CDATA[
+keytool -genkey -alias www.netkiller.cn -keyalg RSA -keystore /www/netkiller.cn/www.netkiller.cn.keystore
+			]]>
+			</programlisting>
+			<para>导入证书（Windows）</para>
+			<programlisting>
+			<![CDATA[
+keytool -selfcert -alias www.netkiller.cn -keystore www.netkiller.cn.keystore
+keytool -export -alias www.netkiller.cn -keystore www.netkiller.cn.keystore -storepass passw0rd -rfc -file www.netkiller.cn.cer
+			]]>
+			</programlisting>
+			<para>导入证书（JVM）</para>
+			<programlisting>
+			<![CDATA[
+keytool -importcert -alias www.netkiller.cn -file www.netkiller.cn.cer -keystore /srv/java/jre/lib/security/cacerts
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties 配置文件</title>
+			<para>配置Tomcat HTTPS 端口 8443（由于JVM不能fork和setuid，所以无法向nginx,apache httpd 那样设置 80 端口，除非你使用root用户运行，但这样做是不安全的。）</para>
+			<programlisting>
+			<![CDATA[
+server.port=8443
+server.ssl.enabled=true
+server.ssl.key-store=/www/netkiller.cn/www.netkiller.cn.keystore
+server.ssl.key-store-password=passw0rd
+server.ssl.key-store-type=JKS
+server.ssl.key-alias=www.netkiller.cn
+			]]>
+			</programlisting>
+			<para>keystore 文件可以放到 classpath 中，首先将证书文件放到 src/main/resources 目录中，然后配置 application.properties 如下：</para>
+			<programlisting>
+				server.port=8443
+				server.ssl.enabled=true
+				server.ssl.key-store=classpath:www.netkiller.cn.keystore
+				server.ssl.key-store-password=123456
+				server.ssl.key-store-type=JKS
+				server.ssl.key-alias=www.netkiller.cn
+			</programlisting>
+		</section>
+		<section>
+			<title>启动 Spring boot</title>
+			<screen>
+			<![CDATA[
+/srv/java/bin/java -server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom -jar /www/netkiller.cn/www.netkiller.cn/www.netkiller.cn-0.0.1.war
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>restTemplate 调用实例</title>
+			<programlisting>
+			<![CDATA[
+String url = "https://www.netkiller.cn:8443/public/test/version.json";
+ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponse<String>>() {});
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>HTTP2</title>
+			<para>启用 HTTP2 必须使用 Tomcat 9 以上， Springboot 2.1</para>
+			<para>创建证书</para>
+			<screen>
+			<![CDATA[
+keytool -genkey -alias localhost -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -dname "CN=localhost, OU=netkiller, O=netkiller.cn, L=Guangdong, ST=Shenzhen, C=CN"
+			]]>
+			</screen>
+			<para>配置启用 http2</para>
+			<screen>
+			<![CDATA[
+server:
+  port: 8443
+  servlet:
+    context-path: /
+  ssl:
+    enabled: true
+    key-store: classpath:ssl/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: 123456
+  http2:
+    enabled: true			
+			]]>
+			</screen>
+			<para>我的配置</para>
+			<screen>
+			<![CDATA[
+spring.application.name=web
+server.port=8443
+#server.servlet.context-path=/
+server.ssl.enabled: true
+server.ssl.key-store: classpath:keystore.p12
+server.ssl.key-store-type: PKCS12
+server.ssl.key-store-password: 123456
+server.http2.enabled: true
+			]]>
+			</screen>
+			<para>使用 curl 访问可以看到 HTTP/2 字样，表示成功</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % curl -i -k https://localhost:8443/ping
+HTTP/2 200 
+content-type: text/plain;charset=UTF-8
+content-length: 4
+date: Tue, 09 Apr 2019 08:41:29 GMT
+
+Pong%    			
+			]]>
+			</screen>
+		</section>
+	</section>
 	
 	<section id="ViewResolver">
 		<title>Spring boot with Webpage</title>
@@ -3303,70 +3418,7 @@ $Id: 929bc9e4c90b4d68c25dc693618f23b33fd6ba0f $
 			</programlisting>
 		</section>
 	</section>
-	<section id="https">
-		<title>Spring boot with HTTPS SSL</title>
-		<section>
-			<title>生成自签名证书</title>
-			<programlisting>
-			<![CDATA[
-keytool -genkey -alias www.netkiller.cn -keyalg RSA -keystore /www/netkiller.cn/www.netkiller.cn.keystore
-			]]>
-			</programlisting>
-			<para>导入证书（Windows）</para>
-			<programlisting>
-			<![CDATA[
-keytool -selfcert -alias www.netkiller.cn -keystore www.netkiller.cn.keystore
-keytool -export -alias www.netkiller.cn -keystore www.netkiller.cn.keystore -storepass passw0rd -rfc -file www.netkiller.cn.cer
-			]]>
-			</programlisting>
-			<para>导入证书（JVM）</para>
-			<programlisting>
-			<![CDATA[
-keytool -importcert -alias www.netkiller.cn -file www.netkiller.cn.cer -keystore /srv/java/jre/lib/security/cacerts
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>application.properties 配置文件</title>
-			<para>配置Tomcat HTTPS 端口 8443（由于JVM不能fork和setuid，所以无法向nginx,apache httpd 那样设置 80 端口，除非你使用root用户运行，但这样做是不安全的。）</para>
-			<programlisting>
-			<![CDATA[
-server.port=8443
-server.ssl.enabled=true
-server.ssl.key-store=/www/netkiller.cn/www.netkiller.cn.keystore
-server.ssl.key-store-password=passw0rd
-server.ssl.key-store-type=JKS
-server.ssl.key-alias=www.netkiller.cn
-			]]>
-			</programlisting>
-			<para>keystore 文件可以放到 classpath 中，首先将证书文件放到 src/main/resources 目录中，然后配置 application.properties 如下：</para>
-			<programlisting>
-				server.port=8443
-				server.ssl.enabled=true
-				server.ssl.key-store=classpath:www.netkiller.cn.keystore
-				server.ssl.key-store-password=123456
-				server.ssl.key-store-type=JKS
-				server.ssl.key-alias=www.netkiller.cn
-			</programlisting>
-		</section>
-		<section>
-			<title>启动 Spring boot</title>
-			<screen>
-			<![CDATA[
-/srv/java/bin/java -server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom -jar /www/netkiller.cn/www.netkiller.cn/www.netkiller.cn-0.0.1.war
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>restTemplate 调用实例</title>
-			<programlisting>
-			<![CDATA[
-String url = "https://www.netkiller.cn:8443/public/test/version.json";
-ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponse<String>>() {});
-			]]>
-			</programlisting>
-		</section>
-	</section>
+	
 	<section id="elasticsearch2">
 		<title>Spring boot with Elasticsearch 2.x</title>
 		<section>
@@ -4421,7 +4473,7 @@ public class Application {
 			</programlisting>
 		</section>
 		<section>
-			<title></title>
+			<title>异步线程池</title>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.wallet.config;
@@ -4567,8 +4619,8 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title></title>
+	<section id="spring.boot.ports">
+		<title>Tomcat 端口</title>
 		<programlisting>
 		<![CDATA[
 @Configuration
