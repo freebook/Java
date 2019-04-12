@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="springboot.actuator">
+	<title>actuator</title>
+	<screen>
+	<![CDATA[
+curl localhost:8080/actuator/health
+
+curl -X POST localhost:8080/actuator/shutdown	
+	]]>
+	</screen>
+</section>

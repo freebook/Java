@@ -843,7 +843,29 @@ Pong%
 			</screen>
 		</section>
 	</section>
-	
+	<section>
+		<title>使用 Jetty 替代 Tomcat</title>
+		<screen>
+		<![CDATA[
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <!-- Exclude the Tomcat dependency -->
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<!-- Use Jetty instead -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>		
+		]]>
+		</screen>
+	</section>
 	<section id="ViewResolver">
 		<title>Spring boot with Webpage</title>
 		<subtitle> ViewResolver </subtitle>
@@ -4651,4 +4673,6 @@ public class TomcatConfiguration implements EmbeddedServletContainerCustomizer {
 		]]>
 		</programlisting>
 	</section>
+	&section.boot.docker.xml;
+	&section.boot.actuator.xml;
 </chapter>

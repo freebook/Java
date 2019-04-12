@@ -12,6 +12,8 @@
 <!ENTITY section.boot.restdocs.xml		SYSTEM "section.boot.restdocs.xml">
 <!ENTITY section.boot.datasource.xml	SYSTEM "section.boot.datasource.xml">
 <!ENTITY section.boot.test.xml			SYSTEM "section.boot.test.xml">
+<!ENTITY section.boot.docker.xml		SYSTEM "section.boot.docker.xml">
+<!ENTITY section.boot.actuator.xml		SYSTEM "section.boot.actuator.xml">
 
 <!ENTITY chapter.interceptor.xml		SYSTEM "chapter.interceptor.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">

@@ -3,6 +3,18 @@
 	<title>Spring boot with Oauth2</title>
 	<section id="oauth2.doc">
 		<title>Oauth2 协议</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+授权模式
+oauth2.0提供了四种授权模式，开发者可以根据自己的业务情况自由选择。
+
+授权码授权模式（Authorization Code Grant）
+隐式授权模式（Implicit Grant）
+密码授权模式（Resource Owner Password Credentials Grant）
+客户端凭证授权模式（Client Credentials Grant）		
+		]]>
+		</screen>
 		<section id="oauth.token">
 			<title>token</title>
 			<literallayout>
@@ -22,9 +34,279 @@
 				所以当用户访问时,由client直接向资源服务器获取access_token并访问资源即可.
 			</screen>
 		</section>
+		<section>
+			<title>授权码授权模式（Authorization Code Grant）</title>
+			<screen>
+			<![CDATA[
+（A）用户访问客户端，客户端将用户引导向认证服务器。
+（B）用户选择是否给予客户端授权。
+（C）如用户给予授权，认证服务器将用户引导向客户端指定的redirection uri，同时加上授权码code。
+（D）客户端收到code后，通过后台的服务器向认证服务器发送code和redirection uri。
+（E）认证服务器验证code和redirection uri，确认无误后，响应客户端访问令牌（access token）和刷新令牌（refresh token）。
+请求示例
+（A）步骤：客户端申请认证的URI
+
+https://www.example.com/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=read&state=xxx
+
+参数说明：
+response_type：授权类型，必选项，此处的值固定为"code"　　
+client_id：客户端的ID，必选项　　
+redirect_uri：重定向URI，必选项　　
+scope：申请的权限范围，可选项　　
+state：任意值，认证服务器会原样返回,用于抵制CSRF(跨站请求伪造)攻击。
+
+（C）步骤：服务器回应客户端的URI
+https://client.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xxx
+
+参数说明：
+code：授权码，必选项。授权码有效期通常设为10分钟，一次性使用。该码与客户端ID、重定向URI以及用户，是一一对应关系。　　
+state：原样返回客户端传的该参数的值。
+
+（D）步骤：客户端向认证服务器申请令牌
+https://www.example.com/oauth/token?client_id=CLIENT_ID&grant_type=authorization_code&code=AUTHORIZATION_CODE&redirect_uri=CALLBACK_URL
+
+参数说明：
+client_id：表示客户端ID，必选项。　　
+grant_type：表示使用的授权模式，必选项，此处的值固定为"authorization_code"。　　
+code：表示上一步获得的授权码，必选项。　　
+redirect_uri：表示重定向URI，必选项，且必须与A步骤中的该参数值保持一致。
+
+注意：协议里没有提及client_secret参数，建议可以使用此参数进行客户端的二次验证。
+（E）步骤：响应（D）步骤的数据
+{ "access_token":"2YotnFZFEjr1zCsicMWpAA", "token_type":"example", "expires_in":3600, "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA", "example_parameter":"example_value" }
+
+参数说明：
+access_token：访问令牌，必选项。　　
+token_type：令牌类型，该值大小写不敏感，必选项。　　
+expires_in：过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。　　
+refresh_token：更新令牌，用来获取下一次的访问令牌，可选项。　　
+scope：权限范围，如果与客户端申请的范围一致，此项可省略。
+
+使用场景
+
+授权码模式是最常见的一种授权模式，在oauth2.0内是最安全和最完善的。
+适用于所有有Server端的应用，如Web站点、有Server端的手机客户端。
+可以得到较长期限授权。
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>密码模式（Resource Owner Password Credentials Grant）</title>
+			<screen>
+			<![CDATA[
+密码模式（Resource Owner Password Credentials Grant）
+流程介绍
+
+
+
+
+
+
+
+
+（A）用户向客户端提供用户名和密码。
+（B）客户端将用户名和密码发给认证服务器，向后者请求令牌。
+（C）认证服务器确认无误后，向客户端提供访问令牌。
+请求示例
+（B）步骤：客户端发出https请求
+
+https://www.example.com/token?grant_type=password&username=USERNAME&password=PASSWORD&client_id=CLIENT_ID
+
+参数说明
+grant_type：授权类型，此处的值固定为"password"，必选项。　　
+username：用户名，必选项。　　
+password：用户的密码，必选项。　　
+scope：权限范围，可选项。
+
+（C）步骤：向客户端响应（B）步骤的数据
+{ "access_token":"2YotnFZFEjr1zCsicMWpAA", "token_type":"example", "expires_in":3600, "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA" }
+
+参数说明
+access_token：访问令牌，必选项。　　
+token_type：令牌类型，该值大小写不敏感，必选项。　　
+expires_in：过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。　　
+refresh_token：更新令牌，用来获取下一次的访问令牌，可选项。
+
+使用场景
+
+这种模式适用于用户对应用程序高度信任的情况。比如是用户操作系统的一部分。
+认证服务器只有在其他授权模式无法执行的情况下，才能考虑使用这种模式。
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>客户端凭证模式（Client Credentials Grant）</title>
+			<screen>
+			<![CDATA[
+客户端凭证模式（Client Credentials Grant）
+流程介绍
+
+
+（A）客户端向认证服务器进行身份认证，并要求一个访问令牌。
+（B）认证服务器确认无误后，向客户端提供访问令牌。
+请求示例
+（A）步骤：客户端发送https请求
+
+https://www.example.com/token?grant_type=client_credentials&client_id=CLIENT_ID
+
+参数说明
+granttype：表示授权类型，此处的值固定为"client_credentials"，必选项。　　scope：表示权限范围，可选项。
+
+（B）步骤：向客户端响应（A）步骤的数据
+{ "access_token":"2YotnFZFEjr1zCsicMWpAA", "token_type":"example", "expires_in":3600, "example_parameter":"example_value" }
+
+参数说明：
+access_token：访问令牌，必选项。　　
+token_type：令牌类型，该值大小写不敏感，必选项。　　
+expires_in：过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。　　
+example_parameter：其它参数，可选项。 
+
+使用场景
+
+客户端模式应用于应用程序想要以自己的名义与授权服务器以及资源服务器进行互动。
+例如使用了第三方的静态文件服务
+		
+			]]>
+			</screen>
+		</section>
+
+
+		<section>
+			<title>刷新 TOKEN 方式</title>
+			<screen>
+		<![CDATA[
+刷新TOKEN
+从上面的四种授权流程可以看出，最终的目的是要获取用户的授权令牌（access_token）。而且授权令牌（access_token）的权限也非常之大，
+所以在协议中明确表示要设置授权令牌（access_token）的有效期。那么当授权令牌（access_token）过期要怎么办呢，协议里提出了一个刷新token的流程。
+流程介绍
+
+
+
+
+
+
+
+
+（A）--（D）通过授权流程获取access_token，并调用业务api接口。
+（F）当调用业务api接口时响应“Invalid Token Error”时。
+（G）调用刷新access_token接口，使用参数refresh_token（如果平台方提供，否则需要用户重新进行授权流程）。
+（H）响应最新的access_token及refresh_token。
+请求示例
+（G）步骤：客户端调用刷新token接口
+
+https://www.example.com/v1/oauth/token?grant_type=refresh_token&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&refresh_token=REFRESH_TOKEN
+
+参数说明
+client_id：客户端的ID，必选项。　　
+client_secret：客户端的密钥，必选项。　　
+grant_type：表示使用的授权模式，此处的值固定为"refreshtoken"，必选项。　　refresh_token：表示早前收到的更新令牌，必选项。
+
+（H）步骤：响应客户端数据
+{ "access_token":"2YotnFZFEjr1zCsicMWpAA", "token_type":"example", "expires_in":3600, "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA", "example_parameter":"example_value" }
+
+参数说明
+access_token：访问令牌，必选项。　　
+token_type：令牌类型，该值大小写不敏感，必选项。　　
+expires_in：过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。　　
+refresh_token：更新令牌，用来获取下一次的访问令牌，可选项。　　
+scope：权限范围，如果与客户端申请的范围一致，此项可省略。
+
+
+说明：建议将access_token和refresh_token的过期时间保存下来，每次调用平台方的业务api前先对access_token和refresh_token进行一下时间判断，如果过期则执行刷新access_token或重新授权操作。refersh_token如果过期就只能让用户重新授权。
+
+好，到此oauth2.0的四种授权流程及令牌的刷新流程已经介绍完了，下面来从oauth2.0的安全性上来介绍一下。
+
+		]]>
+			</screen>
+		</section>
 	</section>
-	
-	
+
+	<section id="oauth2.authorization_code">
+		<title>authorization_code</title>
+		<section>
+			<title>验证服务器器</title>
+
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-oauth2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>		
+			]]>
+			</screen>
+			<section>
+				<title></title>
+				<screen>
+				<![CDATA[
+		
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title></title>
+				<screen>
+			<![CDATA[]]>
+				</screen>
+			</section>
+			<section>
+				<title></title>
+				<programlisting>
+			<![CDATA[
+			
+			]]>
+				</programlisting>
+			</section>
+			<section>
+				<title></title>
+				<programlisting>
+			<![CDATA[
+			
+			]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>测试</title>
+				<programlisting>
+				<![CDATA[
+http://localhost:8080/oauth/authorize?response_type=code&client_id=sso&redirect_uri=http://localhost:8082/callback&scope=app
+http://localhost:8080/oauth/token?client_id=sso&grant_type=authorization_code&redirect_uri=http://localhost:8082/callback&code=ZzLi3w
+
+localhost:8082/admin&code=ZzLi3w
+
+localhost:8080/oauth/authorize?response_type=code&client_id=client&redirect_uri=http://www.netkiller.cn&state=123
+
+localhost:8080/oauth/authorize?response_type=code&client_id=sso&redirect_uri=http://localhost:8082/test&scope=app
+
+
+
+
+http://localhost:8080/oauth/token?client_id=sso&grant_type=authorization_code&redirect_uri=http://localhost:8082&code=8z5J9L
+
+http://localhost:8080/oauth/authorize?response_type=code&client_id=sso&redirect_uri=http://localhost:8080&scope=app
+
+http://www.netkiller.cn/?code=eX6IMV&state=123		
+http://localhost:18084/oauth/token?client_id=client&grant_type=authorization_code&redirect_uri=http://api.netkiller.cn&code=bzxoHn			
+				]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
+
+
 	<section id="oauth2.password">
 		<title>Spring boot with Oauth2 - Password</title>
 		<para>下面例子由三个项目组成，分别是 tools, server, client。</para>
@@ -1456,7 +1738,7 @@ public class Oauth2jwtActivity extends AppCompatActivity {
 	]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="oauth2.RestTemplate">
 		<title>RestTemplate 使用 HttpClient</title>
 		<section>
@@ -1640,7 +1922,7 @@ public class TestController {
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="oauth2">
 		<title>Principal</title>
 		<programlisting>
@@ -1676,6 +1958,51 @@ public class ResourceController {
     }		
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>资源服务器配置</title>
+		<para>ResourceServerConfigurerAdapter</para>
+		<section>
+			<title>access()</title>
+			<programlisting>
+			<![CDATA[
+ 	@Override
+    public void configure(HttpSecurity http) throws Exception {
+        http
+                .httpBasic()
+            .and()
+                .authorizeRequests()
+                .antMatchers("/home")
+                .permitAll()
+            .and()
+                .authorizeRequests()
+                .antMatchers("/user")
+                .access("#oauth2.hasScope('read')")
+            .and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+        ;
+    }			
+			]]>
+			</programlisting>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
+	@Override
+    public void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http
+                .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/info","/news")
+                .access("#oauth2.hasScope('read') and hasRole('USER')");
+    }				
+				]]>
+				</programlisting>
+			</section>
+		</section>
 	</section>
 	<section id="oauth2.faq">
 		<title>Oauth2 常见问题</title>

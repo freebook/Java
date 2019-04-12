@@ -580,6 +580,23 @@ http.authorizeRequests().antMatchers("/**" ).permitAll();
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>登陆页面，失败页面，登陆中页面</title>
+			<programlisting>
+			<![CDATA[
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/**").hasRole("USER").and().formLogin().usernameParameter("username") // default is username
+				.passwordParameter("password") // default is password
+				.loginPage("/authentication/login") // default is /login with an HTTP get
+				.failureUrl("/authentication/login?failed") // default is /login?error
+				.loginProcessingUrl("/authentication/login/process"); // default is /login
+
+	}			
+			]]>
+			</programlisting>
+		</section>
+		
 		<section id="httpBasic">
 			<title>HTTP Auth</title>
 			<programlisting>
