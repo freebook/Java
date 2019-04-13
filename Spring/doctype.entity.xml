@@ -9,11 +9,12 @@
 <!ENTITY section.boot.properties.xml	SYSTEM "section.boot.properties.xml">
 <!ENTITY section.boot.quickstart.xml	SYSTEM "section.boot.quickstart.xml">
 <!ENTITY section.boot.logging.xml		SYSTEM "section.boot.logging.xml">
-<!ENTITY section.boot.restdocs.xml		SYSTEM "section.boot.restdocs.xml">
 <!ENTITY section.boot.datasource.xml	SYSTEM "section.boot.datasource.xml">
 <!ENTITY section.boot.test.xml			SYSTEM "section.boot.test.xml">
 <!ENTITY section.boot.docker.xml		SYSTEM "section.boot.docker.xml">
 <!ENTITY section.boot.actuator.xml		SYSTEM "section.boot.actuator.xml">
+<!ENTITY section.boot.restdocs.xml		SYSTEM "section.boot.restdocs.xml">
+<!ENTITY section.boot.swagger2.xml		SYSTEM "section.boot.swagger2.xml">
 
 <!ENTITY chapter.interceptor.xml		SYSTEM "chapter.interceptor.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">

@@ -4666,7 +4666,7 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 		]]>
 		</programlisting>
 	</section>
-	&section.boot.restdocs.xml;
+	&section.boot.swagger2.xml;
 	<section id="lombok">
 		<title>Spring boot with lombok</title>
 		<screen>
