@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="boot" ?>
 	<title>Spring Boot</title>
-	<para>注意以下使用 Spring boot 2.0.2</para>
+	<para>注意以下使用 Spring boot 2.1.3</para>
 	&section.boot.quickstart.xml;
 	<section>
 		<title>Maven 插件</title>
@@ -1883,6 +1883,49 @@ spring.session.jdbc.table-name=SESSIONS
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>Springboot 2.1</title>
+			<screen>
+			<![CDATA[
+<dependency>  
+        <groupId>org.springframework.boot</groupId>  
+        <artifactId>spring-boot-starter-redis</artifactId>  
+</dependency>  
+<dependency>  
+        <groupId>org.springframework.session</groupId>  
+        <artifactId>spring-session-data-redis</artifactId>  
+</dependency>  
+			]]>
+			</screen>
+			<para>开启Redis共享SESSION @EnableRedisHttpSession </para>
+			<screen>
+			<![CDATA[
+package cn.netkiller.oauth2;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@EnableRedisHttpSession 
+public class Application {
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+}
+			
+			]]>
+			</screen>
+			<para>application.properties中配置redis服务器</para>
+			<screen>
+			<![CDATA[
+spring.redis.host=localhost  
+spring.redis.port=6379 			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 
@@ -2894,7 +2937,7 @@ public class ScheduledTasks {
 }
 			]]>
 			</programlisting>
-			
+
 		</section>
 		<section>
 			<title>查看日志</title>
@@ -3440,7 +3483,7 @@ $Id: 929bc9e4c90b4d68c25dc693618f23b33fd6ba0f $
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section id="elasticsearch2">
 		<title>Spring boot with Elasticsearch 2.x</title>
 		<section>

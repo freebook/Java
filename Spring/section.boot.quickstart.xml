@@ -1,5 +1,19 @@
 <section id="spring.boot.quickstart">
 	<title>Spring Boot Quick start</title>
+	<section>
+		<title>创建项目</title>
+		<screen>
+		<![CDATA[
+curl https://start.spring.io/starter.tgz  \
+  -d artifactId=creds-example-server \
+  -d dependencies=security,web \
+  -d language=java \
+  -d type=maven-project \
+  -d baseDir=example-server \
+| tar -xzvf -		
+		]]>
+		</screen>
+	</section>
 	<section id="pom">
 		<title>pom.xml</title>
 		<screen>

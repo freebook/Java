@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appendix id="appendix">
+	<title>附录</title>
+	<section>
+		<title>Springboot example</title>
+		<para>https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples</para>
+	</section>
+</appendix>

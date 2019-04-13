@@ -282,7 +282,7 @@ scope：权限范围，如果与客户端申请的范围一致，此项可省略
 				<title>测试</title>
 				<programlisting>
 				<![CDATA[
-http://localhost:8080/oauth/authorize?response_type=code&client_id=sso&redirect_uri=http://localhost:8082/callback&scope=app
+http://localhost:8080/oauth/authorize?response_type=code&client_id=sso&redirect_uri=http://localhost:8082/callback&scope=read
 http://localhost:8080/oauth/token?client_id=sso&grant_type=authorization_code&redirect_uri=http://localhost:8082/callback&code=ZzLi3w
 
 localhost:8082/admin&code=ZzLi3w
