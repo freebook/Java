@@ -2002,6 +2002,80 @@ public class ResourceController {
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
+			@Override
+            public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+                TokenStore tokenStore = new JdbcTokenStore(dataSource);
+                resources.resourceId("user-services").tokenStore(tokenStore).stateless(true);
+            }
+
+            @Override
+            public void configure(HttpSecurity http) throws Exception {
+                http
+                        .sessionManagement()
+                        .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                        .and()
+                        .requestMatchers().antMatchers("/user/**")
+                        .and()
+                        .authorizeRequests()
+                        .antMatchers(HttpMethod.GET, "/user/**").access("#oauth2.hasScope('read')")
+                        .antMatchers(HttpMethod.POST, "/user/**").access("#oauth2.hasScope('write')")
+                        .antMatchers(HttpMethod.PATCH, "/user/**").access("#oauth2.hasScope('write')")
+                        .antMatchers(HttpMethod.PUT, "/user/**").access("#oauth2.hasScope('write')")
+                        .antMatchers(HttpMethod.DELETE, "/user/**").access("#oauth2.hasScope('write')")
+                        .and()
+                        .headers().addHeaderWriter(new HeaderWriter() {
+                    @Override
+                    public void writeHeaders(HttpServletRequest request, HttpServletResponse response) {
+                        response.addHeader("Access-Control-Allow-Origin", "*");
+                        if (request.getMethod().equals("OPTIONS")) {
+                            response.setHeader("Access-Control-Allow-Methods", request.getHeader("Access-Control-Request-Method"));
+                            response.setHeader("Access-Control-Allow-Headers", request.getHeader("Access-Control-Request-Headers"));
+                        }
+                    }
+                });
+            }				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
+	<section>
+		<title>Client</title>
+		<section>
+			<title>Overriding Spring Boot 2.0 Auto-configuration</title>
+			<programlisting>
+			<![CDATA[
+@Configuration
+public class OAuth2LoginConfig {
+
+	@Bean
+	public ClientRegistrationRepository clientRegistrationRepository() {
+		return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
+	}
+
+	private ClientRegistration googleClientRegistration() {
+		return ClientRegistration.withRegistrationId("google")
+			.clientId("google-client-id")
+			.clientSecret("google-client-secret")
+			.clientAuthenticationMethod(ClientAuthenticationMethod.BASIC)
+			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+			.redirectUriTemplate("{baseUrl}/login/oauth2/code/{registrationId}")
+			.scope("openid", "profile", "email", "address", "phone")
+			.authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+			.tokenUri("https://www.googleapis.com/oauth2/v4/token")
+			.userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+			.userNameAttributeName(IdTokenClaimNames.SUB)
+			.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+			.clientName("Google")
+			.build();
+	}
+}		
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="oauth2.faq">
