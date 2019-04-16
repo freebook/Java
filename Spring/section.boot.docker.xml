@@ -2,9 +2,12 @@
 <section id="springboot.docker">
 	<title>Spring Boot with Docker</title>
 	<section>
-		<title>手工编译镜像</title>
-		<para>在项目根目录创建 Dockerfile 文件</para>
-		<screen>
+		<title>通过 Docker 命令构建镜像</title>
+
+		<section>
+			<title>手工编译镜像</title>
+			<para>在项目根目录创建 Dockerfile 文件</para>
+			<screen>
 		<![CDATA[
 % cat Dockerfile 
 FROM openjdk
@@ -12,9 +15,9 @@ VOLUME /tmp
 COPY target/*.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]		
 		]]>
-		</screen>
-		<para>编译镜像</para>
-		<screen>
+			</screen>
+			<para>编译镜像</para>
+			<screen>
 		<![CDATA[
 mvn package
 docker build -t netkiller/docker .
@@ -27,20 +30,20 @@ sh-4.2# ls
 app.jar  bin  boot  dev  etc  home  lib  lib64	media  mnt  opt  proc  root  run  sbin	srv  sys  tmp  usr  var
 sh-4.2# 
 		]]>
-		</screen>
-		<para>启动镜像测试</para>
-		<screen>
+			</screen>
+			<para>启动镜像测试</para>
+			<screen>
 		<![CDATA[
 docker run -p 8080:8080 netkiller/docker
 
 neo@MacBook-Pro ~ % curl http://localhost:8080
 Hello Docker World
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>Dockerfile 放在 src/main/docker/Dockerfile 下</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>Dockerfile 放在 src/main/docker/Dockerfile 下</title>
+			<screen>
 		<![CDATA[
 % cat src/main/docker/Dockerfile 
 FROM openjdk
@@ -48,25 +51,25 @@ VOLUME /tmp
 COPY target/*.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 mvn package
 docker rmi netkiller/docker -f
 docker build -t netkiller/docker -f src/main/docker/Dockerfile .
 docker run -p 8080:8080 netkiller/docker
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % curl http://localhost:8080
 Hello Docker World
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>通过参数指定 Springboot 文件</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>通过参数指定 Springboot 文件</title>
+			<screen>
 		<![CDATA[
 % cat src/main/docker/Dockerfile 
 FROM openjdk:8-jdk-alpine
@@ -75,29 +78,47 @@ ARG JAR_FILE
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
 mvn package
 docker rmi netkiller/docker -f
 docker build --build-arg JAR_FILE=target/*.jar -t netkiller/docker -f src/main/docker/Dockerfile .
 docker run -p 8080:8080 netkiller/docker
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>SPRING_PROFILES_ACTIVE 指定配置文件</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>SPRING_PROFILES_ACTIVE 指定配置文件</title>
+			<screen>
 		<![CDATA[
 % docker run -e "SPRING_PROFILES_ACTIVE=prod" -p 8080:8080 netkiller/docker
 		]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>推送镜像到仓库</title>
+			<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % docker push netkiller/docker
+The push refers to repository [docker.io/netkiller/docker]
+100ff47f36fe: Pushed 
+a7aafc769de1: Mounted from library/openjdk 
+2666aafcfdd9: Mounted from library/openjdk 
+c4a7cf6a6169: Mounted from library/openjdk 
+
+latest: digest: sha256:3078fea95c633f007be33b829efae0ff8e9d78ad463925af7d07752c95eb43a3 size: 1165
+		]]>
+			</screen>
+		</section>
 	</section>
 	<section>
-		<title>Maven + Dockerfile</title>
-		<para>项目地址 https://github.com/spotify/dockerfile-maven</para>
-		<screen>
+		<title>通过 Maven 构建 Docker 镜像</title>
+		<section>
+			<title>Maven + Dockerfile 方案一</title>
+			<para>项目地址 https://github.com/spotify/dockerfile-maven</para>
+			<screen>
 		<![CDATA[
 	<build>
 		<plugins>
@@ -143,8 +164,8 @@ docker run -p 8080:8080 netkiller/docker
 	</build>
 	
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 [INFO] Scanning for projects...
@@ -206,13 +227,43 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 [INFO] ------------------------------------------------------------------------
 
 		]]>
-		</screen>
+			</screen>
+
+		</section>
+		<section>
+			<title>Maven + Dockerfile 方案二</title>
+			<screen>
+			<![CDATA[
+<build>
+  <plugins>
+    ...
+    <plugin>
+      <groupId>com.spotify</groupId>
+      <artifactId>docker-maven-plugin</artifactId>
+      <version>VERSION GOES HERE</version>
+      <configuration>
+        <imageName>example</imageName>
+        <dockerDirectory>docker</dockerDirectory>
+        <resources>
+           <resource>
+             <targetPath>/</targetPath>
+             <directory>${project.build.directory}</directory>
+             <include>${project.build.finalName}.jar</include>
+           </resource>
+        </resources>
+      </configuration>
+    </plugin>
+    ...
+  </plugins>
+</build>			
+			]]>
+			</screen>
+		</section>
 		
-	</section>
-	<section>
-		<title>Maven 不使用 Dockerfile 文件</title>
-		<para>项目地址 https://github.com/spotify/docker-maven-plugin</para>
-		<screen>
+		<section>
+			<title>Maven 不使用 Dockerfile 文件</title>
+			<para>项目地址 https://github.com/spotify/docker-maven-plugin</para>
+			<screen>
 		<![CDATA[
 			<plugin>
 				<groupId>com.spotify</groupId>
@@ -238,9 +289,9 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 				</configuration>
 			</plugin>
 		]]>
-		</screen>
-		<para>构建镜像 mvn clean package docker:build	</para>
-		<screen>
+			</screen>
+			<para>构建镜像 mvn clean package docker:build	</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~/git/springcloud/webflux % mvn docker:build         
 [INFO] Scanning for projects...
@@ -291,23 +342,131 @@ Successfully tagged netkiller/webflux:latest
 [INFO] Finished at: 2019-04-13T05:41:41+08:00
 [INFO] ------------------------------------------------------------------------
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>推送镜像到仓库</title>
-		<screen>
-		<![CDATA[
-neo@MacBook-Pro ~ % docker push netkiller/docker
-The push refers to repository [docker.io/netkiller/docker]
-100ff47f36fe: Pushed 
-a7aafc769de1: Mounted from library/openjdk 
-2666aafcfdd9: Mounted from library/openjdk 
-c4a7cf6a6169: Mounted from library/openjdk 
+			</screen>
+		</section>
+		<section>
+			<title>推送镜像</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
+			
+  <!-- servers
+   | This is a list of authentication profiles, keyed by the server-id used within the system.
+   | Authentication profiles can be used whenever maven must make a connection to a remote server.
+   |-->
+  <servers>
+    <!-- server
+     | Specifies the authentication information to use when connecting to a particular server, identified by
+     | a unique name within the system (referred to by the 'id' attribute below).
+     |
+     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are
+     |       used together.
+     |
+    <server>
+      <id>deploymentRepo</id>
+      <username>repouser</username>
+      <password>repopwd</password>
+    </server>
+    -->
 
-latest: digest: sha256:3078fea95c633f007be33b829efae0ff8e9d78ad463925af7d07752c95eb43a3 size: 1165
-		]]>
-		</screen>
+    <!-- Another sample, using keys to authenticate.
+    <server>
+      <id>siteServer</id>
+      <privateKey>/path/to/private/key</privateKey>
+      <passphrase>optional; leave empty if not used.</passphrase>
+    </server>
+    -->
+    <server>
+      <id>docker-hub</id>
+      <username>netkiller</username>
+      <password>******</password>
+      <configuration>
+        <email>netkiller@msn.com</email>
+      </configuration>
+    </server>
+  </servers>			
+			]]>
+			</screen>
+			<para>****** 修改为你的密码</para>
+			<para>查看 Docker Registry 地址</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % docker info | grep Registry
+Registry: https://index.docker.io/v1/			
+			]]>
+			</screen>
+			<para>maven docker 插件配置</para>
+			<screen>
+			<![CDATA[
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.0</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<baseImage>openjdk</baseImage>
+					<tag>${project.version}</tag>
+					<maintainer>${docker.maintainer}</maintainer>
+					<volumes>/tmp</volumes>
+					<workdir>/srv</workdir>
+					<cmd>["java", "-version"]</cmd>
+					<entryPoint>["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/srv/${project.build.finalName}.jar"]</entryPoint>
+					<!-- copy the service's jar file from target into the root directory of the image -->
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<image>${docker.image.prefix}/${project.artifactId}</image>
+					<newName>${docker.image.prefix}/${project.artifactId}:${project.version}</newName>
+					<serverId>docker-hub</serverId>
+					<registryUrl>https://index.docker.io/v1/</registryUrl>
+				</configuration>
+			</plugin>			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+docker:build -DpushImage or docker:push			
+			]]>
+			</screen>
+			<para>使用加密的密码</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % mvn --encrypt-master-password 
+Master password: 
+{r7kkN/XCOXYHqwRqE30k6Bz+pNGsB7/UogGTqqo+G2A=}
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
+			
+<servers>
+  <server>
+    <id>docker-hub</id>
+    <username>netkiller</username>
+    <password>{r7kkN/XCOXYHqwRqE30k6Bz+pNGsB7/UogGTqqo+G2A=}</password>
+  </server>
+</servers>			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+vim ~/.m2/settings-security.xml
+
+<settingsSecurity>
+  <master>{r7kkN/XCOXYHqwRqE30k6Bz+pNGsB7/UogGTqqo+G2A=}</master>
+</settingsSecurity>			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
+
 	<section>
 		<title>[ERROR] No plugin found for prefix 'dockerfile' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (/Users/neo/.m2/repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]</title>
 		<screen>

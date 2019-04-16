@@ -4717,5 +4717,6 @@ public class TomcatConfiguration implements EmbeddedServletContainerCustomizer {
 		</programlisting>
 	</section>
 	&section.boot.docker.xml;
+	&section.boot.command.xml;
 	&section.boot.actuator.xml;
 </chapter>

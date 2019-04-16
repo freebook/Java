@@ -353,6 +353,16 @@ mvn jar:jar -Djar.finalName=custom-jar-name
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>加密密码</title>
+			<para>--encrypt-master-password</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % mvn --encrypt-master-password test
+{LhCRW9y8CG4HfT7ExHI3msP56Cv+fgjdiNhTk883hZs=}			
+			]]>
+			</screen>
+		</section>
 		<section id="help:describe">
 			<title>help:describe</title>
 			<para>显示插件的详细信息</para>

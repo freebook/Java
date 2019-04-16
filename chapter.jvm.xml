@@ -48,7 +48,7 @@ JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 # yum install -y java-1.8.0-openjdk		
 		</screen>
 	</section>
-	<section>
+	<section id="java.docker">
 		<title>docker 环境</title>
 		<para>在docker中运行java</para>
 		<screen>

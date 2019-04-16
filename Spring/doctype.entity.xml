@@ -15,6 +15,7 @@
 <!ENTITY section.boot.actuator.xml		SYSTEM "section.boot.actuator.xml">
 <!ENTITY section.boot.restdocs.xml		SYSTEM "section.boot.restdocs.xml">
 <!ENTITY section.boot.swagger2.xml		SYSTEM "section.boot.swagger2.xml">
+<!ENTITY section.boot.command.xml		SYSTEM "section.boot.command.xml">
 
 <!ENTITY chapter.interceptor.xml		SYSTEM "chapter.interceptor.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">

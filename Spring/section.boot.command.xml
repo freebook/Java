@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Spring boot with command line</title>
+
+	<section>
+		<title>Maven</title>
+		<para>开发命令行程序通常我们不需要 Tomcat，所以不需要引入 spring-boot-starter-web 依赖，spring-boot-starter 依赖不含Tomcat。</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.netkiller</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>command</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Command Line</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.cmd;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application implements CommandLineRunner {
+
+    private static Logger logger = LoggerFactory.getLogger(Sb2runnerApplication.class);
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        logger.info("服务已启动，执行command line runner。");
+
+        for (int i = 0; i < args.length; ++i) {
+            logger.info("args[{}]: {}", i, args[i]);
+        }
+    }
+}			
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>测试命令行</title>
+		<screen>
+		<![CDATA[
+% java -jar target/command-0.0.1-SNAPSHOT.jar --host=ww.netkiller.cn java spring boot --help -v
+		]]>
+		</screen>
+	</section>
+
+
+
+</section>
