@@ -60,6 +60,12 @@ public class HelloController {
 }		
 			]]>
 			</programlisting>
+			<para>同时支持多种操作方法</para>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping(value = "/name", method = { RequestMethod.GET, RequestMethod.POST })			
+			]]>
+			</programlisting>
 		</section>
 
 		<section>
@@ -128,6 +134,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 	public String financeList() {
 		return financeService.financeList();
 	}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+@GetMapping(value = "/user",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)			
 			]]>
 			</programlisting>
 		</section>
