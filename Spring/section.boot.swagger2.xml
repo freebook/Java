@@ -183,16 +183,35 @@ public class TestController {
 	public String test(@RequestParam(value = "id", required = true) String id, @RequestParam(value = "name", required = true) String name) {
 		return String.format("%s:%s", id, name);
 	}
+	
+	@ApiOperation(value = "getGreeting", notes="get greeting",nickname = "getGreeting")
+	@RequestMapping(method = RequestMethod.GET, value = "/api/javainuse")
+	public <Hello> sayHello() {
+		ArrayList<Hello> arrayList= new ArrayList<>();
+			arrayList.add(new Hello());
+		return arrayList;
+	}
 
 }
 		]]>
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>@ApiResponses</title>
 		<programlisting>
 		<![CDATA[
-		
+	@ApiOperation(value = "getGreeting", nickname = "getGreeting")
+	@ApiResponses(value = {
+		        @ApiResponse(code = 500, message = "Server error"),
+		         @ApiResponse(code = 404, message = "Service not found"),
+		        @ApiResponse(code = 200, message = "Successful retrieval",
+		            response = Hello.class, responseContainer = "List") })
+	@RequestMapping(method = RequestMethod.GET, value = "/api/javainuse")
+	public <Hello> sayHello() {
+			ArrayList<Hello> arrayList= new ArrayList<>();
+			arrayList.add(new Hello());
+		return arrayList;
+	}
 		]]>
 		</programlisting>
 	</section>
