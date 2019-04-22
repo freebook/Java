@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title></title>
+	<screen>
+	<![CDATA[
+wget https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/v2.0.2.RELEASE/spring-cloud-dataflow-server/docker-compose.yml
+DATAFLOW_VERSION=2.0.2.RELEASE SKIPPER_VERSION=2.0.1.RELEASE docker-compose up	
+	]]>
+	</screen>
+	<para>http://localhost:9393/dashboard</para>
+</section>

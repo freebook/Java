@@ -1476,7 +1476,108 @@ public class TestPostgreSQLController {
 </section>
 <section id="datasource">
 	<title>数据源配置</title>
-	<section id="">
+	<section>
+		<title>Master / Slave 主从数据库数据源配置</title>
+		<section>
+			<title>application.properties</title>
+			<screen>
+			<![CDATA[
+spring.datasource.master.driverClassName = com.mysql.cj.jdbc.Driver
+spring.datasource.master.url=jdbc:mysql://192.168.1.240:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+spring.datasource.master.username = root
+spring.datasource.master.password = password
+
+spring.datasource.slave.driverClassName = com.mysql.cj.jdbc.Driver
+spring.datasource.slave.url=jdbc:mysql://192.168.1.250:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+spring.datasource.slave.username = root
+spring.datasource.slave.password = password
+
+spring.jpa.database-platform=org.hibernate.dialect.MySQL5Dialect
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置主从数据源</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+@Configuration
+public class MultiDataSourceConfig {
+
+	@Bean
+	@Primary
+	@ConfigurationProperties("spring.datasource.master")
+	public DataSourceProperties firstDataSourceProperties() {
+		return new DataSourceProperties();
+	}
+
+	@Bean("Master")
+	@Primary
+	@ConfigurationProperties("spring.datasource.master")
+	public DataSource firstDataSource() {
+		return firstDataSourceProperties().initializeDataSourceBuilder().build();
+	}
+
+	@Bean
+	@ConfigurationProperties("spring.datasource.slave")
+	public DataSourceProperties secondDataSourceProperties() {
+		return new DataSourceProperties();
+	}
+
+	@Bean(name = "Slave")
+	@ConfigurationProperties("spring.datasource.slave")
+	public DataSource secondDataSource() {
+		return secondDataSourceProperties().initializeDataSourceBuilder().build();
+	}
+
+	@Bean("masterJdbcTemplate")
+	@Primary
+	public JdbcTemplate primaryJdbcTemplate(@Qualifier("Master") DataSource Master) {
+		return new JdbcTemplate(Master);
+	}
+
+	@Bean("slaveJdbcTemplate")
+	public JdbcTemplate secondJdbcTemplate(@Qualifier("Slave") DataSource Master) {
+		return new JdbcTemplate(Master);
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>选择数据源</title>
+			<programlisting>
+			<![CDATA[
+	// 默认是 Master
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	// 或者这样写
+	@Qualifier("masterJdbcTemplate")
+	@Autowired
+	private JdbcTemplate masterJdbcTemplate;
+	
+	// 下面是 Slave 数据源
+	@Qualifier("slaveJdbcTemplate")
+	@Autowired
+	private JdbcTemplate slaveJdbcTemplate;
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
 		<title>多数据源配置</title>
 
 		<programlisting>
@@ -1583,7 +1684,7 @@ spring.datasource.api.jdbc-interceptors=ConnectionState;SlowQueryReport(threshol
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section>
 		<title>JPA 多数据源</title>
 		<para>多个 JPA 数据配置非常简单，请参考下面的例子。注意两点，第一点是设置Repository的位置：</para>
 		<screen>
