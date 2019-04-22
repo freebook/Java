@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="oauth2">
-	<title>Spring boot with Oauth2</title>
+	<title>Spring cloud with Oauth2</title>
 	<section id="oauth2.doc">
 		<title>Oauth2 协议</title>
 		<para></para>
