@@ -65,7 +65,7 @@ int count = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM USER");
 		</programlisting>
 	</section>
 	<section id="jdbcTemplate.queryForLong">
-		<title>queryForInt</title>
+		<title>queryForLong</title>
 		<programlisting>
 		<![CDATA[
 lang count = jdbcTemplate.queryForLong("SELECT COUNT(*) FROM USER");		
@@ -113,8 +113,8 @@ String name = queryForObject("select name from emp",String.class);
 	
 	@Scheduled(initialDelay = 1000, fixedRate = 60000)
 	public void currentDate() {
-	Date date = jdbcTemplate.queryForObject("select sysdate from dual", Date.class);
-	log.info("The oracle sysdate is {}", dateFormat.format(date));
+		Date date = jdbcTemplate.queryForObject("select sysdate from dual", Date.class);
+		log.info("The oracle sysdate is {}", dateFormat.format(date));
 	}
 			]]>
 			</programlisting>
