@@ -19,7 +19,7 @@
 <!ENTITY section.maven.xml				SYSTEM "build/section.maven.xml">
 <!ENTITY section.jitpack.xml			SYSTEM "build/section.jitpack.xml">
 <!ENTITY section.artifactory.xml		SYSTEM "build/section.artifactory.xml">
-<!ENTITY section.artifactory.xml		SYSTEM "build/section.artifactory.xml">
+<!ENTITY section.nexus.xml				SYSTEM "build/section.nexus.xml">
 
 <!ENTITY chapter.cache.xml			 	SYSTEM "chapter.cache.xml">
 
