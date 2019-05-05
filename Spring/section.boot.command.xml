@@ -48,7 +48,7 @@
 		</screen>
 	</section>
 	<section>
-		<title></title>
+		<title>CommandLineRunner 例子</title>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.cmd;
@@ -79,16 +79,48 @@ public class Application implements CommandLineRunner {
 }			
 		]]>
 		</programlisting>
-	</section>
-	<section>
-		<title>测试命令行</title>
+		<para></para>
 		<screen>
 		<![CDATA[
 % java -jar target/command-0.0.1-SNAPSHOT.jar --host=ww.netkiller.cn java spring boot --help -v
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>ApplicationRunner 例子</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.component;
 
+import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
+@Component
+@Order(1)
+public class Command implements ApplicationRunner {
+	private final static Logger logger = LoggerFactory.getLogger(Command.class);
+
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
+		System.out.println("==ApplicationRunner=====" + Arrays.asList(args.getSourceArgs()));
+		System.out.println("==getOptionNames========" + args.getOptionNames());
+		System.out.println("==getOptionValues=======" + args.getOptionValues("foo"));
+		System.out.println("==getOptionValues=======" + args.getOptionValues("developer.name"));
+//		System.exit(0);
+	}
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
 </section>

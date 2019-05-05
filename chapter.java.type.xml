@@ -1944,7 +1944,7 @@ Set<Integer> ints = Set.of(1, 2, 3);
 </section>
 
 <section id="map">
-	<title>HashMap</title>
+	<title>Hash</title>
 	<screen>
 		<![CDATA[
 Map
@@ -1991,8 +1991,11 @@ WeakHashMap类
 		</programlisting>
 	</section>
 	<section id="hashmap">
-		<title>foreach hashmap</title>
-		<programlisting>
+		<title>HashMap</title>
+		<section>
+			<title>遍历 HashMap</title>
+
+			<programlisting>
 			<![CDATA[
 Map<String, Integer> session = new HashMap<String, Integer>();
 
@@ -2004,11 +2007,7 @@ session.put("Z",26)
 for (Map.Entry<String, Integer> entry : session.entrySet()) {
 	System.out.println(String.format("%s:%d", entry.getKey(), entry.getValue()));
 }
-			]]>
-		</programlisting>
 
-		<programlisting>
-			<![CDATA[
 Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
   
 for (Map.Entry<Integer, Integer> entry : map.entrySet()) {  
@@ -2017,7 +2016,13 @@ for (Map.Entry<Integer, Integer> entry : map.entrySet()) {  
   
 } 
 
-
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>遍历map中的键</title>
+			<programlisting>
+			<![CDATA[
 Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
   
 //遍历map中的键  
@@ -2026,16 +2031,25 @@ for (Integer key : map.keySet()) {  
   
     System.out.println("Key = " + key);  
   
-}  
-  
-//遍历map中的值  
-  
+}  			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>遍历map中的值 </title>
+			<programlisting>
+			<![CDATA[
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();    
 for (Integer value : map.values()) {  
-  
     System.out.println("Value = " + value);  
-  
-}  
-
+}  			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>通过键取值</title>
+			<programlisting>
+			<![CDATA[
 Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
   
 for (Integer key : map.keySet()) {  
@@ -2044,23 +2058,31 @@ for (Integer key : map.keySet()) {  
   
     System.out.println("Key = " + key + ", Value = " + value);  
   
-}  
+}  			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>使用 Iterator 遍历 HashMap</title>
 
-Map<Integer, Integer> map = new HashMap<Integer, Integer>();  
+
+			<programlisting>
+			<![CDATA[
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();
   
-Iterator<Map.Entry<Integer, Integer>> entries = map.entrySet().iterator();  
+Iterator<Map.Entry<Integer, Integer>> entries = map.entrySet().iterator();
   
-while (entries.hasNext()) {  
+while (entries.hasNext()) {
   
-    Map.Entry<Integer, Integer> entry = entries.next();  
+    Map.Entry<Integer, Integer> entry = entries.next();
   
-    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());  
+    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
   
 }  
 
 Map map = new HashMap();  
   
-Iterator entries = map.entrySet().iterator();  
+Iterator entries = map.entrySet().iterator();
   
 while (entries.hasNext()) {  
   
@@ -2071,12 +2093,10 @@ while (entries.hasNext()) {  
     Integer value = (Integer)entry.getValue();  
   
     System.out.println("Key = " + key + ", Value = " + value);  
-  
 }  
-
-
 			]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="LinkedHashMap">
