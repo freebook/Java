@@ -69,5 +69,43 @@ org.apache.commons.lang.StringUtils.join(arraylist, ',')
 		</section>
 
 	</section>
+	<section>
+		<title>commons-text</title>
+		<screen>
+		<![CDATA[
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.6</version>
+		</dependency>		
+		]]>
+		</screen>
+		<section>
+			<title>禁止转译 json</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import org.apache.commons.text.StringEscapeUtils;
+
+public class TestJson {
+
+	public static void main(String[] args) {
+		System.out.println(StringEscapeUtils.escapeJson("{\"name\":\"Neo\"}"));
+	}
+
+}
+
+			]]>
+			</programlisting>
+			<para>输出</para>
+			<screen>
+			<![CDATA[
+{\"name\":\"Neo\"}
+			]]>
+			</screen>
+
+		</section>
+	</section>
 	&section.apache.httpclient.xml;
 </chapter>

@@ -2,10 +2,11 @@
 <chapter id="index"><?dbhtml dir="data" ?>
 	<title>Spring Data</title>
 
-	&chapter.data.redis.xml;
-	&chapter.data.mongodb.xml;
-	&chapter.data.mysql.xml;
-	&chapter.data.jdbc.xml;
+	&section.data.jackson.xml;
+	&section.data.redis.xml;
+	&section.data.mongodb.xml;
+	&section.data.mysql.xml;
+	&section.data.jdbc.xml;
 	
 <section id="elasticsearch">
 	<title>Elasticsearch</title>

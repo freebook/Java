@@ -209,15 +209,7 @@ public String getContent() {
 			]]>
 			</programlisting>
 		</section>
-		<section id="@JsonIgnore">
-			<title>@JsonIgnore 返回json是不含有该字段</title>
-			<programlisting>
-			<![CDATA[
-	@JsonIgnore
-	private String entityName = this.getClass().getSimpleName();	
-			]]>
-			</programlisting>
-		</section>
+		
 		<section id="@Temporal">
 			<title>@Temporal 日期定义</title>
 			<programlisting>

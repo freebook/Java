@@ -472,14 +472,65 @@ public class JsonValueLength implements ProcessInterface {
 			</programlisting>
 		</section>
 	</section>
-	<section id="JsonNode">
-		<title>JsonNode</title>
-		<programlisting>
-		<![CDATA[
+	<section id="jackson">
+		<title>Jackson</title>
+
+		<section>
+			<title>ObjectToJSON</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+import java.util.Date;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class ObjectToJSON {
+  public static void main(String[] args) throws JsonProcessingException {
+     Test test = new Test("Neo", 123, new Date());   
+     ObjectMapper mapper = new ObjectMapper();     
+     String jsonData = mapper.writerWithDefaultPrettyPrinter()
+		 .writeValueAsString(test);
+     System.out.println(jsonData);
+  }
+} 			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JSONToObject</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class JSONToObject {
+	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
+		 String jsonData = 
+		    "{"
+			  +"\"name\" : \"Neo\","
+			  +"\"age\" : 12,"
+			  +"\"birthDate\" : \"2019-Jun-11 07:00:46 CST\""	
+		   +"}";
+		 ObjectMapper mapper = new ObjectMapper();
+		 Test test = mapper.readValue(jsonData, Test.class);
+		 System.out.println(test.getName()+" | "+test.getBirthDate()+" | "+ test.getAge());
+	}
+} 
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JsonNode</title>
+			<programlisting>
+			<![CDATA[
 String[] picture;
 ObjectMapper mapper = new ObjectMapper();
 JsonNode jsonNode = mapper.convertValue(picture, JsonNode.class);		
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>

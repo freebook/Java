@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Jackson</title>
+	<section id="@JsonIgnore">
+		<title>@JsonIgnore 返回json是不含有该字段</title>
+		<programlisting>
+			<![CDATA[
+	@JsonIgnore
+	private String entityName = this.getClass().getSimpleName();	
+			]]>
+		</programlisting>
+	</section>
+	<section id="@JsonFormat 日期格式化">
+		<title>@JsonFormat 格式化 json 时间格式</title>
+		<section>
+			<title>日期格式化</title>
+
+			<para>默认 json 中的时间格式是这样的</para>
+			<screen>
+			<![CDATA[
+"createDate":"2018-09-11T07:34:20.106+0000","updateDate":"2018-09-11T07:34:20.106+0000"			
+			]]>
+			</screen>
+			<para>@JsonFormat 可以格式化 json 返回的时间格式。</para>
+			<programlisting>
+			<![CDATA[
+@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
+			]]>
+			</programlisting>
+			<para>格式化后</para>
+			<programlisting>
+			<![CDATA[
+"createDate":"2018-09-11 07:42:44","updateDate":"2018-09-11 07:42:44"			
+			]]>
+			</programlisting>
+			<para>解决时区问题，MongoDb 默认使用UTC,显示时间相差8小时</para>
+			<programlisting>
+			<![CDATA[
+@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")	
+private Date createdDate = new Date();			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>时区</title>
+			<programlisting>
+			<![CDATA[
+public class Test {
+   @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MMM-dd HH:mm:ss z", timezone="EST")
+   @JsonProperty("pubDate")
+   private Date recentBookPubDate;	
+} 			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>枚举</title>
+			<programlisting>
+			<![CDATA[
+public class Test {
+   @JsonFormat(shape=JsonFormat.Shape.NUMBER)
+   @JsonProperty("birthDate")
+   private Date birthDate;
+} 
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+{
+  "birthDate" : 1528702883858
+} 			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>枚举</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape=JsonFormat.Shape.NUMBER)
+enum Code {
+    BLOCKING,
+    CRITICAL,
+    MEDIUM,
+    LOW;
+} 
+
+@JsonFormat(shape=JsonFormat.Shape.STRING)
+enum Lang {
+	Java,
+	PHP,
+	Python
+} 
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</section>
