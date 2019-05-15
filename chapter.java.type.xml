@@ -1737,6 +1737,22 @@ public class Test {
 		A B C D E F G
 		A B E F G C D
 	</screen>
+	<section>
+		<title>静态 List</title>
+		<programlisting>
+			<![CDATA[
+	public static List<String> list = new ArrayList<String>();
+	static {
+		list.add("录入");
+		list.add("变更");
+		list.add("收藏");
+		list.add("在售");
+		list.add("展出");
+	}			
+				
+			]]>
+		</programlisting>
+	</section>
 	<section id="arraylist">
 		<title>ArrayList</title>
 		<para>判断元素是否存在</para>
@@ -1875,23 +1891,7 @@ Set<Type> set = new HashSet<>();
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>静态 List</title>
-		<programlisting>
-			<![CDATA[
-	public static List<String> list = new ArrayList<String>();
-	static {
-		list.add("录入");
-		list.add("变更");
-		list.add("收藏");
-		list.add("在售");
-		list.add("展出");
-	}			
-				
-			]]>
-		</programlisting>
-	</section>
-	<section>
+	<section id="List.of()">
 		<title>List.of()</title>
 		<programlisting>
 		<![CDATA[
@@ -1916,7 +1916,48 @@ System.out.println(list == copy); // false
 		]]>
 		</programlisting>
 	</section>
+	<section id="arrayList.forEach">
+		<title>ArrayList forEach</title>
+		<programlisting>
+		<![CDATA[
+List<String> arrayList = new ArrayList<>();
+arrayList.add("A");
+arrayList.add("B");
+arrayList.add("C");
+arrayList.add("D");
+arrayList.add("E");
+
+for (String item:arrayList){
+    System.out.println(item);
+}
+
+arrayList.forEach(item->System.out.println(item));
+
+arrayList.forEach(System.out::println);
+
+arrayList.forEach(item->{
+    if("C".equals(item)){
+        System.out.println(item);
+    }
+});		
+		]]>
+		</programlisting>
+	</section>
 	<section>
+		<title>ArrayList stream()</title>
+		<programlisting>
+		<![CDATA[
+arrayList.stream()
+        .filter(s-> s.contains("B")||s.contains("C"))
+        .forEach(System.out::println);
+
+arrayList.stream()
+        .filter(s->s.contains("E"))
+        .findFirst().ifPresent(s -> System.out.println(s));		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Set.of()">
 		<title>Set.of()</title>
 		<programlisting>
 		<![CDATA[
@@ -1944,7 +1985,7 @@ Set<Integer> ints = Set.of(1, 2, 3);
 </section>
 
 <section id="map">
-	<title>Hash</title>
+	<title>Map</title>
 	<screen>
 		<![CDATA[
 Map
@@ -1975,7 +2016,18 @@ WeakHashMap类
 　　WeakHashMap是一种改进的HashMap，它对key实行“弱引用”，如果一个key不再被外部所引用，那么该key可以被GC回收。
 		]]>
 	</screen>
-
+	<section>
+		<title>初始化</title>
+		<programlisting>
+		<![CDATA[
+	Map<String, Object> data = new HashMap<String, Object>() {
+		{
+			put("name", "neo");
+		}
+	};		
+		]]>
+		</programlisting>
+	</section>
 	<section id="map.static">
 		<title>static map</title>
 		<programlisting>
@@ -1987,6 +2039,22 @@ WeakHashMap类
 		point.put("HK", "Hongkong");
 		point.put("TW", "Taiwan");
 	};
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+	public final static Map<String, String> hostMap = new HashMap<String, String>() {
+        {
+            put("redis", "127.0.0.1");
+            put("solr", "127.0.0.1");
+        }
+	};
+		
+		
+	public final static Map map = new HashMap() {{      
+	    put("key1", "value1");      
+	    put("key2", "value2");      
+	}};  		
 			]]>
 		</programlisting>
 	</section>
@@ -2139,23 +2207,34 @@ public class TestLinkedHashMap {
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>静态初始化 Map</title>
+	<section id="map.forEach">
+		<title>Map forEach</title>
 		<programlisting>
-			<![CDATA[
-	public final static Map<String, String> hostMap = new HashMap<String, String>() {
-        {
-            put("redis", "127.0.0.1");
-            put("solr", "127.0.0.1");
-        }
-	};
-		
-		
-	public final static Map map = new HashMap() {{      
-	    put("key1", "value1");      
-	    put("key2", "value2");      
-	}};  		
-			]]>
+		<![CDATA[
+Map<String, Integer> items = new HashMap<>();
+items.put("A", 10);
+items.put("B", 20);
+items.put("C", 30);
+items.put("D", 40);
+items.put("E", 50);
+items.put("F", 60);
+
+items.forEach((k,v)->System.out.println("key : " + k + "; value : " + v));
+
+//output
+key : A value : 10
+key : B value : 20
+key : C value : 30
+key : D value : 40
+key : E value : 50
+key : F value : 60
+
+items.forEach((k,v)->{
+    System.out.println("key : " + k + " value : " + v);
+});
+
+	
+		]]>
 		</programlisting>
 	</section>
 </section>

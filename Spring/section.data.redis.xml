@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <section id="spring-data-redis"><!-- <?dbhtml dir="redis" ?> -->
 	<title>Spring Data Redis</title>
 	<section id="springdata.redis.exmaple">
@@ -24,7 +23,7 @@
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
 		p:host-name="192.168.2.1" p:port="6379" p:use-pool="true" />
 
-	<!-- redis template definition -->
+	<!-- redis redisTemplate definition -->
 	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
 		p:connection-factory-ref="jedisConnFactory" />
 		]]>
@@ -89,7 +88,7 @@
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
 		p:host-name="192.168.2.1" p:port="6379" p:use-pool="true" />
 
-	<!-- redis template definition -->
+	<!-- redis redisTemplate definition -->
 	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
 		p:connection-factory-ref="jedisConnFactory" />
 </beans>				
@@ -118,11 +117,11 @@ import cn.netkiller.model.User;
 @Controller
 public class CacheController {
 
-	// inject the actual template
+	// inject the actual redisTemplate
 	@Autowired
-	private RedisTemplate<String, String> template;
+	private RedisTemplate<String, String> redisTemplate;
 
-	// inject the template as ListOperations
+	// inject the redisTemplate as ListOperations
 	@Resource(name = "redisTemplate")
 	private ListOperations<String, String> listOps;
 
@@ -140,9 +139,9 @@ public class CacheController {
 		listOps.leftPush(key, user.toString());
 		message = listOps.leftPop(key);
 
-		template.setKeySerializer(new StringRedisSerializer());
-		template.setValueSerializer(new StringRedisSerializer());
-		template.opsForValue().set("key", user.toString());
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
+		redisTemplate.opsForValue().set("key", user.toString());
 
 		return new ModelAndView("index/index", "variable", message);
 	}
@@ -189,7 +188,7 @@ redis 127.0.0.1:6379> get key
 		]]>
 			</screen>
 			<tip>
-				<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到 "\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过 template.setKeySerializer(new StringRedisSerializer()); 实现 </para>
+				<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到 "\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过 redisTemplate.setKeySerializer(new StringRedisSerializer()); 实现 </para>
 			</tip>
 		</section>
 
@@ -202,20 +201,80 @@ redis 127.0.0.1:6379> get key
 			<screen>
 		<![CDATA[
 stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
-stringRedisTemplate.boundValueOps("test").increment(-1);						//val做-1操作
 stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
-stringRedisTemplate.boundValueOps("test").increment(1);							//val +1
 stringRedisTemplate.getExpire("test")											//根据key获取过期时间
 stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
 stringRedisTemplate.delete("test");												//根据key删除缓存
 stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
-stringRedisTemplate.opsForSet().add("test", "1","2","3");						//向指定key中存放set集合
-stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间
-stringRedisTemplate.opsForSet().isMember("test", "1")							//根据key查看集合中是否存在指定数据
-stringRedisTemplate.opsForSet().members("test");								//根据key获取set集合		
+stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
 		]]>
 			</screen>
+			<screen>
+			<![CDATA[
+stringRedisTemplate.opsForValue().set("test", "100");							//向redis里存入数据			
+stringRedisTemplate.boundValueOps("test").increment(-50);						//val做-60操作
+stringRedisTemplate.boundValueOps("test").increment(100);						//val +100
+stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val		
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+stringRedisTemplate.opsForSet().add("test", "1","2","3");						//向指定key中存放set集合
+stringRedisTemplate.opsForSet().isMember("test", "1")							//根据key查看集合中是否存在指定数据
+stringRedisTemplate.opsForSet().members("test");								//根据key获取set集合				
+			]]>
+			</screen>
 		</section>
+		<section>
+			<title>设置缓存时间</title>
+			<programlisting>
+			<![CDATA[
+例子：设置 name 缓存 10 秒
+
+redisTemplate.opsForValue().set("name","neo",10, TimeUnit.SECONDS);
+redisTemplate.opsForValue().get("name")
+
+结果：由于设置的是10秒失效，十秒之内查询有结果，十秒之后返回为null			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>设置键的字符串值并返回其旧值</title>
+			<programlisting>
+			<![CDATA[
+使用：redisTemplate.opsForValue().set("name","neo");
+     System.out.println(redisTemplate.opsForValue().getAndSet("name","Jerry"));
+结果：neo			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>追加字符串</title>
+			<programlisting>
+			<![CDATA[
+redisTemplate.opsForValue().append("hello","Hello");
+System.out.println(redisTemplate.opsForValue().get("hello"));
+
+redisTemplate.opsForValue().append("hello","world");
+System.out.println(redisTemplate.opsForValue().get("hello")); // 结果：Helloworld        			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>字符串截取</title>
+			<programlisting>
+			<![CDATA[
+设置：redisTemplate.opsForValue().set("hello","Helloworld");
+代码：System.out.println(redisTemplate.opsForValue().get("hello",0,5));
+结果：Hellow
+代码：System.out.println(redisTemplate.opsForValue().get("hello",0,-1));
+结果：Helloworld
+代码：System.out.println(redisTemplate.opsForValue().get("hello",-3,-1));
+结果：rld			
+			]]>
+			</programlisting>
+		</section>
+
 		<section id="delete">
 			<title>删除 key </title>
 			<programlisting>
@@ -230,6 +289,68 @@ stringRedisTemplate.opsForSet().members("test");								//根据key获取set集�
 	}
 		]]>
 			</programlisting>
+		</section>
+		<section id="size">
+			<title>返回字符串长度</title>
+			<programlisting>
+			<![CDATA[
+redisTemplate.opsForValue().set("key","hello world");
+System.out.println(redisTemplate.opsForValue().size("key"));			
+			]]>
+			</programlisting>
+		</section>
+		<section id="setIfAbsent">
+			<title>如果key不存便缓存。</title>
+			<programlisting>
+			<![CDATA[
+System.out.println(redisTemplate.opsForValue().setIfAbsent("name","neo"));	// name 之前已经存在 false
+System.out.println(redisTemplate.opsForValue().setIfAbsent("age","11"));		// age 之前不存在	true
+			]]>
+			</programlisting>
+		</section>
+
+		<section id="multiSet">
+			<title>缓存多个值 /获取多个值 multiSet / multiGet</title>
+			<programlisting>
+			<![CDATA[
+Map<String,String> maps = new HashMap<String, String>();
+	maps.put("multi1","multi1");
+	maps.put("multi2","multi2");
+	maps.put("multi3","multi3");
+
+redisTemplate.opsForValue().multiSet(maps);
+
+List<String> keys = new ArrayList<String>();
+	keys.add("multi1");
+	keys.add("multi2");
+	keys.add("multi3");
+
+System.out.println(redisTemplate.opsForValue().multiGet(keys));			
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+[multi1, multi2, multi3]			
+			]]>
+			</screen>
+			<para>为多个键分别设置它们的值，如果存在则返回false，不存在返回true</para>
+			<programlisting>
+			<![CDATA[
+Map<String,String> maps = new HashMap<String, String>();
+        maps.put("multi11","multi11");
+        maps.put("multi22","multi22");
+        maps.put("multi33","multi33");
+Map<String,String> maps2 = new HashMap<String, String>();
+        maps2.put("multi1","multi1");
+        maps2.put("multi2","multi2");
+        maps2.put("multi3","multi3");
+
+System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps)); 	// 返回 true
+System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps2));	// 返回 false
+			]]>
+			</programlisting>
+
 		</section>
 		<section id="zset">
 			<title>ZSET 数据类型</title>
@@ -320,7 +441,37 @@ ListOperations<String, Object> list = redisTemplate.opsForList();
 list.rightPush("books", "Linux");
 list.rightPush("books", "Java");
 System.out.println(list.range("books", 0, 1));
+
+System.out.println(redisTemplate.opsForList().size("list"));
 		]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+redisTemplate.opsForList().leftPush("list","java");
+redisTemplate.opsForList().leftPush("list","python");
+redisTemplate.opsForList().leftPush("list","c++");			
+			]]>
+			</programlisting>
+			<para>批量把一个数组插入到列表中</para>
+			<programlisting>
+			<![CDATA[
+使用：String[] stringarrays = new String[]{"1","2","3"};
+        template.opsForList().leftPushAll("listarray",stringarrays);
+        System.out.println(template.opsForList().range("listarray",0,-1));
+结果:[3, 2, 1]		
+			]]>
+			</programlisting>
+			<para>批量把一个集合插入到列表中</para>
+			<programlisting>
+			<![CDATA[
+使用：List<Object> strings = new ArrayList<Object>();
+        strings.add("1");
+        strings.add("2");
+        strings.add("3");
+        template.opsForList().leftPushAll("listcollection", strings);
+        System.out.println(template.opsForList().range("listcollection",0,-1));
+结果:[3, 2, 1]			
+			]]>
 			</programlisting>
 		</section>
 		<section id="redisTemplate.expire">
