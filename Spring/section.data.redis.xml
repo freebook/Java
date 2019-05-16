@@ -197,9 +197,9 @@ redis 127.0.0.1:6379> get key
 		<title>RedisTemplate</title>
 
 		<section id="stringRedisTemplate">
-			<title>stringRedisTemplate</title>
+			<title>stringRedisTemplate 基本用法</title>
 			<screen>
-		<![CDATA[
+			<![CDATA[
 stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
 stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
 stringRedisTemplate.getExpire("test")											//根据key获取过期时间
@@ -207,11 +207,13 @@ stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取�
 stringRedisTemplate.delete("test");												//根据key删除缓存
 stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
 stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
-		]]>
+			]]>
 			</screen>
-			<section>
-				<title>设置缓存时间</title>
-				<programlisting>
+
+		</section>
+		<section>
+			<title>设置缓存时间</title>
+			<programlisting>
 			<![CDATA[
 例子：设置 name 缓存 10 秒
 
@@ -220,11 +222,11 @@ redisTemplate.opsForValue().get("name")
 
 结果：由于设置的是10秒失效，十秒之内查询有结果，十秒之后返回为null			
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>字符串截取</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>字符串截取</title>
+			<programlisting>
 			<![CDATA[
 设置：redisTemplate.opsForValue().set("hello","Helloworld");
 代码：System.out.println(redisTemplate.opsForValue().get("hello",0,5));
@@ -234,11 +236,11 @@ redisTemplate.opsForValue().get("name")
 代码：System.out.println(redisTemplate.opsForValue().get("hello",-3,-1));
 结果：rld			
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>追加字符串</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>追加字符串</title>
+			<programlisting>
 			<![CDATA[
 redisTemplate.opsForValue().append("hello","Hello");
 System.out.println(redisTemplate.opsForValue().get("hello"));
@@ -246,18 +248,17 @@ System.out.println(redisTemplate.opsForValue().get("hello"));
 redisTemplate.opsForValue().append("hello","world");
 System.out.println(redisTemplate.opsForValue().get("hello")); // 结果：Helloworld        			
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>设置键的字符串值并返回其旧值</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>设置键的字符串值并返回其旧值</title>
+			<programlisting>
 			<![CDATA[
 	redisTemplate.opsForValue().set("name","neo");
     System.out.println(redisTemplate.opsForValue().getAndSet("name","Jerry"));
 	// 结果 neo			
 			]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
 		<section>
 			<title>increment</title>
@@ -1302,7 +1303,6 @@ public class TestRestController {
 	}
 
 }
-
 			]]>
 			</programlisting>
 		</section>
