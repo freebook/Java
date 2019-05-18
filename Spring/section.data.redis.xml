@@ -2,7 +2,7 @@
 <section id="spring-data-redis"><!-- <?dbhtml dir="redis" ?> -->
 	<title>Spring Data Redis</title>
 	<section id="springdata.redis.exmaple">
-		<title>集成 Redis</title>
+		<title>集成 Redis XML 方式</title>
 		<section>
 			<title>pom.xml</title>
 			<screen>
@@ -443,7 +443,7 @@ redisTemplate.opsForList().leftPush("list","c++");
 			</section>
 		</section>
 		<section id="set">
-			<title>SET ZSET 数据类型</title>
+			<title>SET 数据类型</title>
 			<para>Redis的Set是无序集合并且集合成员是唯一的，这就意味着集合中不能出现重复的数据。</para>
 			<screen>
 			<![CDATA[

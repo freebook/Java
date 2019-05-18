@@ -368,7 +368,27 @@ hell
 			]]>
 			</screen>
 		</section>
-
+		<section>
+			<title>字符串处理，删除中文以外的字符</title>
+			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
+			<programlisting>
+			<![CDATA[
+	String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
+	System.out.println(string.replaceAll("[^\u4e00-\u9fa5]", ""));			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>取出字符串中的中文字符</title>
+			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
+			<programlisting>
+			<![CDATA[
+		String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
+		String regex = "[\u4e00-\u9fa5]";
+		System.out.println(string.replaceAll(regex, ""));			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="long">
 		<title>类型转换</title>
@@ -1974,7 +1994,7 @@ arrayList.forEach(item->{
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="ArrayList.stream()">
 		<title>ArrayList stream()</title>
 		<programlisting>
 		<![CDATA[
@@ -2518,10 +2538,370 @@ Stream s = strings.stream().filter(string -> string.length()<= 6).map(String::le
 	<screen>
 	<![CDATA[
 Optional.of("javastack").orElseThrow(); // javastack
-Optional.of("javastack").stream().count(); // 1
-Optional.ofNullable(null)
-.or(() -> Optional.of("javastack"))
-.get(); // javastack
+ // 1
+
 	]]>
 	</screen>
+	<section id="Optional.of()">
+		<title>of() 为非null的值创建一个Optional。</title>
+		<para>of方法通过工厂方法创建Optional类。需要注意的是，创建对象时传入的参数不能为null。如果传入参数为null，则抛出NullPointerException 。</para>
+		<programlisting>
+		<![CDATA[
+		Optional<String> name = Optional.of("netkiller");
+		if (name.isPresent()) {
+			// 在Optional实例内调用get()返回已存在的值
+			System.out.println(name.get());// 输出 netkiller
+		}		
+		]]>
+		</programlisting>
+		<para>传入参数为null，抛出NullPointerException.</para>
+		<programlisting>
+		<![CDATA[
+Optional<String> someNull = Optional.of(null);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.ofNullable()">
+		<title>ofNullable() 为指定的值创建一个Optional，如果指定的值为null，则返回一个空的Optional。</title>
+		<programlisting>
+		<![CDATA[
+		Optional<String> name = Optional.ofNullable("netkiller");
+		if (name.isPresent()) {
+			// 在Optional实例内调用get()返回已存在的值
+			System.out.println(name.get());// 输出 netkiller
+		}
+
+		Optional<String> empty = Optional.ofNullable(null);
+		if (empty.isPresent()) {
+			System.out.println(empty.get());
+		}
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.isPresent()">
+		<title>isPresent 如果值存在返回true，否则返回false。</title>
+		<programlisting>
+		<![CDATA[
+	//isPresent方法用来检查Optional实例中是否包含值
+	if (name.isPresent()) {
+		System.out.println(name.get());
+	}
+		]]>
+		</programlisting>
+
+	</section>
+	<section id="Optional.ifPresent()">
+		<title>ifPresent() 如果Optional实例有值执行 lambda 表达式</title>
+		<para>如果Optional实例有值，调用ifPresent()可以接受接口段或lambda表达式。类似下面的代码：</para>
+		<programlisting>
+		<![CDATA[
+	Optional<String> name = Optional.ofNullable("netkiller");
+
+	name.ifPresent((value) -> {
+		System.out.println("hello " + value);
+	});
+
+	name.ifPresent((value) -> {
+		System.out.println(value.length());
+	});		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.get()">
+		<title>get() 返回值</title>
+		<para>如果Optional有值则将其返回，否则抛出NoSuchElementException。</para>
+		<programlisting>
+		<![CDATA[
+		Optional<String> name = Optional.ofNullable("netkiller");
+		System.out.println(name.get());
+		
+		Optional<String> empty = Optional.ofNullable(null);
+		try {
+			System.out.println(empty.get());
+		} catch (NoSuchElementException e) {
+			System.out.println(e.getMessage());
+		}		
+		]]>
+		</programlisting>
+		<para>输出内容</para>
+		<screen>
+		<![CDATA[
+netkiller
+No value present		
+		]]>
+		</screen>
+	</section>
+	<section id="Optional.orElse()">
+		<title>orElse 如果有值则将其返回，否则返回指定的其它值。</title>
+		<para>如果Optional实例有值则将其返回，否则返回orElse方法传入的参数。示例如下：</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Optional;
+
+public class OptionalTest {
+
+	public OptionalTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public static void main(String[] args) {
+
+		Optional<String> name = Optional.ofNullable("netkiller");
+
+		Optional<String> empty = Optional.ofNullable(null);
+
+		System.out.println(name.orElse("There is some value!"));
+		System.out.println(empty.orElse("There is no value present!"));
+
+	}
+
+}
+		]]>
+		</programlisting>
+		<para>输出</para>
+		<screen>
+		<![CDATA[
+netkiller
+There is no value present!		
+		]]>
+		</screen>
+		<para>指定默认值</para>
+		<programlisting>
+		<![CDATA[
+	User user = new User();
+	user.setId(1);
+	user.setUsername("Neo");
+	
+	Optional<User> user = Optional.ofNullable(user).orElse(new User(0, "Unknown"));
+
+	System.out.println("Username is: " + user.getUsername());
+		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.orElseGet()">
+		<title>orElseGet与orElse方法类似，区别在于得到的默认值从 Supplier 返回。</title>
+		<para>orElseGet方法可以接受Supplier接口的实现用来生成默认值。示例如下：</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Optional;
+
+public class OptionalTest {
+
+	public OptionalTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public static void main(String[] args) {
+
+		Optional<String> name = Optional.ofNullable("netkiller");
+
+		Optional<String> empty = Optional.ofNullable(null);
+
+		System.out.println(name.orElseGet(() -> "There is some value!"));
+		System.out.println(empty.orElseGet(() -> "There is no value present!"));
+
+	}
+
+}		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+Optional<User> user = Optional.ofNullable(user).orElseGet(() -> new User(0, "Unknown"));		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.orElseThrow()">
+		<title>orElseThrow 如果有值则将其返回，否则抛出supplier接口创建的异常</title>
+		<programlisting>
+		<![CDATA[
+Optional<User> user = Optional
+        .ofNullable(user)
+        .orElseThrow(() -> new EntityNotFoundException("id=" + id + " 的用户没有找到"));
+		]]>
+		</programlisting>
+		<para>使用场景举例</para>
+		<programlisting>
+		<![CDATA[
+@RequestMapping("/user/{id}")
+public User getUser(@PathVariable Integer id) {
+    Optional<User> user = userService.getUserById(id);
+    return user.orElseThrow(() -> new EntityNotFoundException("id=" + id + " 的用户不存在"));
+}
+
+@ExceptionHandler(EntityNotFoundException.class)
+public ResponseEntity<String> handleException(EntityNotFoundException ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Optional;
+
+public class OptionalTest {
+
+	public OptionalTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static class ValueAbsentException extends Throwable {
+
+		private static final long serialVersionUID = -1758502952187236809L;
+
+		public ValueAbsentException() {
+			super();
+		}
+
+		public ValueAbsentException(String msg) {
+			super(msg);
+		}
+
+		@Override
+		public String getMessage() {
+			return "No value present in the Optional instance";
+		}
+	}
+
+	public static void main(String[] args) {
+
+		Optional<String> empty = Optional.ofNullable(null);
+
+		try {
+			// orElseThrow会抛出lambda表达式或方法生成的异常
+			empty.orElseThrow(ValueAbsentException::new);
+		} catch (Throwable ex) {
+			// 输出 No value present in the Optional instance
+			System.out.println(ex.getMessage());
+		}
+
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.map()">
+		<title>map() 方法用来对Optional实例的值执行一系列操作</title>
+		<para>map方法用来对Optional实例的值执行一系列操作。通过一组实现了Function接口的lambda表达式传入操作。map方法示例如下：</para>
+		<programlisting>
+		<![CDATA[
+	Optional<String> name = Optional.ofNullable("netkiller");
+	Optional<String> upperName = name.map((value) -> value.toUpperCase());
+	System.out.println(upperName.orElse("No value found"));		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+		Optional<String> username = Optional.ofNullable("netKiller-Neo")
+				.map((value) -> value.toLowerCase())
+				.map((value) -> value.replace("n", "N"))
+				.map(value -> value.replace('-', '_'));
+
+		System.out.println("Username is: " + username.orElse("Unknown"));		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.flatMap()">
+		<title>flatMap()</title>
+		<para>与 map() 区别在于flatMap中的mapper返回值必须是Optional</para>
+		<programlisting>
+		<![CDATA[
+		Optional<String> username = Optional.ofNullable("netKiller-Neo").flatMap((value) -> Optional.of(value.toUpperCase()));
+
+		System.out.println("Username is: " + username.orElse("No value found"));		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.filter()">
+		<title>filter() 通过传入限定条件过滤Optional值</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class OptionalTest {
+
+	public OptionalTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+
+		for (String item : List.of("Neo", "Jerry", "Netkiller")) {
+			Optional<String> username = Optional.of(item).filter((value) -> value.length() > 6);
+			System.out.println("name is: " + username.orElse("The name is less than 6 characters"));
+		}
+	}
+
+}
+		
+		]]>
+		</programlisting>
+		<para>使用多个 filter 组合过滤数据</para>
+		<programlisting>
+		<![CDATA[
+		List.of("Neo", "Jerry", "Netkiller", "Tom", "Anni", "Lisa", "Leo").forEach(item -> {
+			Optional.of(item).filter((value) -> value.length() > 2).filter((value) -> value.contains("o")).ifPresent((n) -> {
+				System.out.println(n);
+			});
+		});		
+		]]>
+		</programlisting>
+
+	</section>
+	<section id="Optional.stream()">
+		<title>stream()</title>
+		<programlisting>
+		<![CDATA[
+Optional.of("javastack").stream().count();		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.or()">
+		<title>or()</title>
+		<programlisting>
+		<![CDATA[
+	String string = (String) Optional.ofNullable(null).or(() -> Optional.of("netkiller")).get();
+	System.out.println(string);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Optional.example">
+		<title>example</title>
+		<programlisting>
+		<![CDATA[
+		Optional<Map<String, Object>> name = Optional.of(new HashMap<String, Object>() {
+			{
+				put("id", 1);
+				put("name", "Neo");
+				put("age", 30);
+			}
+		});
+
+		System.out.println(name.toString());
+		name.map((m) -> m.put("count", 1));
+		System.out.println(name.get());
+		name.map((m) -> m.put("nickname", "netkiller"));
+		name.map((m) -> m.remove("id"));
+		System.out.println(name.get());
+		Optional<Map<String, Object>> tmp = name.filter((m) -> ((Integer) m.get("age")) == 30);
+		System.out.println("filter: " + tmp.get());		
+		]]>
+		</programlisting>
+	</section>
 </section>

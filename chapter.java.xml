@@ -91,6 +91,32 @@ System.out.println(System.getProperty("java.io.tmpdir"));
 System.out.println(System.getProperty("java.io.tmpdir"));
 		</programlisting>
 	</section>
+	<section id="file.encoding">
+		<title>打印当前 Java 文件的默认编码</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.nio.charset.Charset;
+
+public class Test {
+
+	public Test() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+
+		System.out.println(System.getProperty("file.encoding"));    
+		System.out.println(Charset.defaultCharset());   
+
+	}
+
+}
+		]]>
+		</programlisting>
+	</section>
+	
 	<section>
 		<title>自定义</title>
 		<programlisting>

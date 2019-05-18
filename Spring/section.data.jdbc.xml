@@ -239,7 +239,10 @@ while(it.hasNext()) {
 }
 			]]>
 		</programlisting>
-		<programlisting>
+
+		<section>
+			<title>Iterator 用法</title>
+			<programlisting>
 		<![CDATA[
 List<Map<String, Object>> rows = jdbcTemplate.queryForList("select * from user_token where address=? and contract_address not in (select contract_address from token)", new Object[] { address });
 Iterator<Map<String, Object>> it = rows.iterator();
@@ -251,8 +254,11 @@ while (it.hasNext()) {
 	int decimals = (int) userMap.get("decimals");
 }		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>for 循环</title>
+			<programlisting>
 		<![CDATA[
 	@RequestMapping("/article/tag/{siteId}")
 	public ResponseRestful tag(@PathVariable int siteId) {
@@ -272,8 +278,19 @@ while (it.hasNext()) {
 		return new ResponseRestful(true, tags.size(), "标签", tags);
 	}			
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 
+		<section>
+			<title>forEach 用法</title>
+			<programlisting>
+			<![CDATA[
+		jdbcTemplate.queryForList("select id from public.contract").forEach(item -> {
+			logger.debug(item.toString());
+		});			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="queryForMap">
 		<title>queryForMap</title>
