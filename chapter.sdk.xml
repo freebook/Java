@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="sdk">
 	<title>Software Development Kit</title>
+	&chapter.google.xml;
 	<section id="hessian">
 		<title>Hessian</title>
 		<para> 基于Binary-RPC协议实现</para>

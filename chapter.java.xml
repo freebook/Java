@@ -194,6 +194,7 @@ stdin = new BufferedReader(new InputStreamReader(System.in, "utf-8"), 1024 * 102
 	<section id="Runtime">
 		<title>exec 运行shell</title>
 		<screen>
+		<![CDATA[
 exec(String[] cmdarray, String[] envp, File dir)
 Executes the specified command and arguments in a separate process with the specified environment and working directory.
 
@@ -223,6 +224,7 @@ Process proc =Runtime.getRuntime().exec(cmd);
 
 还有要设置调用程序的工作目录就要
 Process proc =Runtime.getRuntime().exec("ls",null, new File("/bin"));
+		]]>
 		</screen>
 	</section>
 	&chapter.java.type.xml;
@@ -235,4 +237,5 @@ Process proc =Runtime.getRuntime().exec("ls",null, new File("/bin"));
 	&chapter.javax.script.xml;
 	&chapter.javax.crypto.xml;
 	&chapter.java.security.xml;
+	
 </chapter>

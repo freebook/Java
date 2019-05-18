@@ -43,9 +43,11 @@
 <!ENTITY chapter.log.xml				SYSTEM "chapter.log.xml">
 <!ENTITY chapter.nosql.mongodb.xml		SYSTEM "chapter.nosql.mongodb.xml">
 <!ENTITY chapter.jersey.xml				SYSTEM "chapter.jersey.xml">
+<!ENTITY chapter.java.thread.xml		SYSTEM "chapter.java.thread.xml">
+
 <!ENTITY chapter.apache.xml				SYSTEM "chapter.apache.xml">
 <!ENTITY section.apache.httpclient.xml	SYSTEM "section.apache.httpclient.xml">
-<!ENTITY chapter.java.thread.xml		SYSTEM "chapter.java.thread.xml">
+<!ENTITY chapter.google.xml				SYSTEM "chapter.google.xml">
 
 <!ENTITY chapter.elasticsearch.xml		SYSTEM "chapter.elasticsearch.xml">
 <!ENTITY chapter.kafka.xml				SYSTEM "chapter.kafka.xml">

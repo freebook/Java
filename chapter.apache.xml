@@ -69,7 +69,7 @@ org.apache.commons.lang.StringUtils.join(arraylist, ',')
 		</section>
 
 	</section>
-	<section>
+	<section id="commons-text">
 		<title>commons-text</title>
 		<screen>
 		<![CDATA[

@@ -369,6 +369,17 @@ hell
 			</screen>
 		</section>
 		<section>
+			<title>Ascii</title>
+			<programlisting>
+			<![CDATA[
+		String string = "佛山市123南海区ABC精密abc机械有限公司􁵪􁻠􁴹􄲀􀞜􀨨,";
+
+		String clean = string.replaceAll("\\P{Print}", "");
+		System.out.println(clean);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>字符串处理，删除中文以外的字符</title>
 			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
 			<programlisting>
