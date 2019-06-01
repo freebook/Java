@@ -60,4 +60,126 @@ public class WebFluxRouter {
 		]]>
 		</programlisting>
 	</section>
+	<section id="webflux.Thymeleaf">
+		<title>Thymeleaf</title>
+		<section>
+			<title>模板引擎 Thymeleaf 依赖</title>
+			<screen>
+			<![CDATA[
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>application.properties 相关的配置</title>
+			<screen>
+			<![CDATA[
+spring.thymeleaf.cache=true # Enable template caching.
+spring.thymeleaf.check-template=true # Check that the template exists before rendering it.
+spring.thymeleaf.check-template-location=true # Check that the templates location exists.
+spring.thymeleaf.enabled=true # Enable Thymeleaf view resolution for Web frameworks.
+spring.thymeleaf.encoding=UTF-8 # Template files encoding.
+spring.thymeleaf.excluded-view-names= # Comma-separated list of view names that should be excluded from resolution.
+spring.thymeleaf.mode=HTML5 # Template mode to be applied to templates. See also StandardTemplateModeHandlers.
+spring.thymeleaf.prefix=classpath:/templates/ # Prefix that gets prepended to view names when building a URL.
+spring.thymeleaf.reactive.max-chunk-size= # Maximum size of data buffers used for writing to the response, in bytes.
+spring.thymeleaf.reactive.media-types= # Media types supported by the view technology.
+spring.thymeleaf.servlet.content-type=text/html # Content-Type value written to HTTP responses.
+spring.thymeleaf.suffix=.html # Suffix that gets appended to view names when building a URL.
+spring.thymeleaf.template-resolver-order= # Order of the template resolver in the chain.
+spring.thymeleaf.view-names= # Comma-separated list of view names that can be resolved.
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+	@GetMapping("/welcome")
+    public Mono<String> hello(final Model model) {
+        model.addAttribute("name", "Neo");
+        model.addAttribute("city", "深圳");
+
+        String path = "hello";
+        return Mono.create(monoSink -> monoSink.success(path));
+    }
+
+    @GetMapping("/list")
+    public String listPage(final Model model) {
+        final Flux<City> citys = cityService.findAllCity();
+        model.addAttribute("cityLists", citys);
+        return "cityList";
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Tymeleaf 视图</title>
+			<para>welcome.html</para>
+			<programlisting>
+			<![CDATA[
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <title>欢迎页面</title>
+</head>
+
+<body>
+
+<h1 >你好，欢迎来自<p th:text="${city}"></p>的<p th:text="${name}"></p></h1>
+
+</body>
+</html>			
+			]]>
+			</programlisting>
+			<para>cityList.html</para>
+			<programlisting>
+			<![CDATA[
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <title>城市列表</title>
+</head>
+
+<body>
+
+<div>
+
+
+    <table>
+        <legend>
+            <strong>城市列表</strong>
+        </legend>
+        <thead>
+        <tr>
+            <th>城市编号</th>
+            <th>省份编号</th>
+            <th>名称</th>
+            <th>描述</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="city : ${cityLists}">
+            <td th:text="${city.id}"></td>
+            <td th:text="${city.provinceId}"></td>
+            <td th:text="${city.name}"></td>
+            <td th:text="${city.description}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>			
+			]]>
+			</programlisting>
+		</section>
+		
+	</section>
 </section>
