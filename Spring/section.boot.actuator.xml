@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.actuator">
-	<title>actuator</title>
-	<screen>
-	<![CDATA[
-curl localhost:8080/actuator/health
-
+	<title>Spring Boot Actuator</title>
+	<subtitle>健康检查、审计、统计和监控</subtitle>
+	<section>
+		<title>Maven 依赖</title>
+		<screen>
+		<![CDATA[
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>健康状态</title>
+		<screen>
+		<![CDATA[
+curl localhost:8080/actuator/health		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>关机</title>
+		<screen>
+		<![CDATA[
 curl -X POST localhost:8080/actuator/shutdown	
-	]]>
-	</screen>
+		]]>
+		</screen>
+	</section>
 </section>
