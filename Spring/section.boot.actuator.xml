@@ -14,19 +14,144 @@
 		</screen>
 	</section>
 	<section>
-		<title>健康状态</title>
+		<title>与 Spring Boot Actuator 有关的配置</title>
+		<para>application.properties</para>
+		<para>跨域配置</para>
 		<screen>
 		<![CDATA[
-curl localhost:8080/actuator/health		
+management.endpoints.web.cors.allowed-origins=https://example.com
+management.endpoints.web.cors.allowed-methods=GET,POST		
+		]]>
+		</screen>
+		<section>
+			<title>禁用HTTP端点</title>
+			<para>如果您不想通过HTTP公开端点，则可以将管理端口设置为-1，如以下示例所示：</para>
+			<screen>
+			<![CDATA[
+management.server.port=-1			
+			]]>
+			</screen>
+		</section>
+
+	</section>
+	<section>
+		<title>actuator 接口</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator | jq
+{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/actuator",
+      "templated": false
+    },
+    "health": {
+      "href": "http://localhost:8080/actuator/health",
+      "templated": false
+    },
+    "health-component": {
+      "href": "http://localhost:8080/actuator/health/{component}",
+      "templated": true
+    },
+    "health-component-instance": {
+      "href": "http://localhost:8080/actuator/health/{component}/{instance}",
+      "templated": true
+    },
+    "info": {
+      "href": "http://localhost:8080/actuator/info",
+      "templated": false
+    }
+  }
+}
+		
 		]]>
 		</screen>
 	</section>
 	<section>
+		<title>健康状态</title>
+		<para>curl localhost:8080/actuator/health</para>
+		<screen>
+		<![CDATA[		
+neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator/health | jq
+{
+  "status": "UP"
+}
+		]]>
+		</screen>
+		<section>
+			<title>健康状态</title>
+			<para>详细的健康状态信息</para>
+			<screen>
+			<![CDATA[
+management.endpoint.health.show-details=always			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator/health | jq
+{
+  "status": "UP",
+  "details": {
+    "diskSpace": {
+      "status": "UP",
+      "details": {
+        "total": 250790436864,
+        "free": 23556112384,
+        "threshold": 10485760
+      }
+    }
+  }
+}			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
 		<title>关机</title>
+		<para>配置文件中加入</para>
+		<screen>
+		<![CDATA[
+management.endpoint.shutdown.enabled=true		
+		]]>
+		</screen>
+
 		<screen>
 		<![CDATA[
 curl -X POST localhost:8080/actuator/shutdown	
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>info 配置信息</title>
+		<para>返回 application.properties 文件中定义的 info 配置信息，如:</para>
+		<screen>
+		<![CDATA[
+# info端点信息配置
+info.app.name=spring-boot-example
+info.app.version=v1.0.0		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator/info | jq   
+{
+  "app": {
+    "name": "spring-boot-example",
+    "version": "v1.0.0"
+  }
+}
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>计划任务</title>
+		<screen>
+		<![CDATA[
+http://localhost:8080/actuator/scheduledtasks		
+		]]>
+		</screen>
+	</section>
+
 </section>
