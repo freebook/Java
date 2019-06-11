@@ -93,6 +93,14 @@ mvn clean package -T 1C -Dmaven.test.skip=true  -Dmaven.compile.fork=true
 				<para>-T 1C 表示CPU线程的倍数, 现在现在1个物理CPU，有4个核心，8个线程。那么此时-T 1C 就是8线程。</para>
 			</section>
 		</section>
+		<section>
+			<title>编译测试代码</title>
+			<screen>
+			<![CDATA[
+mvn test-compile  			
+			]]>
+			</screen>
+		</section>
 		<section id="test">
 			<title>test</title>
 			<para>编译测试的源代码</para>
@@ -350,6 +358,14 @@ mvn -Djar.finalName=myCustomName package
 			<screen>
 			<![CDATA[
 mvn jar:jar -Djar.finalName=custom-jar-name			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>构建装配Maven Assembly</title>
+			<screen>
+			<![CDATA[
+mvn install assembly:assembly			
 			]]>
 			</screen>
 		</section>
