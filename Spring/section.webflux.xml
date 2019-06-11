@@ -180,6 +180,307 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 			]]>
 			</programlisting>
 		</section>
+
+	</section>
+	<section id="redis-reactive">
+		<title>Webflux Redis</title>
+		<section>
+			<title>Maven Redis 依赖</title>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Redis 配置</title>
+			<screen>
+			<![CDATA[
+server:
+  port: 8080
+spring:
+  application:
+    name: webflux
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: pwd2020
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 200 
+        max-idle: 20 
+        min-idle: 5 
+        max-wait: 1000 			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Config</title>
+			<programlisting>
+			<![CDATA[
+	@Bean
+	public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
+		ReactiveRedisTemplate<String, String> reactiveRedisTemplate = new ReactiveRedisTemplate<>(factory,RedisSerializationContext.string());
+		return reactiveRedisTemplate;
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Service</title>
+			<programlisting>
+			<![CDATA[
+@Service
+public class RedisServiceImpl implements RedisService {
+
+	@Autowired
+	private ReactiveRedisTemplate<String, String> redisTemplate;
+	
+	@Override
+	public Mono<String> get(String key) {
 		
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.get(key);
+	}
+
+	@Override
+	public Mono<String> set(String key,User user) {
+		
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.getAndSet(key, JSON.toJSONString(user));
+	}
+
+	@Override
+	public Mono<Boolean> delete(String key) {
+		
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.delete(key);
+	}
+
+	@Override
+	public Mono<String> update(String key,User user) {
+		
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.getAndSet(key, JSON.toJSONString(user));
+	}
+
+	@Override
+	public Flux<String> all(String key) {
+		ReactiveListOperations<String, String> operations = redisTemplate.opsForList();
+		return operations.range(key, 0, -1);
+	}
+
+
+	@Override
+	public Mono<Long> push(String key,List<String> list) {
+		
+		ReactiveListOperations<String, String> operations = redisTemplate.opsForList();
+		return operations.leftPushAll(key, list);
+	}
+	
+	@Override
+	public Flux<String> find(String key) {
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return redisTemplate.keys(key).flatMap(keyId ->operations.get(keyId));
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+@RestController
+@RequestMapping("/user")
+public class UserController {
+	
+	public final static String USER_KEY="user";
+	
+	@Autowired
+	private RedisService redisService;
+	
+	@GetMapping("/get/{key}")
+	public Mono<String> getUserByKey(@PathVariable("id")String key){
+		return redisService.get(key);
+	}
+	
+	@GetMapping("/add")
+	public Mono<String> add(User user){
+		user = new User();
+		user.setAccount("neo");
+		user.setPassword("123456");
+		user.setNickname("netkiller");
+		user.setEmail("netkiller@msn.com");
+		user.setPhone("");
+		user.setGender(true);
+		user.setBirthday("1980-01-30");
+		user.setProvince("广东省");
+		user.setCity("深圳市");
+		user.setCounty("南山区");
+		user.setAddress("");
+		user.setState("Enabled");
+
+		System.out.println(JSON.toJSONString(user));
+		return redisService.set("neo",user);		
+	}
+	
+	@GetMapping("/addlist")
+	public Mono<Long> addlist(){
+		List<String> list=new ArrayList<String>();
+		User user = new User();
+		user.setAccount("neo");
+		user.setPassword("123456");
+		user.setNickname("netkiller");
+		user.setEmail("netkiller@msn.com");
+		user.setPhone("");
+		user.setGender(true);
+		user.setBirthday("1980-01-30");
+		user.setProvince("广东省");
+		user.setCity("深圳市");
+		user.setCounty("南山区");
+		user.setAddress("");
+		user.setState("Enabled");
+		
+		//添加第一条数据
+		list.add(JSON.toJSONString(user));
+		//添加第二条数据
+		list.add(JSON.toJSONString(user));
+		//添加第三条数据
+		list.add(JSON.toJSONString(user));
+		
+		return redisService.addlist("list", list);
+	}
+
+	@GetMapping(value="/findAll",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	public Flux<String> findAll(){
+		return redisService.all("list").delayElements(Duration.ofSeconds(2));
+	}
+	
+	@GetMapping("/getUsers")
+	public Flux<String> findUsers() {
+		return redisService.find("*").delayElements(Duration.ofSeconds(2));
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="mongodb-reactive">
+		<title>Webflux Mongdb</title>
+		<section>
+			<title>Maven 依赖</title>
+			<screen>
+			<![CDATA[
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+	</dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Repository</title>
+			<programlisting>
+			<![CDATA[
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+
+import cn.netkiller.entity.User;
+
+public interface UserRepository extends ReactiveMongoRepository<User, Long>{
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Service</title>
+			<screen>
+			<![CDATA[
+@Service
+public class MongoServiceImpl implements MongoService {
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Override
+	public Mono<User> getById(Long id) {
+		return userRepository.findById(id);
+	}
+
+	@Override
+	public Mono<User> addUser(User user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public Mono<Boolean> deleteById(Long id) {
+		 userRepository.deleteById(id);
+		 return Mono.create(userMonoSink -> userMonoSink.success());
+	}
+
+	@Override
+	public Mono<User> updateById(User user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public Flux<User> findAllUser() {
+		return userRepository.findAll();
+	}
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>控制器</title>
+			<programlisting>
+			<![CDATA[
+@RestController
+@RequestMapping("/usermg")
+public class UserMongoController {
+	
+	@Autowired
+	private MongoService mongoService;
+
+	@GetMapping("/add")
+	public Mono<User> add(User user) {
+		user = new User();
+		User user = new User();
+		user.setAccount("neo");
+		user.setPassword("123456");
+		user.setNickname("netkiller");
+		user.setEmail("netkiller@msn.com");
+		user.setPhone("");
+		user.setGender(true);
+		user.setBirthday("1980-01-30");
+		user.setProvince("广东省");
+		user.setCity("深圳市");
+		user.setCounty("南山区");
+		user.setAddress("");
+		user.setState("Enabled");
+		
+	
+		System.out.println(JSON.toJSONString(user));
+		return mongoService.addUser(user);
+
+	}
+	
+	/**
+	 *	注意这里 produces = MediaType.APPLICATION_STREAM_JSON_VALUE 必须这样设置
+	 */
+	@GetMapping(value="/findAll",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	public Flux<User> findAll(){
+		return mongoService.findAllUser().delayElements(Duration.ofSeconds(1));
+	}
+}
+			]]>
+			</programlisting>
+			<para>produces 如果不是application/stream+json则调用端无法滚动得到结果，将一直阻塞等待数据流结束或超时。</para>
+		</section>
 	</section>
 </section>
