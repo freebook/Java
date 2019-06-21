@@ -22,6 +22,7 @@
 <!ENTITY section.rest.xml				SYSTEM "section.rest.xml">
 <!ENTITY section.mvc.view.xml			SYSTEM "section.mvc.view.xml">
 <!ENTITY section.mvc.xml				SYSTEM "section.mvc.xml">
+<!ENTITY section.mvc.service.xml		SYSTEM "section.mvc.service.xml">
 
 <!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 <!ENTITY section.security.oauth.xml		SYSTEM "section.security.oauth.xml">
