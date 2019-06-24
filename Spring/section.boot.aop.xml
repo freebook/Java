@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="spring.aop">
+	<title></title>
+	<section>
+		<title></title>
+		<section>
+			<title>Maven</title>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Pojo 类</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.aop.pojo;
+
+import lombok.Data;
+
+@Data
+public class Employee {
+	private String id;
+	private String name;
+
+	public Employee() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Service 类</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.aop.service;
+
+import org.springframework.stereotype.Service;
+
+import cn.netkiller.aop.pojo.Employee;
+
+@Service
+public class EmployeeService {
+
+	public EmployeeService() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Employee createEmployee(String id, String name) {
+
+		Employee emp = new Employee();
+		emp.setName(name);
+		emp.setId(id);
+		return emp;
+	}
+
+	public void deleteEmployee(String id) {
+
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Aspect 类</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.aop.aspect;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class EmployeeServiceAspect {
+	public EmployeeServiceAspect() {
+	}
+
+	@Before(value = "execution(* cn.netkiller.aop.service.EmployeeService.*(..)) and args(id, name)")
+	public void beforeAdvice(JoinPoint joinPoint, String id, String name) {
+		System.out.println("Before method:" + joinPoint.getSignature());
+
+		System.out.println("Creating Employee with id: " + id + ", name: " + name);
+	}
+
+	@After(value = "execution(* cn.netkiller.aop.service.EmployeeService.*(..)) and args(id,name)")
+	public void afterAdvice(JoinPoint joinPoint, String id, String name) {
+		System.out.println("After method:" + joinPoint.getSignature());
+
+		System.out.println("Successfully created Employee with id: " + id + ", name: " + name);
+	}
+}		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>控制器</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.aop.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.netkiller.aop.pojo.Employee;
+import cn.netkiller.aop.service.EmployeeService;
+
+@RestController
+public class EmployeeController {
+
+	public EmployeeController() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Autowired
+	private EmployeeService employeeService;
+
+	@RequestMapping(value = "/add/employee", method = RequestMethod.GET)
+	public Employee addEmployee(@RequestParam("id") String id, @RequestParam("name") String name) {
+
+		return employeeService.createEmployee(id, name);
+
+	}
+
+	@RequestMapping(value = "/remove/employee", method = RequestMethod.GET)
+	public String removeEmployee(@RequestParam("id") String id) {
+
+		employeeService.deleteEmployee(id);
+
+		return "Employee removed";
+	}
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.aop;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		SpringApplication.run(Application.class, args);
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<para>触发 Aspect</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % curl http://localhost:8080/add/employee\?id\=1\&name\=neo
+{"id":"1","name":"neo"}
+			]]>
+			</screen>
+			<para>控制台输出效果</para>
+			<screen>
+			<![CDATA[
+Before method:Employee cn.netkiller.aop.service.EmployeeService.createEmployee(String,String)
+Creating Employee with id: 1, name: neo
+After method:Employee cn.netkiller.aop.service.EmployeeService.createEmployee(String,String)
+Successfully created Employee with id: 1, name: neo
+			]]>
+			</screen>
+		</section>
+		
+	</section>
+</section>
