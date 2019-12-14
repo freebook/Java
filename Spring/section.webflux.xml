@@ -588,4 +588,8 @@ data:发射
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Mono/Flux</title>
+		<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
+	</section>
 </section>

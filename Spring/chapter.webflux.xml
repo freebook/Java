@@ -1,5 +1,5 @@
 <chapter id="webflux"><?dbhtml dir="WebFlux" ?>
-	<title>WebFlux</title>
+	<title>WebFlux framework</title>
 	<section id="webflux.helloworld">
 		<title>Getting Started</title>
 		<section>
