@@ -4316,23 +4316,7 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 		</programlisting>
 	</section>
 	&section.boot.swagger2.xml;
-	<section id="lombok">
-		<title>Spring boot with lombok</title>
-		<screen>
-		<![CDATA[
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>		
-		]]>
-		</screen>
-		<programlisting>
-		<![CDATA[
-		
-		]]>
-		</programlisting>
-	</section>
+	&section.boot.lombok.xml;
 	<section id="spring.boot.ports">
 		<title>Tomcat 端口</title>
 		<programlisting>
