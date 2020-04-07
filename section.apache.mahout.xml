@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="mahout">
+	<title>Mahout</title>
+	<section>
+		<title>推荐系统</title>
+		<section>
+			<title>Maven pom.xml</title>
+			<screen>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.netkiller</groupId>
+	<artifactId>mahout</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>mahout</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-core</artifactId>
+			<version>0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.7.30</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>推荐程序</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.mahout;
+
+import java.io.File;
+import java.util.List;
+
+import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
+import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
+import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
+import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.apache.mahout.cf.taste.recommender.Recommender;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+
+public class App {
+
+	public App() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try {
+			// 从文件加载数据
+			DataModel model = new FileDataModel(new File("target/classes/test.csv"));
+			// 指定用户相似度计算方法，这里采用皮尔森相关度
+			UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+			// 指定用户邻居数量，这里为2
+			UserNeighborhood neighborhood = new NearestNUserNeighborhood(2, similarity, model);
+			// 构建基于用户的推荐系统
+			Recommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
+			// 得到指定用户的推荐结果，这里是得到用户1的两个推荐
+			List<RecommendedItem> recommendations = recommender.recommend(1, 2);
+			// 打印推荐结果
+			for (RecommendedItem recommendation : recommendations) {
+				System.out.println(recommendation);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>数据文件</title>
+			<screen>
+			<![CDATA[
+1,101,5.0
+1,102,3.0
+1,103,2.5
+2,101,2.0
+2,102,2.5
+2,103,5.0
+2,104,2.0
+3,101,2.5
+3,104,4.0
+3,105,4.5
+3,107,5.0
+4,101,5.0
+4,103,3.0
+4,104,4.5
+4,106,4.0
+5,101,4.0
+5,102,3.0
+5,103,2.0
+5,104,4.0
+5,105,3.5
+5,106,4.0			
+			]]>
+			</screen>
+			
+		</section>
+	</section>
+</section>

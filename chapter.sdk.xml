@@ -2,6 +2,7 @@
 <chapter id="sdk">
 	<title>Software Development Kit</title>
 	&chapter.google.xml;
+	&section.apache.mahout.xml;
 	<section id="hessian">
 		<title>Hessian</title>
 		<para> 基于Binary-RPC协议实现</para>

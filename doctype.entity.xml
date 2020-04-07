@@ -47,6 +47,7 @@
 
 <!ENTITY chapter.apache.xml				SYSTEM "chapter.apache.xml">
 <!ENTITY section.apache.httpclient.xml	SYSTEM "section.apache.httpclient.xml">
+<!ENTITY section.apache.mahout.xml		SYSTEM "section.apache.mahout.xml">
 <!ENTITY chapter.google.xml				SYSTEM "chapter.google.xml">
 
 <!ENTITY chapter.elasticsearch.xml		SYSTEM "chapter.elasticsearch.xml">
