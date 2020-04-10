@@ -30,8 +30,7 @@
 	%test.doctype.entity.xml;
 
 ]>
-<book xml:base="http://netkiller.sourceforge.net/linux/www"
-	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+<book xml:base="http://netkiller.sourceforge.net/linux/www" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Java 手札</title>
 		<subtitle>Java, Servlet, JavaBean, Struts, Spring ...</subtitle>
@@ -42,17 +41,27 @@
 			<year>2015-2019</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
-
+		<cover>
+			<para role="tagline">Netkiller Java 手札</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/cover.png" />
+				</imageobject>
+			</mediaobject>
+		</cover>
 		<publisher>
 			<publishername>Neo</publishername>
 		</publisher>
 		<isbn>ISBN#</isbn>
 		<edition>User's Guide version 1.0 for Linux</edition>
 		<pubdate>2017-11</pubdate>
-		<releaseinfo>文档始创于<date>2015-11-10</date></releaseinfo>
+		<releaseinfo>
+			文档始创于
+			<date>2015-11-10</date>
+		</releaseinfo>
 
 		&book.info.legalnotice.xml;
-		
+
 		<abstract id="abstract">
 			<title>关于《Netkiller Java 手札》</title>
 			<para>作者2002年开始在项目中使用Java，各种原因没有留下Java文档，2015因工作需要重新拾起Java并整理本文档。</para>
@@ -64,7 +73,7 @@
 
 	&book.preface.xml;
 	&book.dedication.xml;
-<!-- =========================================================================== -->
+	<!-- =========================================================================== -->
 	&chapter.java.xml;
 	&chapter.build.xml;
 	&chapter.servlet.xml;
@@ -80,10 +89,10 @@
 	&chapter.kafka.xml;
 	&chapter.test.xml;
 	&chapter.sdk.xml;
-<!-- =========================================================================== -->
+	<!-- =========================================================================== -->
 	&part.android.xml;
 	<!-- &part.search.xml; -->
-<!-- =========================================================================== -->
+	<!-- =========================================================================== -->
 	&book.appendix.xml;
 
 </book>

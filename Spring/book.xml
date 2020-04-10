@@ -14,43 +14,30 @@
 	%doctype.entity.xml;
 	
 ]>
-<book xml:base="http://www.netkiller.cn/spring/"
-	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+<book xml:base="http://www.netkiller.cn/spring/" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Spring Cloud 手札</title>
 		<subtitle>Spring Cloud Cookbook</subtitle>
 		
 		&book.info.author.xml;
-		
-		<!-- <authorgroup>
-		<author>
-			<personname>
-				<honorific>Mr</honorific>
-				<firstname>Neo</firstname>
-				<othername></othername>
-				<surname>Chan</surname>
-				<lineage>陈景峰(BG7NYT)</lineage>
-			</personname>
-			<affiliation>
-				<address>
-					<country>中国</country><state>广东省</state><city>深圳市</city><street>宝安区龙华镇溪山美地</street>
-					<postcode>518109</postcode>
-					<phone>+86 13113668890</phone>
-					<fax>+86 755 29812080</fax>
-					<email>netkiller@msn.com</email>
-				</address>
-			</affiliation>
-		</author>
 
-		</authorgroup> -->
+		<!-- <authorgroup> <author> <personname> <honorific>Mr</honorific> <firstname>Neo</firstname> <othername></othername> <surname>Chan</surname> <lineage>陈景峰(BG7NYT)</lineage> </personname> <affiliation> <address> <country>中国</country><state>广东省</state><city>深圳市</city><street>宝安区龙华镇溪山美地</street> <postcode>518109</postcode> <phone>+86 13113668890</phone> <fax>+86 755 29812080</fax> <email>netkiller@msn.com</email> </address> </affiliation> </author> </authorgroup> -->
 
 		<edition>$Revision: 606 $</edition>
-  		<pubdate>2017-11</pubdate>
+		<pubdate>2017-11</pubdate>
 
 		<copyright>
 			<year>2015-2019</year>
 			<holder>Neo Chan</holder>
 		</copyright>
+		<cover>
+			<para role="tagline">Netkiller Spring Cloud 手札</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/spring/cover.png" />
+				</imageobject>
+			</mediaobject>
+		</cover>
 		<releaseinfo>
 			<remark>$Id: book.xml 606 2013-05-29 09:52:58Z netkiller $</remark>
 		</releaseinfo>
