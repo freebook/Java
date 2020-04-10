@@ -1,6 +1,7 @@
 XSLTPROC=/usr/bin/xsltproc
 DSSSL=../docbook-xsl/docbook.xsl
-TMPDIR=$(shell mktemp -d --suffix=.tmp -p /tmp centos.html.XXXXXX)
+TMPDIR=$(shell mktemp -d --suffix=.epub -p /tmp spring.XXXXXX)
+#TMPDIR=tmp
 WORKSPACE=~/workspace
 PROJECT=Java/Spring
 DOCBOOK=spring
@@ -8,6 +9,9 @@ PUBLIC_HTML=~/public_html
 PROJECT_DIR=$(WORKSPACE)/$(PROJECT)
 HTML_DIR=$(PUBLIC_HTML)/$(DOCBOOK)
 HTMLHELP_DIR=~/htmlhelp/$(DOCBOOK)/htmlhelp
+IMAGES=$(WORKSPACE)/Java/images
+EPUB_DIR=$(PUBLIC_HTML)/download/$(shell date '+%Y')/epub/
+EBOOK=Netkiller-Spring
 
 all: html htmlhelp rpm
 
@@ -33,34 +37,23 @@ rpm:
 	rpm -qpl ~/rpmbuild/RPMS/x86_64/netkiller-$(DOCBOOK)-*.x86_64.rpm
 
 epub:
-
-	DSSSL=../docbook-xsl/epub3.xsl
-	XSLTPROC="xsltproc --stringparam epub.stylesheet docbook.css --stringparam use.id.as.filename 1 ${DSSSL}"
-	PROJECT="Netkiller-Spring"
-	EPUB=$PUBLIC_HTML/download/$(date '+%Y')/epub/
-	IMAGES=${WORKSPACE}/Java/images
-	#echo $PROJECT
-	#echo $EPUB
-	mkdir -p ${EPUB}
-
-	TMPDIR=$(mktemp -d --suffix=.tmp -p /tmp epub.$2.XXXXXX)
-	echo $TMPDIR
-	cd $TMPDIR
+	@DSSSL=$(WORKSPACE)/Java/docbook-xsl/epub3.xsl
+	@mkdir -p $(EPUB_DIR)
 	
-	${XSLTPROC} $PROJECT_DIR/book.xml
+	@#$(dir $(TMPDIR) ) 
+	@#$(shell cd $(TMPDIR) && )
+	$(XSLTPROC) --timing -o $(TMPDIR) $(WORKSPACE)/Java/docbook-xsl/epub3.xsl $(PROJECT_DIR)/book.xml
 
-	if [ -d ${IMAGES} ]; then
-		rsync -a ${IMAGES} OEBPS/
-		rsync -a $WORKSPACE/Website/images/book/* OEBPS/images/
-	fi
-	#find OEBPS -type d -iname ".svn" -exec rm -rf {} \; 
+	@$(shell test -d $(IMAGES) && rsync -a $(IMAGES) OEBPS/)
+	@rsync -a $(WORKSPACE)/Website/images/book/* OEBPS/images/
+	@#find OEBPS -type d -iname ".svn" -exec rm -rf {} \; 
+	@echo "application/epub+zip" > mimetype
+	@zip -0Xq  $(EBOOK).epub mimetype
+	@zip -Xr9D $(EBOOK).epub *
+	@cp *.epub $(EPUB_DIR)
+	@cd -
 
-	echo "application/epub+zip" > mimetype
-	zip -0Xq  ${PROJECT}.epub mimetype
-	zip -Xr9D ${PROJECT}.epub *
-
-	cp *.epub ${EPUB}
-	cd -
+	@echo $(TMPDIR)
 
 clean:
 	rm -rf $(HTML)
