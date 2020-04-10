@@ -34,7 +34,7 @@
 			<para role="tagline">Netkiller Spring Cloud 手札</para>
 			<mediaobject>
 				<imageobject>
-					<imagedata fileref="images/spring/cover.png" />
+					<imagedata fileref="images/cover.png" />
 				</imageobject>
 			</mediaobject>
 		</cover>
