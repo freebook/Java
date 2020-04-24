@@ -230,6 +230,7 @@ String welcome = messageSource.getMessage("welcome.message", new Object[]{"Neo c
 			</screen>
 		</section>
 	</section>
+	&section.mvc.validation.xml;
 	<section id="faq">
 		<title>FAQ</title>
 		<section>

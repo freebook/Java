@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="validation">
+	<title>校验器(Validator)</title>
+	<para>常见的校验注解</para>
+	<screen>
+	<![CDATA[
+@Null 被注释的元素必须为 null
+@NotNull 被注释的元素必须不为 null
+@AssertTrue 被注释的元素必须为 true
+@AssertFalse 被注释的元素必须为 false
+@Min(value) 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
+@Max(value) 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
+@DecimalMin(value) 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
+@DecimalMax(value) 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
+@Size(max=, min=) 被注释的元素的大小必须在指定的范围内
+@Digits (integer, fraction) 被注释的元素必须是一个数字，其值必须在可接受的范围内
+@Past 被注释的元素必须是一个过去的日期
+@Future 被注释的元素必须是一个将来的日期
+@Pattern(regex=,flag=) 被注释的元素必须符合指定的正则表达式
+
+Hibernate Validator提供的校验注解：
+@NotBlank(message =) 验证字符串非null，且长度必须大于0
+@Email 被注释的元素必须是电子邮箱地址
+@Length(min=,max=) 被注释的字符串的大小必须在指定的范围内
+@NotEmpty 被注释的字符串的必须非空
+@Range(min=,max=,message=) 被注释的元素必须在合适的范围内	
+	]]>
+	</screen>
+	<section>
+		<title>定义校验器</title>
+		<programlisting>
+		<![CDATA[
+package web.domain;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class User {
+
+	private Long id;
+
+	@NotNull(message = "用户账号不能为空")
+	@Size(min = 6, max = 11, message = "账号长度必须是6-11个字符")
+	private String username;
+
+	@NotNull(message = "用户密码不能为空")
+	@Size(min = 6, max = 8, message = "密码长度必须是6-8个字符")
+	private String password;
+
+	@NotNull(message = "用户邮箱不能为空")
+	@Email(message = "邮箱格式不正确")
+	private String email;
+
+	// 不允许为空，并且年龄的最小值为18
+	@NotNull
+	@Min(18)
+	private Integer age;
+
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email + ", age=" + age + "]";
+	}
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>获取 BindingResult 结果</title>
+		<programlisting>
+		<![CDATA[
+package web.restful;
+
+import javax.validation.Valid;
+
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import web.domain.User;
+
+@RestController
+@RequestMapping("/restful")
+public class TestRestController {
+
+	@RequestMapping("/test")
+	public String home() {
+		return "OK";
+	}
+
+	@PostMapping("/validation")
+	public String addUser(@RequestBody @Valid User user, BindingResult bindingResult) {
+		// 如果有参数校验失败，返回错误信息
+		if (bindingResult.hasErrors()) {
+			System.out.println(user.toString());
+			System.out.println(bindingResult.getErrorCount());
+			System.out.println(bindingResult.getAllErrors());
+		}
+
+		for (ObjectError error : bindingResult.getAllErrors()) {
+			return error.getDefaultMessage();
+		}
+		return user.toString();
+	}
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>测试校验效果</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/Management % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkillermsn.com"}' curl http://localhost:8080/restful/validation
+邮箱格式不正确
+
+neo@MacBook-Pro-Neo ~/workspace/Management % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com"}' curl http://localhost:8080/restful/validation
+must not be null
+
+neo@MacBook-Pro-Neo ~/workspace/Management % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com", "age":20}' curl http://localhost:8080/restful/validation
+User [id=100000, username=netkiller, password=123456, email=netkiller@msn.com, age=20]
+		]]>
+		</screen>
+	</section>
+</section>

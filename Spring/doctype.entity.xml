@@ -20,11 +20,13 @@
 <!ENTITY section.boot.aop.xml			SYSTEM "section.boot.aop.xml">
 
 <!ENTITY chapter.interceptor.xml		SYSTEM "chapter.interceptor.xml">
-<!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">
 <!ENTITY section.rest.xml				SYSTEM "section.rest.xml">
-<!ENTITY section.mvc.view.xml			SYSTEM "section.mvc.view.xml">
+
 <!ENTITY section.mvc.xml				SYSTEM "section.mvc.xml">
+<!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">
+<!ENTITY section.mvc.view.xml			SYSTEM "section.mvc.view.xml">
 <!ENTITY section.mvc.service.xml		SYSTEM "section.mvc.service.xml">
+<!ENTITY section.mvc.validation.xml		SYSTEM "section.mvc.validation.xml">
 
 <!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 <!ENTITY section.security.oauth.xml		SYSTEM "section.security.oauth.xml">
