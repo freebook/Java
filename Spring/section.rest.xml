@@ -465,7 +465,7 @@ public class UploadClient {
 		]]>
 		</programlisting>
 	</section>
-	<section id="rest.auth">
+	<section id="RestTemplate.auth">
 		<title>HTTP Auth</title>
 		<section>
 			<title>Client</title>
@@ -483,7 +483,7 @@ Example results = template.getForObject("http://www.netkiller.cn:9090/foo.json",
 		</section>
 	</section>
 
-	<section id="double.auth">
+	<section id="RestTemplate.double.auth">
 		<title>PKCS12</title>
 		<programlisting>
 		<![CDATA[
@@ -600,7 +600,7 @@ public class TestController {
 		</programlisting>
 
 	</section>
-	<section>
+	<section id="RestTemplate.timeout">
 		<title>Timeout 超时设置</title>
 		<section>
 			<title>JRE 启动参数设置超时时间</title>
