@@ -27,8 +27,12 @@ Hibernate Validator提供的校验注解：
 	]]>
 	</screen>
 	<section>
-		<title>定义校验器</title>
-		<programlisting>
+		<title>常规用法</title>
+
+
+		<section>
+			<title>定义校验器</title>
+			<programlisting>
 		<![CDATA[
 package web.domain;
 
@@ -110,11 +114,11 @@ public class User {
 }
 		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>获取 BindingResult 结果</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>获取 BindingResult 结果</title>
+			<programlisting>
 		<![CDATA[
 package web.restful;
 
@@ -156,12 +160,12 @@ public class TestRestController {
 }
 		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>测试校验效果</title>
-		<screen>
-		<![CDATA[
+			</programlisting>
+		</section>
+		<section>
+			<title>测试校验效果</title>
+			<screen>
+			<![CDATA[
 neo@MacBook-Pro-Neo ~/workspace/Management % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkillermsn.com"}' curl http://localhost:8080/restful/validation
 邮箱格式不正确
 
@@ -170,7 +174,241 @@ must not be null
 
 neo@MacBook-Pro-Neo ~/workspace/Management % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com", "age":20}' curl http://localhost:8080/restful/validation
 User [id=100000, username=netkiller, password=123456, email=netkiller@msn.com, age=20]
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>自定义注解</title>
+		<para>下面实现一个手机号码检查的注解。</para>
+		<screen>
+		<![CDATA[
+@Retention ：用来说明该注解类的生命周期。它有以下三个参数：
+RetentionPolicy.SOURCE : 注解只保留在源文件中
+RetentionPolicy.CLASS : 注解保留在class文件中，在加载到JVM虚拟机时丢弃
+RetentionPolicy.RUNTIME : 注解保留在程序运行期间，此时可以通过反射获得定义在某个类上的所有注解。
+
+@Target : 用来说明该注解可以被声明在那些元素之前。
+ElementType.TYPE：说明该注解只能被声明在一个类前。
+ElementType.FIELD：说明该注解只能被声明在一个类的字段前。
+ElementType.METHOD：说明该注解只能被声明在一个类的方法前。
+ElementType.PARAMETER：说明该注解只能被声明在一个方法参数前。
+ElementType.CONSTRUCTOR：说明该注解只能声明在一个类的构造方法前。
+ElementType.LOCAL_VARIABLE：说明该注解只能声明在一个局部变量前。
+ElementType.ANNOTATION_TYPE：说明该注解只能声明在一个注解类型前。
+ElementType.PACKAGE：说明该注解只能声明在一个包名前。
+
+@Constraint来限定自定义注解的方法
 		]]>
 		</screen>
+		<section>
+			<title>定义校验器注解接口</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.web.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.ElementType;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+import cn.netkiller.web.annotation.impl.MobileValidator;
+
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER })
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = MobileValidator.class)
+@Documented
+// 注解的实现类。
+public @interface Mobile {
+	// 校验错误的默认信息
+	String message() default "手机号码格式不正确！";
+
+	// 是否强制校验
+	boolean isRequired() default true;
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>实现接口</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.web.annotation.impl;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.springframework.util.StringUtils;
+
+import cn.netkiller.web.annotation.Mobile;
+
+public class MobileValidator implements ConstraintValidator<Mobile, String> {
+
+	public MobileValidator() {
+		// TODO Auto-generated constructor stub
+	}
+
+	private boolean required = false;
+
+	@Override
+	public void initialize(Mobile constraintAnnotation) {
+		required = constraintAnnotation.isRequired();
+	}
+
+	@Override
+	public boolean isValid(String phone, ConstraintValidatorContext constraintValidatorContext) {
+		Pattern mobile_pattern = Pattern.compile("1\\d{10}");
+		// System.out.println(phone);
+		// 是否为手机号的实现
+		if (required) {
+			if (StringUtils.isEmpty(phone)) {
+				return false;
+			}
+			Matcher m = mobile_pattern.matcher(phone);
+			return m.matches();
+
+		} else {
+			return StringUtils.isEmpty(phone);
+		}
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>注解用法</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.web.domain;
+
+import java.util.Date;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import cn.netkiller.web.annotation.Mobile;
+
+public class User {
+
+	private Long id;
+
+	@NotNull(message = "用户账号不能为空")
+	@Size(min = 6, max = 11, message = "账号长度必须是6-11个字符")
+	private String username;
+
+	@NotNull(message = "用户密码不能为空")
+	@Size(min = 6, max = 8, message = "密码长度必须是6-8个字符")
+	private String password;
+
+	@NotNull(message = "用户邮箱不能为空")
+	@Email(message = "邮箱格式不正确")
+	private String email;
+
+	// 这里是新添加的注解奥
+	@Mobile(message = "手机号码格式错误！！！")
+	private String phone;
+
+	// 不允许为空，并且年龄的最小值为18
+	@NotNull
+	@Min(18)
+	private Integer age;
+
+	@Future
+	private Date createTime;
+
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email + ", phone=" + phone + ", age=" + age + "]";
+	}
+
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试注解</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com", "age":20, "phone":"BB"}' curl http://localhost:8080/restful/validation
+手机号码格式错误！！！
+
+neo@MacBook-Pro-Neo ~ % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com", "age":20, "phone":"2433"}' curl http://localhost:8080/restful/validation
+手机号码格式错误！！！
+
+neo@MacBook-Pro-Neo ~ % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com", "age":20, "phone":"130"}' curl http://localhost:8080/restful/validation
+手机号码格式错误！！！% 
+
+
+neo@MacBook-Pro-Neo ~ % curl -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com", "age":20, "phone":"13022223333"}' curl http://localhost:8080/restful/validation
+User [id=100000, username=netkiller, password=123456, email=netkiller@msn.com, phone=13022223333, age=20]% 			
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
