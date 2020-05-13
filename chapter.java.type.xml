@@ -312,6 +312,17 @@ public class ragexTest {
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title>利用正则快速转换时间格式</title>
+				<programlisting>
+				<![CDATA[
+// 20200303 => 2020-03-03
+date = date.replace(/(.{4})/, "$1-");
+date = date.replace(/(.{7})/, "$1-");				
+				]]>
+				</programlisting>
+			</section>
+			
 		</section>
 		<section id="substring">
 			<title>substring</title>
