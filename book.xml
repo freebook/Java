@@ -9,7 +9,7 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "common/doctype.entity.xml">
 	%common.doctype.entity.xml;
 	
 	<!ENTITY book.info.abstract.xml 	SYSTEM "../Developer/book.info.abstract.xml">
@@ -38,7 +38,7 @@
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2015-2019</year>
+			<year>2015-2020</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 		<cover>
