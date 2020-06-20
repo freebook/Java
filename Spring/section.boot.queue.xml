@@ -1,4 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section id="rabbitmq">
+	<title>Spring boot with RabbitMQ(AMQP)</title>
+	<section>
+		<title>maven</title>
+		<programlisting>
+			<![CDATA[
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>RabbitMQConfig</title>
+		<programlisting>
+			<![CDATA[
+@Configuration
+public class RabbitMQConfig {
+
+    public final static String QUEUE_NAME = "spring-boot-queue";
+    public final static String EXCHANGE_NAME = "spring-boot-exchange";
+    public final static String ROUTING_KEY = "spring-boot-key";
+
+    // 创建队列
+    @Bean
+    public Queue queue() {
+        return new Queue(QUEUE_NAME);
+    }
+
+    // 创建一个 topic 类型的交换器
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange(EXCHANGE_NAME);
+    }
+
+    // 使用路由键（ROUTING_KEY）把队列（Queue）绑定到交换器（Exchange）
+    @Bean
+    public Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+    }
+
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("127.0.0.1", 5672);
+        connectionFactory.setUsername("guest");
+        connectionFactory.setPassword("guest");
+        return connectionFactory;
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        return new RabbitTemplate(connectionFactory);
+    }
+
+}
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>生产者</title>
+		<programlisting>
+			<![CDATA[
+@RestController
+public class ProducerController {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @GetMapping("/sendMessage")
+    public String sendMessage() {
+        new Thread(() -> {
+            for (int i = 0; i < 100; i++) {
+                String value = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+                System.out.println("send message {}", value);
+                rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, value);
+            }
+        }).start();
+        return "ok";
+    }
+
+}
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>消费者</title>
+		<programlisting>
+			<![CDATA[
+@Component
+public class Consumer {
+
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
+    public void consumeMessage(String message) {
+        System.out.println("consume message {}", message);
+    }
+}
+			]]>
+		</programlisting>
+	</section>
+</section>
 <section id="kafka">
 	<title>Spring boot with Apache Kafka</title>
 	<para>Spring boot 1.5.1</para>
