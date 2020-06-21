@@ -107,6 +107,14 @@ $ cat src/main/resources/logback.xml
 		</screen>
 		<para>使用 java -jar project-version-xxx.jar 启动后控制不会再输出日志</para>
 	</section>
+	<section>
+		<title>Spring boot 2.1 以后的版本不打印 Mapped 日志问题</title>
+		<screen>
+		<![CDATA[
+logging.level.org.springframework.web=trace		
+		]]>
+		</screen>
+	</section>
 	<section id="stdout">
 		<title>标准输出</title>
 		<screen>
