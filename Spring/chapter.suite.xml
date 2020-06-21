@@ -19,7 +19,7 @@
 		<title>Dashboard</title>
 		<para>进入菜单 Help -&gt; Dashboard</para>
 	</section>
-	<section>
+	<section id="start.spring.io">
 		<title>Spring Initializr - Bootstrap your application</title>
 		<para><ulink url="https://start.spring.io" /></para>
 	</section>

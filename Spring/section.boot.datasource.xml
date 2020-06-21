@@ -2231,8 +2231,8 @@ spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource
 		</section>
 	</section>
 </section>
-<section id="elasticsearch2">
-	<title>Spring boot with Elasticsearch 2.x</title>
+<section id="elasticsearch">
+	<title>Spring boot with Elasticsearch</title>
 	<section>
 		<title>Maven</title>
 		<programlisting>
@@ -2249,7 +2249,7 @@ spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.3.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
     </parent>
     <dependencies>
 
@@ -2359,7 +2359,7 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
 	</section>
 </section>
 <section id="elasticsearch5">
-	<title>Spring boot with Elasticsearch 5.5.x</title>
+	<title>Spring boot with Elasticsearch TransportClient</title>
 	<para>Spring data 目前还不支持 Elasticsearch 5.5.x 所以需要通过注入 TransportClient 这就意味着使用 5.5.x 版本你无法使用 ElasticsearchRepository 这种特性，只能通过官方的 TransportClient 操作 Elasticsearch。</para>
 	<section>
 		<title>Maven</title>
