@@ -18,9 +18,9 @@
 <!ENTITY section.boot.lombok.xml		SYSTEM "section.boot.lombok.xml">
 <!ENTITY section.boot.command.xml		SYSTEM "section.boot.command.xml">
 <!ENTITY section.boot.aop.xml			SYSTEM "section.boot.aop.xml">
+<!ENTITY section.boot.rest.xml			SYSTEM "section.boot.rest.xml">
 
 <!ENTITY chapter.interceptor.xml		SYSTEM "chapter.interceptor.xml">
-<!ENTITY section.rest.xml				SYSTEM "section.rest.xml">
 
 <!ENTITY section.mvc.xml				SYSTEM "section.mvc.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">

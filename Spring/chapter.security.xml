@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="security" ?>
 	<title>Spring Security</title>
-	<section>
-		<title>配置 Spring Security</title>
+	<section id="spring.security.user.name">
+		<title>Spring Security with HTTP Auth</title>
 		<section>
 			<title>默认配置</title>
 			<para>如果在 maven 中引入了 spring security当你启动 springboot 的时候会提示</para>
@@ -60,7 +60,7 @@ security.basic.enabled=false
 		</section>
 	</section>
 
-	<section id="security">
+	<section id="spring-boot-starter-security">
 		<title>Spring boot with Spring security</title>
 		<section>
 			<title>Maven</title>
@@ -498,10 +498,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 			</section>
 		</section>
 	</section>
-
-	<section id="EnableWebSecurity">
-		<title>EnableWebSecurity</title>
-		<programlisting>
+	<section id="WebSecurity">
+		<title>Spring Boot with Web Security</title>
+		<section id="EnableWebSecurity">
+			<title>EnableWebSecurity</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.config;
 
@@ -548,7 +549,161 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 			]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Web静态资源</title>
+
+			<para>用于Web静态资源的权限控制</para>
+			<programlisting>
+			<![CDATA[
+package com.example.api.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/static/**", "/**/*.jsp");
+	}
+
+	protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+		auth.inMemoryAuthentication().withUser("user1").password("secret1").roles("USER").and().withUser("user2").password("secret2").roles("USER").and().withUser("admin").password("secret").roles("ADMIN");
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().anyRequest().fullyAuthenticated();
+		http.httpBasic();
+		http.csrf().disable();
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>启动 Springboot 可以看到类似日志</para>
+			<screen>
+		<![CDATA[
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/**/json'], []
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/about'], []
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/test/hello'], []
+2018-10-12 18:01:40.693  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/web/**'], []		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>正则匹配</title>
+			<programlisting>
+			<![CDATA[
+@Override
+public void configure(WebSecurity web) throws Exception {
+    web.ignoring().regexMatchers(XXXXX);
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>登陆页面，失败页面，登陆中页面</title>
+			<programlisting>
+			<![CDATA[
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/**").hasRole("USER").and().formLogin().usernameParameter("username") // default is username
+				.passwordParameter("password") // default is password
+				.loginPage("/authentication/login") // default is /login with an HTTP get
+				.failureUrl("/authentication/login?failed") // default is /login?error
+				.loginProcessingUrl("/authentication/login/process"); // default is /login
+
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="corsConfigurationSource()">
+			<title>CORS</title>
+			<programlisting>
+		<![CDATA[
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+ 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and()
+            //other config
+    }
+ 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource()
+    {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://example.com"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+}		
+		]]>
+			</programlisting>
+		</section>
+		<section id="frameOptions">
+			<title>X-Frame-Options 安全</title>
+			<para>X-Frame-Options: SAMEORIGIN</para>
+			<programlisting>
+		<![CDATA[
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+			// ...
+			.headers()
+				.frameOptions().sameOrigin()
+				.httpStrictTransportSecurity().disable();
+	}
+}		
+		]]>
+			</programlisting>
+
+			<para>安全配置 X-FRAME-OPTIONS 指定允许iframe访问的域名</para>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.api.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http.headers().frameOptions().disable().addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM netkiller.cn")).and().
+			csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/","/ping","/v1/*/ping","/public/**","/your/**" ).permitAll()
+			.antMatchers("/v1/**").authenticated().
+			anyRequest().permitAll().and().
+			httpBasic();
+	}
+
+}
+		]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="HttpSecurity">
 		<title>访问控制列表（Access Control List，ACL）</title>
@@ -580,23 +735,8 @@ http.authorizeRequests().antMatchers("/**" ).permitAll();
 			]]>
 			</programlisting>
 		</section>
-		<section>
-			<title>登陆页面，失败页面，登陆中页面</title>
-			<programlisting>
-			<![CDATA[
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/**").hasRole("USER").and().formLogin().usernameParameter("username") // default is username
-				.passwordParameter("password") // default is password
-				.loginPage("/authentication/login") // default is /login with an HTTP get
-				.failureUrl("/authentication/login?failed") // default is /login?error
-				.loginProcessingUrl("/authentication/login/process"); // default is /login
 
-	}			
-			]]>
-			</programlisting>
-		</section>
-		
+
 		<section id="httpBasic">
 			<title>HTTP Auth</title>
 			<programlisting>
@@ -676,124 +816,11 @@ protected void configure(HttpSecurity http) throws Exception {
 			]]>
 			</programlisting>
 		</section>
-		<section id="frameOptions">
-			<title>X-Frame-Options 安全</title>
-			<para>X-Frame-Options: SAMEORIGIN</para>
-			<programlisting>
-		<![CDATA[
-@EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			// ...
-			.headers()
-				.frameOptions().sameOrigin()
-				.httpStrictTransportSecurity().disable();
-	}
-}		
-		]]>
-			</programlisting>
-
-			<para>安全配置 X-FRAME-OPTIONS 指定允许iframe访问的域名</para>
-			<programlisting>
-		<![CDATA[
-package cn.netkiller.api.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
-
-@Configuration
-@EnableWebSecurity
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-
-		http.headers().frameOptions().disable().addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM netkiller.cn")).and().
-			csrf().disable()
-			.authorizeRequests()
-			.antMatchers("/","/ping","/v1/*/ping","/public/**","/your/**" ).permitAll()
-			.antMatchers("/v1/**").authenticated().
-			anyRequest().permitAll().and().
-			httpBasic();
-	}
-
-}
-		]]>
-			</programlisting>
-		</section>
-
-	</section>
-
-	<section id="WebSecurity">
-		<title>WebSecurity</title>
-		<para>用于Web静态资源的权限控制</para>
-		<programlisting>
-			<![CDATA[
-package com.example.api.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-@Configuration
-@EnableWebSecurity
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/static/**", "/**/*.jsp");
-	}
-
-	protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("user1").password("secret1").roles("USER").and().withUser("user2").password("secret2").roles("USER").and().withUser("admin").password("secret").roles("ADMIN");
-	}
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().fullyAuthenticated();
-		http.httpBasic();
-		http.csrf().disable();
-	}
-
-}
-			]]>
-		</programlisting>
-		<para>启动 Springboot 可以看到类似日志</para>
-		<screen>
-		<![CDATA[
-2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/**/json'], []
-2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/about'], []
-2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/test/hello'], []
-2018-10-12 18:01:40.693  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/web/**'], []		
-		]]>
-		</screen>
-		<section>
-			<title>正则匹配</title>
-			<programlisting>
-			<![CDATA[
-@Override
-public void configure(WebSecurity web) throws Exception {
-    web.ignoring().regexMatchers(XXXXX);
-}			
-			]]>
-			</programlisting>
-		</section>
-	</section>
-
-	<section id="AuthenticationManagerBuilder">
-		<title>AuthenticationManagerBuilder</title>
-		<section>
-			<title>添加用户</title>
-			<programlisting>
+		<section id="withUser">
+			<title>withUser</title>
+			<section>
+				<title>添加用户</title>
+				<programlisting>
 			<![CDATA[
 	@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -803,16 +830,16 @@ public void configure(WebSecurity web) throws Exception {
 
     }
 			]]>
-			</programlisting>
+				</programlisting>
 
-		</section>
+			</section>
 
-		<section id="withUser">
-			<title>添加多个用户，并指定角色</title>
+			<section id="withUser">
+				<title>添加多个用户，并指定角色</title>
 
-			<para>添加多个用户</para>
+				<para>添加多个用户</para>
 
-			<programlisting>
+				<programlisting>
 			<![CDATA[
 	@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -823,9 +850,9 @@ public void configure(WebSecurity web) throws Exception {
                 .withUser("admin").password("password").roles("ADMIN");
     }		
 			]]>
-			</programlisting>
+				</programlisting>
 
-			<programlisting>
+				<programlisting>
 			<![CDATA[
 	
 	@Autowired
@@ -840,44 +867,21 @@ public void configure(WebSecurity web) throws Exception {
                 ;
     }
 			]]>
-			</programlisting>
-		</section>
-	</section>
-	<section id="corsConfigurationSource()">
-		<title>corsConfigurationSource()</title>
-		<programlisting>
-		<![CDATA[
-@EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
- 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and()
-            //other config
-    }
- 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource()
-    {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://example.com"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-}		
-		]]>
-		</programlisting>
-	</section>
-	<section id="getAuthentication">
-		<title>获取当前用户</title>
-		<programlisting>
-		<![CDATA[
+				</programlisting>
+			</section>
+			<section id="getAuthentication">
+				<title>获取当前用户</title>
+				<programlisting>
+				<![CDATA[
 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 String currentPrincipalName = authentication.getName();
-		]]>
-		</programlisting>
+				]]>
+				</programlisting>
+			</section>
+		</section>
+
+
 	</section>
+	
 	&section.security.oauth.xml;
 </chapter>	

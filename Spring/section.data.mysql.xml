@@ -1,5 +1,5 @@
 <section id="spring-data-jpa"><!-- <?dbhtml dir="jpa" ?> -->
-	<title>Spring Data MySQL</title>
+	<title>Spring Data with MySQL</title>
 	<section id="engine">
 		<title>选择数据库表引擎</title>
 		<para>正常创建表会使用数据库默认引擎，有时数据库默认引擎并不是我们需要的，通过下面配置可以指定表引擎</para>

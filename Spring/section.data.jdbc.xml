@@ -47,7 +47,7 @@ class AccountServiceImpl implements AccountService {
 	</programlisting>
 </section>
 <section id="JdbcTemplate"><!-- <?dbhtml dir="jdbc" ?> -->
-	<title>JdbcTemplate</title>
+	<title>Spring Data with JdbcTemplate</title>
 	<section id="execute">
 		<title>execute</title>
 		<programlisting>

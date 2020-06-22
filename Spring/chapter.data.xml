@@ -9,7 +9,7 @@
 	&section.data.jdbc.xml;
 	
 <section id="elasticsearch">
-	<title>Elasticsearch</title>
+	<title>Spring Data with Elasticsearch</title>
 	<section>
 		<title>内嵌 Elasticsearch</title>
 		<para>内嵌 Elasticsearch 应用，你不需要一个 Elasticsearch 服务器，启动 Spring boot 即可使用 Elasticsearch 服务。</para>
