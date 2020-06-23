@@ -187,6 +187,53 @@ public class TestRestController {
 			]]>
 			</programlisting>
 		</section>
+
+		<section id="rest.pojo">
+			<title>POJO</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.pojo;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class Message {
+	
+	String title;
+    String text;
+    
+	public Message() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	//@XmlElement
+	@XmlAttribute  
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	//@XmlElement
+	@XmlAttribute
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	@Override
+	public String toString() {
+		return "Message [title=" + title + ", text=" + text + "]";
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>在控制器中完整实例</title>
 			<programlisting>
@@ -285,52 +332,6 @@ public class IndexController {
 			]]>
 			</programlisting>
 		</section>
-		<section id="rest.pojo">
-			<title>POJO</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.pojo;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
-public class Message {
-	
-	String title;
-    String text;
-    
-	public Message() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	//@XmlElement
-	@XmlAttribute  
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
-	//@XmlElement
-	@XmlAttribute
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	@Override
-	public String toString() {
-		return "Message [title=" + title + ", text=" + text + "]";
-	}
-
-}
-			]]>
-			</programlisting>
-		</section>
 		<section id="rest.test">
 			<title>测试</title>
 			<programlisting>
@@ -357,7 +358,7 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		</section>
 	</section>
 	<section id="restTemplate.getForObject">
-		<title>getForObject</title>
+		<title>GET 操作</title>
 		<section>
 			<title>返回字符串</title>
 			<programlisting>
@@ -395,11 +396,15 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		</section>
 
 	</section>
-	<section id="restTemplate.postForObject">
-		<title>postForObject</title>
-		<section>
-			<title>传递对象</title>
-			<programlisting>
+	<section>
+		<title>POST 操作</title>
+
+
+		<section id="restTemplate.postForObject">
+			<title>postForObject</title>
+			<section>
+				<title>传递对象</title>
+				<programlisting>
 			<![CDATA[
 	@RequestMapping("/restful/post/{id}")
 	@ResponseBody
@@ -419,11 +424,11 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		return result;
 	}			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>传递数据结构 MultiValueMap</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>传递数据结构 MultiValueMap</title>
+				<programlisting>
 			<![CDATA[
 	@RequestMapping("/findByMobile")
 	public String findByMobile() {
@@ -450,12 +455,12 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		return result;
 	}
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section>
-	<section id="restTemplate.postForEntity">
-		<title>postForEntity</title>
-		<programlisting>
+		<section id="restTemplate.postForEntity">
+			<title>postForEntity</title>
+			<programlisting>
 		<![CDATA[
 	@RequestMapping("/findByMobile")
 	@ResponseBody
@@ -482,10 +487,11 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		return response.getBody();
 	}		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
 	<section id="restTemplate.put">
-		<title>PUT</title>
+		<title>PUT 操作</title>
 		<programlisting>
 		<![CDATA[
 	@RequestMapping("/restful/put/{id}")
@@ -504,7 +510,7 @@ Date: Tue, 21 Jun 2016 03:08:26 GMT
 		</programlisting>
 	</section>
 	<section id="restTemplate.delete">
-		<title>Delete</title>
+		<title>Delete 操作</title>
 		<programlisting>
 		<![CDATA[
 	@RequestMapping("/restful/delete/{id}")
