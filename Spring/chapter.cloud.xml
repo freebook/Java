@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="cloud" ?>
 	<title>Spring Cloud</title>
-	&chapter.cloud.config.xml;
+	&section.cloud.config.xml;
 	&section.cloud.consol.xml;
-	&chapter.cloud.netflix.xml;
+	&section.cloud.netflix.xml;
 	<section id="spring.cloud.finchley">
 		<title>Spring Cloud Finchley</title>
 		<para>Spring Cloud Finchley 是 Zuul 的替代品</para>
 	</section>
-	&chapter.cloud.stream.xml;
-	&chapter.cloud.sleuth.xml;
+	&section.cloud.stream.xml;
+	&section.cloud.sleuth.xml;
 <section id="spring.cloud.properties">
 	<title>Spring Cloud 相关的 application.properties 配置</title>
 		<section id="spring.cloud.bootstrap.enabled">
@@ -23,5 +23,5 @@ spring.cloud.bootstrap.location=classpath:bootstrap.properties
 		</section>
 </section>	
 	
-	&chapter.cloud.faq.xml;
+	&section.cloud.faq.xml;
 </chapter>

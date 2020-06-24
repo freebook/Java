@@ -377,11 +377,13 @@ management.security.enabled=false
 			<section>
 				<title>application.properties</title>
 				<screen>
-					server.port=8888
-					spring.cloud.config.server.git.uri=ssh://localhost/config-repo
-					spring.cloud.config.server.git.clone-on-start=true
-					security.user.name=cfg
-					security.user.password=s3cr3t
+				<![CDATA[
+server.port=8888
+spring.cloud.config.server.git.uri=ssh://localhost/config-repo
+spring.cloud.config.server.git.clone-on-start=true
+security.user.name=cfg
+security.user.password=s3cr3t
+				]]>
 				</screen>
 			</section>
 			<section>
@@ -466,11 +468,13 @@ neo@MacBook-Pro ~/deployment % curl http://cfg:s3cr3t@localhost:8888/neo-develop
 			<title>Client 配置</title>
 			<para>bootstrap.properties:</para>
 			<screen>
-				spring.application.name=project
-				spring.profiles.active=development
-				spring.cloud.config.uri=http://localhost:8888
-				spring.cloud.config.username=cfg
-				spring.cloud.config.password=s3cr3t
+			<![CDATA[
+spring.application.name=project
+spring.profiles.active=development
+spring.cloud.config.uri=http://localhost:8888
+spring.cloud.config.username=cfg
+spring.cloud.config.password=s3cr3t
+			]]>
 			</screen>
 		</section>
 	</section>

@@ -39,12 +39,12 @@
 <!ENTITY section.data.redis.xml			SYSTEM "section.data.redis.xml">
 
 <!ENTITY chapter.cloud.xml				SYSTEM "chapter.cloud.xml">
-<!ENTITY chapter.cloud.config.xml		SYSTEM "chapter.cloud.config.xml">
-<!ENTITY chapter.cloud.netflix.xml		SYSTEM "chapter.cloud.netflix.xml">
-<!ENTITY chapter.cloud.stream.xml		SYSTEM "chapter.cloud.stream.xml">
-<!ENTITY chapter.cloud.sleuth.xml		SYSTEM "chapter.cloud.sleuth.xml">
+<!ENTITY section.cloud.config.xml		SYSTEM "section.cloud.config.xml">
+<!ENTITY section.cloud.netflix.xml		SYSTEM "section.cloud.netflix.xml">
+<!ENTITY section.cloud.stream.xml		SYSTEM "section.cloud.stream.xml">
+<!ENTITY section.cloud.sleuth.xml		SYSTEM "section.cloud.sleuth.xml">
 <!ENTITY section.cloud.consol.xml		SYSTEM "section.cloud.consol.xml">
-<!ENTITY chapter.cloud.faq.xml			SYSTEM "chapter.cloud.faq.xml">
+<!ENTITY section.cloud.faq.xml			SYSTEM "section.cloud.faq.xml">
 
 <!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">
 <!ENTITY section.webflux.xml			SYSTEM "section.webflux.xml">
