@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="interceptor">
+<section id="interceptor">
 	<title>Interceptor</title>
 	<section id="controller">
 		<title>WebMvcConfigurerAdapter</title>
@@ -65,4 +65,4 @@ public class SpringMVCInterceptor implements HandlerInterceptor {
 		
 		</programlisting>
 	</section>
-</chapter>
+</section>
