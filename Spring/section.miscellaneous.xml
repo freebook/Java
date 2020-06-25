@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="miscellaneous">
+<chapter id="index"><?dbhtml dir="miscellaneous" ?>
 	<title>Miscellaneous</title>
 	<section id="ObjectToJson">
 		<title>Object to Json</title>
