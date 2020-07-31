@@ -1,3 +1,4 @@
+git submodule update
 #rm -rf ~/tmp/spring/
 mkdir -p ~/tmp/spring/
 cp ../common/docbook.css ~/tmp/spring/
