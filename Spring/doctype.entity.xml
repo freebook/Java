@@ -19,6 +19,7 @@
 <!ENTITY section.boot.command.xml		SYSTEM "section.boot.command.xml">
 <!ENTITY section.boot.aop.xml			SYSTEM "section.boot.aop.xml">
 <!ENTITY section.boot.rest.xml			SYSTEM "section.boot.rest.xml">
+<!ENTITY section.boot.starter.xml		SYSTEM "section.boot.starter.xml">
 
 <!ENTITY chapter.mvc.xml				SYSTEM "chapter.mvc.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">
