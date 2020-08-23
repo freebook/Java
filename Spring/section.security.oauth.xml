@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section id="SpringAuthorizationServer">
+	<title>Spring Authorization Server</title>
+	<para>Spring Authorization Server 是 Spring Security OAuth 替代品。</para>
+	<section>
+		<title>Maven 依赖</title>
+		<screen>
+		<![CDATA[
+ <dependency>
+     <groupId>org.springframework.security.experimental</groupId>
+     <artifactId>spring-security-oauth2-authorization-server</artifactId>
+     <version>0.0.1</version>
+ </dependency>		
+		]]>
+		</screen>
+	</section>
+</section>
 <section id="oauth2">
 	<title>Spring cloud with Oauth2</title>
 	<section id="oauth2.doc">
