@@ -106,42 +106,11 @@ logging.level.com.netflix.discovery=OFF
 		<section>
 			<title>检查注册服务器</title>
 			<para>http://localhost:8761</para>
-			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka.png" srccredit="neo" width=""/></para>
+			<para>
+				<graphic format="png" fileref="../../images/spring/cloud/netflix/eureka.png" srccredit="neo" width="" />
+			</para>
 		</section>
-		<section>
-			<title>为 Eureka Server 增加用户认证</title>
-			<section>
-				<title>Maven</title>
-				<screen>
-				<![CDATA[
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>application.properties</title>
-				<screen>
-security.user.name=eureka
-security.user.password=s3cr3t				
-				</screen>
-			</section>
-			<section>
-				<title>Eureka Client</title>
-				<screen>
-spring.application.name=restful-api-service
-eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@localhost:8761/eureka/
-				</screen>
-			</section>
-			<section>
-				<title>Feign Client</title>
-				<screen>
-eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@localhost:8761/eureka/
-				</screen>
-			</section>
-		</section>
+		
 	</section>
 	<section id="eureka.client">
 		<title>Eureka Client</title>
@@ -297,9 +266,13 @@ eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 		<section>
 			<title>测试</title>
 			<para>首先确认客户端已经注册到 http://localhost:8761/</para>
-			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka-registered.png" srccredit="neo" width=""/></para>
+			<para>
+				<graphic format="png" fileref="../../images/spring/cloud/netflix/eureka-registered.png" srccredit="neo" width="" />
+			</para>
 			<para>你可以启动很多 Eureka 客户端，相同的 spring.application.name 会归为一组，为用户提供负载均衡。</para>
-			<para><graphic  format="png" fileref="../../images/spring/cloud/netflix/eureka-registered-2.png" srccredit="neo" width=""/></para>
+			<para>
+				<graphic format="png" fileref="../../images/spring/cloud/netflix/eureka-registered-2.png" srccredit="neo" width="" />
+			</para>
 			<programlisting>
 			<![CDATA[
 neo@MacBook-Pro ~ % curl http://localhost:8080/
@@ -501,7 +474,56 @@ public class UserServiceFeignClientFallback implements UserServiceFeignClient {
 			</programlisting>
 		</section>
 	</section>
-	<section id="zuul">
+	
+	<section>
+		<title>为 Eureka Server 增加用户认证</title>
+		<section>
+			<title>Maven</title>
+			<screen>
+				<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<screen>
+				security.user.name=eureka
+				security.user.password=s3cr3t
+			</screen>
+		</section>
+		<section>
+			<title>Eureka Client</title>
+			<screen>
+				spring.application.name=restful-api-service
+				eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@localhost:8761/eureka/
+			</screen>
+		</section>
+		<section>
+			<title>Feign Client</title>
+			<screen>
+				eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@localhost:8761/eureka/
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Eureka URL</title>
+		<section>
+			<title>/eureka/apps</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl http://localhost:8761/eureka/apps
+<applications>
+  <versions__delta>1</versions__delta>
+  <apps__hashcode></apps__hashcode>
+</applications>			
+			]]>
+			</screen>
+		</section>
+	</section><section id="zuul">
 		<title>Zuul</title>
 		<section>
 			<title>Maven</title>

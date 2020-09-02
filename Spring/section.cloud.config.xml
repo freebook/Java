@@ -1,6 +1,6 @@
 <section id="config">
 	<title>Spring Cloud Config</title>
-	<section id="git">
+	<section id="config.git">
 		<title>Git 仓库</title>
 		<para>克隆仓库</para>
 		<screen>
@@ -231,8 +231,10 @@ public class Application {
 		<section>
 			<title>application.properties</title>
 			<screen>
-				server.port=8888
-				spring.cloud.config.server.git.uri=https://github.com/netkiller/config.git
+			<![CDATA[
+server.port=8888
+spring.cloud.config.server.git.uri=https://github.com/netkiller/config.git
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -241,7 +243,7 @@ public class Application {
 			<![CDATA[
 neo@netkiller $ curl http://localhost:8888/server-development.json
 {"message":"Hello world","test":{"a":"KKOOKK"}}
-			]]>	
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -364,19 +366,24 @@ management.security.enabled=false
 		<section>
 			<title>测试 client</title>
 			<screen>
-				neo@netkiller $ curl http://localhost:8080/message.json
-				Hello world
+			<![CDATA[			
+neo@netkiller $ curl http://localhost:8080/message.json
+Hello world
+			]]>
 			</screen>
 		</section>
-
 	</section>
-	<section id="auth">
-		<title>Config server 用户认证</title>
-		<section>
-			<title>Server 配置</title>
+	<section>
+		<title>Config 高级配置</title>
+
+
+		<section id="auth">
+			<title>Config server 用户认证</title>
 			<section>
-				<title>application.properties</title>
-				<screen>
+				<title>Server 配置</title>
+				<section>
+					<title>application.properties</title>
+					<screen>
 				<![CDATA[
 server.port=8888
 spring.cloud.config.server.git.uri=ssh://localhost/config-repo
@@ -384,11 +391,11 @@ spring.cloud.config.server.git.clone-on-start=true
 security.user.name=cfg
 security.user.password=s3cr3t
 				]]>
-				</screen>
-			</section>
-			<section>
-				<title>Maven</title>
-				<screen>
+					</screen>
+				</section>
+				<section>
+					<title>Maven</title>
+					<screen>
 				<![CDATA[
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -452,22 +459,22 @@ security.user.password=s3cr3t
 </project>
 				
 				]]>
-				</screen>
-			</section>
-			<section>
-				<title>测试是否生效</title>
-				<screen>
+					</screen>
+				</section>
+				<section>
+					<title>测试是否生效</title>
+					<screen>
 				<![CDATA[
 neo@MacBook-Pro ~/deployment % curl http://cfg:s3cr3t@localhost:8888/neo-development.json
 {"message":"Hello world","test":{"name":"neo"}}		
 				]]>
-				</screen>
+					</screen>
+				</section>
 			</section>
-		</section>
-		<section>
-			<title>Client 配置</title>
-			<para>bootstrap.properties:</para>
-			<screen>
+			<section>
+				<title>Client 配置</title>
+				<para>bootstrap.properties:</para>
+				<screen>
 			<![CDATA[
 spring.application.name=project
 spring.profiles.active=development
@@ -475,13 +482,13 @@ spring.cloud.config.uri=http://localhost:8888
 spring.cloud.config.username=cfg
 spring.cloud.config.password=s3cr3t
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section id="encrypt">
-		<title>加密敏感数据</title>
-		<para>Config server 创建证书</para>
-		<programlisting>
+		<section id="encrypt">
+			<title>加密敏感数据</title>
+			<para>Config server 创建证书</para>
+			<programlisting>
 		<![CDATA[
 keytool -genkeypair -alias config-server-key \
        -keyalg RSA -keysize 4096 -sigalg SHA512withRSA \
@@ -489,9 +496,9 @@ keytool -genkeypair -alias config-server-key \
        -keypass s3cr3t -keystore config-server.jks \
        -storepass passw0rd		
 		]]>
-		</programlisting>
-		<para>application.properties 中配置证书</para>
-		<programlisting>
+			</programlisting>
+			<para>application.properties 中配置证书</para>
+			<programlisting>
 		<![CDATA[
 # spring.cloud.config.server.encrypt.enabled=true
 encrypt.key-store.location=classpath:/config-server.jks
@@ -499,15 +506,15 @@ encrypt.key-store.alias=config-server-key
 encrypt.key-store.secret=s3cr3t
 encrypt.key-store.password=passw0rd
 		]]>
-		</programlisting>
-		<para>测试加密</para>
-		<programlisting>
+			</programlisting>
+			<para>测试加密</para>
+			<programlisting>
 		<![CDATA[
 curl -X POST --data-urlencode mypassword http://localhost:8888/encrypt
 		]]>
-		</programlisting>
+			</programlisting>
 
-		<programlisting>
+			<programlisting>
 		<![CDATA[
 $ PASSWORD=$(curl -X POST --data-urlencode passw0rd http://cfg:s3cr3t@localhost:8888/encrypt)
 $ echo "user.password=$PASSWORD" >> api-interface-development.properties
@@ -516,13 +523,13 @@ $ git commit -am 'Added encrypted password'
 # 刷新配置
 $ curl -X POST http://cfg:s3cr3t@localhost:8888/refresh		
 		]]>
-		</programlisting>
-	</section>
-	<section id="spring.cloud.config.jdbc">
-		<title>Spring Cloud Config JDBC Backend</title>
-		<section>
-			<title></title>
-			<programlisting>
+			</programlisting>
+		</section>
+		<section id="spring.cloud.config.jdbc">
+			<title>Spring Cloud Config JDBC Backend</title>
+			<section>
+				<title>Maven pom.xml</title>
+				<programlisting>
 			<![CDATA[
 <parent>
     <groupId>org.springframework.boot</groupId>
@@ -564,11 +571,11 @@ $ curl -X POST http://cfg:s3cr3t@localhost:8888/refresh
     </dependencies>
 </dependencyManagement>			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title></title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>数据库表结构</title>
+				<programlisting>
 			<![CDATA[
 CREATE TABLE `properties` (
   `key` varchar(50) NOT NULL,
@@ -579,11 +586,11 @@ CREATE TABLE `properties` (
   PRIMARY KEY (`KEY`, `APPLICATION`, `PROFILE`, `LABEL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title></title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>Config 服务器</title>
+				<programlisting>
 			<![CDATA[
 @EnableConfigServer
 @SpringBootApplication
@@ -605,12 +612,12 @@ public class Application {
 
 }			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>application.properties</title>
-			<para>spring.profiles.active=jdbc 将配置中心的存储实现切换到jdbc的方式, 必须设置。</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>application.properties</title>
+				<para>spring.profiles.active=jdbc 将配置中心的存储实现切换到jdbc的方式, 必须设置。</para>
+				<programlisting>
 			<![CDATA[
 server.port=8888
 spring.profiles.active=jdbc
@@ -627,8 +634,38 @@ spring.datasource.url= jdbc:postgresql://localhost:5432/configdb
 spring.datasource.username=xxxxxx
 spring.datasource.password=xxxxxx			
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
+		<section>
+			<title>载入 yml 配置文件</title>
+			<para>resources/shared/config-client-dev.yml</para>
+			<screen>
+			<![CDATA[
+server:
+  port: 8762
+foo: foo version 1			
+			]]>
+			</screen>
+			<para>resources/application.yml 配置文件</para>
+			<screen>
+			<![CDATA[
+server:
+  port: 8769
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/shared			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="config.old">
 		<title>Old</title>
