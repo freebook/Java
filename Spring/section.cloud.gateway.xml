@@ -87,7 +87,7 @@ public class Application {
 }
 			]]>
 			</programlisting>
-			
+
 		</section>
 		<section>
 			<title>application.yml</title>
@@ -124,6 +124,6 @@ logging:
 		
 		]]>
 		</programlisting>
-		
+
 	</section>
 </section>

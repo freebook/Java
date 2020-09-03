@@ -110,7 +110,7 @@ logging.level.com.netflix.discovery=OFF
 				<graphic format="png" fileref="../../images/spring/cloud/netflix/eureka.png" srccredit="neo" width="" />
 			</para>
 		</section>
-		
+
 	</section>
 	<section id="eureka.client">
 		<title>Eureka Client</title>
@@ -474,7 +474,7 @@ public class UserServiceFeignClientFallback implements UserServiceFeignClient {
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section>
 		<title>为 Eureka Server 增加用户认证</title>
 		<section>
@@ -523,7 +523,54 @@ neo@MacBook-Pro-Neo ~ % curl http://localhost:8761/eureka/apps
 			]]>
 			</screen>
 		</section>
-	</section><section id="zuul">
+	</section>
+	<section id="ribbon">
+		<title>ribbon</title>
+		<section>
+			<title>LoadBalancerClient 实例</title>
+			<section>
+				<title>application.properties</title>
+				<screen>
+				<![CDATA[
+web.ribbon.listOfServers=localhost:7900,localhost:7901,localhost:7902				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>LoadBalancerClient 获取服务器列表</title>
+				<screen>
+				<![CDATA[
+package cn.netkiller.openfeign.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestController {
+
+	@Autowired
+	private LoadBalancerClient loadBalancerClient;
+
+	@GetMapping("/lb")
+	public String LoadBalancer() {
+		ServiceInstance serviceInstance = this.loadBalancerClient.choose("web");
+		System.out.println("Server: " + serviceInstance.getServiceId() + ":" + serviceInstance.getHost() + ":"
+				+ serviceInstance.getPort());
+
+		return serviceInstance.toString();
+	}
+
+}
+				
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section id="zuul">
 		<title>Zuul</title>
 		<section>
 			<title>Maven</title>

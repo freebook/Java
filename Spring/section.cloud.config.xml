@@ -282,12 +282,43 @@ Hello world
 /{label}/{application}-{profile}.properties		
 		]]>
 			</screen>
+			<para>{application} 映射到客户端的"spring.application.name" 或
+				“spring.cloud.config.name”;</para>
+			<para>{profile}映射到客户端上的"spring.profiles.active" 或
+				“spring.cloud.config.profile”; </para>
+			<para>{label} 是可选的 git 标签，默认 master；</para>
+			<screen>
+			<![CDATA[
+nickname: netkilleriMac:Java neo$ curl http://localhost:8769/webflux-dev.json
+{"name":"Neo","nickname":"netkiller"}
+			
+iMac:Java neo$ curl http://localhost:8769/webflux-dev.properties
+name: Neo
+nickname: netkiller
+
+iMac:Java neo$ curl http://localhost:8769/webflux-dev.yml
+name: Neo
+nickname: netkiller
+
+iMac:Java neo$ curl http://localhost:8769/webflux-dev.yaml
+name: Neo
+nickname: netkiller
+			]]>
+			</screen>
 			<section>
 				<title>分支</title>
 				<para>label 是指 git 的分支</para>
 				<programlisting>
 			<![CDATA[
 spring.cloud.config.label=mybranch
+			]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>basedir</title>
+				<programlisting>
+			<![CDATA[
+spring.cloud.config.server.git.basedir=api/configs
 			]]>
 				</programlisting>
 			</section>
@@ -309,14 +340,7 @@ spring.cloud.config.server.git.password=password
 			]]>
 				</programlisting>
 			</section>
-			<section>
-				<title>basedir</title>
-				<programlisting>
-			<![CDATA[
-spring.cloud.config.server.git.basedir=api/configs
-			]]>
-				</programlisting>
-			</section>
+			
 			<section>
 				<title>本地git仓库</title>
 				<para>创建本地仓库</para>
@@ -376,6 +400,41 @@ ${user.home}/config/root-server.properties
 [root@netkiller config]# curl http://cfg:test@localhost:8888/app-test.properties
 age: 10
 name: neo
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>native 本地配置</title>
+				<para>载入本地配置文件 resources/shared/config-client-dev.yml</para>
+				<screen>
+			<![CDATA[
+server:
+  port: 8762
+foo: foo version 1			
+			]]>
+				</screen>
+				<para>配置中心服务端 resources/application.yml 配置文件</para>
+				<screen>
+			<![CDATA[
+server:
+  port: 8769
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/shared			
+			]]>
+				</screen>
+				<para>测试配置文件</para>
+				<screen>
+			<![CDATA[
+iMac:Java neo$ curl http://localhost:8769/config-client-dev.json
+{"server":{"port":8762},"foo":"foo version 1"}
 			]]>
 				</screen>
 			</section>
@@ -640,41 +699,7 @@ spring.datasource.password=xxxxxx
 				</programlisting>
 			</section>
 		</section>
-		<section>
-			<title>载入 yml 配置文件</title>
-			<para>配置文件 resources/shared/config-client-dev.yml</para>
-			<screen>
-			<![CDATA[
-server:
-  port: 8762
-foo: foo version 1			
-			]]>
-			</screen>
-			<para>配置中心服务端 resources/application.yml 配置文件</para>
-			<screen>
-			<![CDATA[
-server:
-  port: 8769
-spring:
-  application:
-    name: config-server
-  profiles:
-    active: native
-  cloud:
-    config:
-      server:
-        native:
-          search-locations: classpath:/shared			
-			]]>
-			</screen>
-			<para>测试配置文件</para>
-			<screen>
-			<![CDATA[
-iMac:Java neo$ curl http://localhost:8769/config/config/dev.json
-{"name":"config","profiles":["config"],"label":"dev.json","version":null,"state":null,"propertySources":[]}			
-			]]>
-			</screen>
-		</section>
+		
 
 	</section>
 	<section id="config.old">

@@ -45,6 +45,8 @@
 <!ENTITY section.cloud.stream.xml		SYSTEM "section.cloud.stream.xml">
 <!ENTITY section.cloud.sleuth.xml		SYSTEM "section.cloud.sleuth.xml">
 <!ENTITY section.cloud.consol.xml		SYSTEM "section.cloud.consol.xml">
+<!ENTITY section.cloud.openfeign.xml	SYSTEM "section.cloud.openfeign.xml">
+<!ENTITY section.cloud.gateway.xml		SYSTEM "section.cloud.gateway.xml">
 <!ENTITY section.cloud.faq.xml			SYSTEM "section.cloud.faq.xml">
 
 <!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">

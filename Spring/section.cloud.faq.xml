@@ -297,7 +297,7 @@ public interface Search {
 		]]>
 		</programlisting>
 	</section>
-	<section id="">
+	<section>
 		<title>Feign 提示 Consider defining a bean of type 'common.feign.Cms' in your configuration.</title>
 		<para>背景：我们需要共用 Feign 接口，故将 Feign 放到共用的 common-version.jar 包中，供其他项目使用。</para>
 		<para>启动提示：Consider defining a bean of type 'common.feign.Cms' in your configuration.</para>
@@ -332,5 +332,13 @@ public class Application {
 			]]>
 			</programlisting>
 		</example>
+	</section>
+	<section>
+		<title>Load balancer does not have available server for client</title>
+		<screen>
+		<![CDATA[
+com.netflix.client.ClientException: Load balancer does not have available server for client: restful		
+		]]>
+		</screen>
 	</section>
 </section>
