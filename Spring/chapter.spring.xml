@@ -3,10 +3,10 @@
 	&chapter.suite.xml;
 	&chapter.boot.xml;
 	&chapter.mvc.xml;
+	&chapter.webflux.xml;
 	&chapter.data.xml;
 	&chapter.security.xml;
 	&chapter.cloud.xml;
-	&chapter.webflux.xml;
 	&chapter.tomcat.xml;
 	&section.miscellaneous.xml;
 	&chapter.faq.xml;

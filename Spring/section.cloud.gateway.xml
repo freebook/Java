@@ -3,6 +3,7 @@
 	<title>Spring Cloud Gateway</title>
 	<!-- https://github.com/spring-cloud/spring-cloud-gateway -->
 	<!-- https://github.com/spring-cloud-samples/spring-cloud-gateway-sample -->
+	<para>SpringCloud Gateway是基于WebFlux框架实现的网关服务器</para>
 	<orderedlist>
 		<title>gateway网关路由配置有两种方式</title>
 		<listitem>通过@Bean自定义RouteLocator，在启动主类Application中配置</listitem>
@@ -10,7 +11,7 @@
 	</orderedlist>
 	<para>这两种方式都可以实现网关路由，还可以同时使用，写在配置配置文件中对于运维更友好。</para>
 	<section>
-		<title>配置文件方式</title>
+		<title>Gateway 例子</title>
 		<section>
 			<title>Maven</title>
 			<screen>
@@ -103,7 +104,7 @@ spring:
     gateway:
       routes:
       - id: linux
-        uri: http://www.netkiller.cn/linux
+        uri: http://www.netkiller.cn
         predicates:
         - Path=/linux
 
@@ -116,10 +117,9 @@ logging:
 			]]>
 			</screen>
 		</section>
-	</section>
-	<section>
-		<title>RouteLocator 方式</title>
-		<programlisting>
+		<section>
+			<title>RouteLocator 方式</title>
+			<programlisting>
 		<![CDATA[
 package com.springcloud.gateway;
  
@@ -140,13 +140,71 @@ public class GatewayApplication {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("path_route", r -> r.path("/linux")
-                        .uri("http://www.netkiller.cn/linux"))
+                        .uri("http://www.netkiller.cn"))
                 .build();
     }
  
 }		
 		]]>
-		</programlisting>
-
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>路由配置</title>
+		<section>
+			<title>转发操作</title>
+			<programlisting>
+			<![CDATA[
+	@Bean
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+		return builder.routes().route("path_route", r -> r.path("/ch/history/").uri("https://new.qq.com")).build();
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>URL 参数</title>
+			<programlisting>
+			<![CDATA[
+	@Bean
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+		return builder.routes().route("query_route", r -> r.query("id", "1000").uri("https://news.netkiller.cn/news")).build();
+	}			
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+curl http://localhost:8080/?id=1000			
+			]]>
+			</screen>
+			<para>传递参数</para>
+			<programlisting>
+			<![CDATA[
+	@Bean
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+		return builder.routes().route("query_route", r -> r.query("q").uri("https://cn.bing.com/search")).build();
+	}
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+http://localhost:8080/?q=netkiller			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+	@Bean
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+		return builder.routes().route("query_route", r -> r.query("q").and().path("/search").uri("https://cn.bing.com"))
+				.build();
+	}			
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+http://localhost:8080/search?q=netkiller
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
