@@ -8,6 +8,7 @@
 <!ENTITY section.boot.queue.xml			SYSTEM "section.boot.queue.xml">
 <!ENTITY section.boot.properties.xml	SYSTEM "section.boot.properties.xml">
 <!ENTITY section.boot.quickstart.xml	SYSTEM "section.boot.quickstart.xml">
+<!ENTITY section.boot.template.xml		SYSTEM "section.boot.template.xml">
 <!ENTITY section.boot.logging.xml		SYSTEM "section.boot.logging.xml">
 <!ENTITY section.boot.datasource.xml	SYSTEM "section.boot.datasource.xml">
 <!ENTITY section.boot.test.xml			SYSTEM "section.boot.test.xml">
