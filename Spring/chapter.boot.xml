@@ -489,12 +489,14 @@ server.ssl.key-alias=www.netkiller.cn
 			</programlisting>
 			<para>keystore 文件可以放到 classpath 中，首先将证书文件放到 src/main/resources 目录中，然后配置 application.properties 如下：</para>
 			<programlisting>
-				server.port=8443
-				server.ssl.enabled=true
-				server.ssl.key-store=classpath:www.netkiller.cn.keystore
-				server.ssl.key-store-password=123456
-				server.ssl.key-store-type=JKS
-				server.ssl.key-alias=www.netkiller.cn
+			<![CDATA[
+server.port=8443
+server.ssl.enabled=true
+server.ssl.key-store=classpath:www.netkiller.cn.keystore
+server.ssl.key-store-password=passw0rd
+server.ssl.key-store-type=JKS
+server.ssl.key-alias=www.netkiller.cn
+			]]>
 			</programlisting>
 		</section>
 		<section>
@@ -520,7 +522,10 @@ ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMet
 			<para>创建证书</para>
 			<screen>
 			<![CDATA[
-keytool -genkey -alias localhost -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -dname "CN=localhost, OU=netkiller, O=netkiller.cn, L=Guangdong, ST=Shenzhen, C=CN"
+keytool -genkey -alias localhost -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore localhost.p12 -dname "CN=localhost, OU=netkiller, O=netkiller.cn, L=Guangdong, ST=Shenzhen, C=CN"
+keytool -selfcert -alias localhost -keystore localhost.p12
+keytool -export -alias localhost -keystore localhost.p12 -storepass passw0rd -rfc -file localhost.cer
+keytool -importcert -alias localhost -file localhost.cer -keystore /srv/java/jre/lib/security/cacerts
 			]]>
 			</screen>
 			<para>配置启用 http2</para>
@@ -532,7 +537,7 @@ server:
     context-path: /
   ssl:
     enabled: true
-    key-store: classpath:ssl/keystore.p12
+    key-store: classpath:ssl/localhost.p12
     key-store-type: PKCS12
     key-store-password: 123456
   http2:
@@ -545,11 +550,11 @@ server:
 spring.application.name=web
 server.port=8443
 #server.servlet.context-path=/
-server.ssl.enabled: true
-server.ssl.key-store: classpath:keystore.p12
-server.ssl.key-store-type: PKCS12
-server.ssl.key-store-password: 123456
-server.http2.enabled: true
+server.ssl.enabled=true
+server.ssl.key-store=classpath:localhost.p12
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store-password=123456
+server.http2.enabled=true
 			]]>
 			</screen>
 			<para>使用 curl 访问可以看到 HTTP/2 字样，表示成功</para>
