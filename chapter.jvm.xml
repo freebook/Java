@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="index"><?dbhtml dir="jvm" ?>
 	<title>JVM</title>
+	<section>
+		<title>CentOS 8 Java 14</title>
+		<para>安装 jre</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf install java-latest-openjdk		
+		]]>
+		</screen>
+		<para>安装 jdk</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf install java-latest-openjdk-devel
+		]]>
+		</screen>
+		<para>默认是 jdk1.8，使用 alternatives 切换 java 默认版本为 java 14</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# java -version
+openjdk version "1.8.0_262"
+OpenJDK Runtime Environment (build 1.8.0_262-b10)
+OpenJDK 64-Bit Server VM (build 25.262-b10, mixed mode)
+
+
+[root@localhost ~]# alternatives --config java
+
+There are 2 programs which provide 'java'.
+
+  Selection    Command
+-----------------------------------------------
+   1           java-latest-openjdk.x86_64 (/usr/lib/jvm/java-14-openjdk-14.0.2.12-1.rolling.el8.x86_64/bin/java)
+*+ 2           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.262.b10-0.el8_2.x86_64/jre/bin/java)
+
+Enter to keep the current selection[+], or type selection number: 1
+
+
+[root@localhost ~]# java -version
+openjdk version "14.0.2" 2020-07-14
+OpenJDK Runtime Environment 20.3 (build 14.0.2+12)
+OpenJDK 64-Bit Server VM 20.3 (build 14.0.2+12, mixed mode, sharing)		
+		]]>
+		</screen>
+	</section>
 	<section id="jdk6">
 		<title>安装 Java 6</title>
 		<para>解压</para>

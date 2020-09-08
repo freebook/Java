@@ -2,7 +2,15 @@
 	<title>Apache Maven</title>
 	<para>http://maven.apache.org/</para>
 	<section id="install">
-		<title>安装</title>
+		<title>安装 Maven</title>
+		<section>
+			<title>CentOS 8 安装 Maven</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# dnf install maven 			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>Ubuntu</title>
 			<screen><![CDATA[
@@ -1724,7 +1732,7 @@ neo@MacBook-Pro ~/workspace/maven/project1 % find ~/.m2 -iname 'common-0.0.1-SNA
 			</screen>
 		</section>
 	</section>
-	
+
 	<section id="plugins">
 		<title>plugins</title>
 		<section id="maven-compiler-plugin">
