@@ -2,6 +2,26 @@
 <section id="SpringAuthorizationServer">
 	<title>Spring Authorization Server</title>
 	<para>Spring Authorization Server 是 Spring Security OAuth 替代品。</para>
+	<!-- https://github.com/spring-projects-experimental/spring-authorization-server/tree/master/samples/boot/oauth2-integration -->
+	<screen>
+	<![CDATA[
+目前已经可以使用的功能如下：
+
+OAuth 2.0 Authorization Code Grant — RFC 6749 — 授权吗模式
+OAuth 2.0 Client Credentials Grant — RFC 6749 - 客户端令牌模式
+JSON Web Token (JWT) — RFC 7519 - JWT 令牌支持
+JSON Web Signature (JWS) — RFC 7515 -JWS 令牌支持
+JSON Web Key (JWK) — RFC 7517 - JWK 端点支持
+Key Management for providing key(s) when signing a JWT (JWS) — Jwt key 管理
+
+OAuth 2.0 授权码模式 — RFC 6749
+OAuth 2.0 客户端凭据模式 — RFC 6749
+JSON Web Token (JWT) — RFC 7519
+JSON Web Signature (JWS) — RFC 7515
+JSON Web Key (JWK) — RFC 7517
+密钥管理，用于在签署JWT（JWS）时提供密钥	
+	]]>
+	</screen>
 	<section>
 		<title>Maven 依赖</title>
 		<screen>
