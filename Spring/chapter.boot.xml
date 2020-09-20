@@ -2170,4 +2170,5 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 	&section.boot.test.xml;
 	&section.boot.aop.xml;	
 	&section.boot.starter.xml;
+	&section.boot.monitor.xml;
 </chapter>

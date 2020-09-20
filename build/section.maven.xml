@@ -51,6 +51,14 @@ export MAVEN_OPTS = -Dmaven.artifact.threads = 10
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>-s 指定 settings.xml 文件</title>
+			<screen>
+			<![CDATA[
+mvn clean install -Dmaven.test.skip=true -s ~/.m2/settings.xml			
+			]]>
+			</screen>
+		</section>
 		<section id="help">
 			<title>help</title>
 			<para>查看可用的pom定义</para>

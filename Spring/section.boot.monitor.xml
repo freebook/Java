@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="springboot.grafana">
+	<title>Spring boot with Grafana</title>
+	<section>
+		<title>Springboot 集成 InfluxDB</title>
+		<para>Springboot 集成 InfluxDB 非常简单，先引入依赖即可，记得需要同时引入 actuator</para>
+		<screen>
+		<![CDATA[
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+<dependency>
+  <groupId>io.micrometer</groupId>
+  <artifactId>micrometer-registry-influx</artifactId>
+</dependency>		
+		]]>
+		</screen>
+		<para>配置文件 application.yaml 如下</para>
+		<screen>
+		<![CDATA[
+spring:
+  application:
+    name: springboot-with-influxdb
+server:
+  port: 8080
+management:
+  metrics:
+    export:
+      influx:
+        enabled: true
+        db: springboot
+        uri: http://localhost:8086
+        user-name:
+        password:
+        connect-timeout: 1s
+        read-timeout: 10s
+        auto-create-db: true
+        step: 1m
+        num-threads: 2
+        consistency: one
+        compressed: true
+        batch-size: 1000		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>InfluxDB</title>
+		<para>配置好 Springboot 后，启动应用，稍后Springboot 就会将数据源源不断地写入到 InfluxDB 中。</para>
+		<screen>
+		<![CDATA[
+> show measurements
+name: measurements
+name
+----
+jvm_buffer_count
+jvm_buffer_memory_used
+jvm_buffer_total_capacity
+jvm_classes_loaded
+jvm_classes_unloaded
+jvm_gc_live_data_size
+jvm_gc_max_data_size
+jvm_gc_memory_allocated
+jvm_gc_memory_promoted
+jvm_gc_pause
+jvm_memory_committed
+jvm_memory_max
+jvm_memory_used
+jvm_threads_daemon
+jvm_threads_live
+jvm_threads_peak
+jvm_threads_states
+logback_events
+process_cpu_usage
+process_files_max
+process_files_open
+process_start_time
+process_uptime
+system_cpu_count
+system_cpu_usage
+system_load_average_1m
+tomcat_sessions_active_current
+tomcat_sessions_active_max
+tomcat_sessions_alive_max
+tomcat_sessions_created
+tomcat_sessions_expired
+tomcat_sessions_rejected
+visits		
+		]]>
+		</screen>
+		<para>查看数据</para>
+		<screen>
+		<![CDATA[
+select * from process_cpu_usage
+		]]>
+		</screen>
+	</section>
+</section>
