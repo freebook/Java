@@ -4,10 +4,8 @@
 	&section.cloud.config.xml;
 	&section.cloud.consol.xml;
 	&section.cloud.netflix.xml;
-	<section id="spring.cloud.finchley">
-		<title>Spring Cloud Finchley</title>
-		<para>Spring Cloud Finchley 是 Zuul 的替代品</para>
-	</section>
+	&section.cloud.openfeign.xml;
+	&section.cloud.gateway.xml;
 	&section.cloud.stream.xml;
 	&section.cloud.sleuth.xml;
 <section id="spring.cloud.properties">
@@ -21,7 +19,7 @@ spring.cloud.bootstrap.location=classpath:bootstrap.properties
 			]]>
 			</screen>
 		</section>
-</section>	
+</section>
 	
 	&section.cloud.faq.xml;
 </chapter>

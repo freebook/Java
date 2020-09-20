@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="spring.cloud.finchley">
+	<title>Spring Cloud Finchley</title>
+	<para>Spring Cloud Finchley 是 Zuul 的替代品</para>
+</section>

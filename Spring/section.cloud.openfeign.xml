@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="openfeign">
+	<title>Openfeign</title>
+	<section>
+		<title>Openfeign 扫描包配置</title>
+		<screen>
+		<![CDATA[
+@EnableFeignClients(basePackages = {"cn.netkiller.openfeign"})		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>配置连接方式</title>
+		<para>启用 okhttp</para>
+		<screen>
+		<![CDATA[
+feign.okhttp.enabled=true
+		]]>
+		</screen>
+		<para>httpclient</para>
+		<screen>
+		<![CDATA[
+feign.httpclient.enabled=true		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<screen>
+		<![CDATA[
+@FeignClient(name="myServiceName", url="localhost:8888")
+public interface OpenfeignService {
+	@RequestMapping("/")
+	public String getName();
+}		
+		]]>
+		</screen>
+	</section>
+</section>
+
