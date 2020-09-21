@@ -259,7 +259,7 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 			]]>
 			</screen>
 		</section>
-		
+
 		<section>
 			<title>Maven 不使用 Dockerfile 文件</title>
 			<para>项目地址 https://github.com/spotify/docker-maven-plugin</para>
@@ -464,7 +464,7 @@ vim ~/.m2/settings-security.xml
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 
 	<section>
@@ -711,7 +711,7 @@ date: Mon, 21 Sep 2020 02:51:11 GMT
 		</screen>
 	</section>
 </section>
-<section>
+<section id="spring-boot.docker-stack">
 	<title>Spring boot with Docker stack</title>
 	<section>
 		<title>编译 Docker 镜像</title>
@@ -841,10 +841,78 @@ mr30ujsdbti4        springboot_config.1   netkiller/config:latest   docker-deskt
 		</screen>
 	</section>
 </section>
-<section>
+<section id="springboot.kubernetes">
 	<title>Spring boot with Kubernetes</title>
+	<para>
+		首先你需要构建 docker 镜像，并且 push 到 registry
+		<link linkend="springboot.docker">参考这里</link>
+	</para>
 	<section>
-		<title></title>
+		<title>Kubernetes 编排脚本</title>
+		<para>创建密钥</para>
+		<screen>
+		<![CDATA[
+kubectl create secret docker-registry docker-hub \
+--docker-server=https://index.docker.io/v1/ \
+--docker-username=netkiller \
+--docker-password=passw0rd \
+--docker-email=netkiller@msn.com
+		]]>
+		</screen>
+		<para>查看是否创建成功</para>
+		<screen>
+		<![CDATA[
+iMac:spring neo$ kubectl get secret
+NAME                  TYPE                                  DATA   AGE
+default-token-fhfn8   kubernetes.io/service-account-token   3      2d23h
+docker-hub            kubernetes.io/dockerconfigjson        1      15s		
+		]]>
+		</screen>
+		<para>springboot.yml 编排脚本</para>
+		<screen>
+		<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot
+  namespace: default
+  labels:
+    app: springboot
+spec:
+  type: NodePort
+  ports:
+  - port: 8888
+    nodePort: 30000
+  selector:
+    app: springboot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: springboot
+  template:
+    metadata:
+      labels:
+        app: springboot
+    spec:
+      containers:
+      - name: springboot
+        image: netkiller/config:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8888
+      imagePullSecrets:
+        - name: docker-hub
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>部署镜像</title>
 		<screen>
 		<![CDATA[
 iMac:spring neo$ kubectl create -f springboot.yml 
@@ -858,18 +926,30 @@ iMac:spring neo$ minikube service list
 |      NAMESPACE       |           NAME            | TARGET PORT  |            URL            |
 |----------------------|---------------------------|--------------|---------------------------|
 | default              | kubernetes                | No node port |
-| default              | springboot                |         8888 | http://192.168.64.2:31763 |
+| default              | springboot                |         8888 | http://192.168.64.2:30000 |
 | kube-system          | kube-dns                  | No node port |
+| kube-system          | registry                  | No node port |
 | kubernetes-dashboard | dashboard-metrics-scraper | No node port |
 | kubernetes-dashboard | kubernetes-dashboard      | No node port |
 |----------------------|---------------------------|--------------|---------------------------|
 
 iMac:spring neo$ minikube service springboot --url
-http://192.168.64.2:31763
-
+http://192.168.64.2:30000
+		]]>
+		</screen>
+		<para>http://192.168.64.2:30000 是访问地址，Kubernetes 会负载均衡到后面的三个 pod 上。</para>
+		<screen>
+		<![CDATA[
+iMac:config neo$ curl -k https://config:s3cr3t@192.168.64.2:30000/netkiller-dev.json
+{"sms":{"gateway":{"url":"https://sms.netkiller.cn/v1","username":"netkiller","password":"123456"}}}		
+		]]>
+		</screen>
+		<para>删除服务</para>
+		<screen>
+		<![CDATA[
 iMac:spring neo$ kubectl delete -f springboot.yml 
 service "springboot" deleted
-deployment.apps "springboot" deleted
+deployment.apps "springboot" deleted		
 		]]>
 		</screen>
 	</section>
