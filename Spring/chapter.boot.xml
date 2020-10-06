@@ -85,6 +85,15 @@ curl http://localhost:8000/
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>生成项目信息</title>
+			<para>mvn spring-boot:build-info</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/microservice/config % mvn spring-boot:build-info			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="SpringApplication">

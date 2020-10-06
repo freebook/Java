@@ -32,7 +32,28 @@ management.server.port=-1
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>安全配置</title>
+			<screen>
+			<![CDATA[
+security.basic.enabled=true
+security.basic.path=/admin    #针对/admin路径进行认证
+security.user.name=admin     #认证使用的用户名
+security.user.password=password   #认证使用的密码
+management.security.roles=SUPERUSER
 
+management.port=11111   #actuator暴露接口使用的端口，为了和api接口使用的端口进行分离
+management.context-path=/admin   #actuator暴露接口的前缀
+management.security.enabled=true   #actuator是否需要安全保证
+
+endpoints.metrics.sensitive=false   #actuator的metrics接口是否需要安全保证
+endpoints.metrics.enabled=true
+
+endpoints.health.sensitive=false  #actuator的health接口是否需要安全保证
+endpoints.health.enabled=true			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>actuator 接口</title>
