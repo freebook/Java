@@ -35,6 +35,29 @@
 			</screen>
 		</section>
 		<section>
+			<title>Maven run</title>
+			<programlisting>
+			<![CDATA[
+$ mvn spring-boot:run
+$ mvn -P prod spring-boot:run
+			]]>
+			</programlisting>
+			<para>-P 指定 Maven 的 profile，如果指定 Springboot 的 profiles 请使用 -Drun.profiles=prod</para>
+			<screen>
+			<![CDATA[
+$ mvn spring-boot:run -Drun.profiles=prod			
+			]]>
+			</screen>
+			<para>打包后，使用jar包运行</para>
+			<programlisting>
+			<![CDATA[
+$ mvn verify
+$ mvn package
+$ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>Spring Boot maven 插件 build-image</title>
 			<para>Spring Boot 构建 Docker 镜像，你不需要写 Dockerfile，plugin 帮你完成。</para>
 			<para>只需要简单的执行：</para>
@@ -85,30 +108,14 @@ public class Application {
 
 }
 		]]>
-		</programlisting><section id="spring.run">
-		<title>运行 Spring boot 项目</title>
-		<section>
-			<title>Maven run</title>
-			<programlisting>
-			<![CDATA[
-$ mvn spring-boot:run
-$ mvn -P prod spring-boot:run
-			]]>
-			</programlisting>
-			<para>-P 指定 profile</para>
-			<para>打包后，使用jar包运行</para>
-			<programlisting>
-			<![CDATA[
-$ mvn verify
-$ mvn package
-$ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Linux systemd</title>
-			<para>/etc/systemd/system/spring.service</para>
-			<screen>
+		</programlisting>
+		<section id="spring.run">
+			<title>运行 Spring boot 项目</title>
+
+			<section>
+				<title>Linux systemd</title>
+				<para>/etc/systemd/system/spring.service</para>
+				<screen>
 			<![CDATA[
 ####################################################
 # Homepage: http://netkiller.github.io
@@ -132,11 +139,11 @@ RemainAfterExit=yes
 [Install]
 WantedBy=multi-user.target
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>传统 init.d 脚本</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>传统 init.d 脚本</title>
+				<screen>
 			<![CDATA[
 #!/bin/bash
 ##############################################
@@ -218,11 +225,11 @@ esac
 exit $?
 
 			]]>
-			</screen>
-		</section>
-		<section id="war">
-			<title>编译用于Tomcat的 War</title>
-			<programlisting>
+				</screen>
+			</section>
+			<section id="war">
+				<title>编译用于Tomcat的 War</title>
+				<programlisting>
 			<![CDATA[
 package demo;
 
@@ -253,10 +260,10 @@ public class Application extends SpringBootServletInitializer {
     }
 }		
 			]]>
-			</programlisting>
-		</section>
+				</programlisting>
+			</section>
 
-	</section>
+		</section>
 
 		<section id="SpringBootApplication">
 			<title>@SpringBootApplication</title>
@@ -329,13 +336,15 @@ public class Application extends SpringBootServletInitializer {
 			<title>隐藏 Banner</title>
 			<para>隐藏 Spring Boot Banner</para>
 			<screen>
-				. ____ _ __ _ _
-				/\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
-				( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
-				\\/ ___)| |_)| | | | | || (_| | ) ) ) )
-				' |____| .__|_| |_|_| |_\__, | / / / /
-				=========|_|==============|___/=/_/_/_/
-				:: Spring Boot :: (v2.3.1.RELEASE)
+			<![CDATA[
+. ____ _ __ _ _
+/\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+\\/ ___)| |_)| | | | | || (_| | ) ) ) )
+' |____| .__|_| |_|_| |_\__, | / / / /
+=========|_|==============|___/=/_/_/_/
+:: Spring Boot :: (v2.3.1.RELEASE)
+			]]>
 			</screen>
 			<programlisting>
 			<![CDATA[
@@ -443,6 +452,26 @@ public static void main(String[] args) {
     );
   }			
 			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+在 Java 代码中激活 profile
+
+直接指定环境变量来激活 profile：
+
+System.setProperty("spring.profiles.active", "test");
+
+在 Spring 容器中激活 profile：
+
+AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+ctx.getEnvironment().setActiveProfiles("development");
+ctx.register(SomeConfig.class, StandaloneDataConfig.class, JndiDataConfig.class);
+ctx.refresh();			
+			]]>
+			
 			</programlisting>
 		</section>
 	</section>

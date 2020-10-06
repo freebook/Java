@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="springboot.properties">
 	<title>Properties 配置文件</title>
-	<section>
-		<title>bootstrap.properties 配置文件</title>
-		<para>bootstrap.properties 是优先级最高配置文件，一般用于 Spring Cloud 配置中心。</para>
-	</section>
-
 	<section id="application.properties">
 		<title>application.properties 配置文件</title>
 		<para>

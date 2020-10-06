@@ -8,8 +8,8 @@
 	&section.cloud.gateway.xml;
 	&section.cloud.stream.xml;
 	&section.cloud.sleuth.xml;
-<section id="spring.cloud.properties">
-	<title>Spring Cloud 相关的 application.properties 配置</title>
+	<section id="spring.cloud.properties">
+		<title>Spring Cloud 相关的 application.properties 配置</title>
 		<section id="spring.cloud.bootstrap.enabled">
 			<title>启用或禁用 bootstrap</title>
 			<screen>
@@ -19,7 +19,16 @@ spring.cloud.bootstrap.location=classpath:bootstrap.properties
 			]]>
 			</screen>
 		</section>
-</section>
+		<section id="bootstrap.properties">
+			<title>bootstrap.properties 配置文件</title>
+			<para>bootstrap.properties 是优先级最高配置文件，一般用于 Spring Cloud 配置中心。</para>
+			<para>bootstrap.yml是由spring.cloud.bootstrap.name（默认:”bootstrap”）或者spring.cloud.bootstrap.location 设置（默认空）。</para>
+			<para>如果激活 profile（spring.profiles.active=development）对应配置 bootstrap-development.properties </para>
+			<para>spring.cloud.config.allowOverride=true（允许本地配置覆盖远程配置）。</para>
+			<para>spring.cloud.config.overrideNone=true 覆盖任何本地属性 </para>
+			<para>spring.cloud.config.overrideSystemProperties=false 仅仅系统属性和环境变量 </para>
+		</section>
+	</section>
 	
 	&section.cloud.faq.xml;
 </chapter>
