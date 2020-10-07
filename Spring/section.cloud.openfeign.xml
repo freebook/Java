@@ -10,6 +10,26 @@
 		</screen>
 	</section>
 	<section>
+		<title>用户认证</title>
+		<screen>
+		<![CDATA[
+@Configuration
+@EnableFeignClients
+public class FeignConfiguration {
+    @Bean
+    public Contract feignContract() {
+        return new feign.Contract.Default();
+    }
+
+    @Bean
+    public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
+        return new BasicAuthRequestInterceptor("user", "password");
+    }
+}		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>配置连接方式</title>
 		<para>启用 okhttp</para>
 		<screen>
