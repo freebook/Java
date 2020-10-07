@@ -50,6 +50,7 @@
 <!ENTITY section.cloud.consol.xml		SYSTEM "section.cloud.consol.xml">
 <!ENTITY section.cloud.openfeign.xml	SYSTEM "section.cloud.openfeign.xml">
 <!ENTITY section.cloud.gateway.xml		SYSTEM "section.cloud.gateway.xml">
+<!ENTITY section.cloud.kubernetes.xml	SYSTEM "section.cloud.kubernetes.xml">
 <!ENTITY section.cloud.faq.xml			SYSTEM "section.cloud.faq.xml">
 
 <!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">

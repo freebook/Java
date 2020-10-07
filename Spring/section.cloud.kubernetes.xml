@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Spring Cloud with Kubernetes</title>
+	<section>
+		<title>Maven  依赖 </title>
+		<para>父项目</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.netkiller</groupId>
+	<artifactId>kubernetes</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>kubernetes</name>
+
+	<url>http://www.netkiller.cn</url>
+	<description>Spring Cloud with Kubernetes</description>
+
+	<organization>
+		<name>Netkiller Spring Cloud 手札</name>
+		<url>http://www.netkiller.cn</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Neo</name>
+			<email>netkiller@msn.com</email>
+			<organization>Netkiller Spring Cloud 手札</organization>
+			<organizationUrl>http://www.netkiller.cn</organizationUrl>
+			<roles>
+				<role>Author</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+
+		<docker.registry>registry.netkiller.cn:5000</docker.registry>
+		<docker.registry.name>netkiller</docker.registry.name>
+		<docker.image>mcr.microsoft.com/java/jre:15-zulu-alpine</docker.image>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.4.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>service</module>
+		<module>ConfigMaps</module>
+	</modules>
+
+</project>		
+		]]>
+		</screen>
+		<para>项目模块</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.netkiller</groupId>
+		<artifactId>kubernetes</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>configmaps</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>configmaps</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-kubernetes-config</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.2</version>
+				<configuration>
+					<imageName>${docker.registry}/${docker.registry.name}/${project.artifactId}</imageName>
+					<baseImage>${docker.image}</baseImage>
+					<maintainer>netkiller@msn.com</maintainer>
+					<volumes>/tmp</volumes>
+					<workdir>/srv</workdir>
+					<exposes>8080</exposes>
+					<env>
+						<JAVA_OPTS>-server -Xms128m -Xmx256m</JAVA_OPTS>
+					</env>
+					<entryPoint>["sh", "-c", "java ${JAVA_OPTS} -jar /srv/${project.build.finalName}.jar ${SPRING_OPTS}"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/srv</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<!-- <image>${docker.image.prefix}/${project.artifactId}</image> -->
+					<!-- <newName>${docker.image.prefix}/${project.artifactId}:${project.version}</newName> -->
+					<!-- <serverId>docker-hub</serverId> -->
+					<registryUrl>http://${docker.registry}/v2/</registryUrl>
+					<imageTags>
+						<!-- <imageTag>${project.version}</imageTag> -->
+						<imageTag>latest</imageTag>
+					</imageTags>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Spring Cloud 配置文件</title>
+		<para>src/main/resources/bootstrap.yml</para>
+		<screen>
+		<![CDATA[
+spring:
+  application:
+    name: spring-cloud-kubernetes-configmaps
+  profiles:
+    active: dev
+  cloud:
+    kubernetes:
+      reload:
+        enabled: true
+        mode: polling
+        period: 5000
+      config:
+        sources:
+          - name: ${spring.application.name}
+            group: cn.netkiller
+            namespace: default
+
+management:
+  security:
+    enabled: false
+  #context-path: /
+  endpoints:
+    web:
+      exposure:
+        include: refresh		
+		]]>
+		</screen>
+		
+	</section>
+	<section>
+		<title>程序文件</title>
+		<section>
+			<title>SpringBootApplication 启动文件</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class App {
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		SpringApplication.run(App.class, args);
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>配置类</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ConfigurationProperties(prefix = "greeting")
+public class KeyValueConfig {
+	private String message = "This is a default message";
+
+	public String getMessage() {
+		return this.message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>控制器</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@EnableConfigurationProperties(KeyValueConfig.class)
+@RefreshScope
+public class TestController {
+	@Autowired
+	private KeyValueConfig keyValueConfig;
+
+	@GetMapping("/")
+	public String index() {
+		return "Hello world\r\n";
+	}
+
+	@GetMapping("/hello")
+	public String hello() {
+		return keyValueConfig.getMessage() + " [" + new SimpleDateFormat().format(new Date()) + "]";
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>Kubernetes 编排脚本</title>
+		<para>config.yaml</para>
+		<screen>
+		<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    fabric8.io/git-commit: 729badc5e8578b67c1f9387ac0d1949b0646a991
+    fabric8.io/git-branch: master
+    fabric8.io/git-url: https://netkiller@github.com/netkiller/spring-cloud-kubernetes.git
+    fabric8.io/scm-url: https://github.com/spring-projects/spring-boot/kubernetes/ConfigMaps
+    fabric8.io/scm-tag: HEAD
+    prometheus.io/port: "9779"
+    prometheus.io/scrape: "true"
+  labels:
+    expose: "true"
+    app: ConfigMaps
+    provider: fabric8
+    version: 0.0.1-SNAPSHOT
+    group: cn.netkiller
+  name: config
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: ConfigMaps
+    provider: fabric8
+    group: cn.netkiller
+  type: NodePort
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: spring-cloud-kubernetes-configmaps
+data:
+  application.yml: |-
+    greeting:
+      message: Say Hello to the World
+    farewell:
+      message: Say Goodbye
+    ---
+    spring:
+      profiles: development
+    greeting:
+      message: Say Hello to the Developers
+    farewell:
+      message: Say Goodbye to the Developers
+    ---
+    spring:
+      profiles: production
+    greeting:
+      message: Say Hello to the Ops
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    fabric8.io/git-commit: 729badc5e8578b67c1f9387ac0d1949b0646a991
+    fabric8.io/git-branch: master
+    fabric8.io/git-url: https://netkiller@github.com/netkiller/spring-cloud-kubernetes.git
+    fabric8.io/scm-url: https://github.com/spring-projects/spring-boot/kubernetes/ConfigMaps
+    fabric8.io/scm-tag: HEAD
+  labels:
+    app: ConfigMaps
+    provider: fabric8
+    version: 0.0.1-SNAPSHOT
+    group: cn.netkiller
+  name: config
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: ConfigMaps
+      provider: fabric8
+      group: cn.netkiller
+  template:
+    metadata:
+      annotations:
+        fabric8.io/git-commit: 729badc5e8578b67c1f9387ac0d1949b0646a991
+        fabric8.io/git-branch: master
+        fabric8.io/scm-tag: HEAD
+        fabric8.io/git-url: https://netkiller@github.com/netkiller/spring-cloud-kubernetes.git
+        fabric8.io/scm-url: https://github.com/spring-projects/spring-boot/kubernetes/ConfigMaps
+      labels:
+        app: ConfigMaps
+        provider: fabric8
+        version: 0.0.1-SNAPSHOT
+        group: cn.netkiller
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: registry.netkiller.cn:5000/netkiller/configmaps:latest
+        #imagePullPolicy: IfNotPresent
+        name: spring-boot
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 9779
+          name: prometheus
+          protocol: TCP
+        - containerPort: 8778
+          name: jolokia
+          protocol: TCP
+        securityContext:
+          privileged: false		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>测试</title>
+		<para>编译并构建 Docker 镜像</para>
+		<screen>
+		<![CDATA[
+iMac:ConfigMaps neo$ mvn package docker:build		
+		]]>
+		</screen>
+		<para>查看镜像是否正确产生</para>
+		<screen>
+		<![CDATA[
+iMac:ConfigMaps neo$ docker images 
+REPOSITORY                                        TAG                 IMAGE ID            CREATED             SIZE
+registry.netkiller.cn:5000/netkiller/configmaps   latest              93280aec434f        4 minutes ago       219MB		
+		]]>
+		</screen>
+		<para>上传镜像到私有库</para>
+		<screen>
+		<![CDATA[
+iMac:ConfigMaps neo$ docker push registry.netkiller.cn:5000/netkiller/configmaps
+The push refers to repository [registry.netkiller.cn:5000/netkiller/configmaps]
+f56e553c8b82: Pushed 
+7c1edc21f93f: Layer already exists 
+50644c29ef5a: Layer already exists 
+latest: digest: sha256:3ef48e858254ee4d578fe1737fd948b2679c33d28d0dc573cf1e8076d0a054a1 size: 952		
+		]]>
+		</screen>
+		<para>开启 Spring cloud 访问 Kubernetes Config Maps 的权限。</para>
+		<screen>
+		<![CDATA[
+kubectl create clusterrolebinding permissive-binding \
+  --clusterrole=cluster-admin \
+  --user=admin \
+  --user=kubelet \
+  --group=system:serviceaccounts		
+		]]>
+		</screen>
+		<para>部署镜像</para>
+		<screen>
+		<![CDATA[
+iMac:ConfigMaps neo$ kubectl create -f config.yaml 
+service/config created
+configmap/spring-cloud-kubernetes-configmaps created
+deployment.apps/config created		
+		]]>
+		</screen>
+		<para>查看服务地址</para>
+		<screen>
+		<![CDATA[
+iMac:ConfigMaps neo$ minikube service list
+|----------------------|---------------------------|--------------|----------------------------|
+|      NAMESPACE       |           NAME            | TARGET PORT  |            URL             |
+|----------------------|---------------------------|--------------|----------------------------|
+| default              | config                    | http/8080    | http://192.168.64.12:30662 |
+| default              | kubernetes                | No node port |
+| kube-system          | kube-dns                  | No node port |
+| kubernetes-dashboard | dashboard-metrics-scraper | No node port |
+| kubernetes-dashboard | kubernetes-dashboard      | No node port |
+|----------------------|---------------------------|--------------|----------------------------|		
+		]]>
+		</screen>
+		<para>访问地址，从 Config Maps 中获取配置项。</para>
+		<screen>
+		<![CDATA[
+iMac:ConfigMaps neo$ curl http://192.168.64.12:30662/hello
+Say Hello to the World [10/7/20, 11:25 AM]		
+		]]>
+		</screen>
+		<para>修改配置增加了=*=，然后使用 kubectl apply -f config.yaml 刷新</para>
+		<screen>
+		<![CDATA[
+iMac:ConfigMaps neo$ curl http://192.168.64.12:30662/hello
+Say Hello to the World=*= [10/7/20, 11:26 AM]		
+		]]>
+		</screen>
+		<para>配置刷新成功</para>
+	</section>
+</section>

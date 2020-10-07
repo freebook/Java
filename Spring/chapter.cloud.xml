@@ -29,6 +29,6 @@ spring.cloud.bootstrap.location=classpath:bootstrap.properties
 			<para>spring.cloud.config.overrideSystemProperties=false 仅仅系统属性和环境变量 </para>
 		</section>
 	</section>
-	
+	&section.cloud.kubernetes.xml;
 	&section.cloud.faq.xml;
 </chapter>
