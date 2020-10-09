@@ -168,18 +168,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 			]]>
 			</programlisting>
 		</section>
-	</section>
-
-	<section id="@RequestParam">
-		<title>RequestMapping with Request Parameters - @RequestParam</title>
-		<para>@RequestParam 用来处理 HTTP GET/POST 请求的变量</para>
-		<programlisting>
-			import
-			org.springframework.web.bind.annotation.RequestParam;
-		</programlisting>
-		<section>
-			<title>HTTP GET</title>
+		<section id="@RequestParam">
+			<title>RequestMapping with Request Parameters - @RequestParam</title>
+			<para>@RequestParam 用来处理 HTTP GET/POST 请求的变量</para>
 			<programlisting>
+				import
+				org.springframework.web.bind.annotation.RequestParam;
+			</programlisting>
+			<section>
+				<title>HTTP GET</title>
+				<programlisting>
 			<![CDATA[
 	@RequestMapping("/request/param")
 	@ResponseBody
@@ -187,16 +185,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 	    return "Get a specific Bar with id=" + id;
 	}
 			]]>
-			</programlisting>
-			<para></para>
-			<screen>
-				http://localhost:8080/Spring/request/param.html?id=100
-			</screen>
-		</section>
+				</programlisting>
+				<para></para>
+				<screen>
+				<![CDATA[
+http://localhost:8080/Spring/request/param.html?id=100				
+				]]>
+				</screen>
+			</section>
 
-		<section>
-			<title>HTTP POST</title>
-			<programlisting>
+			<section>
+				<title>HTTP POST</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.controller;
 
@@ -241,9 +241,9 @@ public class Http {
 
 }
 			]]>
-			</programlisting>
-			<para>http/form.jsp</para>
-			<programlisting>
+				</programlisting>
+				<para>http/form.jsp</para>
+				<programlisting>
 			<![CDATA[
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -267,9 +267,9 @@ public class Http {
 </body>
 </html>
 			]]>
-			</programlisting>
-			<para>http/post.jsp</para>
-			<programlisting>
+				</programlisting>
+				<para>http/post.jsp</para>
+				<programlisting>
 			<![CDATA[
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -286,13 +286,13 @@ public class Http {
 </body>
 </html>
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>@RequestParam 传递特殊字符串</title>
-			<para>URL 中 “+” 有特殊意义，表示空格。</para>
-			<para>如果 @RequestParam 传递参数含有空格可以这样处理。</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>@RequestParam 传递特殊字符串</title>
+				<para>URL 中 “+” 有特殊意义，表示空格。</para>
+				<para>如果 @RequestParam 传递参数含有空格可以这样处理。</para>
+				<programlisting>
 			<![CDATA[
 	@RequestMapping("/RequestParam")
 	@ResponseBody
@@ -302,11 +302,11 @@ public class Http {
 
 	}
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>传递日期参数</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>传递日期参数</title>
+				<programlisting>
 			<![CDATA[
 	@RequestMapping("/range")
 	public ModelAndView range(@RequestParam("beginDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date beginDate, @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
@@ -318,11 +318,11 @@ public class Http {
 		return new ModelAndView("activity/index", "message", "操作成功");
 	}
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>上传文件</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>上传文件</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.restful;
 
@@ -362,15 +362,15 @@ public class UploadRestController {
 
 }
 			]]>
-			</programlisting>
-			<para>操作演示，首先创建一个文件</para>
-			<screen>
+				</programlisting>
+				<para>操作演示，首先创建一个文件</para>
+				<screen>
 			<![CDATA[
 echo "Helloworld!!!" > hello.txt
 			]]>
-			</screen>
-			<para>上传该文件</para>
-			<screen>
+				</screen>
+				<para>上传该文件</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro /tmp % curl "http://localhost:8080/upload/add" \                           
     -X POST \
@@ -379,28 +379,31 @@ neo@MacBook-Pro /tmp % curl "http://localhost:8080/upload/add" \
 
 file uploaded
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-		<section>
-			<title>@RequestParam - POST 数组</title>
-			<para>HTTP 头</para>
-			<screen>
+			<section>
+				<title>@RequestParam - POST 数组</title>
+				<para>HTTP 头</para>
+				<screen>
 			<![CDATA[
 picture[]: gather/293a93baa02cb18a840631bac1f9eeb20b7d436f.jpeg
 picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg			
 			]]>
-			</screen>
-			<programlisting>
+				</screen>
+				<programlisting>
 			<![CDATA[
 	@PostMapping("/save")
 	public String save(@RequestParam(value = "picture[]", required = true) String[] picture) {
 		return String.join(",", picture);
 	}			
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
 	</section>
+
+	
 	<section id="@RequestBody">
 		<title>@RequestBody</title>
 		<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>

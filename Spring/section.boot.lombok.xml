@@ -58,4 +58,39 @@ Author author = Author.builder().id(1).name("Neo Chen").age(40).build();
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>@Slf4j 注解</title>
+		<para>如果不想每次都写</para>
+		<screen>
+		<![CDATA[
+private  final Logger logger = LoggerFactory.getLogger(CLASSNAME.class); 		
+		]]>
+		</screen>
+		<para>可以用注解 @Slf4j</para>
+		<screen>
+		<![CDATA[
+package cn.netkiller.service;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+public class HelloController {
+
+//	private static final Log log = LogFactory.getLog(HelloController.class);
+
+	@GetMapping("/")
+	public String hello() {
+		Log.info("@Slf4j Test OK");
+		return "Hello World";
+	}
+
+}
+		]]>
+		</screen>
+		<para></para>
+	</section>
 </section>

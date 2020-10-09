@@ -2,9 +2,13 @@
 <section>
 	<title>Spring Cloud with Kubernetes</title>
 	<section>
-		<title>Maven  依赖 </title>
-		<para>父项目</para>
-		<screen>
+		<title>Config</title>
+		<para>Spring Cloud 使用 Kubernetes 提供的 Config Maps 作为配置中心。这样的好处是我们无需再启动一个 config 服务。</para>
+		
+		<section>
+			<title>Maven 依赖 </title>
+			<para>父项目</para>
+			<screen>
 		<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -84,9 +88,9 @@
 
 </project>		
 		]]>
-		</screen>
-		<para>项目模块</para>
-		<screen>
+			</screen>
+			<para>项目模块</para>
+			<screen>
 		<![CDATA[
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -166,12 +170,12 @@
 </project>
 		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>Spring Cloud 配置文件</title>
-		<para>src/main/resources/bootstrap.yml</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>Spring Cloud 配置文件</title>
+			<para>src/main/resources/bootstrap.yml</para>
+			<screen>
 		<![CDATA[
 spring:
   application:
@@ -199,14 +203,14 @@ management:
       exposure:
         include: refresh		
 		]]>
-		</screen>
-		
-	</section>
-	<section>
-		<title>程序文件</title>
+			</screen>
+
+		</section>
 		<section>
-			<title>SpringBootApplication 启动文件</title>
-			<programlisting>
+			<title>程序文件</title>
+			<section>
+				<title>SpringBootApplication 启动文件</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.config;
 
@@ -222,11 +226,11 @@ public class App {
 }
 			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>配置类</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>配置类</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.config;
 
@@ -248,11 +252,11 @@ public class KeyValueConfig {
 }
 			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>控制器</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>控制器</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.config;
 
@@ -283,13 +287,13 @@ public class TestController {
 	}
 }			
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section>
-	<section>
-		<title>Kubernetes 编排脚本</title>
-		<para>config.yaml</para>
-		<screen>
+		<section>
+			<title>Kubernetes 编排脚本</title>
+			<para>config.yaml</para>
+			<screen>
 		<![CDATA[
 apiVersion: v1
 kind: Service
@@ -403,26 +407,26 @@ spec:
         securityContext:
           privileged: false		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>测试</title>
-		<para>编译并构建 Docker 镜像</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>测试</title>
+			<para>编译并构建 Docker 镜像</para>
+			<screen>
 		<![CDATA[
 iMac:ConfigMaps neo$ mvn package docker:build		
 		]]>
-		</screen>
-		<para>查看镜像是否正确产生</para>
-		<screen>
+			</screen>
+			<para>查看镜像是否正确产生</para>
+			<screen>
 		<![CDATA[
 iMac:ConfigMaps neo$ docker images 
 REPOSITORY                                        TAG                 IMAGE ID            CREATED             SIZE
 registry.netkiller.cn:5000/netkiller/configmaps   latest              93280aec434f        4 minutes ago       219MB		
 		]]>
-		</screen>
-		<para>上传镜像到私有库</para>
-		<screen>
+			</screen>
+			<para>上传镜像到私有库</para>
+			<screen>
 		<![CDATA[
 iMac:ConfigMaps neo$ docker push registry.netkiller.cn:5000/netkiller/configmaps
 The push refers to repository [registry.netkiller.cn:5000/netkiller/configmaps]
@@ -431,9 +435,9 @@ f56e553c8b82: Pushed
 50644c29ef5a: Layer already exists 
 latest: digest: sha256:3ef48e858254ee4d578fe1737fd948b2679c33d28d0dc573cf1e8076d0a054a1 size: 952		
 		]]>
-		</screen>
-		<para>开启 Spring cloud 访问 Kubernetes Config Maps 的权限。</para>
-		<screen>
+			</screen>
+			<para>开启 Spring cloud 访问 Kubernetes Config Maps 的权限。</para>
+			<screen>
 		<![CDATA[
 kubectl create clusterrolebinding permissive-binding \
   --clusterrole=cluster-admin \
@@ -441,18 +445,18 @@ kubectl create clusterrolebinding permissive-binding \
   --user=kubelet \
   --group=system:serviceaccounts		
 		]]>
-		</screen>
-		<para>部署镜像</para>
-		<screen>
+			</screen>
+			<para>部署镜像</para>
+			<screen>
 		<![CDATA[
 iMac:ConfigMaps neo$ kubectl create -f config.yaml 
 service/config created
 configmap/spring-cloud-kubernetes-configmaps created
 deployment.apps/config created		
 		]]>
-		</screen>
-		<para>查看服务地址</para>
-		<screen>
+			</screen>
+			<para>查看服务地址</para>
+			<screen>
 		<![CDATA[
 iMac:ConfigMaps neo$ minikube service list
 |----------------------|---------------------------|--------------|----------------------------|
@@ -465,21 +469,775 @@ iMac:ConfigMaps neo$ minikube service list
 | kubernetes-dashboard | kubernetes-dashboard      | No node port |
 |----------------------|---------------------------|--------------|----------------------------|		
 		]]>
-		</screen>
-		<para>访问地址，从 Config Maps 中获取配置项。</para>
-		<screen>
+			</screen>
+			<para>访问地址，从 Config Maps 中获取配置项。</para>
+			<screen>
 		<![CDATA[
 iMac:ConfigMaps neo$ curl http://192.168.64.12:30662/hello
 Say Hello to the World [10/7/20, 11:25 AM]		
 		]]>
-		</screen>
-		<para>修改配置增加了=*=，然后使用 kubectl apply -f config.yaml 刷新</para>
-		<screen>
+			</screen>
+			<para>修改配置增加了=*=，然后使用 kubectl apply -f config.yaml 刷新</para>
+			<screen>
 		<![CDATA[
 iMac:ConfigMaps neo$ curl http://192.168.64.12:30662/hello
 Say Hello to the World=*= [10/7/20, 11:26 AM]		
 		]]>
-		</screen>
-		<para>配置刷新成功</para>
+			</screen>
+			<para>配置刷新成功</para>
+		</section>
 	</section>
+	<section>
+		<title>注册发现</title>
+		<para>有了 Kubernetes 注册发现，我们就可以抛弃 Eureka Server。</para>
+		<section>
+			<title>Maven 父项目</title>
+			<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.netkiller</groupId>
+	<artifactId>kubernetes</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>kubernetes</name>
+
+	<url>http://www.netkiller.cn</url>
+	<description>Spring Cloud with Kubernetes</description>
+
+	<organization>
+		<name>Netkiller Spring Cloud 手札</name>
+		<url>http://www.netkiller.cn</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Neo</name>
+			<email>netkiller@msn.com</email>
+			<organization>Netkiller Spring Cloud 手札</organization>
+			<organizationUrl>http://www.netkiller.cn</organizationUrl>
+			<roles>
+				<role>Author</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+
+		<docker.registry>registry.netkiller.cn:5000</docker.registry>
+		<docker.registry.name>netkiller</docker.registry.name>
+		<docker.image>mcr.microsoft.com/java/jre:15-zulu-alpine</docker.image>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.4.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>service</module>
+		<module>ConfigMaps</module>
+		<module>provider</module>
+		<module>consumer</module>
+	</modules>
+
+</project>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>provider</title>
+			<para></para>
+			<section>
+				<title>Maven 依赖</title>
+				<screen>
+				<![CDATA[
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.netkiller</groupId>
+		<artifactId>kubernetes</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>provider</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>provider</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-kubernetes</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.2</version>
+				<configuration>
+					<imageName>${docker.registry}/${docker.registry.name}/${project.artifactId}</imageName>
+					<baseImage>${docker.image}</baseImage>
+					<maintainer>netkiller@msn.com</maintainer>
+					<volumes>/tmp</volumes>
+					<workdir>/srv</workdir>
+					<exposes>8080</exposes>
+					<env>
+						<JAVA_OPTS>-server -Xms128m -Xmx256m</JAVA_OPTS>
+					</env>
+					<entryPoint>["sh", "-c", "java ${JAVA_OPTS} -jar /srv/${project.build.finalName}.jar ${SPRING_OPTS}"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/srv</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<!-- <image>${docker.image.prefix}/${project.artifactId}</image> -->
+					<!-- <newName>${docker.image.prefix}/${project.artifactId}:${project.version}</newName> -->
+					<!-- <serverId>docker-hub</serverId> -->
+					<registryUrl>http://${docker.registry}/v2/</registryUrl>
+					<imageTags>
+						<!-- <imageTag>${project.version}</imageTag> -->
+						<imageTag>latest</imageTag>
+					</imageTags>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Springboot 启动类</title>
+				<para>注意：这里必须使用 @EnableDiscoveryClient 注解，不能使用 @EnableEurekaClient。</para>
+				<para>他们的区别是 @EnableEurekaClient 只能注册到 Eureka Server，而 @EnableDiscoveryClient 不仅可以注册进 Eureka Server 还能注册到 ZooKeeper，Consul，Kubernetes 等等......</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.provider;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ProviderApplication {
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		SpringApplication.run(ProviderApplication.class, args);
+	}
+}				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>控制器</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.provider.controller;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+public class ProviderController {
+
+	@Autowired
+	private DiscoveryClient discoveryClient;
+
+	@GetMapping("/")
+	public String index() {
+		return "Hello world!!!";
+	}
+
+	@GetMapping("/ping")
+	public String ping() {
+		try {
+			return InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			return "Pong";
+		}
+	}
+
+	@GetMapping("/services")
+	public List<String> services() {
+		return this.discoveryClient.getServices();
+	}
+
+}
+				
+				]]>
+				</programlisting>
+				<para>@GetMapping("/services") 可以返回注册中心已经注册的服务。</para>
+			</section>
+			<section>
+				<title>application.properties 配置文件</title>
+				<para>src/main/resource/application.properties 配置文件</para>
+				<screen>
+				<![CDATA[
+spring.application.name=provider
+server.port=8080		
+				]]>
+				</screen>
+				<para>Pod 启动后会以 spring.application.name 设置的名字注册到注册中心，Openfeign 将改名字访问微服务。</para>
+			</section>
+			<section>
+				<title>Kubernetes provider 编排脚本</title>
+				<programlisting>
+				<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: provider
+  labels:
+    app.kubernetes.io/name: provider
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: provider
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: provider
+  labels:
+    app.kubernetes.io/name: provider
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: provider
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: provider
+        app.kubernetes.io/instance: sad-markhor
+    spec:
+      containers:
+        - name: provider
+          image: registry.netkiller.cn:5000/netkiller/provider
+          #imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: "KUBERNETES_NAMESPACE"
+              valueFrom:
+                fieldRef:
+                  fieldPath: "metadata.namespace"				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section>
+			<title>consumer</title>
+			<section>
+				<title>Maven 依赖</title>
+				<screen>
+				<![CDATA[
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.netkiller</groupId>
+		<artifactId>kubernetes</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>consumer</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>consumer</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-kubernetes</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-kubernetes-ribbon</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.2</version>
+				<configuration>
+					<imageName>${docker.registry}/${docker.registry.name}/${project.artifactId}</imageName>
+					<baseImage>${docker.image}</baseImage>
+					<maintainer>netkiller@msn.com</maintainer>
+					<volumes>/tmp</volumes>
+					<workdir>/srv</workdir>
+					<exposes>8080</exposes>
+					<env>
+						<JAVA_OPTS>-server -Xms128m -Xmx256m</JAVA_OPTS>
+					</env>
+					<entryPoint>["sh", "-c", "java ${JAVA_OPTS} -jar /srv/${project.build.finalName}.jar ${SPRING_OPTS}"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/srv</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<!-- <image>${docker.image.prefix}/${project.artifactId}</image> -->
+					<!-- <newName>${docker.image.prefix}/${project.artifactId}:${project.version}</newName> -->
+					<!-- <serverId>docker-hub</serverId> -->
+					<registryUrl>http://${docker.registry}/v2/</registryUrl>
+					<imageTags>
+						<!-- <imageTag>${project.version}</imageTag> -->
+						<imageTag>latest</imageTag>
+					</imageTags>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Springboot 启动类</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.consumer;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
+public class ConsumerApplication {
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		SpringApplication.run(ConsumerApplication.class, args);
+	}
+}				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>控制器</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.consumer.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.netkiller.consumer.feign.ProviderClient;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+public class ConsumerController {
+	@Autowired
+	private DiscoveryClient discoveryClient;
+
+	@Autowired
+	private ProviderClient providerClient;
+
+	@GetMapping("/")
+	public String index() {
+		return "Consumer OK\r\n";
+	}
+
+	@GetMapping("/service")
+	public Object getClient() {
+		return discoveryClient.getServices();
+	}
+
+	@GetMapping("/instance")
+	public List<ServiceInstance> getInstance(String instanceId) {
+		return discoveryClient.getInstances(instanceId);
+	}
+
+	@GetMapping("/ping")
+	public String ping() {
+		return OperationResponse.builder().status(true).data(providerClient.ping()).build();
+	}
+}				
+				]]>
+				</programlisting>
+				<para>@GetMapping("/ping") 将经过注册中心，获取到可用的服务，运行后从微服务返回结果。</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.consumer.controller;
+
+public class OperationResponse {
+
+	public boolean status = false;
+	public String data = "";
+
+	public static OperationResponse builder() {
+		// TODO Auto-generated method stub
+		return new OperationResponse();
+	}
+
+	public OperationResponse status(boolean status) {
+		this.status = status;
+		return this;
+	}
+
+	public OperationResponse data(String data) {
+		this.data = data;
+		return this;
+	}
+
+	public String build() {
+		return String.format("Status: %s, Data: %s", this.status, this.data);
+	}
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>FeignClient 接口</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.consumer.feign;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@FeignClient(name = "provider", fallback = ProviderClientFallback.class)
+public interface ProviderClient {
+	@GetMapping("/ping")
+	String ping();
+}
+
+@Component
+class ProviderClientFallback implements ProviderClient {
+
+	@Override
+	public String ping() {
+		return "Error";
+	}
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>application.properties 配置文件</title>
+				<para>src/main/resource/application.properties 配置文件</para>
+				<screen>
+				<![CDATA[
+spring.application.name=consumer
+server.port=8080
+
+provider.ribbon.KubernetesNamespace=default
+provider.ribbon.NFLoadBalancerRuleClassName=com.netflix.loadbalancer.RandomRule
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Kubernetes consumer 编排脚本</title>
+				<programlisting>
+				<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: consumer
+  labels:
+    app.kubernetes.io/name: consumer
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30080
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: consumer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer
+  labels:
+    app.kubernetes.io/name: consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: consumer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: consumer
+    spec:
+      containers:
+        - name: consumer
+          image: registry.netkiller.cn:5000/netkiller/consumer
+          #imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+				
+				]]>
+				</programlisting>
+				
+			</section>
+		</section>
+		
+		<section>
+			<title>测试</title>
+			<para>编译，打包，构建Docker镜像</para>
+			<screen>
+			<![CDATA[
+iMac:provider neo$ mvn package docker:build
+iMac:consumer neo$ mvn package docker:build
+			]]>
+			</screen>
+			<para>推送镜像</para>
+			<screen>
+			<![CDATA[
+iMac:spring-cloud-kubernetes neo$ docker images | grep registry.netkiller.cn
+registry.netkiller.cn:5000/netkiller/consumer     latest              63921dc9b81d        27 seconds ago      238MB
+registry.netkiller.cn:5000/netkiller/provider     latest              fbcc6b3a91ef        4 minutes ago       221MB
+registry.netkiller.cn:5000/netkiller/configmaps   latest              93280aec434f        23 hours ago        219MB			
+
+iMac:spring-cloud-kubernetes neo$ docker push registry.netkiller.cn:5000/netkiller/consumer
+The push refers to repository [registry.netkiller.cn:5000/netkiller/consumer]
+51c839989a66: Pushed 
+7c1edc21f93f: Pushed 
+50644c29ef5a: Pushed 
+latest: digest: sha256:2591686cfc63888f3b97ca1e950205b58a47b3d3c618242465baa0796cf7e056 size: 952
+
+iMac:spring-cloud-kubernetes neo$ docker push registry.netkiller.cn:5000/netkiller/provider
+The push refers to repository [registry.netkiller.cn:5000/netkiller/provider]
+47eb1c86b415: Pushed 
+7c1edc21f93f: Mounted from netkiller/consumer 
+50644c29ef5a: Mounted from netkiller/consumer 
+latest: digest: sha256:42cdeb63cd67a5edf9e769538878a0c8f18048bcde1ef9ba22d58766afa2d52d size: 952
+
+iMac:spring-cloud-kubernetes neo$ curl -s http://registry.netkiller.cn:5000/v2/_catalog | jq
+{
+  "repositories": [
+    "netkiller/configmaps",
+    "netkiller/consumer",
+    "netkiller/provider"
+  ]
+}
+			]]>
+			</screen>
+			<para>将 provider 和 consumer 应用部署到 Kubernetes</para>
+			<screen>
+			<![CDATA[
+iMac:spring-cloud-kubernetes neo$ kubectl create -f provider/src/main/kubernetes/provider.yaml 
+service/provider created
+deployment.apps/provider created	
+
+iMac:spring-cloud-kubernetes neo$ kubectl create -f consumer/src/main/kubernetes/consumer.yaml 
+service/consumer created
+deployment.apps/consumer created		
+			]]>
+			</screen>
+			<para>查看 consumer 端口</para>
+			<screen>
+			<![CDATA[
+iMac:spring-cloud-kubernetes neo$ minikube service list
+|----------------------|---------------------------|--------------|----------------------------|
+|      NAMESPACE       |           NAME            | TARGET PORT  |            URL             |
+|----------------------|---------------------------|--------------|----------------------------|
+| default              | config                    | http/8080    | http://192.168.64.12:30662 |
+| default              | consumer                  | http/8080    | http://192.168.64.12:30080 |
+| default              | kubernetes                | No node port |
+| default              | provider                  | No node port |
+| kube-system          | kube-dns                  | No node port |
+| kubernetes-dashboard | dashboard-metrics-scraper | No node port |
+| kubernetes-dashboard | kubernetes-dashboard      | No node port |
+|----------------------|---------------------------|--------------|----------------------------|			
+			]]>
+			</screen>
+			<para>测试 provider 是否工作正常</para>
+			<screen>
+			<![CDATA[
+$ curl -s http://10.10.0.121:8080/ping 
+provider-54875bf44-4gf49
+
+$ curl -s http://10.10.0.121:8080/services |jq
+[
+  "config",
+  "kubernetes",
+  "provider"
+]			
+			]]>
+			</screen>
+			<para>查看 consumer 是否已经注册成功</para>
+			<screen>
+			<![CDATA[
+iMac:spring-cloud-kubernetes neo$ curl -s http://192.168.64.12:30080/service |jq
+[
+  "config",
+  "consumer",
+  "kubernetes",
+  "provider"
+]
+
+iMac:spring-cloud-kubernetes neo$ curl http://192.168.64.12:30080/ping
+Status: true, Data: provider-54875bf44-4gf49			
+			]]>
+			</screen>
+			<para>增加 provider 节点，然后反复请求可以看到返回不同节点的主机名</para>
+			<screen>
+			<![CDATA[
+iMac:spring-cloud-kubernetes neo$ kubectl scale deployment provider --replicas=3
+deployment.apps/provider scaled
+
+iMac:spring-cloud-kubernetes neo$ curl -s http://192.168.64.12:30080/ping
+Status: true, Data: provider-54875bf44-8vs72
+ 
+iMac:spring-cloud-kubernetes neo$ curl -s http://192.168.64.12:30080/ping
+Status: true, Data: provider-54875bf44-4gf49i			
+			]]>
+			</screen>
+			<para>测试完毕销毁服务</para>
+			<screen>
+			<![CDATA[
+iMac:spring-cloud-kubernetes neo$ kubectl delete -f consumer/src/main/kubernetes/consumer.yaml 
+service "consumer" deleted
+deployment.apps "consumer" deleted			
+			
+iMac:spring-cloud-kubernetes neo$ kubectl delete -f provider/src/main/kubernetes/provider.yaml 
+service "provider" deleted
+deployment.apps "provider" deleted			
+			]]>
+			</screen>	
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+spring.cloud.kubernetes.discovery.enabled=false			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+spring.cloud.loadbalancer.ribbon.enabled=false		
+			]]>
+			</screen>
+		</section>
+	</section>
+	
 </section>
