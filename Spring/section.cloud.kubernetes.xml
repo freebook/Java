@@ -1232,11 +1232,6 @@ deployment.apps "provider" deleted
 spring.cloud.kubernetes.discovery.enabled=false			
 			]]>
 			</screen>
-			<screen>
-			<![CDATA[
-spring.cloud.loadbalancer.ribbon.enabled=false		
-			]]>
-			</screen>
 		</section>
 	</section>
 	
