@@ -880,4 +880,5 @@ public class CRC {
 		]]>
 		</programlisting>
 	</section>
+	&section.java.util.concurrent.xml;
 </section>

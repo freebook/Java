@@ -7,6 +7,7 @@
 <!ENTITY chapter.java.net.xml 			SYSTEM "chapter.java.net.xml">
 <!ENTITY chapter.java.sql.xml			SYSTEM "chapter.java.sql.xml">
 <!ENTITY chapter.java.util.xml			SYSTEM "chapter.java.util.xml">
+<!ENTITY section.java.util.concurrent.xml	SYSTEM "section.java.util.concurrent.xml">
 <!ENTITY chapter.java.io.xml			SYSTEM "chapter.java.io.xml">
 <!ENTITY chapter.javax.script.xml		SYSTEM "chapter.javax.script.xml">
 <!ENTITY chapter.javax.crypto.xml		SYSTEM "chapter.javax.crypto.xml">

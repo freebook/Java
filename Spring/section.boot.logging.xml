@@ -1,22 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="logging">
 	<title>Spring boot with Logging</title>
-	<para>一般的日志需求可以通过配置 application.properties实现。</para>
-	<para>logging.file，设置文件，可以是绝对路径，也可以是相对路径。如：logging.file=my.log</para>
-	<para>logging.path，设置目录，如果 logging.file 没有设置，会在该目录下创建spring.log文件作为默认日志文件。</para>
-	<screen>
+	<section>
+		<title>配置日志文件</title>
+		<para>一般的日志需求可以通过配置 application.properties实现。</para>
+		<para>Spring Boot中 日志默认是输出到控制台的，这样是为了方便开发人员，但是在生产环境中应该输出到日志文件中。</para>
+		<itemizedlist>
+			<title>配置如下</title>
+			<listitem>logging.file.path：指定日志文件的路径	</listitem>
+			<listitem>logging.file.name：日志的文件名(默认为spring.log)</listitem>
+		</itemizedlist>
+		<tip>
+			<para>注意：这两个属性不能同时配置，只需要配置一个即可。</para>
+		</tip>
+		<tip>
+			<para>旧版本</para>
+			<para>logging.file，设置文件，可以是绝对路径，也可以是相对路径。如：logging.file=my.log</para>
+			<para>logging.path，设置目录，如果 logging.file 没有设置，会在该目录下创建spring.log文件作为默认日志文件。</para>
+			<screen>
 		<![CDATA[
 logging.file=target/spring.log
 #logging.path=
 		]]>
-	</screen>
-	<para>如果仍不能满足可以使用 logback.xml 配置日志。</para>
-	<screen>
+			</screen>
+			<para>如果仍不能满足可以使用 logback.xml 配置日志。</para>
+			<screen>
 		<![CDATA[
 logging.path=/tmp
 logging.config=classpath:logback.xml
 		]]>
-	</screen>
+			</screen>
+		</tip>
+		<section>
+			<title>日志输出级别</title>
+			<screen>
+		<![CDATA[
+几种常见的日志级别由低到高分为：TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+		]]>
+			</screen>
+			<para>显示所有DEBUG信息</para>
+			<screen>
+			<![CDATA[
+logging.level.root=DEBUG			
+			]]>
+			</screen>
+			<para>仅仅显示 springframework 调试信息</para>
+			<screen>
+			<![CDATA[
+logging.level.org.springframework.web=DEBUG			
+			]]>
+			</screen>
+			<para>仅仅显示 cn.netkiller.web.TestController 调试信息</para>
+			<screen>
+			<![CDATA[
+private static final Logger log = LoggerFactory.getLogger(TestController.class);
+
+log.debug(message);
+
+logging.level.cn.netkiller.web.TestController=DEBUG			
+			]]>
+
+			</screen>
+		</section>
+		<section>
+			<title>Spring boot 2.1 以后的版本不打印 Mapped 日志问题</title>
+			<screen>
+		<![CDATA[
+logging.level.org.springframework.web=trace		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁止控制台输出日志</title>
+			<para>禁止控制台日志输出，同时将日志写入日志文件.</para>
+			<para>src/main/resources/application.properties</para>
+			<screen>
+			<![CDATA[
+logging.path=/tmp
+logging.file=/tmp/spring.log
+logging.level.root=INFO
+logging.level.org.springframework.web=DEBUG
+logging.level.org.hibernate=ERROR
+			]]>
+			</screen>
+			<para>src/main/resources/logback.xml</para>
+			<screen>
+			<![CDATA[
+$ cat src/main/resources/logback.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+
+  <root level="INFO">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>
+			]]>
+			</screen>
+			<para>使用 java -jar project-version-xxx.jar 启动后控制不会再输出日志</para>
+		</section>
+		<section>
+			<title>定制日志格式</title>
+			<itemizedlist>
+				<title>定制日志格式有两个配置</title>
+				<listitem>logging.pattern.console：控制台的输出格式	</listitem>
+				<listitem>logging.pattern.file：日志文件的输出格式</listitem>
+			</itemizedlist>
+			<para>分别是控制台的输出格式和文件中的日志输出格式</para>
+			<para>举例</para>
+			<screen>
+			<![CDATA[
+logging.pattern.console=%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n
+logging.pattern.file=%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n			
+			]]>
+			</screen>
+			<para>格式说明</para>
+			<screen>
+			<![CDATA[
+%d{HH:mm:ss.SSS} 日志输出时间
+%thread 	输出日志的进程名字，这在Web应用以及异步任务处理中很有用
+%-5level 	日志级别，并且使用5个字符靠左对齐
+%logger		日志输出者的名字
+%msg		日志消息
+%n			平台的换行符
+			]]>
+			</screen>
+		</section>
+	</section>
+
 	<section>
 		<title>打印日志</title>
 		<para>日志的用法，首先开发中我们根据实际的需要打印不同级别的日志。</para>
@@ -50,74 +162,43 @@ public class TestController {
 			]]>
 		</programlisting>
 		<para>然后通过application.properties配置那些需要显示，那些不需要，以及显示的级别是什么。 </para>
+		<section>
+			<title>lombok</title>
+			<screen>
+			<![CDATA[
+		<dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+@Slf4j
+class DemoApplicationTests {
+  @Test
+  public void test(){
+    log.debug("输出DEBUG日志.......");
+  }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	<section>
-		<title>日志输出级别</title>
-		<para>显示所有DEBUG信息</para>
-		<screen>
-			<![CDATA[
-logging.level.root=DEBUG			
-			]]>
-		</screen>
-		<para>仅仅显示 springframework 调试信息</para>
-		<screen>
-			<![CDATA[
-logging.level.org.springframework.web=DEBUG			
-			]]>
-		</screen>
-		<para>仅仅显示 cn.netkiller.web.TestController 调试信息</para>
-		<screen>
-			<![CDATA[
-private static final Logger log = LoggerFactory.getLogger(TestController.class);
-
-log.debug(message);
-
-logging.level.cn.netkiller.web.TestController=DEBUG			
-			]]>
-
-		</screen>
-	</section>
-	<section>
-		<title>禁止控制台输出日志</title>
-		<para>禁止控制台日志输出，同时将日志写入日志文件.</para>
-		<para>src/main/resources/application.properties</para>
-		<screen>
-			<![CDATA[
-logging.path=/tmp
-logging.file=/tmp/spring.log
-logging.level.root=INFO
-logging.level.org.springframework.web=DEBUG
-logging.level.org.hibernate=ERROR
-			]]>
-		</screen>
-		<para>src/main/resources/logback.xml</para>
-		<screen>
-			<![CDATA[
-$ cat src/main/resources/logback.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-  <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
-
-  <root level="INFO">
-    <appender-ref ref="FILE" />
-  </root>
-</configuration>
-			]]>
-		</screen>
-		<para>使用 java -jar project-version-xxx.jar 启动后控制不会再输出日志</para>
-	</section>
-	<section>
-		<title>Spring boot 2.1 以后的版本不打印 Mapped 日志问题</title>
+	
+	
+	
+	<section id="springboot.logback">
+		<title>logback 配置详解</title>
+		<para>配置文件名默认是：logback-spring.xml，使用其他文件名通过下面配置项指定即可。</para>
 		<screen>
 		<![CDATA[
-logging.level.org.springframework.web=trace		
+logging.config=classpath:logback.xml		
 		]]>
 		</screen>
-	</section>
-	<section id="stdout">
-		<title>标准输出</title>
-		<screen>
+		<section id="stdout">
+			<title>标准输出</title>
+			<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
@@ -134,11 +215,11 @@ logging.level.org.springframework.web=trace
 	</root>
 </configuration>
 			]]>
-		</screen>
-	</section>
-	<section>
-		<title>安天分隔日志</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>分隔日志</title>
+			<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration  scan="true" scanPeriod="60 seconds" debug="false">
@@ -167,12 +248,12 @@ logging.level.org.springframework.web=trace
     </root>
 </configuration>
 			]]>
-		</screen>
-	</section>
-	<section>
-		<title>按照文件尺寸分割日志</title>
-		<para>按日期分割文件</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>按照文件尺寸分割日志</title>
+			<para>按日期分割文件</para>
+			<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
@@ -199,9 +280,9 @@ logging.level.org.springframework.web=trace
 </configuration>
 			
 			]]>
-		</screen>
-		<para>通过级别分割日志将 info, error, debug 分割到指定文件中。</para>
-		<screen>
+			</screen>
+			<para>通过级别分割日志将 info, error, debug 分割到指定文件中。</para>
+			<screen>
 			<![CDATA[
 <configuration scan="true" scanPeriod="10 seconds">
      <!-- 控制台日志输出-->
@@ -294,11 +375,11 @@ logging.level.org.springframework.web=trace
 
 </configuration>			
 			]]>
-		</screen>
-	</section>
-	<section>
-		<title>指定Class过滤日志</title>
-		<programlisting>
+			</screen>
+		</section>
+		<section>
+			<title>指定Class过滤日志</title>
+			<programlisting>
 			<![CDATA[
     <logger name="cn.netkiller.controller"/>
     
@@ -306,19 +387,18 @@ logging.level.org.springframework.web=trace
         <appender-ref ref="console"/>
     </logger>
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>日志写入 MongoDB</title>
-		<screen>
+			</programlisting>
+		</section>
+		<section>
+			<title>日志写入 MongoDB</title>
+			<screen>
 			<![CDATA[
 
 			]]>
-		</screen>
-	</section>
-	<section id="springboot.logback">
-		<title>logback 配置详解</title>
-		<section id="">
+			</screen>
+		</section>
+
+		<section>
 			<title>configuration 属性配置</title>
 			<screen>
 			<![CDATA[
@@ -363,7 +443,7 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 			]]>
 			</screen>
 		</section>
-		<section id="">
+		<section id="RollingFileAppender">
 			<title>RollingFileAppender</title>
 			<screen>
 			<![CDATA[
