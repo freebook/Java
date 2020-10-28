@@ -97,3 +97,234 @@ select * from process_cpu_usage
 		</screen>
 	</section>
 </section>
+<section id="">
+	<title>Spring Boot with Prometheus</title>
+	<section>
+		<title>Maven 依赖</title>
+		<screen>
+		<![CDATA[
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+	</dependencies>		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>application.properties 配置文件</title>
+		<para>开启 metrics</para>
+		<screen>
+		<![CDATA[
+spring.application.name=springboot-with-prometheus
+management.endpoints.web.exposure.include=*
+management.metrics.tags.application=${spring.application.name}
+		]]>
+		</screen>
+	</section>
+
+	<section>
+		<title>启动类</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.welcome;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import reactor.core.publisher.Mono;
+
+@SpringBootApplication
+@RestController
+public class Application {
+
+	@GetMapping("/")
+	@ResponseBody
+	public Publisher<String> index() {
+		return Mono.just("Hello world! \r\n");
+	}
+
+	@GetMapping("/address")
+	@ResponseBody
+	public Publisher<String> address() throws UnknownHostException {
+		InetAddress addr = InetAddress.getLocalHost();
+		return Mono.just(String.format("Address %s, Hostname %s \r\n", addr.getHostAddress(), addr.getHostName()));
+	}
+
+	@Bean
+	MeterRegistryCustomizer<MeterRegistry> configurer(@Value("${spring.application.name}") String applicationName) {
+		return (registry) -> registry.config().commonTags("application", applicationName);
+	}
+
+	public static void main(String[] args) {
+		System.out.println("Welcome!");
+		SpringApplication.run(Application.class, args);
+	}
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>测试</title>
+		<para>启动 Springboot</para>
+		<screen>
+		<![CDATA[
+Welcome!
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.3.4.RELEASE)
+
+2020-10-28 21:57:54.110  INFO 64079 --- [           main] cn.netkiller.welcome.Application         : Starting Application on MacBook-Pro-Neo.local with PID 64079 (/Users/neo/workspace/microservice/welcome/target/classes started by neo in /Users/neo/workspace/microservice/welcome)
+2020-10-28 21:57:54.114  INFO 64079 --- [           main] cn.netkiller.welcome.Application         : No active profile set, falling back to default profiles: default
+2020-10-28 21:57:55.877  INFO 64079 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2020-10-28 21:57:56.364  INFO 64079 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8080
+2020-10-28 21:57:56.380  INFO 64079 --- [           main] cn.netkiller.welcome.Application         : Started Application in 2.773 seconds (JVM running for 3.439)
+		]]>
+		</screen>
+		<para>获取监控数据</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl http://localhost:8080/actuator/prometheus
+# HELP jvm_threads_states_threads The current number of threads having NEW state
+# TYPE jvm_threads_states_threads gauge
+jvm_threads_states_threads{application="springboot-with-prometheus",state="terminated",} 0.0
+jvm_threads_states_threads{application="springboot-with-prometheus",state="blocked",} 0.0
+jvm_threads_states_threads{application="springboot-with-prometheus",state="waiting",} 2.0
+jvm_threads_states_threads{application="springboot-with-prometheus",state="timed-waiting",} 2.0
+jvm_threads_states_threads{application="springboot-with-prometheus",state="runnable",} 7.0
+jvm_threads_states_threads{application="springboot-with-prometheus",state="new",} 0.0
+# HELP jvm_gc_memory_allocated_bytes_total Incremented for an increase in the size of the young generation memory pool after one GC to before the next
+# TYPE jvm_gc_memory_allocated_bytes_total counter
+jvm_gc_memory_allocated_bytes_total{application="springboot-with-prometheus",} 1.9922944E7
+# HELP system_cpu_usage The "recent cpu usage" for the whole system
+# TYPE system_cpu_usage gauge
+system_cpu_usage{application="springboot-with-prometheus",} 0.0
+# HELP jvm_memory_used_bytes The amount of used memory
+# TYPE jvm_memory_used_bytes gauge
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="heap",id="G1 Old Gen",} 1.1322368E7
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="heap",id="G1 Eden Space",} 1.6777216E7
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="nonheap",id="Metaspace",} 3.1712968E7
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="heap",id="G1 Survivor Space",} 1487328.0
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'non-nmethods'",} 1277184.0
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'non-profiled nmethods'",} 1413760.0
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="nonheap",id="Compressed Class Space",} 4253200.0
+jvm_memory_used_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'profiled nmethods'",} 7536256.0
+# HELP jvm_memory_committed_bytes The amount of memory in bytes that is committed for the Java virtual machine to use
+# TYPE jvm_memory_committed_bytes gauge
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="heap",id="G1 Old Gen",} 2.5165824E7
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="heap",id="G1 Eden Space",} 2.8311552E7
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="nonheap",id="Metaspace",} 3.3161216E7
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="heap",id="G1 Survivor Space",} 2097152.0
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'non-nmethods'",} 2555904.0
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'non-profiled nmethods'",} 2555904.0
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="nonheap",id="Compressed Class Space",} 4849664.0
+jvm_memory_committed_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'profiled nmethods'",} 7602176.0
+# HELP system_load_average_1m The sum of the number of runnable entities queued to available processors and the number of runnable entities running on the available processors averaged over a period of time
+# TYPE system_load_average_1m gauge
+system_load_average_1m{application="springboot-with-prometheus",} 2.263671875
+# HELP process_files_open_files The open file descriptor count
+# TYPE process_files_open_files gauge
+process_files_open_files{application="springboot-with-prometheus",} 89.0
+# HELP jvm_classes_unloaded_classes_total The total number of classes unloaded since the Java virtual machine has started execution
+# TYPE jvm_classes_unloaded_classes_total counter
+jvm_classes_unloaded_classes_total{application="springboot-with-prometheus",} 0.0
+# HELP jvm_buffer_total_capacity_bytes An estimate of the total capacity of the buffers in this pool
+# TYPE jvm_buffer_total_capacity_bytes gauge
+jvm_buffer_total_capacity_bytes{application="springboot-with-prometheus",id="direct",} 1.6777223E7
+jvm_buffer_total_capacity_bytes{application="springboot-with-prometheus",id="mapped - 'non-volatile memory'",} 0.0
+jvm_buffer_total_capacity_bytes{application="springboot-with-prometheus",id="mapped",} 0.0
+# HELP jvm_gc_live_data_size_bytes Size of old generation memory pool after a full GC
+# TYPE jvm_gc_live_data_size_bytes gauge
+jvm_gc_live_data_size_bytes{application="springboot-with-prometheus",} 0.0
+# HELP jvm_gc_pause_seconds Time spent in GC pause
+# TYPE jvm_gc_pause_seconds summary
+jvm_gc_pause_seconds_count{action="end of minor GC",application="springboot-with-prometheus",cause="G1 Evacuation Pause",} 1.0
+jvm_gc_pause_seconds_sum{action="end of minor GC",application="springboot-with-prometheus",cause="G1 Evacuation Pause",} 0.008
+# HELP jvm_gc_pause_seconds_max Time spent in GC pause
+# TYPE jvm_gc_pause_seconds_max gauge
+jvm_gc_pause_seconds_max{action="end of minor GC",application="springboot-with-prometheus",cause="G1 Evacuation Pause",} 0.008
+# HELP process_files_max_files The maximum file descriptor count
+# TYPE process_files_max_files gauge
+process_files_max_files{application="springboot-with-prometheus",} 10240.0
+# HELP jvm_threads_live_threads The current number of live threads including both daemon and non-daemon threads
+# TYPE jvm_threads_live_threads gauge
+jvm_threads_live_threads{application="springboot-with-prometheus",} 11.0
+# HELP process_start_time_seconds Start time of the process since unix epoch.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds{application="springboot-with-prometheus",} 1.603893473057E9
+# HELP jvm_classes_loaded_classes The number of classes that are currently loaded in the Java virtual machine
+# TYPE jvm_classes_loaded_classes gauge
+jvm_classes_loaded_classes{application="springboot-with-prometheus",} 6965.0
+# HELP jvm_buffer_memory_used_bytes An estimate of the memory that the Java virtual machine is using for this buffer pool
+# TYPE jvm_buffer_memory_used_bytes gauge
+jvm_buffer_memory_used_bytes{application="springboot-with-prometheus",id="direct",} 1.6777224E7
+jvm_buffer_memory_used_bytes{application="springboot-with-prometheus",id="mapped - 'non-volatile memory'",} 0.0
+jvm_buffer_memory_used_bytes{application="springboot-with-prometheus",id="mapped",} 0.0
+# HELP process_cpu_usage The "recent cpu usage" for the Java Virtual Machine process
+# TYPE process_cpu_usage gauge
+process_cpu_usage{application="springboot-with-prometheus",} 0.0
+# HELP jvm_buffer_count_buffers An estimate of the number of buffers in the pool
+# TYPE jvm_buffer_count_buffers gauge
+jvm_buffer_count_buffers{application="springboot-with-prometheus",id="direct",} 4.0
+jvm_buffer_count_buffers{application="springboot-with-prometheus",id="mapped - 'non-volatile memory'",} 0.0
+jvm_buffer_count_buffers{application="springboot-with-prometheus",id="mapped",} 0.0
+# HELP jvm_gc_max_data_size_bytes Max size of old generation memory pool
+# TYPE jvm_gc_max_data_size_bytes gauge
+jvm_gc_max_data_size_bytes{application="springboot-with-prometheus",} 2.147483648E9
+# HELP jvm_threads_peak_threads The peak live thread count since the Java virtual machine started or peak was reset
+# TYPE jvm_threads_peak_threads gauge
+jvm_threads_peak_threads{application="springboot-with-prometheus",} 11.0
+# HELP logback_events_total Number of error level events that made it to the logs
+# TYPE logback_events_total counter
+logback_events_total{application="springboot-with-prometheus",level="debug",} 0.0
+logback_events_total{application="springboot-with-prometheus",level="trace",} 0.0
+logback_events_total{application="springboot-with-prometheus",level="info",} 3.0
+logback_events_total{application="springboot-with-prometheus",level="error",} 0.0
+logback_events_total{application="springboot-with-prometheus",level="warn",} 0.0
+# HELP jvm_gc_memory_promoted_bytes_total Count of positive increases in the size of the old generation memory pool before GC to after GC
+# TYPE jvm_gc_memory_promoted_bytes_total counter
+jvm_gc_memory_promoted_bytes_total{application="springboot-with-prometheus",} 1924096.0
+# HELP jvm_threads_daemon_threads The current number of live daemon threads
+# TYPE jvm_threads_daemon_threads gauge
+jvm_threads_daemon_threads{application="springboot-with-prometheus",} 9.0
+# HELP process_uptime_seconds The uptime of the Java virtual machine
+# TYPE process_uptime_seconds gauge
+process_uptime_seconds{application="springboot-with-prometheus",} 35.375
+# HELP jvm_memory_max_bytes The maximum amount of memory in bytes that can be used for memory management
+# TYPE jvm_memory_max_bytes gauge
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="heap",id="G1 Old Gen",} 2.147483648E9
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="heap",id="G1 Eden Space",} -1.0
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="nonheap",id="Metaspace",} -1.0
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="heap",id="G1 Survivor Space",} -1.0
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'non-nmethods'",} 5840896.0
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'non-profiled nmethods'",} 1.22908672E8
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="nonheap",id="Compressed Class Space",} 1.073741824E9
+jvm_memory_max_bytes{application="springboot-with-prometheus",area="nonheap",id="CodeHeap 'profiled nmethods'",} 1.22908672E8
+# HELP system_cpu_count The number of processors available to the Java virtual machine
+# TYPE system_cpu_count gauge
+system_cpu_count{application="springboot-with-prometheus",} 8.0
+		]]>
+		</screen>
+	</section>
+</section>
