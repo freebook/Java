@@ -97,7 +97,7 @@ select * from process_cpu_usage
 		</screen>
 	</section>
 </section>
-<section id="">
+<section id="springboot.prometheus">
 	<title>Spring Boot with Prometheus</title>
 	<section>
 		<title>Maven 依赖</title>
@@ -326,5 +326,151 @@ jvm_memory_max_bytes{application="springboot-with-prometheus",area="nonheap",id=
 system_cpu_count{application="springboot-with-prometheus",} 8.0
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>控制器监控</title>
+		<programlisting>
+		<![CDATA[
+@RestController
+@RequestMapping("/app")
+public class AppController {
+  private final Counter counter;
+ 
+  public AppController(final MeterRegistry registry) {
+    this.counter = registry.counter("greeting");
+  }
+ 
+  @RequestMapping("/greeting")
+  public String greeting() {
+    this.counter.increment();
+    return "hello world #" + this.counter.count();
+  }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>自定义埋点监控</title>
+						<para></para>
+		<itemizedlist>
+			<title>prometheus 监控指标有如下几种类型</title>
+			<listitem>Counter	类型代表数据递增的指标，即只增不减，除非监控系统重置</listitem>
+			<listitem>Guage		类型代表数据可以任意变化的指标，即可增可减</listitem>
+			<listitem>Histogram 由bucket{le=""}，bucket{le="+Inf"},sum，count 组成，用于一段时间范围内对数据进行采样，并能够对其指定区间以及总数进行统计，通常它采集的数据展示为直方图。</listitem>
+			<listitem>Summary 	由{quantile="<![CDATA[<φ>]]>"}，sum，count 组成，用于一段时间内数据采样结果（通常是请求持续时间或响应大小），它直接存储了 quantile 数据，而不是根据统计区间计算出来的。</listitem>
+		</itemizedlist>
+		
+		<section>
+			<title>拦截器</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.welcome.config;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import cn.netkiller.welcome.component.RestfulApiCounter;
+
+public class PrometheusInterceptor implements HandlerInterceptor {
+
+	@Autowired
+	private RestfulApiCounter restfulApiCounter;
+
+	public PrometheusInterceptor() {
+
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
+		restfulApiCounter.increment();
+	}
+
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>计数器元件</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.welcome.component;
+
+import org.springframework.stereotype.Component;
+
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+
+@Component
+public class RestfulApiCounter {
+	private final Counter counter;
+
+	public RestfulApiCounter(MeterRegistry registry) {
+		this.counter = registry.counter("restful_api_requests_total");
+	}
+
+	public void increment() {
+		this.counter.increment();
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>配置类</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.welcome.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class IntercepterConfiguration implements WebMvcConfigurer {
+
+	@Bean
+	public PrometheusInterceptor prometheusInterceptor() {
+
+		return new PrometheusInterceptor();
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(prometheusInterceptor()).addPathPatterns("/**");
+
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试埋点效果</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl -s http://localhost:8080/actuator/prometheus | grep restful
+# HELP restful_api_requests_total  
+# TYPE restful_api_requests_total counter
+restful_api_requests_total{application="springboot-with-prometheus",} 0.0
+
+neo@MacBook-Pro-Neo ~ % curl http://localhost:8080/
+Hello world! 
+
+neo@MacBook-Pro-Neo ~ % curl http://localhost:8080/address
+Address 127.0.0.1, Hostname MacBook-Pro-Neo.local 
+
+neo@MacBook-Pro-Neo ~ % curl -s http://localhost:8080/actuator/prometheus | grep restful
+# HELP restful_api_requests_total  
+# TYPE restful_api_requests_total counter
+restful_api_requests_total{application="springboot-with-prometheus",} 2.0			
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
