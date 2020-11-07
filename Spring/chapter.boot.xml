@@ -2199,7 +2199,7 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 	&section.boot.datasource.xml;
 	&section.boot.queue.xml;
 	&section.boot.schedule.xml;
-	&section.boot.swagger2.xml;
+	&section.boot.swagger.xml;
 	&section.boot.lombok.xml;
 	&section.boot.docker.xml;
 	&section.boot.command.xml;

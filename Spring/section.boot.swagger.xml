@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.swagger2">
-	<title>Spring boot with Swagger2</title>
+	<title>Spring boot with Swagger</title>
 	<section>
 		<title>Maven 文件</title>
 		<screen>
