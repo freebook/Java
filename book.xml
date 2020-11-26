@@ -32,7 +32,7 @@
 ]>
 <book xml:base="http://netkiller.sourceforge.net/linux/www" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
-		<title>Netkiller Java 手札</title>
+		<title>Netkiller Java 手札（<?dbtimestamp format="Y"?>版）</title>
 		<subtitle>Java, Servlet, JavaBean, Struts, Spring ...</subtitle>
 
 		&book.info.author.xml;
