@@ -622,6 +622,21 @@ will set cmdname to foo.
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>创建文件</title>
+		<screen>
+		<![CDATA[
+<touch file="newfile.txt"/>		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+<echo file="myoutput.txt" append="true"/>
+   The content to be written to myoutput.txt, the classpath is ${classpath}
+<echo/>		
+		]]>
+		</screen>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
