@@ -46,18 +46,18 @@ OpenJDK 64-Bit Server VM 20.3 (build 14.0.2+12, mixed mode, sharing)
 	<section id="jdk6">
 		<title>安装 Java 6</title>
 		<para>解压</para>
-		<screen>
+		<screen><![CDATA[
 chmod +x jdk-6u1-linux-i586.bin
 ./jdk-6u1-linux-i586.bin
 输入"yes"回车
 
 mv jdk1.6.0_01 /usr/local/
 ln -s /usr/local/jdk1.6.0_01/ /usr/local/java
-		</screen>
+		]]></screen>
 		<para>/etc/profile.d/java.sh</para>
 		<example>
 			<title>/etc/profile.d/java.sh</title>
-			<screen>
+			<screen><![CDATA[
 ################################################
 ### Java environment by neo
 ################################################
@@ -66,29 +66,26 @@ export JRE_HOME=/usr/local/java/jre
 export PATH=$PATH:/usr/local/java/bin:/usr/local/java/jre/bin
 export CLASSPATH="./:/usr/local/java/lib:/usr/local/java/jre/lib:/usr/local/memcached/api/java"
 export JAVA_OPTS="-Xms128m -Xmx1024m"
-		</screen>
-			<!--
-java -hotspot -XX:MaxPermSize=256m -mx4096m -ms4096m -XX:NewSize=128m -XX:MaxNewSize=128m -XX:SurvivorRatio=8 -Xms4096m -Xmx4096m
-CATALINA_OPTS="-server -Xss100k -Xms1024M -Xmx2048M -XX:NewRatio=2 -XX:PermSize=128M -XX:MaxPermSize=256M -XX:+UseParallelGC -Djava.awt.headless=true "
-			 -->
+		]]></screen>
+			<!-- java -hotspot -XX:MaxPermSize=256m -mx4096m -ms4096m -XX:NewSize=128m -XX:MaxNewSize=128m -XX:SurvivorRatio=8 -Xms4096m -Xmx4096m CATALINA_OPTS="-server -Xss100k -Xms1024M -Xmx2048M -XX:NewRatio=2 -XX:PermSize=128M -XX:MaxPermSize=256M -XX:+UseParallelGC -Djava.awt.headless=true " -->
 		</example>
 		<section>
 			<title>HeapDumpOnOutOfMemoryError</title>
-			<screen>
+			<screen><![CDATA[
 JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
-			</screen>
+			]]></screen>
 			<para>如果针对Tomcat可以在catalina.sh加入</para>
-			<screen>
+			<screen><![CDATA[
 if [ "$1" = "debug" ] ; then
 JAVA_OPTS = "$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	<section id="java-1.8.0-openjdk">
 		<title>java-1.8.0-openjdk</title>
-		<screen>
+		<screen><![CDATA[
 # yum install -y java-1.8.0-openjdk		
-		</screen>
+		]]></screen>
 	</section>
 	<section id="java.docker">
 		<title>docker 环境</title>
@@ -109,7 +106,7 @@ docker run -it openjdk:12-jdk /bin/bash
 root@44d1d18351a8:/# java -version
 		]]>
 		</screen>
-		
+
 	</section>
 	<section id="java">
 		<title>java - Launches a Java application.</title>
@@ -519,21 +516,21 @@ Hello
 			]]>
 			</programlisting>
 		</section>
-		<section id ="java.io.tmpdir">
+		<section id="java.io.tmpdir">
 			<title>java.io.tmpdir</title>
 			<para>临时文件目录</para>
-			<screen>
+			<screen><![CDATA[
 java -Djava.io.tmpdir=/path/to/tmpdir		
-			</screen>
+			]]></screen>
 		</section>
 		<section id="java.version">
 			<title>显示版本号</title>
-			<screen>
+			<screen><![CDATA[
 $ java -version
 java version "1.8.0_131"
 Java(TM) SE Runtime Environment (build 1.8.0_131-b11)
 Java HotSpot(TM) 64-Bit Server VM (build 25.131-b11, mixed mode)			
-			</screen>
+			]]></screen>
 		</section>
 		<section id="java.list-modules">
 			<title>列出java模块</title>
@@ -753,20 +750,20 @@ oracle.net.jmod
 		<title>jar</title>
 		<para>查看包中的文件列表 jar -tf package.war/package.jar</para>
 		<programlisting>
-$ /srv/java/bin/jar -tf mis.netkiller.cn-0.0.1.war |more
-META-INF/
-META-INF/MANIFEST.MF
-WEB-INF/
-WEB-INF/jsp/
-WEB-INF/jsp/include/
-WEB-INF/jsp/system/
-WEB-INF/jsp/banner/		
+			$ /srv/java/bin/jar -tf mis.netkiller.cn-0.0.1.war |more
+			META-INF/
+			META-INF/MANIFEST.MF
+			WEB-INF/
+			WEB-INF/jsp/
+			WEB-INF/jsp/include/
+			WEB-INF/jsp/system/
+			WEB-INF/jsp/banner/
 		</programlisting>
 	</section>
 	<section id="jdeps">
 		<title>jdeps - Java class dependency analyzer.</title>
 		<para>包类依赖分析器</para>
-		<screen>
+		<screen><![CDATA[
 [net@netkiller lib]$ jdeps jersey-client-1.18.1.jar
 jersey-client-1.18.1.jar -> not found
 jersey-client-1.18.1.jar -> /usr/java/jdk1.8.0_73/jre/lib/rt.jar
@@ -857,7 +854,7 @@ jersey-client-1.18.1.jar -> /usr/java/jdk1.8.0_73/jre/lib/rt.jar
       -> java.lang                                          
       -> javax.ws.rs.core                                   not found
 		
-		</screen>
+		]]></screen>
 	</section>
 	<section id="jshell">
 		<title>JShell</title>
@@ -971,6 +968,6 @@ jshell> /exit
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 </section>

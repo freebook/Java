@@ -2,9 +2,9 @@
 <chapter id="java">
 	<title>Java 14</title>
 	&chapter.jvm.xml;
-<section id="system">
-	<title>System</title>
-	<screen>
+	<section id="system">
+		<title>System</title>
+		<screen><![CDATA[
 Java.version 运行时环境版本
 
 java.vendor 运行时环境供应商
@@ -60,10 +60,10 @@ user.name 用户的账户名称
 user.home 用户的主目录
 
 user.dir 用户的当前工作目录	
-	</screen>
-	<section id="System">
-		<title>user.dir</title>
-		<programlisting>
+	]]></screen>
+		<section id="System">
+			<title>user.dir</title>
+			<programlisting>
 		<![CDATA[
 public class Test {
 
@@ -77,23 +77,23 @@ public class Test {
 	}
 }
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>java.io.tmpdir</title>
-		<para>改变java.io.tmpdir的默认值</para>
-		<programlisting>
-System.setProperty("java.io.tmpdir", "/vat/tmp");
-System.out.println(System.getProperty("java.io.tmpdir"));
-		</programlisting>
-		<para>如果你希望从外部修改这个系统属性的话，你可以使用-D这个参数，例如 java -Djava.io.tmpdir=/path/to/tmpdir</para>
-		<programlisting>
-System.out.println(System.getProperty("java.io.tmpdir"));
-		</programlisting>
-	</section>
-	<section id="file.encoding">
-		<title>打印当前 Java 文件的默认编码</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>java.io.tmpdir</title>
+			<para>改变java.io.tmpdir的默认值</para>
+			<programlisting>
+				System.setProperty("java.io.tmpdir", "/vat/tmp");
+				System.out.println(System.getProperty("java.io.tmpdir"));
+			</programlisting>
+			<para>如果你希望从外部修改这个系统属性的话，你可以使用-D这个参数，例如 java -Djava.io.tmpdir=/path/to/tmpdir</para>
+			<programlisting>
+				System.out.println(System.getProperty("java.io.tmpdir"));
+			</programlisting>
+		</section>
+		<section id="file.encoding">
+			<title>打印当前 Java 文件的默认编码</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
 
@@ -114,12 +114,12 @@ public class Test {
 
 }
 		]]>
-		</programlisting>
-	</section>
-	
-	<section>
-		<title>自定义</title>
-		<programlisting>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>自定义</title>
+			<programlisting>
 		<![CDATA[
 	public static void main(String[] args) {
 		try {
@@ -134,24 +134,24 @@ public class Test {
 
 	}
 		]]>
-		</programlisting>
-		<para>上面程序编译打包后运行</para>
-		<screen>
+			</programlisting>
+			<para>上面程序编译打包后运行</para>
+			<screen>
 		<![CDATA[
 neo@netkiller:~/project/Oracle$ java -jar -Dconfig=jdbc.properties target/oracle-0.0.1-SNAPSHOT.jar
-		]]>		
-		</screen>
-	</section>
-	<section>
-		<title>System.in 标准输入(Stdin)</title>
-		<para>标准输入一般用于管道输入，例如：</para>
-		<screen>
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>System.in 标准输入(Stdin)</title>
+			<para>标准输入一般用于管道输入，例如：</para>
+			<screen>
 		<![CDATA[
 cat test.txt | java cn.netkiller.ipo.test.StdinToStdout
 		]]>
-		</screen>
-		<para>下面的程序例子里从管道输入，并从标准输出打印。</para>
-		<programlisting>
+			</screen>
+			<para>下面的程序例子里从管道输入，并从标准输出打印。</para>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.ipo.test;
 
@@ -181,15 +181,15 @@ public class StdinToStdout {
 	}
 }
 		]]>
-		</programlisting>
-		<para>默认 BufferedReader 缓冲区比较小，无法处理大于1000 行的输入，可以通过配置缓冲区来解决。</para>
-		<programlisting>
+			</programlisting>
+			<para>默认 BufferedReader 缓冲区比较小，无法处理大于1000 行的输入，可以通过配置缓冲区来解决。</para>
+			<programlisting>
 		<![CDATA[
 stdin = new BufferedReader(new InputStreamReader(System.in, "utf-8"), 1024 * 1024 * 1024); // 1G 缓冲区		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
-</section>
 
 	<section id="Runtime">
 		<title>exec 运行shell</title>
@@ -237,5 +237,5 @@ Process proc =Runtime.getRuntime().exec("ls",null, new File("/bin"));
 	&chapter.javax.script.xml;
 	&chapter.javax.crypto.xml;
 	&chapter.java.security.xml;
-	
+
 </chapter>
