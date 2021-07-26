@@ -487,7 +487,8 @@ ctx.refresh();
 	
 	&section.boot.properties.xml;
 	&section.boot.logging.xml;
-
+	&section.boot.undertow.xml;
+	
 	<section id="jetty">
 		<title>Spring boot with Jetty</title>
 		<para>使用 Jetty 替代 Tomcat</para>

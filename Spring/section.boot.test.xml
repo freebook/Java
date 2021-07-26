@@ -116,7 +116,7 @@ public class ApplicationTests {
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>TestRestTemplate</title>
 		<screen>
 		<![CDATA[
 package cn.netkiller.rest;
