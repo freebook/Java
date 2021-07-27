@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>SpringBoot Admin</title>
+	<section>
+		<title>依赖</title>
+		<screen>
+		<![CDATA[
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-server</artifactId>
+            <version>2.1.6</version>
+        </dependency>		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>启用 Springboot Admin</title>
+		<programlisting>
+		<![CDATA[
+@EnableAdminServer
+public class SpringBootAdminApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(SpringBootAdminApplication.class, args);
+	}
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Nginx 跨域</title>
+		<screen>
+		<![CDATA[
+server {
+    listen       192.168.30.11:80;
+    listen       192.168.30.11:443 ssl http2;
+    server_name  api.netkiller.cn;
+
+    ssl_certificate "/etc/pki/nginx/server.crt";
+    ssl_certificate_key "/etc/pki/nginx/private/server.key";
+    ssl_session_cache shared:SSL:1m;
+    ssl_session_timeout  10m;
+    ssl_ciphers PROFILE=SYSTEM;
+    ssl_prefer_server_ciphers on;
+
+    access_log /var/log/nginx/api.netkiller.cn.access.log;
+    error_log /var/log/nginx/api.netkiller.cn.error.log;
+
+    error_page 497 https://$host$uri?$args;
+
+    if ($scheme = http) {
+        return 301 https://$server_name$request_uri;
+    }
+
+    location / {
+        add_header Content-Security-Policy "upgrade-insecure-requests;connect-src *";
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://192.168.30.10:8088;
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}		
+		]]>
+		</screen>
+	</section>
+	
+</section>
