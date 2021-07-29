@@ -484,6 +484,7 @@ ctx.refresh();
 			</programlisting>
 		</section>
 	</section>
+	&section.boot.shutdown.xml;
 	<section>
 		<title>获取 Resources 目录中的静态文件</title>
 		<programlisting>

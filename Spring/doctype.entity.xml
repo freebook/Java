@@ -5,6 +5,7 @@
 <!ENTITY chapter.tomcat.xml				SYSTEM "chapter.tomcat.xml">
 
 <!ENTITY chapter.boot.xml				SYSTEM "chapter.boot.xml">
+<!ENTITY section.boot.shutdown.xml		SYSTEM "section.boot.shutdown.xml">
 <!ENTITY section.boot.queue.xml			SYSTEM "section.boot.queue.xml">
 <!ENTITY section.boot.properties.xml	SYSTEM "section.boot.properties.xml">
 <!ENTITY section.boot.quickstart.xml	SYSTEM "section.boot.quickstart.xml">
