@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="javax.annotation">
+	<title>javax.annotation</title>
+	<section>
+		<title>@PostConstruct</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.component;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class TestComponent {
+
+	public TestComponent() {
+		System.out.println("TestComponent");
+	}
+
+	public String test() {
+		System.out.println("TestComponent test()");
+		return "Helloworld!!!";
+	}
+
+	@PostConstruct
+	public void construct() {
+		System.out.println("TestComponent PostConstruct");
+	}
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
+</section>

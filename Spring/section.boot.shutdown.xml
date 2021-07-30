@@ -275,8 +275,6 @@ public class Application {
 	public static void main(String[] args) {
 
 		System.out.println("Starting...");
-		// SpringApplication.run(Application.class, args);
-
 		SpringApplication springApplication = new SpringApplication(Application.class);
 		springApplication.addListeners(new ApplicationPidFileWriter());
 		springApplication.run(args);
@@ -298,6 +296,14 @@ server.port=8080
 spring.pid.file=/tmp/spring.pid
 		]]>
 		</screen>
+		<para>在启动的时候指定 pid 文件位置</para>
+		<programlisting>
+		<![CDATA[
+		SpringApplication application = new SpringApplication(Application.class);
+        application.addListeners(new ApplicationPidFileWriter("/tmp/app.pid"));
+        application.run();		
+		]]>
+		</programlisting>
 		<para>最后说说容器，容器的进程ID永远是 1 所以配置与否自己斟酌。</para>
 		<screen>
 		<![CDATA[
