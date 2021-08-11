@@ -76,8 +76,8 @@ logging.level.org.springframework.web=trace
 			<para>src/main/resources/application.properties</para>
 			<screen>
 			<![CDATA[
-logging.path=/tmp
-logging.file=/tmp/spring.log
+logging.file.path=/tmp
+logging.file.name=/tmp/spring.log
 logging.level.root=INFO
 logging.level.org.springframework.web=DEBUG
 logging.level.org.hibernate=ERROR

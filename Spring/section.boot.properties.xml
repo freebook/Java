@@ -1637,11 +1637,11 @@ server.ssl.keyStore=/www/ssl/spring
 		<section id="logging">
 			<title>logging</title>
 			<screen>
-				logging.path=/tmp # 日志目录默认为 /tmp
-				logging.file=your.log # 日志文件名称，默认为spring.log
+				logging.file.path=/tmp # 日志目录默认为 /tmp
+				logging.file.name=your.log # 日志文件名称，默认为spring.log
 			</screen>
 			<screen>
-				java -jar spring-boot-app.jar --logging.file=/tmp/spring-boot-app.log
+				java -jar spring-boot-app.jar --logging.file.name=/tmp/springboot.log
 			</screen>
 		</section>
 		<section id="tomcat">
@@ -1674,7 +1674,7 @@ server.tomcat.accesslog.enabled=true
 server.tomcat.accesslog.directory=/tmp/logs
 server.tomcat.accesslog.pattern=common
 server.tomcat.accesslog.prefix=www.netkiller.cn.access
-server.tomcat.accesslog.suffix=.log				
+server.tomcat.accesslog.suffix=.log		
 				]]>
 				</screen>
 			</section>
@@ -1683,11 +1683,13 @@ server.tomcat.accesslog.suffix=.log
 				<title>charset</title>
 				<para>Spring boot 默认并非UTF-8 所以下面配置必设，否则将会出现</para>
 				<screen>
-					spring.messages.encoding=UTF-8
-					server.tomcat.uri-encoding=UTF-8
-					spring.http.encoding.charset=UTF-8
-					spring.http.encoding.enabled=true
-					spring.http.encoding.force=true
+				<![CDATA[
+spring.messages.encoding=UTF-8
+server.tomcat.uri-encoding=UTF-8
+spring.http.encoding.charset=UTF-8
+spring.http.encoding.enabled=true
+spring.http.encoding.force=true
+				]]>
 				</screen>
 			</section>
 
