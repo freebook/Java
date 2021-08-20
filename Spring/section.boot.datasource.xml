@@ -2138,10 +2138,12 @@ public class SecondaryConfig {
 			<title>org.apache.tomcat.jdbc.pool.DataSource</title>
 			<para>默认连接池，可以忽略配置</para>
 			<programlisting>
-				spring.datasource.type = org.apache.tomcat.jdbc.pool.DataSource
+			<![CDATA[
+spring.datasource.type = org.apache.tomcat.jdbc.pool.DataSource			
+			]]>
 			</programlisting>
 		</section>
-		<section id="druid">
+		<section id="pool.druid">
 			<title>druid</title>
 			<para>pom.xml</para>
 			<programlisting>
@@ -2156,32 +2158,45 @@ public class SecondaryConfig {
 			<para>application.properties</para>
 			<programlisting>
 			<![CDATA[
-spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
-spring.datasource.initialSize=5
-spring.datasource.minIdle=5
-spring.datasource.maxActive=20
-spring.datasource.maxWait=60000
-spring.datasource.timeBetweenEvictionRunsMillis=60000 
-spring.datasource.minEvictableIdleTimeMillis=300000
-spring.datasource.validationQuery=SELECT 1 FROM DUAL
-spring.datasource.testWhileIdle=true
-spring.datasource.testOnBorrow=false
-spring.datasource.testOnReturn=false 
-spring.datasource.poolPreparedStatements=true
-spring.datasource.maxPoolPreparedStatementPerConnectionSize=20
-spring.datasource.filters=stat,wall,log4j
-spring.datasource.connectionProperties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-#spring.datasource.useGlobalDataSourceStat=true		
-
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-spring.datasource.url=jdbc:mysql://192.168.6.1:3306/test
-spring.datasource.username=inf
-spring.datasource.password=inf
 spring.jpa.database=MYSQL
+
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+#驱动配置信息
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+#基本连接信息
+spring.datasource.username = root
+spring.datasource.password = root
+spring.datasource.url=jdbc:mysql://192.168.153.23:3306/mytest?useUnicode=true&characterEncoding=utf-8
+
+#连接池属性
+spring.datasource.druid.initial-size=15
+spring.datasource.druid.max-active=100
+spring.datasource.druid.min-idle=15
+spring.datasource.druid.max-wait=60000
+spring.datasource.druid.time-between-eviction-runs-millis=60000
+spring.datasource.druid.min-evictable-idle-time-millis=300000
+spring.datasource.druid.test-on-borrow=false
+spring.datasource.druid.test-on-return=false
+spring.datasource.druid.test-while-idle=true
+spring.datasource.druid.validation-query=SELECT 1
+spring.datasource.druid.validation-query-timeout=1000
+spring.datasource.druid.keep-alive=true
+spring.datasource.druid.remove-abandoned=true
+spring.datasource.druid.remove-abandoned-timeout=180
+spring.datasource.druid.log-abandoned=true
+spring.datasource.druid.pool-prepared-statements=true
+spring.datasource.druid.max-pool-prepared-statement-per-connection-size=20
+spring.datasource.druid.filters=stat,wall,slf4j
+spring.datasource.druid.use-global-data-source-stat=true
+spring.datasource.druid.preparedStatement=true
+spring.datasource.druid.maxOpenPreparedStatements=100
+spring.datasource.druid.connect-properties.mergeSql=true
+spring.datasource.druid.connect-properties.slowSqlMillis=5000
+
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="pool.c3p0">
 			<title>c3p0 - JDBC3 Connection and Statement Pooling</title>
 			<para>pom.xml</para>
 			<programlisting>
@@ -2202,6 +2217,27 @@ spring.jpa.database=MYSQL
 			<programlisting>
 			<![CDATA[
 spring.datasource.type=com.mchange.v2.c3p0.ComboPooledDataSource
+
+spring.datasource.initialSize=5
+spring.datasource.minIdle=5
+spring.datasource.maxActive=20
+spring.datasource.maxWait=60000
+spring.datasource.timeBetweenEvictionRunsMillis=60000 
+spring.datasource.minEvictableIdleTimeMillis=300000
+spring.datasource.validationQuery=SELECT 1 FROM DUAL
+spring.datasource.testWhileIdle=true
+spring.datasource.testOnBorrow=false
+spring.datasource.testOnReturn=false 
+spring.datasource.poolPreparedStatements=true
+spring.datasource.maxPoolPreparedStatementPerConnectionSize=20
+spring.datasource.filters=stat,wall,log4j
+spring.datasource.connectionProperties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+#spring.datasource.useGlobalDataSourceStat=true		
+
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql://192.168.6.1:3306/test
+spring.datasource.username=inf
+spring.datasource.password=inf
 			]]>
 			</programlisting>
 		</section>
