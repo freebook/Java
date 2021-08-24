@@ -1,37 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="miscellaneous" ?>
 	<title>Miscellaneous</title>
-	<section id="ObjectToJson">
-		<title>Object to Json</title>
-		<programlisting>
-		<![CDATA[
-ObjectMapper mapper = new ObjectMapper();
-User user = new User();
 
-//Object to JSON in file
-mapper.writeValue(new File("c:\\user.json"), user);
-
-//Object to JSON in String
-String jsonInString = mapper.writeValueAsString(user);
-
-//Convert object to JSON string and pretty print
-String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(user);
-		]]>
-		</programlisting>
-	</section>
-	<section id="JsonToObject">
-		<title>Json To Object</title>
-		<programlisting>
-		<![CDATA[
-ObjectMapper mapper = new ObjectMapper();
-String jsonInString = "{'name' : 'mkyong'}";
-
-//JSON from file to Object
-User user = mapper.readValue(new File("c:\\user.json"), User.class);
-
-//JSON from String to Object
-User user = mapper.readValue(jsonInString, User.class);
-		]]>
-		</programlisting>
-	</section>
 </chapter>

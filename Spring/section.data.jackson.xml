@@ -218,5 +218,44 @@ public class SimpleController {
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="ObjectToJson">
+		<title>Object to Json</title>
+		<programlisting>
+		<![CDATA[
+ObjectMapper mapper = new ObjectMapper();
+User user = new User();
+
+//Object to JSON in file
+mapper.writeValue(new File("c:\\user.json"), user);
+
+//Object to JSON in String
+String jsonInString = mapper.writeValueAsString(user);
+
+//Convert object to JSON string and pretty print
+String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(user);
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	Notification notification = new Notification(status, time, summary + info);
+	ObjectMapper objectMapper = new ObjectMapper();
+	String json = objectMapper.writeValueAsString(notification);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="JsonToObject">
+		<title>Json To Object</title>
+		<programlisting>
+		<![CDATA[
+ObjectMapper mapper = new ObjectMapper();
+String jsonInString = "{'name' : 'mkyong'}";
+
+//JSON from file to Object
+User user = mapper.readValue(new File("c:\\user.json"), User.class);
+
+//JSON from String to Object
+User user = mapper.readValue(jsonInString, User.class);
+		]]>
+		</programlisting>
+	</section>
 </section>
