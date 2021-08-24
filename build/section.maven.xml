@@ -30,11 +30,59 @@ MAVEN_HOME="/usr/share/maven2/"
 			]]></screen>
 		</section>
 		<section>
-			<title>源码安装</title>
+			<title>一键安装</title>
 			<screen><![CDATA[
 curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/maven.sh | bash
 			]]></screen>
 		</section>
+		<section>
+			<title>apache-maven-3.8.2</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+
+cd /usr/local/src/
+wget https://mirrors.bfsu.edu.cn/apache/maven/maven-3/3.8.2/binaries/apache-maven-3.8.2-bin.tar.gz
+tar zxf apache-maven-3.8.2-bin.tar.gz
+mv apache-maven-3.8.2 /srv/
+rm -f /srv/apache-maven
+ln -s /srv/apache-maven-3.8.2 /srv/apache-maven
+
+alternatives --install /usr/local/bin/mvn apache-maven-3.8.2 /srv/apache-maven-3.8.2/bin/mvn 0
+
+mvn -v			
+			]]>
+			</screen>
+			<para>apache-maven-3.8.2 配置</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# vim /srv/apache-maven/conf/settings.xml
+  <mirrors>
+    <!-- mirror
+     | Specifies a repository mirror site to use instead of a given repository. The repository that
+     | this mirror serves has an ID that matches the mirrorOf element of this mirror. IDs are used
+     | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.
+     |
+    <mirror>
+      <id>mirrorId</id>
+      <mirrorOf>repositoryId</mirrorOf>
+      <name>Human Readable Name for this Mirror.</name>
+      <url>http://my.repository.com/repo/path</url>
+    </mirror>
+     -->
+    <mirror>
+      <id>maven-default-http-blocker</id>
+      <mirrorOf>external:http:*</mirrorOf>
+      <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
+      <url>http://0.0.0.0/</url>
+      <blocked>true</blocked>
+    </mirror>
+  </mirrors>			
+			]]>
+			</screen>
+			<para>apache-maven-3.8.2 默认会阻止其他镜像，需要会去掉 maven-default-http-blocker 配置</para>
+		</section>
+
 	</section>
 	<section id="cli">
 		<title>Maven 命令</title>
@@ -1035,6 +1083,23 @@ $ ls ~/.m2
 				]]>
 				</screen>
 			</section>
+		</section>
+		<section>
+			<title>常用的POM属性</title>
+			<para>用户可以使用该属性引用POM文件中对应元素的值，常用的POM属性包括：</para>
+			<screen>
+			<![CDATA[
+${project.build.sourceDirectory}：项目的主源码目录，默认为 src/main/java
+${project.build.testSourceDirectory}：项目的测试源码目录，默认为 src/test/java
+${project.build.directory}：项目构件输出目录，默认为 target/
+${project.outputDirectory}：项目主代码编译输出目录，默认为 target/classes/
+${project.testOutputDirectory}：项目测试代码编译输出目录，默认为 target/test-classes/
+${project.groupId}：项目的 groupId
+${project.artifactId}：项目的 artifactId
+${project.version}：项目的 version，与 project.version：项目的version，与{version}等价
+${project.build.fianlName}：项目打包输出文件的名称。 默 认 为 {project.build.fianlName}：项目打包输出文件的名称。默认为 project.build.fianlName：项目打包输出文件的名称。默认为{project.artifactId}-${project.version}			
+			]]>
+			</screen>
 		</section>
 		<section id="repositories">
 			<title>repositories 仓库配置</title>

@@ -491,4 +491,47 @@ public class Application {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>The dependencies of some of the beans in the application context form a cycle</title>
+		<para>@Service 中的 @Autowired 出现了相互注入，引起循环。</para>
+		<screen>
+			<![CDATA[
+api    | ***************************
+api    | APPLICATION FAILED TO START
+api    | ***************************
+api    | 
+api    | Description:
+api    | 
+api    | The dependencies of some of the beans in the application context form a cycle:
+api    | 
+api    | ┌─────┐
+api    | |  incarOrderFlowServiceImpl defined in URL [jar:file:/app/api.netkiller.cn.jar!/BOOT-INF/lib/api.netkiller.cn-1.0.0.jar!/com/zito/incar/service/impl/IncarOrderFlowServiceImpl.class]
+api    | ↑     ↓
+api    | |  incarOrderServiceImpl (field private cn.netkiller.service.IIncarAttachService cn.netkiller.service.impl.IncarOrderServiceImpl.iIncarAttachService)
+api    | ↑     ↓
+api    | |  incarAttachServiceImpl (field private cn.netkiller.service.IIncarOrderFlowService cn.netkiller.service.impl.IncarAttachServiceImpl.iIncarOrderFlowService)
+api    | └─────┘
+			]]>
+		</screen>
+		<para>解决方案</para>
+		<para>增加 @Lazy 注解</para>
+		<screen>
+			<![CDATA[
+@Slf4j
+@Service
+@Lazy
+public class IncarOrderFlowServiceImpl implements IIncarOrderFlowService {
+
+	@Autowired
+	private ISysRoleService iSysRoleService;
+
+	@Autowired
+	private  IIncarOrderService iIncarOrderService;	
+	...
+	...
+	...
+}	
+			]]>
+		</screen>
+	</section>
 </chapter>
