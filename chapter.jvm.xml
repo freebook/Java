@@ -750,14 +750,16 @@ oracle.net.jmod
 		<title>jar</title>
 		<para>查看包中的文件列表 jar -tf package.war/package.jar</para>
 		<programlisting>
-			$ /srv/java/bin/jar -tf mis.netkiller.cn-0.0.1.war |more
-			META-INF/
-			META-INF/MANIFEST.MF
-			WEB-INF/
-			WEB-INF/jsp/
-			WEB-INF/jsp/include/
-			WEB-INF/jsp/system/
-			WEB-INF/jsp/banner/
+		<![CDATA[
+$ /srv/java/bin/jar -tf mis.netkiller.cn-0.0.1.war |more
+META-INF/
+META-INF/MANIFEST.MF
+WEB-INF/
+WEB-INF/jsp/
+WEB-INF/jsp/include/
+WEB-INF/jsp/system/
+WEB-INF/jsp/banner/
+		]]>
 		</programlisting>
 	</section>
 	<section id="jdeps">
@@ -969,5 +971,36 @@ jshell> /exit
 			</screen>
 		</section>
 
+	</section>
+	<section id="jlink">
+		<title>jlink</title>
+		<para>使用 jlink 定自己的 jre</para>
+		<screen>
+		<![CDATA[
+jlink --module-path jmods --add-modules java.desktop --output /tmp/jre-16.0.2	
+		]]>
+		</screen>
+		<para>查看输出结果</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % ll /tmp/jre-16.0.2
+total 8
+drwxr-xr-x   4 neo  wheel   128B  8 31 15:08 bin
+drwxr-xr-x   5 neo  wheel   160B  8 31 15:08 conf
+drwxr-xr-x   8 neo  wheel   256B  8 31 15:08 include
+drwxr-xr-x   7 neo  wheel   224B  8 31 15:08 legal
+drwxr-xr-x  38 neo  wheel   1.2K  8 31 15:08 lib
+drwxr-xr-x   3 neo  wheel    96B  8 31 15:08 man
+-rw-r--r--   1 neo  wheel    93B  8 31 15:08 release		
+		]]>
+		</screen>
+		<para>查看 release 文件</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % cat /tmp/jre-16.0.2/release 
+JAVA_VERSION="16.0.2"
+MODULES="java.base java.datatransfer java.xml java.prefs java.desktop"		
+		]]>
+		</screen>
 	</section>
 </section>
