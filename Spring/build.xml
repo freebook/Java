@@ -206,13 +206,17 @@
 		<delete dir="${epub}" />
 	</target>
 
-	<target name="mac" depends="images">
+	<target name="mac" depends="">
 		<tstamp>
 			<format property="TIMEPOINT" pattern="yyyy-MM-dd.HH:mm:ss" locale="cn,CN" />
 		</tstamp>
 		<echo>the backup directory is ${TIMEPOINT}.</echo>
 		<!-- <mkdir dir="${backup.dir}/${TIMEPOINT}" /> -->
 		<xsltproc output="${tmp}/${ant.project.name}" stylesheet="../docbook-xsl/docbook.preview.xsl" file="book.xml" />
+		<copy todir="${tmp}/${ant.project.name}/images" overwrite="true" failonerror="false">
+			<fileset dir="${resources}" includes="**/*.*" />
+			<fileset dir="../common/images" includes="**/*.*" />
+		</copy>
 	</target>
 	<target name="usage" depends="">
 		<echo>Java deploy tools by netkiller</echo>
