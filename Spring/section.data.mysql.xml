@@ -1388,9 +1388,9 @@ public interface UserTokenRepository extends JpaRepository<UserToken, UserTokenP
 		]]>
 			</programlisting>
 		</section>
-		
-		
-		
+
+
+
 		<section id="JoinColumn">
 			<title>@JoinColumn</title>
 			<para>@JoinColumn与@Column注释类似，它的定义如下代码所示。 </para>
@@ -1419,7 +1419,7 @@ String table() default "";
 }
 			]]>
 			</screen>
-	</section>
+		</section>
 		<section id="OneToOne">
 			<title>@OneToOne</title>
 			<para>一对一表结构，如下面ER图所示，users表是用户表里面有登陆信息，profile 保存的时死人信息，这样的目的是我们尽量减少users表的字段，在频繁操作该表的时候性能比较好，另外一个目的是为了横向水平扩展。</para>
@@ -2085,7 +2085,7 @@ public class Member implements Serializable {
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section>
 			<title>其他</title>
 			<section id="Cascade">
@@ -2160,8 +2160,8 @@ public class Member  implements Serializable {
 			</section>
 		</section>
 	</section>
-	
-	
+
+
 	<section id="Inheritance">
 		<title>实体继承</title>
 		<para>B、C 类继承 A 所有属性，并且主键均为数据库（auto_increment）</para>
@@ -2842,7 +2842,7 @@ public List<MyModel> getAllRecord();
 			</section>
 		</section>
 		<section id="Transactional">
-			<title>@Transactional</title>
+			<title>事务 @Transactional</title>
 			<literallayout>
 			<![CDATA[
 下面介绍一下@Transactional注解的参数以及使用：
@@ -2936,8 +2936,175 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Intege
     }
 				]]>
 				</programlisting>
+				<programlisting>
+				<![CDATA[
+@Service
+public class UserService {
+    @Autowired
+    private UserRepostitory userRepostitory;
+    
+    @Transactional
+    public void add(User user) {
+        try {
+            userRepostitory.save(user);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        // 不会回滚
+    }
+    @Transactional
+    public void add(User user) throws Exception {
+        try {
+             userRepostitory.delete(user);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            // 抛出异常才会回滚
+            throw new Exception(e);
+        }
+    }
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>private、default、protected 和 final 不支持事物 </title>
+				<para>@Transactional 必须与 public 一起使用，不能定义为 private、default、protected</para>
+				<programlisting>
+				<![CDATA[
+@Service
+public class UserService {
+    @Transactional
+    private void add(User user) {
+         save(user);
+    }
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Service 注意事项</title>
+				<para>this 调用不支持事物</para>
+				<programlisting>
+				<![CDATA[
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepostitory userRepostitory;
+
+    @Transactional
+    public void add(User user) {
+        userRepostitory.save(user);
+        this.update(user);
+    }
+
+    @Transactional
+    public void update(User user) {
+        userRepostitory.update(user);
+    }
+}				
+				]]>
+				</programlisting>
+				<para>解决方案</para>
+				<programlisting>
+				<![CDATA[
+@Servcie
+public class UserService {
+   @Autowired
+   prvate ProfileService profileService;
+
+   public void save(User user) {
+         profileService.save(user);
+   }
+}
+
+ @Servcie
+ public class ProfileService {
+
+    @Transactional(rollbackFor=Exception.class)
+    public void save(User user) {
+
+    }
+
+}				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>需要 @Service 注解配合使用</title>
+				<para>@Transactional 需要在 @Controller、@Service、@Component、@Repository 等注解下才能使用</para>
+				<programlisting>
+				<![CDATA[
+// @Servcie
+public class UserService {
+	@Autowired
+	prvate ProfileService profileService;
+   
+	@Transactional
+	public void save(User user) {
+         profileService.save(user);
+	}
+}				
+				]]>
+				</programlisting>
+				<para>屏蔽 @Servcie 后观察 save 的 @Transactional 是不生效的。</para>
+			</section>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepostitory userRepostitory;
+    @Autowired
+    private RoleService roleService;
+
+    @Transactional
+    public void add(User user) throws Exception {
+        userRepostitory.save(user);
+        new Thread(() -> {
+            roleService.doOtherThing();
+        }).start();
+    }
+}
+
+@Service
+public class RoleService {
+
+    @Transactional
+    public void doOtherThing() {
+        ...
+        ...
+    }
+}				
+				]]>
+				</programlisting>
 			</section>
 		</section>
+		<section id="TransactionTemplate">
+			<title>TransactionTemplate</title>
+			<programlisting>
+			<![CDATA[
+	@Autowired
+	private TransactionTemplate transactionTemplate; 
+	...
+	...
+	public void save(final User user) {
+		transactionTemplate.execute((status) => {
+			doSomeThing(user);
+			doSomeThing1();
+			doSomeThing2();
+			doSomeThingN();
+			return Boolean.TRUE;
+		})
+	}
+			]]>
+			</programlisting>
+		</section>
+		
 		<section id="@Lock">
 			<title>锁 @Lock</title>
 			<programlisting>

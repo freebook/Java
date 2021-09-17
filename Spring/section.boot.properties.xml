@@ -2507,8 +2507,11 @@ public class Application {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="jasypt-spring-boot-starter">
 		<title>加密 application.properties 中的敏感内容</title>
+		<para>
+			<ulink url="http://www.jasypt.org" />
+		</para>
 		<para>Maven 配置</para>
 		<screen>
 		<![CDATA[
@@ -2562,7 +2565,7 @@ public class PasswordController {
 		<![CDATA[
 java -jar your_springboot_application.jar --jasypt.encryptor.password=123456		
 		]]>
-		</screen>		
+		</screen>
 		<para>将文本 neo 加密</para>
 		<screen>
 		<![CDATA[
@@ -2591,7 +2594,7 @@ jasypt.encryptor.password=123456
 test.password=ENC(cH0s45ZDOHtbCNgVGgs0etnigdfZgvrnhdFokG9ysnvy4DK0jZFPGOqe7Myow64y)		
 		]]>
 		</screen>
-		<para>BasicTextEncryptor</para>
+		<para>BasicTextEncryptor 加密文本内容</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller;
@@ -2613,8 +2616,7 @@ public class Password {
 		System.out.println("username:" + username);
 		System.out.println("password:" + password);
 	}
-
-}		
+}
 		]]>
 		</programlisting>
 	</section>
