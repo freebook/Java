@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="Jackson">
 	<title>Jackson</title>
+	<section>
+		<title>Jackson 相关配置</title>
+		<screen>
+		<![CDATA[
+#序列化时间格式
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.mvc.date-format=yyyy-MM-dd HH:mm:ss
+#mvc序列化时候时区选择
+spring.jackson.time-zone=GMT+8		
+		]]>
+		</screen>
+	</section>
 	<section id="@JsonIgnore">
 		<title>@JsonIgnore 返回json是不含有该字段</title>
 		<programlisting>

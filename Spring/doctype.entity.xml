@@ -34,12 +34,12 @@
 <!ENTITY section.mvc.service.xml		SYSTEM "section.mvc.service.xml">
 <!ENTITY section.mvc.validation.xml		SYSTEM "section.mvc.validation.xml">
 <!ENTITY section.mvc.interceptor.xml	SYSTEM "section.mvc.interceptor.xml">
+<!ENTITY section.mvc.jackson.xml		SYSTEM "section.mvc.jackson.xml">
 
 <!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 <!ENTITY section.security.oauth.xml		SYSTEM "section.security.oauth.xml">
 
 <!ENTITY chapter.data.xml				SYSTEM "chapter.data.xml">
-<!ENTITY section.data.jackson.xml		SYSTEM "section.data.jackson.xml">
 <!ENTITY section.data.mongodb.xml		SYSTEM "section.data.mongodb.xml">
 <!ENTITY section.data.mysql.xml			SYSTEM "section.data.mysql.xml">
 <!ENTITY section.data.jdbc.xml			SYSTEM "section.data.jdbc.xml">

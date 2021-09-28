@@ -1625,9 +1625,10 @@ public class UploadRestController {
 			}
 		}
 		return filename;
-	}	
+	}
 		]]>
 		</programlisting>
 
 	</section>
+	&section.mvc.jackson.xml;
 </section>

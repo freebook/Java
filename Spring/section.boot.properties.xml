@@ -1715,11 +1715,13 @@ server.servlet.context-path=/your
 				]]></screen>
 			</section>
 		</section>
-		<section id="json">
+		<section id="spring.jackson">
 			<title>JSON 输出与日期格式化</title>
 			<screen>
-				# Pretty-print JSON responses
-				spring.jackson.serialization.indent_output=true
+			<![CDATA[
+# Pretty-print JSON responses
+spring.jackson.serialization.indent_output=true			
+			]]>
 			</screen>
 			<screen>
 			<![CDATA[
@@ -1727,10 +1729,9 @@ server.servlet.context-path=/your
 spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
 spring.mvc.date-format=yyyy-MM-dd HH:mm:ss
 #mvc序列化时候时区选择
-spring.jackson.time-zone=GMT+8			
+spring.jackson.time-zone=GMT+8
 			]]>
 			</screen>
-
 		</section>
 		<section id="mail">
 			<title>SMTP 相关配置</title>

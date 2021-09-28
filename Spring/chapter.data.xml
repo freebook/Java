@@ -2,7 +2,6 @@
 <chapter id="index"><?dbhtml dir="data" ?>
 	<title>Spring Data</title>
 
-	&section.data.jackson.xml;
 	&section.data.redis.xml;
 	&section.data.mongodb.xml;
 	&section.data.mysql.xml;
