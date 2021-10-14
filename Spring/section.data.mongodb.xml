@@ -261,6 +261,312 @@ public class TrackerController {
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>MongoDB 多数据源</title>
+		<section>
+			<title>Maven</title>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Application 禁止自动配置 MongoDB</title>
+			<para>exclude = { MongoAutoConfiguration.class, MongoDataAutoConfiguration.class }</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.context.ApplicationPidFileWriter;
+
+@SpringBootApplication(exclude = { MongoAutoConfiguration.class, MongoDataAutoConfiguration.class })
+public class Application {
+
+	public static void main(String[] args) {
+
+		System.out.println("Starting...");
+		SpringApplication springApplication = new SpringApplication(Application.class);
+		springApplication.addListeners(new ApplicationPidFileWriter());
+		springApplication.run(args);
+	}
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties 新增配置项</title>
+			<programlisting>
+			<![CDATA[
+mongodb.primary.uri=mongodb://netkiller:chen@192.168.30.10:27017/news
+mongodb.secondary.uri=mongodb://netkiller:chen@192.168.30.5:27017/member
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>MongoDB 配置类</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import com.mongodb.ConnectionString;
+
+public abstract class AbstractMongoConfigure {
+
+	public MongoDatabaseFactory mongoDatabaseFactory(String uri) {
+		ConnectionString connectionString = new ConnectionString(uri);
+		return new SimpleMongoClientDatabaseFactory(connectionString);
+	}
+}
+			]]>
+			</programlisting>
+			<para>配置多数据源</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.mongo.MongoProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+
+@Configuration
+@ConfigurationProperties(prefix = "mongodb")
+@EnableMongoRepositories(basePackages = { "cn.netkiller.repository" }, mongoTemplateRef = MultipleMongoConfigure.primaryMongoTemplate)
+public class MultipleMongoConfigure extends AbstractMongoConfigure {
+
+	protected static final String primaryMongoTemplate = "primaryMongoTemplate";
+	protected static final String secondaryMongoTemplate = "secondaryMongoTemplate";
+
+	private MongoProperties primary = new MongoProperties();
+	private MongoProperties secondary = new MongoProperties();
+
+	public MongoProperties getPrimary() {
+		return primary;
+	}
+
+	public void setPrimary(MongoProperties primary) {
+		this.primary = primary;
+	}
+
+	public MongoProperties getSecondary() {
+		return secondary;
+	}
+
+	public void setSecondary(MongoProperties secondary) {
+		this.secondary = secondary;
+	}
+
+	public MultipleMongoConfigure() {
+	}
+
+	@Primary
+	@Bean(name = MultipleMongoConfigure.primaryMongoTemplate)
+	@Qualifier(value = MultipleMongoConfigure.primaryMongoTemplate)
+	public MongoTemplate primaryMongoTemplate() throws Exception {
+		String uri = this.getPrimary().getUri();
+		return new MongoTemplate(mongoDatabaseFactory(uri));
+	}
+
+	@Bean(name = "secondaryMongoTemplate")
+	@Qualifier("secondaryMongoTemplate")
+	public MongoTemplate secondaryMongoTemplate() throws Exception {
+		String uri = this.getSecondary().getUri();
+		return new MongoTemplate(mongoDatabaseFactory(uri));
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>创建 Document 关系映射类 </title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.domain;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Document
+public class User implements Serializable {
+	private static final long serialVersionUID = -3258839839160856613L;
+	// private Long id;
+	@MongoId
+	private String id;
+	private String useruame;
+	private String password;
+	private String name;
+	private String sex;
+	private Integer age;
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	private Date birthday;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUseruame() {
+		return useruame;
+	}
+
+	public void setUseruame(String useruame) {
+		this.useruame = useruame;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试控制器</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.netkiller.domain.User;
+import cn.netkiller.service.UserService;
+
+@RestController
+public class TestMongoController {
+
+	@Autowired
+	@Qualifier(value = "primaryMongoTemplate")
+	private MongoTemplate primaryMongoTemplate;
+
+	@Autowired
+	@Qualifier(value = "secondaryMongoTemplate")
+	private MongoTemplate secondaryMongoTemplate;
+
+	public TestMongoController() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@GetMapping("/mongo/primary/save")
+	public String primarysave() {
+		User user = new User();
+		user.setUseruame("netkiller");
+		user.setPassword("123456");
+		primaryMongoTemplate.save(user);
+		return "Success\r\n";
+	}
+
+	@GetMapping("/mongo/secondary/save")
+	public String secondaryMongoTemplate() {
+		User user = new User();
+		user.setUseruame("netkiller");
+		user.setPassword("123456");
+		secondaryMongoTemplate.save(user);
+		return "Success\r\n";
+	}
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<para>启动 Springboot 可以看到下面👇日志，两个MongoDB都链接成功。</para>	
+			<screen>
+			<![CDATA[
+2021-10-14 19:29:50.037  INFO 93698 --- [           main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[192.168.30.10:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+2021-10-14 19:29:50.156  INFO 93698 --- [168.30.10:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:126}] to 192.168.30.10:27017
+2021-10-14 19:29:50.157  INFO 93698 --- [168.30.10:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=192.168.30.10:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=31466638}
+2021-10-14 19:29:50.157  INFO 93698 --- [168.30.10:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:127}] to 192.168.30.10:27017
+2021-10-14 19:29:50.266  INFO 93698 --- [           main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[192.168.30.5:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+2021-10-14 19:29:50.272  INFO 93698 --- [.168.30.5:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:3, serverValue:969}] to 192.168.30.5:27017
+2021-10-14 19:29:50.272  INFO 93698 --- [.168.30.5:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:4, serverValue:968}] to 192.168.30.5:27017
+2021-10-14 19:29:50.272  INFO 93698 --- [.168.30.5:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=192.168.30.5:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=2345376}			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl http://localhost:8080/mongo/primary/save  
+Success
+
+neo@MacBook-Pro-Neo ~ % curl http://localhost:8080/mongo/secondary/save
+Success
+			]]>
+			</programlisting>
+			<para>现在去两个 MongoDB 数据查看输入是否保存成功。</para>
+			<para>在使用 curl 调用的时候，日志会显示链接两个 MongoDB 的状态。</para>
+			<screen>
+			<![CDATA[
+2021-10-14 19:34:27.795  INFO 93698 --- [  XNIO-1 task-1] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:5, serverValue:970}] to 192.168.30.5:27017
+2021-10-14 19:34:31.096  INFO 93698 --- [  XNIO-1 task-1] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:6, serverValue:130}] to 192.168.30.10:27017			
+			]]>
+			</screen>
+		</section>
+	</section>
+	
 	<section id="@Document">
 		<title>@Document</title>
 		<para>复杂的 @Document 数据类型定义</para>
