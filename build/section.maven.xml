@@ -107,6 +107,21 @@ mvn clean install -Dmaven.test.skip=true -s ~/.m2/settings.xml
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>多线程</title>
+			<para>使用4个线程构建</para>
+			<screen>
+			<![CDATA[
+mvn -T 4 install
+			]]>
+			</screen>
+			<para>每个CPU核心1个线程</para>
+			<screen>
+			<![CDATA[
+mvn -T 1C install			
+			]]>
+			</screen>
+		</section>
 		<section id="help">
 			<title>help</title>
 			<para>查看可用的pom定义</para>
