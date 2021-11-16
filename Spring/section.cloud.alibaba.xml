@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="SpringCloudAlibaba">
+	<title>Spring Cloud Alibaba</title>
+	<section>
+		<title>安装 Nacos</title>
+		<para>安装 netkiller-devops 库</para>
+		<screen>
+		<![CDATA[
+pip install netkiller-devops		
+		]]>
+		</screen>
+		<para>创建 docker.py 编排文件</para>
+		<screen>
+		<![CDATA[
+#!/usr/bin/env python3
+from netkiller.docker import *
+
+volume = Volumes()
+volume.create('mysql')
+
+mysql = Services('mysql')
+mysql.image('mysql:5.7').container_name('mysql').restart('always').hostname('db.sfzito.com').env_file(os.getcwd()+'/nacos/env/mysql.env')
+mysql.ports(['3306:3306']).volumes([
+	'mysql:/var/lib/mysql'
+]).command([
+	'--socket=/var/lib/mysql/mysql.sock',
+	'--default-authentication-plugin=mysql_native_password',
+    '--character-set-server=utf8mb4',
+    '--collation-server=utf8mb4_general_ci',
+    '--explicit_defaults_for_timestamp=true',
+    '--lower_case_table_names=1',
+    '--max_execution_time=0'
+])
+
+nacos = Services('nacos')
+nacos.container_name('nacos').env_file(os.getcwd()+'/nacos/env/nacos-mysql.env')
+# .environment([
+# 	'PREFER_HOST_MODE=hostname',
+# 	'MODE=standalone'
+# ])
+nacos.image('nacos/nacos-server').volumes([
+	'../nacos/logs/:/home/nacos/logs',
+	'../nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties'
+]).ports([
+	"8848:8848",
+    "9848:9848",
+	'9555:9555'
+]).depends_on('mysql').restart('on-failure')
+
+experiment = Composes('experiment')
+experiment.version('3.9')
+experiment.volumes(volume)
+experiment.services(mysql)
+experiment.services(nacos)
+
+if __name__ == '__main__':
+	try:
+		docker = Docker()
+		docker.sysctl([{'vm.max_map_count':'262144'}])
+		docker.environment(experiment)
+		docker.main()
+	except KeyboardInterrupt:
+		print ("Crtl+C Pressed. Shutting down.")
+		]]>
+		</screen>
+		<para>查看帮助信息</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# python3 docker.py 
+Python controls the docker manager.
+Usage: docker.py [options] up|rm|start|stop|restart|logs|top|images|exec <service>
+
+Options:
+  -h, --help            show this help message and exit
+  --debug               debug mode
+  -e development|testing|production, --environment=development|testing|production
+                        environment
+  -d, --daemon          run as daemon
+  --logfile=LOGFILE     logs file.
+  -l, --list            print service of environment
+  -f, --follow          following logging
+  -c, --compose         show docker compose
+  --export              export docker compose
+
+Homepage: http://www.netkiller.cn	Author: Neo <netkiller@msn.com>		
+		]]>
+		</screen>
+		<para>启动 nacos</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# python3 docker.py -e experiment up nacos
+mysql is up-to-date
+Starting nacos ... done
+
+[root@localhost ~]# python3 docker.py -e experiment ps 
+    Name                   Command               State                                                         Ports                                                      
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------                            
+mysql           docker-entrypoint.sh --soc ...   Up      0.0.0.0:3306->3306/tcp,:::3306->3306/tcp, 33060/tcp                                                              
+nacos           bin/docker-startup.sh            Up      0.0.0.0:8848->8848/tcp,:::8848->8848/tcp, 0.0.0.0:9555->9555/tcp,:::9555->9555/tcp,                              
+                                                         0.0.0.0:9848->9848/tcp,:::9848->9848/tcp   		
+		]]>
+		</screen>
+		<para>查看启动端口</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# ss -lnt | grep -E "(8848|9848)"
+LISTEN 0      1024         0.0.0.0:8848       0.0.0.0:*          
+LISTEN 0      1024         0.0.0.0:9848       0.0.0.0:*          
+LISTEN 0      1024            [::]:8848          [::]:*          
+LISTEN 0      1024            [::]:9848          [::]:*   		
+		]]>
+		</screen>
+		<para>测试配置中心</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos.cfg.dataId&group=test&content=helloWorld"
+true
+
+[root@localhost ~]# curl -X GET "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos.cfg.dataId&group=test"
+helloWorld
+		]]>
+		</screen>
+		<para>登陆 Web 界面 http://192.168.30.12:8848/nacos/ 默认的账号密码是：nacos/nacos </para>
+	</section>
+</section>
