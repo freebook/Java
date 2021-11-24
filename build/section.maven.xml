@@ -116,7 +116,7 @@ An exception has occurred in the compiler (17.0.1). Please file a bug against th
 com.sun.tools.javac.code.Symbol$CompletionFailure: class file for jakarta.validation.constraints.Pattern$Flag not found			
 			]]>
 			</screen>
-			<para>这是因为有些第三方包依赖 OpenJDK 8 的一些包。安装 openjdk8 使用 1.8 编译问题得到解决。</para>	
+			<para>这是因为有些第三方包依赖 OpenJDK 8 的一些包。安装 openjdk8 使用 1.8 编译问题得到解决。</para>
 			<screen>
 			<![CDATA[
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home
@@ -271,10 +271,22 @@ mvn install -Dmaven.test.skip=true
 			]]></screen>
 			<section>
 				<title>install-file</title>
-				<para>安装本地jar文件到Maven的.m2库中。</para>
+				<para>安装jar到本地仓库</para>
 				<screen>
 				<![CDATA[
-mvn install:install-file -Dfile=Path/to/your.jar} -DgroupId=com.example -DartifactId=project -Dversion=1.2.0 -Dpackaging=jar
+mvn install:install-file -Dfile=<path-to-file> -DgroupId=<group-id> -DartifactId=<artifact-id> -Dversion=<version> -Dpackaging=<packaging>
+
+<path-to-file>: 要安装的JAR的本地路径
+<group-id>：		要安装的JAR的Group Id
+<artifact-id>: 	要安装的JAR的 Artificial Id
+<version>: 		JAR 版本
+<packaging>: 	打包类型，例如JAR
+				]]>
+				</screen>
+				<para>安装本地 path/to/your.jar 文件到Maven的.m2库中。</para>
+				<screen>
+				<![CDATA[
+mvn install:install-file -Dfile=path/to/your.jar -DgroupId=com.example -DartifactId=project -Dversion=1.2.0 -Dpackaging=jar
 				]]>
 				</screen>
 			</section>
@@ -1496,7 +1508,7 @@ Project
 			]]>
 			</screen>
 		</section>
-		<section id="">
+		<section>
 			<title>公共项目 common</title>
 			<example>
 				<title>watir-webdriver example</title>
@@ -1590,7 +1602,7 @@ Project
 			</screen>
 			<para>project2 跟 project1 类似</para>
 		</section>
-		<section id="">
+		<section>
 			<title>现在测试效果</title>
 			<para>在父项目目录运行 mvn package</para>
 			<screen>
@@ -1767,7 +1779,7 @@ neo@MacBook-Pro ~/workspace/maven/project1 % find ~/.m2 -iname 'common-0.0.1-SNA
 		</section>
 
 	</section>
-	<section>
+	<section id="maven.dependencies">
 		<title>依赖管理</title>
 		<section>
 			<title>创建依赖模块</title>
@@ -1859,7 +1871,7 @@ neo@MacBook-Pro ~/workspace/maven/project1 % find ~/.m2 -iname 'common-0.0.1-SNA
 		</section>
 	</section>
 
-	<section id="plugins">
+	<section id="maven.plugins">
 		<title>plugins</title>
 		<section id="maven-compiler-plugin">
 			<title>maven-compiler-plugin</title>
@@ -2109,6 +2121,37 @@ The build.xml:
 	        </plugin>			
 			]]>
 			</screen>
+			<section>
+				<title>deploy:deploy-file </title>
+				<screen>
+				<![CDATA[
+mvn deploy:deploy-file 
+-Dfile=<path-to-file>
+-DgroupId=<group-id> 
+-DartifactId=<artifact-id>
+-Dversion=<version> 
+-Dpackaging=jar 
+-Durl=file:./maven-repository/ 
+-DrepositoryId=maven-repository 
+-DupdateReleaseInfo=true				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+mvn deploy:deploy-file \
+-DrepositoryId=gitlab-maven \
+-Durl=http://registry.netkiller.cn/api/v4/projects/14/packages/maven \ 
+-Dpackaging=jar \
+-Dfile=lib/cfca.jar \
+-DgroupId=cn.netkiller \ 
+-DartifactId=api \ 
+-Dversion=1.0.0 \
+-Dmaven.test.skip=true -s .ci_settings.xml
+				]]>
+				</screen>
+			</section>
+			
 		</section>
 		<section id="maven-jar-plugin">
 			<title>maven-jar-plugin</title>
@@ -2149,6 +2192,7 @@ The build.xml:
 		</section>
 		<section id="maven-dependency-plugin">
 			<title>maven-dependency-plugin</title>
+			<para>把项目依赖的包复制出来</para>
 			<screen>
 			<![CDATA[
 			<plugin>
@@ -2172,6 +2216,38 @@ The build.xml:
 					</execution>
 				</executions>
 			</plugin>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+mvn install dependency:copy-dependencies
+mvn install dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/lib
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+<build>
+    <plugins>
+        <plugin> 
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                        <includeScope>runtime</includeScope>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>			
 			]]>
 			</screen>
 		</section>
