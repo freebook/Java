@@ -122,4 +122,20 @@ helloWorld
 		</screen>
 		<para>登陆 Web 界面 http://192.168.30.12:8848/nacos/ 默认的账号密码是：nacos/nacos </para>
 	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>禁用 Nacos</title>
+			<para>当 Maven 引入了 nacos 依赖，启动就会要求配置 Nacos，可以通过下面方法禁用 Nacos</para>
+			<screen>
+			<![CDATA[
+spring.cloud.nacos.config.enabled=false  
+spring.cloud.nacos.discovery.enabled=false 
+spring.cloud.nacos.config.refresh-enabled=false
+spring.cloud.nacos.discovery.instance-enabled=false			
+			]]>
+			</screen>
+		</section>
+	</section>
+	
 </section>
