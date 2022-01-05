@@ -1314,8 +1314,60 @@ ${project.build.fianlName}：项目打包输出文件的名称。 默 认 为 {p
 				
 			]]>
 				</screen>
-				<section>
-					<title>resources</title>
+				<example>
+					<title>将本地 lib/*.jar 包添加到项目中</title>
+					<screen>
+					<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>nacos</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>nacos</name>
+	<description>Nacos Demo</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.2</version>
+		<relativePath />
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>cn.netkiller</groupId>
+			<artifactId>demo</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/demo-1.0.0.jar</systemPath>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>lib</directory>
+				<targetPath>BOOT-INF/lib/</targetPath>
+				<includes>
+					<include>**/*.jar</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+</project>					
+					]]>
+					</screen>
+				</example>
+				<example>
+					<title>将本地 src/resources 打包到项目</title>
 					<para>将资源文件编译后复制到 WEB-INF/classes 目录中</para>
 					<screen>
 				<![CDATA[
@@ -1352,7 +1404,7 @@ ${project.build.fianlName}：项目打包输出文件的名称。 默 认 为 {p
 </resources>
 				]]>
 					</screen>
-				</section>
+				</example>
 			</section>
 		</section>
 		<section id="plugins">

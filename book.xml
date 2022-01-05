@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: book.xml 559 2013-04-10 07:03:49Z netkiller $ -->
-<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+<!DOCTYPE subject SYSTEM "/usr/local/Cellar/docbook/5.1_1/docbook/xml/5.0/dtd/docbook.dtd"
 	[
 	<!ENTITY homepage "http://netkiller.sf.net/">
 	<!ENTITY mirror "http://netkiller.github.com/">
@@ -38,7 +38,7 @@
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2015-2020</year>
+			<year>2015-2022</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 		<cover>
