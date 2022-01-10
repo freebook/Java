@@ -534,4 +534,63 @@ public class IncarOrderFlowServiceImpl implements IIncarOrderFlowService {
 			]]>
 		</screen>
 	</section>
+	<section>
+		<title>no main manifest attribute, in /srv/job-admin.jar</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@localhost cloud.netkiller.cn]# java -jar job-admin.jar 
+no main manifest attribute, in job-admin.jar		
+		]]>
+		</screen>
+		<para>解压 jar 包，查看 META-INF/MANIFEST.MF 文件</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# unzip job-admin.jar		
+[root@localhost ~]# cat META-INF/MANIFEST.MF 
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Built-By: gitlab-runner
+Created-By: Apache Maven 3.8.4
+Build-Jdk: 1.8.0_312		
+		]]>
+		</screen>
+		<para>解决方法，pom.xml 中增加 repackage 配置项</para>
+		<screen>
+		<![CDATA[
+		<plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+		]]>
+		</screen>
+		<para>重新打包，再解压开查看 MANIFEST.MF 文件</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# cat META-INF/MANIFEST.MF 
+Manifest-Version: 1.0
+Spring-Boot-Classpath-Index: BOOT-INF/classpath.idx
+Archiver-Version: Plexus Archiver
+Built-By: gitlab-runner
+Spring-Boot-Layers-Index: BOOT-INF/layers.idx
+Start-Class: cn.netkiller.admin.Application
+Spring-Boot-Classes: BOOT-INF/classes/
+Spring-Boot-Lib: BOOT-INF/lib/
+Spring-Boot-Version: 2.6.2
+Created-By: Apache Maven 3.8.4
+Build-Jdk: 1.8.0_312
+Main-Class: org.springframework.boot.loader.JarLauncher		
+		]]>
+		</screen>
+	</section>
 </chapter>
