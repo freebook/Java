@@ -3,14 +3,18 @@
 	<title>Spring Cloud Alibaba</title>
 	<section>
 		<title>安装 Nacos</title>
-		<para>安装 netkiller-devops 库</para>
-		<screen>
+		<section>
+			<title>Docker 安装 Nacos</title>
+
+
+			<para>安装 netkiller-devops 库</para>
+			<screen>
 		<![CDATA[
 pip install netkiller-devops		
 		]]>
-		</screen>
-		<para>创建 docker.py 编排文件</para>
-		<screen>
+			</screen>
+			<para>创建 docker.py 编排文件</para>
+			<screen>
 		<![CDATA[
 #!/usr/bin/env python3
 from netkiller.docker import *
@@ -62,9 +66,9 @@ if __name__ == '__main__':
 	except KeyboardInterrupt:
 		print ("Crtl+C Pressed. Shutting down.")
 		]]>
-		</screen>
-		<para>查看帮助信息</para>
-		<screen>
+			</screen>
+			<para>查看帮助信息</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# python3 docker.py 
 Python controls the docker manager.
@@ -84,9 +88,9 @@ Options:
 
 Homepage: http://www.netkiller.cn	Author: Neo <netkiller@msn.com>		
 		]]>
-		</screen>
-		<para>启动 nacos</para>
-		<screen>
+			</screen>
+			<para>启动 nacos</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# python3 docker.py -e experiment up nacos
 mysql is up-to-date
@@ -99,9 +103,9 @@ mysql           docker-entrypoint.sh --soc ...   Up      0.0.0.0:3306->3306/tcp,
 nacos           bin/docker-startup.sh            Up      0.0.0.0:8848->8848/tcp,:::8848->8848/tcp, 0.0.0.0:9555->9555/tcp,:::9555->9555/tcp,                              
                                                          0.0.0.0:9848->9848/tcp,:::9848->9848/tcp   		
 		]]>
-		</screen>
-		<para>查看启动端口</para>
-		<screen>
+			</screen>
+			<para>查看启动端口</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# ss -lnt | grep -E "(8848|9848)"
 LISTEN 0      1024         0.0.0.0:8848       0.0.0.0:*          
@@ -109,9 +113,9 @@ LISTEN 0      1024         0.0.0.0:9848       0.0.0.0:*
 LISTEN 0      1024            [::]:8848          [::]:*          
 LISTEN 0      1024            [::]:9848          [::]:*   		
 		]]>
-		</screen>
-		<para>测试配置中心</para>
-		<screen>
+			</screen>
+			<para>测试配置中心</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos.cfg.dataId&group=test&content=helloWorld"
 true
@@ -119,8 +123,31 @@ true
 [root@localhost ~]# curl -X GET "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos.cfg.dataId&group=test"
 helloWorld
 		]]>
-		</screen>
-		<para>登陆 Web 界面 http://192.168.30.12:8848/nacos/ 默认的账号密码是：nacos/nacos </para>
+			</screen>
+			<para>登陆 Web 界面 http://192.168.30.12:8848/nacos/ 默认的账号密码是：nacos/nacos </para>
+		</section>
+		<section>
+			<title>Kubernetes 安装 Nacos</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+CREATE USER 'nacos'@'%' IDENTIFIED BY 'nacos';
+
+GRANT ALL PRIVILEGES ON nacos.* TO 'nacos'@'%';
+
+SHOW GRANTS FOR 'nacos'@'%';
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>FAQ</title>
@@ -137,5 +164,5 @@ spring.cloud.nacos.discovery.instance-enabled=false
 			</screen>
 		</section>
 	</section>
-	
+
 </section>
