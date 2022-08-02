@@ -1507,6 +1507,14 @@ spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWrite
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>banner 关闭</title>
+			<screen>
+			<![CDATA[
+spring.main.banner-mode=off 			
+			]]>
+			</screen>
+		</section>
 		<section id="server">
 			<title>server</title>
 			<section>

@@ -9,6 +9,8 @@
 			<title>配置如下</title>
 			<listitem>logging.file.path：指定日志文件的路径	</listitem>
 			<listitem>logging.file.name：日志的文件名(默认为spring.log)</listitem>
+			<listitem>logging.pattern.console：控制台的输出格式</listitem>
+			<listitem>logging.pattern.file：日志文件的输出格式</listitem>
 		</itemizedlist>
 		<tip>
 			<para>注意：这两个属性不能同时配置，只需要配置一个即可。</para>
@@ -127,6 +129,16 @@ logging.pattern.file=%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>彩色输出</title>
+			<programlisting>
+			<![CDATA[
+spring.main.banner-mode=off 
+spring.output.ansi.enabled=ALWAYS
+logging.pattern.console=%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){blue} %clr(%-5p) %clr(${PID}){faint} %clr(---){faint} %clr([%8.15t]){cyan} %clr(%-40.40logger{0}){blue} %clr(:){red} %clr(%m){faint}%n			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section>
@@ -185,9 +197,7 @@ class DemoApplicationTests {
 			</programlisting>
 		</section>
 	</section>
-	
-	
-	
+
 	<section id="springboot.logback">
 		<title>logback 配置详解</title>
 		<para>配置文件名默认是：logback-spring.xml，使用其他文件名通过下面配置项指定即可。</para>
@@ -196,30 +206,92 @@ class DemoApplicationTests {
 logging.config=classpath:logback.xml		
 		]]>
 		</screen>
-		<section id="stdout">
-			<title>标准输出</title>
-			<screen>
-			<![CDATA[
+		<para>基本配置</para>
+		<screen>
+		<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
-	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%date{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{35} : %msg %n</pattern>
-		</encoder>
-	</appender>
-	<root level="INFO">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
-	</root>
-</configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yy-MMMM-dd HH:mm:ss:SSS} %5p %t %c{2}:%L - %m%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+    </root>
+</configuration>		
+		]]>
+		</screen>
+
+		<section>
+			<title>指定Class过滤日志</title>
+			<programlisting>
+			<![CDATA[
+    <logger name="cn.netkiller.controller"/>
+    
+    <logger name="cn.netkiller.controller.HomeController" level="WARN" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>configuration 属性配置</title>
+			<screen>
+			<![CDATA[
+scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。			
 			]]>
 			</screen>
 		</section>
-		<section>
-			<title>分隔日志</title>
+		<section id="logback.contextName">
+			<title>contextName 设置上下文名称</title>
 			<screen>
+			<![CDATA[
+
+每个logger都关联到logger上下文，默认上下文名称为“default”。但可以使用设置成其他名字，用于区分不同应用程序的记录。设置后可以通过%contextName来打印日志上下文名称。
+<contextName>logback</contextName>			
+			]]>
+			</screen>
+		</section>
+		<section id="logback.property">
+			<title>property 设置变量</title>
+			<screen>
+			<![CDATA[
+用来定义变量值的标签， 有两个属性，name和value；其中name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义变量后，可以使“${}”来使用变量。
+
+<property name="log.path" value="/tmp" />
+			]]>
+			</screen>
+		</section>
+		<section id="logback.encoder">
+			<title>encoder 日志格式设置</title>
+			<screen>
+			<![CDATA[
+<encoder>表示对日志进行编码：
+
+%d{HH: mm:ss.SSS}——日志输出时间
+%thread——输出日志的进程名字，这在Web应用以及异步任务处理中很有用
+%-5level——日志级别，并且使用5个字符靠左对齐
+%logger{36}——日志输出者的名字
+%msg——日志消息
+%n——平台的换行符			
+			]]>
+			</screen>
+		</section>
+		<section id="RollingFileAppender">
+			<title>RollingFileAppender</title>
+			<screen>
+			<![CDATA[
+上例中<fileNamePattern>${log.path}/logback.%d{yyyy-MM-dd}.log</fileNamePattern>定义了日志的切分方式——把每一天的日志归档到一个文件中，同理，可以使用%d{yyyy-MM-dd_HH-mm}来定义精确到分的日志切分方式。
+<maxHistory>30</maxHistory>表示只保留最近30天的日志，以防止日志填满整个磁盘空间。
+<totalSizeCap>1GB</totalSizeCap>用来指定日志文件的上限大小，例如设置为1GB的话，那么到了这个值，就会删除旧的日志。	
+			]]>
+			</screen>
+			<section>
+				<title>分隔日志</title>
+				<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration  scan="true" scanPeriod="60 seconds" debug="false">
@@ -248,12 +320,12 @@ logging.config=classpath:logback.xml
     </root>
 </configuration>
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>按照文件尺寸分割日志</title>
-			<para>按日期分割文件</para>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>按照文件尺寸分割日志</title>
+				<para>按日期分割文件</para>
+				<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
@@ -280,9 +352,9 @@ logging.config=classpath:logback.xml
 </configuration>
 			
 			]]>
-			</screen>
-			<para>通过级别分割日志将 info, error, debug 分割到指定文件中。</para>
-			<screen>
+				</screen>
+				<para>通过级别分割日志将 info, error, debug 分割到指定文件中。</para>
+				<screen>
 			<![CDATA[
 <configuration scan="true" scanPeriod="10 seconds">
      <!-- 控制台日志输出-->
@@ -375,81 +447,97 @@ logging.config=classpath:logback.xml
 
 </configuration>			
 			]]>
+				</screen>
+			</section>
+		</section>
+		<section id="stdout">
+			<title>标准输出</title>
+			<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{35} : %msg %n</pattern>
+		</encoder>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>
+			]]>
 			</screen>
 		</section>
-		<section>
-			<title>指定Class过滤日志</title>
-			<programlisting>
-			<![CDATA[
-    <logger name="cn.netkiller.controller"/>
-    
-    <logger name="cn.netkiller.controller.HomeController" level="WARN" additivity="false">
-        <appender-ref ref="console"/>
-    </logger>
-			]]>
-			</programlisting>
+		<section id="logback.logstash">
+			<title>日志发送给 logstash</title>
+			<para>https://github.com/logfellow/logstash-logback-encoder/</para>
+			<section>
+				<title>logstash 配置</title>
+				<para>配置 logstash 增加 tcp 接收输入端。</para>
+				<screen>
+				<![CDATA[
+input {
+    tcp {
+	    mode => "server"
+	    host => "127.0.0.1"
+	    port => 4567
+	    codec => json_lines
+	}
+}				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Java 项目</title>
+				<para>Maven 配置文件 pom.xml 中添加</para>
+				<screen>
+				<![CDATA[
+<dependency>
+    <groupId>net.logstash.logback</groupId>
+    <artifactId>logstash-logback-encoder</artifactId>
+    <version>7.2</version>
+</dependency>
+				]]>
+				</screen>
+				<para>然后再resources添加logback.xml文件</para>
+				<screen>
+				<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="true">
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+
+	<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<destination>127.0.0.1:4567</destination>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<providers>
+				<timestamp />
+				<logLevel />
+				<threadName />
+				<loggerName />
+				<message />
+			</providers>
+		</encoder>
+	</appender>
+	<root level="info">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="logstash" />
+	</root>
+</configuration>				
+				]]>
+				</screen>
+			</section>
+
 		</section>
-		<section>
+		<section id="logback.mongodb">
 			<title>日志写入 MongoDB</title>
 			<screen>
 			<![CDATA[
 
-			]]>
-			</screen>
-		</section>
-
-		<section>
-			<title>configuration 属性配置</title>
-			<screen>
-			<![CDATA[
-scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
-scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
-debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。			
-			]]>
-			</screen>
-		</section>
-		<section id="logback.contextName">
-			<title>contextName 设置上下文名称</title>
-			<screen>
-			<![CDATA[
-
-每个logger都关联到logger上下文，默认上下文名称为“default”。但可以使用设置成其他名字，用于区分不同应用程序的记录。设置后可以通过%contextName来打印日志上下文名称。
-<contextName>logback</contextName>			
-			]]>
-			</screen>
-		</section>
-		<section id="logback.property">
-			<title>property 设置变量</title>
-			<screen>
-			<![CDATA[
-用来定义变量值的标签， 有两个属性，name和value；其中name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义变量后，可以使“${}”来使用变量。
-
-<property name="log.path" value="/tmp" />
-			]]>
-			</screen>
-		</section>
-		<section id="logback.encoder">
-			<title>encoder 日志格式设置</title>
-			<screen>
-			<![CDATA[
-<encoder>表示对日志进行编码：
-
-%d{HH: mm:ss.SSS}——日志输出时间
-%thread——输出日志的进程名字，这在Web应用以及异步任务处理中很有用
-%-5level——日志级别，并且使用5个字符靠左对齐
-%logger{36}——日志输出者的名字
-%msg——日志消息
-%n——平台的换行符			
-			]]>
-			</screen>
-		</section>
-		<section id="RollingFileAppender">
-			<title>RollingFileAppender</title>
-			<screen>
-			<![CDATA[
-上例中<fileNamePattern>${log.path}/logback.%d{yyyy-MM-dd}.log</fileNamePattern>定义了日志的切分方式——把每一天的日志归档到一个文件中，同理，可以使用%d{yyyy-MM-dd_HH-mm}来定义精确到分的日志切分方式。
-<maxHistory>30</maxHistory>表示只保留最近30天的日志，以防止日志填满整个磁盘空间。
-<totalSizeCap>1GB</totalSizeCap>用来指定日志文件的上限大小，例如设置为1GB的话，那么到了这个值，就会删除旧的日志。	
 			]]>
 			</screen>
 		</section>
