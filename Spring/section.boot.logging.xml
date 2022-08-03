@@ -450,6 +450,56 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 				</screen>
 			</section>
 		</section>
+		<section>
+			<title>日志过滤</title>
+			<para>将特定日志输出保存到指定位置</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
+public class Application {
+	public static void main(String[] args) {
+		final Logger logger = LoggerFactory.getLogger(Application.class);
+		Marker notifyAdmin = MarkerFactory.getMarker("netkiller");
+		logger.info("AAAAAAAAA");
+		logger.info(notifyAdmin, "BBBBBBBBB");
+		logger.error(notifyAdmin, "This is a serious an error requiring the admin's attention", new Exception("Just testing"));
+	}
+}			
+			]]>
+			</programlisting>
+			<para>匹配到 marker 的日志才输出，通过 RollingFileAppender 可以保存到指定文件。</para>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+				<marker>netkiller</marker>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{35} : %msg %n</pattern>
+		</encoder>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>			
+			]]>
+			</programlisting>
+		</section>
 		<section id="stdout">
 			<title>标准输出</title>
 			<screen>
