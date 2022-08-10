@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Java 安装</title>
+	<section>
+		<title>Almalinux / RockyLinux</title>
+		<para>安装 Java 1.8 JRE</para>
+		<screen>
+		<![CDATA[
+dnf install java-1.8.0-openjdk		
+		]]>
+		</screen>
+		<para>安装 Java 1.8 JDK</para>
+		<screen>
+		<![CDATA[
+dnf install java-1.8.0-openjdk-devel		
+		]]>
+		</screen>
+		<para>当我们安装 maven 的时候会自动安装 Java 11，需要使用下面方法切换默认Java版本</para>
+		<screen>
+		<![CDATA[
+[root@cloud ~]# alternatives --config java
+
+There are 2 programs which provide 'java'.
+
+  Selection    Command
+-----------------------------------------------
+   1           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.342.b07-1.el9_0.x86_64/jre/bin/java)
+*+ 2           java-11-openjdk.x86_64 (/usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.el9_0.x86_64/bin/java)
+
+Enter to keep the current selection[+], or type selection number: 1   
+[root@cloud ~]# alternatives --config javac
+
+There are 2 programs which provide 'javac'.
+
+  Selection    Command
+-----------------------------------------------
+   1           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.342.b07-1.el9_0.x86_64/bin/javac)
+*+ 2           java-11-openjdk.x86_64 (/usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.el9_0.x86_64/bin/javac)
+
+Enter to keep the current selection[+], or type selection number: 1		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@cloud ~]# javac -version
+javac 1.8.0_342
+
+[root@cloud ~]# java -version
+openjdk version "1.8.0_342"
+OpenJDK Runtime Environment (build 1.8.0_342-b07)
+OpenJDK 64-Bit Server VM (build 25.342-b07, mixed mode)		
+		]]>
+		</screen>
+	</section>
+</section>

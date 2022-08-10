@@ -1070,14 +1070,54 @@ MacBook-Pro:api.netkiller.cn neo$ mvn help:describe \
 			</screen>
 		</section>
 	</section>
-	<section id="mvnrepository">
-		<title>Maven 仓库</title>
-		<para>http://search.maven.org/</para>
-		<para>http://mvnrepository.com/</para>
-		<para>本地下载目录</para>
-		<screen><![CDATA[
+
+	<section id="maven.settings.xml">
+		<title>settings.xml 配置</title>
+		<section id="mvnrepository">
+			<title>Maven 仓库</title>
+			<para>http://search.maven.org/</para>
+			<para>http://mvnrepository.com/</para>
+			<para>本地下载目录</para>
+			<screen><![CDATA[
 $ ls ~/.m2
 		]]></screen>
+		</section>
+		<section>
+			<title>镜像配置</title>
+			<para>一般镜像</para>
+			<screen>
+			<![CDATA[
+	<mirror>
+      <id>aliyun</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <mirrorOf>central</mirrorOf>
+	</mirror>			
+			]]>
+			</screen>
+			<para>带有用户认证的镜像</para>
+			<screen>
+			<![CDATA[
+<settings>
+    <servers>
+        <server>
+            <id>netkiller.cn</id>
+            <username>netkiller</username>
+            <password>password</password>
+        </server>
+    </servers>
+    <mirrors>
+        <mirror>
+            <id>netkiller.cn</id>
+            <name>Netkiller Mirror</name>
+            <url>http://maven.netkiller.cn/repository/maven2</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+</settings>			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="pom.xml">
 		<title>pom.xml</title>
@@ -2225,7 +2265,7 @@ mvn deploy:deploy-file \
 				]]>
 				</screen>
 			</section>
-			
+
 		</section>
 		<section id="maven-jar-plugin">
 			<title>maven-jar-plugin</title>

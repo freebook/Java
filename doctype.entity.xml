@@ -2,6 +2,7 @@
 <!ENTITY book.appendix.xml		 		SYSTEM "book.appendix.xml">
 
 <!ENTITY chapter.java.xml		 		SYSTEM "chapter.java.xml">
+<!ENTITY section.java.install.xml 		SYSTEM "section.java.install.xml">
 <!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">
 <!ENTITY chapter.java.type.xml		 	SYSTEM "chapter.java.type.xml">
 <!ENTITY chapter.java.net.xml 			SYSTEM "chapter.java.net.xml">
