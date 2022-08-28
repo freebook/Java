@@ -222,7 +222,14 @@ logging.config=classpath:logback.xml
 </configuration>		
 		]]>
 		</screen>
-
+		<section>
+			<title>禁止 logback 日志输出</title>
+			<screen>
+			<![CDATA[
+	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>指定Class过滤日志</title>
 			<programlisting>
@@ -290,7 +297,7 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 			]]>
 			</screen>
 			<section>
-				<title>分隔日志</title>
+				<title>按日期分割日志</title>
 				<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
@@ -520,6 +527,74 @@ public class Application {
 </configuration>
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>MDC</title>
+			<para>每个 userId 生成一个日志文件</para>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+
+	<property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss} - [%25.25(%thread)] - [%-5level] - %-30.30(%logger{30}) : %msg%n" />
+
+	<appender name="siftingAppender" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator>
+			<key>userId</key>
+			<defaultValue>unknown</defaultValue>
+		</discriminator>
+		<sift>
+			<appender name="${userId}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${log.path}/${userId}.%d{yyyy-MM-dd}.log</fileNamePattern>
+				</rollingPolicy>
+				<encoder>
+					<pattern>${log.pattern}</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="siftingAppender" />
+	</root>
+</configuration>			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.log;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+public class LogTest {
+
+	private static final Logger logger = LoggerFactory.getLogger(LogTest.class);
+
+	public LogTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+	
+		MDC.put("userId","0001");
+		logger.info("0001用户");
+        MDC.clear(); 
+
+        MDC.put("userId","0002");
+        logger.info("0002用户");
+        MDC.clear();
+
+	}
+
+}
+			
+			]]>
+			</programlisting>
 		</section>
 		<section id="logback.logstash">
 			<title>日志发送给 logstash</title>
