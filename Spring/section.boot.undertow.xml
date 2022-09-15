@@ -3,7 +3,7 @@
 	<title>Undertow</title>
 	<para>Undertow 是红帽公司开发的一款基于 NIO 的高性能 Web 嵌入式服务器</para>
 	<section>
-		<title></title>
+		<title>Maven 依赖</title>
 		<screen>
 		<![CDATA[
 <dependencies>

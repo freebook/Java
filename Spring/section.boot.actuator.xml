@@ -57,6 +57,7 @@ endpoints.health.enabled=true
 	</section>
 	<section>
 		<title>actuator 接口</title>
+		<para>常规接口</para>
 		<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator | jq
@@ -85,6 +86,138 @@ neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator | jq
   }
 }
 		
+		]]>
+		</screen>
+		<para>暴漏所有接口</para>
+		<screen>
+		<![CDATA[
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"		
+		]]>
+		</screen>
+		<para>再次访问 /actuator</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/actuator/ | jq
+{
+  "_links": {
+    "self": {
+      "href": "http://pre.ejiayou.com/ensd-channel-service/monitor",
+      "templated": false
+    },
+    "archaius": {
+      "href": "https://www.netkiller.cn/actuator/archaius",
+      "templated": false
+    },
+    "nacosconfig": {
+      "href": "https://www.netkiller.cn/actuator/nacosconfig",
+      "templated": false
+    },
+    "nacosdiscovery": {
+      "href": "https://www.netkiller.cn/actuator/nacosdiscovery",
+      "templated": false
+    },
+    "auditevents": {
+      "href": "https://www.netkiller.cn/actuator/auditevents",
+      "templated": false
+    },
+    "beans": {
+      "href": "https://www.netkiller.cn/actuator/beans",
+      "templated": false
+    },
+    "caches-cache": {
+      "href": "https://www.netkiller.cn/actuator/caches/{cache}",
+      "templated": true
+    },
+    "caches": {
+      "href": "https://www.netkiller.cn/actuator/caches",
+      "templated": false
+    },
+    "health-component": {
+      "href": "https://www.netkiller.cn/actuator/health/{component}",
+      "templated": true
+    },
+    "health": {
+      "href": "https://www.netkiller.cn/actuator/health",
+      "templated": false
+    },
+    "health-component-instance": {
+      "href": "https://www.netkiller.cn/actuator/health/{component}/{instance}",
+      "templated": true
+    },
+    "conditions": {
+      "href": "https://www.netkiller.cn/actuator/conditions",
+      "templated": false
+    },
+    "configprops": {
+      "href": "https://www.netkiller.cn/actuator/configprops",
+      "templated": false
+    },
+    "env-toMatch": {
+      "href": "https://www.netkiller.cn/actuator/env/{toMatch}",
+      "templated": true
+    },
+    "env": {
+      "href": "https://www.netkiller.cn/actuator/env",
+      "templated": false
+    },
+    "info": {
+      "href": "https://www.netkiller.cn/actuator/info",
+      "templated": false
+    },
+    "loggers-name": {
+      "href": "https://www.netkiller.cn/actuator/loggers/{name}",
+      "templated": true
+    },
+    "loggers": {
+      "href": "https://www.netkiller.cn/actuator/loggers",
+      "templated": false
+    },
+    "heapdump": {
+      "href": "https://www.netkiller.cn/actuator/heapdump",
+      "templated": false
+    },
+    "threaddump": {
+      "href": "https://www.netkiller.cn/actuator/threaddump",
+      "templated": false
+    },
+    "metrics": {
+      "href": "https://www.netkiller.cn/actuator/metrics",
+      "templated": false
+    },
+    "metrics-requiredMetricName": {
+      "href": "https://www.netkiller.cn/actuator/metrics/{requiredMetricName}",
+      "templated": true
+    },
+    "scheduledtasks": {
+      "href": "https://www.netkiller.cn/actuator/scheduledtasks",
+      "templated": false
+    },
+    "httptrace": {
+      "href": "https://www.netkiller.cn/actuator/httptrace",
+      "templated": false
+    },
+    "mappings": {
+      "href": "https://www.netkiller.cn/actuator/mappings",
+      "templated": false
+    },
+    "refresh": {
+      "href": "https://www.netkiller.cn/actuator/refresh",
+      "templated": false
+    },
+    "features": {
+      "href": "https://www.netkiller.cn/actuator/features",
+      "templated": false
+    },
+    "service-registry": {
+      "href": "https://www.netkiller.cn/actuator/service-registry",
+      "templated": false
+    }
+  }
+}		
 		]]>
 		</screen>
 	</section>
@@ -174,5 +307,124 @@ http://localhost:8080/actuator/scheduledtasks
 		]]>
 		</screen>
 	</section>
-
+	<section>
+		<title>修改 actuator 地址</title>
+		<screen>
+		<![CDATA[
+management:
+  endpoints:
+    web:
+      base-path: /monitor		
+		]]>
+		</screen>
+	</section>
+	<section id="actuator.metrics">
+		<title>metrics</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/actuator/metrics/ | jq
+{
+  "names": [
+    "jvm.threads.states",
+    "process.files.max",
+    "jvm.gc.memory.promoted",
+    "hikaricp.connections.max",
+    "hikaricp.connections.min",
+    "jvm.memory.committed",
+    "system.load.average.1m",
+    "http.server.requests",
+    "jvm.memory.used",
+    "jvm.gc.max.data.size",
+    "jdbc.connections.max",
+    "jdbc.connections.min",
+    "hikaricp.connections.usage",
+    "jvm.gc.pause",
+    "system.cpu.count",
+    "hikaricp.connections.timeout",
+    "tomcat.global.sent",
+    "jvm.buffer.memory.used",
+    "tomcat.sessions.created",
+    "jvm.memory.max",
+    "jvm.threads.daemon",
+    "hikaricp.connections.acquire",
+    "system.cpu.usage",
+    "jvm.gc.memory.allocated",
+    "tomcat.global.request.max",
+    "tomcat.global.request",
+    "tomcat.sessions.expired",
+    "jvm.threads.live",
+    "jvm.threads.peak",
+    "tomcat.global.received",
+    "process.uptime",
+    "tomcat.sessions.rejected",
+    "process.cpu.usage",
+    "tomcat.threads.config.max",
+    "jvm.classes.loaded",
+    "jvm.classes.unloaded",
+    "tomcat.global.error",
+    "tomcat.sessions.active.current",
+    "tomcat.sessions.alive.max",
+    "jvm.gc.live.data.size",
+    "log4j2.events",
+    "hikaricp.connections.idle",
+    "tomcat.threads.current",
+    "hikaricp.connections.pending",
+    "process.files.open",
+    "jvm.buffer.count",
+    "hikaricp.connections",
+    "jvm.buffer.total.capacity",
+    "tomcat.sessions.active.max",
+    "hikaricp.connections.active",
+    "hikaricp.connections.creation",
+    "tomcat.threads.busy",
+    "process.start.time"
+  ]
+}		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/actuator/metrics/tomcat.threads.config.max |jq
+{
+  "name": "tomcat.threads.config.max",
+  "description": null,
+  "baseUnit": "threads",
+  "measurements": [
+    {
+      "statistic": "VALUE",
+      "value": 4096
+    }
+  ],
+  "availableTags": [
+    {
+      "tag": "name",
+      "values": [
+        "http-nio-8080"
+      ]
+    }
+  ]
+}
+neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/actuator/metrics/tomcat.threads.current |jq
+{
+  "name": "tomcat.threads.current",
+  "description": null,
+  "baseUnit": "threads",
+  "measurements": [
+    {
+      "statistic": "VALUE",
+      "value": 24
+    }
+  ],
+  "availableTags": [
+    {
+      "tag": "name",
+      "values": [
+        "http-nio-8080"
+      ]
+    }
+  ]
+}
+		]]>
+		</screen>
+	</section>
 </section>

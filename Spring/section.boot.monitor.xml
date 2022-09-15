@@ -123,7 +123,8 @@ select * from process_cpu_usage
 		<screen>
 		<![CDATA[
 spring.application.name=springboot-with-prometheus
-management.endpoints.web.exposure.include=*
+#management.endpoints.web.exposure.include=*
+management.endpoints.web.exposure.include=prometheus
 management.metrics.tags.application=${spring.application.name}
 		]]>
 		</screen>

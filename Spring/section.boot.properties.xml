@@ -6,7 +6,9 @@
 		<para>
 			<ulink url="https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html" />
 		</para>
-
+		<para>
+			<ulink url="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html" />
+		</para>
 		<section id="faq.application.properties">
 			<title>application.properties 参考</title>
 			<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
