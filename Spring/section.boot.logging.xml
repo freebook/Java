@@ -667,9 +667,53 @@ input {
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="springboot.fluentd">
 		<title>fluentd</title>
-		<programlisting>
+		<section>
+			<title>Maven 依赖</title>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.fluentd</groupId>
+			<artifactId>fluent-logger</artifactId>
+			<version>0.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sndyuk</groupId>
+			<artifactId>logback-more-appenders</artifactId>
+			<version>1.8.7</version>
+		</dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>安装 fluent-bit</title>
+			<screen>
+			<![CDATA[
+dnf install -y fluent-bit			
+			]]>
+			</screen>
+			<para>启动 fluent-bit</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# fluent-bit -i forward -o stdout
+Fluent Bit v1.9.7
+* Copyright (C) 2015-2022 The Fluent Bit Authors
+* Fluent Bit is a CNCF sub-project under the umbrella of Fluentd
+* https://fluentbit.io
+
+[2022/09/24 23:25:25] [ info] [fluent bit] version=1.9.7, commit=, pid=1191240
+[2022/09/24 23:25:25] [ info] [storage] version=1.2.0, type=memory-only, sync=normal, checksum=disabled, max_chunks_up=128
+[2022/09/24 23:25:25] [ info] [cmetrics] version=0.3.5
+[2022/09/24 23:25:25] [ info] [input:forward:forward.0] listening on 0.0.0.0:24224
+[2022/09/24 23:25:25] [ info] [sp] stream processor started
+[2022/09/24 23:25:25] [ info] [output:stdout:stdout.0] worker #0 started
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置 logback-spring.xml</title>
+			<programlisting>
 		<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
@@ -688,7 +732,7 @@ input {
         <maxQueueSize>20</maxQueueSize>
     </appender>
 
-    <logger name="org.com" level="DEBUG"/>
+    <logger name="cn.netkiller.log" level="DEBUG"/>
 
 
     <root level="DEBUG">
@@ -698,6 +742,27 @@ input {
 
 </configuration>
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>查看 fluent 输出</title>
+			<screen>
+			<![CDATA[
+[0] development.normal: [1664033186.000000000, {"level"=>"INFO", "logger"=>"cn.netkiller.Application", "thread"=>"main", "message"=>"Starting Application using Java 18 on MacBook-Pro-Neo.local with PID 85696 (/Users/neo/workspace/bottleneck/target/classes started by neo in /Users/neo/workspace/bottleneck)"}]
+[1] development.normal: [1664033186.000000000, {"level"=>"INFO", "logger"=>"cn.netkiller.Application", "thread"=>"main", "message"=>"The following 1 profile is active: "prod""}]
+[0] development.normal: [1664033187.000000000, {"level"=>"INFO", "logger"=>"org.springframework.data.repository.config.RepositoryConfigurationDelegate", "thread"=>"main", "message"=>"Multiple Spring Data modules found, entering strict repository configuration mode"}]
+[1] development.normal: [1664033187.000000000, {"level"=>"INFO", "logger"=>"org.springframework.data.repository.config.RepositoryConfigurationDelegate", "thread"=>"main", "message"=>"Bootstrapping Spring Data Redis repositories in DEFAULT mode."}]
+[2] development.normal: [1664033187.000000000, {"level"=>"INFO", "logger"=>"org.springframework.data.repository.config.RepositoryConfigurationDelegate", "thread"=>"main", "message"=>"Finished Spring Data repository scanning in 6 ms. Found 0 Redis repository interfaces."}]
+[0] development.normal: [1664033188.000000000, {"level"=>"INFO", "logger"=>"org.springframework.boot.web.embedded.tomcat.TomcatWebServer", "thread"=>"main", "message"=>"Tomcat initialized with port(s): 8080 (http)"}]
+[1] development.normal: [1664033188.000000000, {"level"=>"INFO", "logger"=>"org.apache.catalina.core.StandardService", "thread"=>"main", "message"=>"Starting service [Tomcat]"}]
+[2] development.normal: [1664033188.000000000, {"level"=>"INFO", "logger"=>"org.apache.catalina.core.StandardEngine", "thread"=>"main", "message"=>"Starting Servlet engine: [Apache Tomcat/9.0.65]"}]
+[3] development.normal: [1664033188.000000000, {"level"=>"INFO", "logger"=>"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]", "thread"=>"main", "message"=>"Initializing Spring embedded WebApplicationContext"}]
+[4] development.normal: [1664033188.000000000, {"level"=>"INFO", "logger"=>"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext", "thread"=>"main", "message"=>"Root WebApplicationContext: initialization completed in 2133 ms"}]
+[0] development.normal: [1664033189.000000000, {"level"=>"INFO", "logger"=>"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver", "thread"=>"main", "message"=>"Exposing 14 endpoint(s) beneath base path '/actuator'"}]
+[0] development.normal: [1664033189.000000000, {"level"=>"INFO", "logger"=>"org.springframework.boot.web.embedded.tomcat.TomcatWebServer", "thread"=>"main", "message"=>"Tomcat started on port(s): 8080 (http) with context path ''"}]
+[1] development.normal: [1664033189.000000000, {"level"=>"INFO", "logger"=>"cn.netkiller.Application", "thread"=>"main", "message"=>"Started Application in 4.224 seconds (JVM running for 4.918)"}]			
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>

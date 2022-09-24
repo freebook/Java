@@ -30,22 +30,7 @@ public class FeignConfiguration {
 		</screen>
 	</section>
 	<section>
-		<title>配置连接方式</title>
-		<para>启用 okhttp</para>
-		<screen>
-		<![CDATA[
-feign.okhttp.enabled=true
-		]]>
-		</screen>
-		<para>httpclient</para>
-		<screen>
-		<![CDATA[
-feign.httpclient.enabled=true		
-		]]>
-		</screen>
-	</section>
-	<section>
-		<title></title>
+		<title>应用实例</title>
 		<screen>
 		<![CDATA[
 @FeignClient(name="myServiceName", url="localhost:8888")
@@ -55,6 +40,57 @@ public interface OpenfeignService {
 }		
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>配置连接方式</title>
+		<para>系统默认是 httpclient</para>
+		<section>
+			<title>httpclient</title>
+			<screen>
+			<![CDATA[
+		<dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
+			
+			]]>
+			</screen>
+			<para>httpclient</para>
+			<screen>
+		<![CDATA[
+feign.httpclient.enabled=true
+feign.httpclient.max-connections=1000
+feign.httpclient.max-connections-per-route=50
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>okhttp</title>
+			<para>Maven 依赖</para>
+			<screen>
+			<![CDATA[
+<dependency>
+    <groupId>io.github.openfeign</groupId>
+    <artifactId>feign-okhttp</artifactId>
+</dependency>			
+			]]>
+			</screen>
+			<para>启用 okhttp</para>
+			<screen>
+		<![CDATA[
+feign.httpclient.enabled=false
+feign.okhttp.enabled=true
+feign.httpclient.max-connections=1000
+feign.httpclient.max-connections-per-route=50
+		]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>配置手册</title>
+		<para>
+			<ulink url="https://docs.spring.io/spring-cloud-openfeign/docs/current/reference/html/appendix.html" />
+		</para>
 	</section>
 </section>
 
