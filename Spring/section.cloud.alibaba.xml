@@ -136,7 +136,11 @@ GRANT ALL PRIVILEGES ON nacos.* TO 'nacos'@'%';
 SHOW GRANTS FOR 'nacos'@'%';			
 			]]>
 			</programlisting>
-			<para>前往 <ulink url="https://github.com/alibaba/nacos/blob/master/distribution/conf/nacos-mysql.sql" /> 下来SQL文件，恢复到 nacos 数据中。</para>
+			<para>
+				前往
+				<ulink url="https://github.com/alibaba/nacos/blob/master/distribution/conf/nacos-mysql.sql" />
+				下来SQL文件，恢复到 nacos 数据中。
+			</para>
 			<programlisting>
 			<![CDATA[
 import sys
@@ -487,7 +491,7 @@ registry.netkiller.cn/netkiller.cn/demo                       latest           6
 			]]>
 			</screen>
 		</section>
-		
+
 		<section>
 			<title>编排 kubernetes 容器</title>
 			<programlisting>
@@ -552,7 +556,333 @@ busybox                    0/1     CrashLoopBackOff   52         4h44m
 			</screen>
 		</section>
 	</section>
-	
+
+	<section>
+		<title>Nacos 配置中心/注册中心代码实例</title>
+		<section>
+			<title>Maven</title>
+			<screen>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cn.netkiller</groupId>
+	<artifactId>bottleneck</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>bottleneck</name>
+	<description>bottleneck</description>
+	<organization>
+		<name>Netkiller Spring Cloud 手札</name>
+		<url>https://www.netkiller.cn</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Neo</name>
+			<email>netkiller@msn.com</email>
+			<organization>Netkiller Spring Cloud 手札</organization>
+			<organizationUrl>https://www.netkiller.cn</organizationUrl>
+			<roles>
+				<role>Author</role>
+			</roles>
+		</developer>
+	</developers>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.3</version>
+		<relativePath />
+	</parent>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<!-- Exclude the Tomcat dependency -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Use Undertow instead Tomcat -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>io.lettuce</groupId>
+					<artifactId>lettuce-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+			<version>2.2.9.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<version>2.2.9.RELEASE</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.fluentd/fluent-logger -->
+		<dependency>
+			<groupId>org.fluentd</groupId>
+			<artifactId>fluent-logger</artifactId>
+			<version>0.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sndyuk</groupId>
+			<artifactId>logback-more-appenders</artifactId>
+			<version>1.8.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-context</artifactId>
+			<version>3.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-commons</artifactId>
+			<version>3.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+			<version>3.1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+			<version>3.1.4</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>cn.netkiller.Application</mainClass>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.2</version>
+				<configuration>
+					<imageName>netkiller/${project.artifactId}</imageName>
+					<baseImage>openjdk:19-alpine</baseImage>
+					<maintainer>netkiller@msn.com</maintainer>
+					<volumes>/tmp</volumes>
+					<workdir>/srv</workdir>
+					<exposes>8080</exposes>
+					<env>
+						<JAVA_OPTS>-server -Xms128m -Xmx2048m</JAVA_OPTS>
+					</env>
+					<entryPoint>["sh", "-c", "java ${JAVA_OPTS} -jar /srv/${project.build.finalName}.jar ${SPRING_OPTS}"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/srv</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<image>netkiller/${project.artifactId}</image>
+					<newName>netkiller/${project.artifactId}:${project.version}</newName>
+					<!-- <serverId>docker-hub</serverId> -->
+					<registryUrl>http://${docker.registry}/v2/</registryUrl>
+					<imageTags>
+						<imageTag>undertow</imageTag>
+						<!-- <imageTag>tomcat</imageTag> <imageTag>${project.version}</imageTag> <imageTag>latest</imageTag> -->
+					</imageTags>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>SpringBootApplication</title>
+			<screen>
+			<![CDATA[
+package cn.netkiller;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@EnableDiscoveryClient
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		System.out.println("Netkiller bottleneck tool!");
+		SpringApplication.run(Application.class, args);
+	}
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>ConfigController</title>
+			<screen>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RefreshScope
+@RestController
+public class ConfigController {
+
+	public ConfigController() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Value("${key}")
+	public String name;
+
+	@GetMapping("/config")
+	public String config() {
+
+		String name = this.name;
+		return name;
+	}
+}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+#debug=true
+server.port=8080
+
+#server.tomcat.max-connections=10000
+#server.tomcat.max-threads=4096
+#server.tomcat.accept-count=1000
+#server.tomcat.min-spare-threads=100
+
+server.undertow.max-http-post-size=0 
+server.undertow.io-threads=16
+server.undertow.worker-threads=4096
+server.undertow.buffer-size=1024
+server.undertow.buffers-per-region=1024
+server.undertow.direct-buffers=true
+
+spring.application.name=bottleneck
+spring.profiles.active=dev
+#spring.profiles.active=test
+##spring.profiles.active=prod
+#
+#logging.file.path=/tmp
+##logging.file.name=spring.log
+#
+endpoints.metrics.enabled=true
+management.endpoints.jmx.exposure.include=*
+management.endpoints.web.exposure.include=*
+management.endpoints.health.show-details=always
+#
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://172.18.200.5:3306/test?useUnicode=true&characterEncoding=UTF-8
+spring.datasource.username=root
+spring.datasource.password=passw0rd
+
+spring.datasource.type=com.zaxxer.hikari.HikariDataSource
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.maximum-pool-size=200
+spring.datasource.hikari.auto-commit=true
+spring.datasource.hikari.idle-timeout=30000
+spring.datasource.hikari.pool-name=Hikari
+spring.datasource.hikari.max-lifetime=55000
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.connection-test-query=SELECT 1
+
+spring.redis.host=172.18.200.5
+spring.redis.port=6379
+spring.redis.password=passw0rd
+spring.redis.database=0
+
+spring.redis.jedis.pool.max-active=1000
+spring.redis.jedis.pool.max-idle=80
+spring.redis.jedis.pool.min-idle=20
+spring.redis.jedis.pool.max-wait=-1
+
+spring.cloud.nacos.server-addr=nacos.netkiller.cn:8848
+spring.cloud.nacos.username=neo
+spring.cloud.nacos.password=netkiller
+
+#spring.cloud.nacos.config.enable-remote-sync-config=true
+spring.cloud.nacos.config.namespace=${spring.profiles.active}
+spring.cloud.nacos.config.group=DEFAULT_GROUP
+spring.cloud.nacos.config.prefix=${spring.application.name}
+spring.cloud.nacos.config.file-extension=yaml
+spring.cloud.nacos.discovery.service=${spring.application.name:DEFAULT-SERVICE-NAME}
+spring.cloud.nacos.discovery.namespace=${spring.profiles.active}
+			]]>
+			</screen>
+		</section>
+	</section>
+
 	<section>
 		<title>FAQ</title>
 		<section>
@@ -646,6 +976,29 @@ nacos.naming.data.warmup=true
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>不读取 bootstrap.yaml 文件</title>
+			<para>Nacos 是一个独立项目，并不依赖 Spring Cloud，如果只是想使用配置中心，在 Springboot 中引入 Nacos 依赖，你会发现 Springboot 不读取 bootstrap.yaml。</para>
+			<para>解决方法</para>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+			<version>3.1.4</version>
+		</dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>WARN [com.alibaba.nacos.client.naming:177] [,] - out of date data received, old-t: 1665711914993, new-t: 1665711902390</title>
+			<para>出错信息如下，故障是因为每个节点的时间不同步造成的。</para>
+			<screen>
+			<![CDATA[
+[2022-10-14 09:44:51.289 [com.alibaba.nacos.naming.push.receiver] WARN [com.alibaba.nacos.client.naming:177] [,] - out of date data received, old-t: 1665711914993, new-t: 1665711902390
+			]]>
+			</screen>
+			<para>解决方法，安装时间同步软件。例如 NTP</para>
+		</section>
 	</section>
-
 </section>
