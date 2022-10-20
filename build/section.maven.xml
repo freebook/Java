@@ -156,6 +156,8 @@ mvn -Dmaven.artifact.threads=10 test
 您可以使用MAVEN_OPTS环境变量。例如：
 
 export MAVEN_OPTS = -Dmaven.artifact.threads = 10
+
+MAVEN_OPTS = -Dmaven.repo.local=.m2/repository
 			]]>
 			</screen>
 		</section>

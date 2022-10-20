@@ -765,4 +765,45 @@ Fluent Bit v1.9.7
 			</screen>
 		</section>
 	</section>
+	<section id="Loki4j">
+		<title>Loki4j Logback</title>
+		<para>https://loki4j.github.io/loki-logback-appender/</para>
+		<section>
+			<title>Maven</title>
+			<screen>
+			<![CDATA[
+<dependency>
+    <groupId>com.github.loki4j</groupId>
+    <artifactId>loki-logback-appender</artifactId>
+    <version>1.3.2</version>
+</dependency>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>logback.xml</title>
+			<screen>
+			<![CDATA[
+<appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+    <http>
+        <url>http://localhost:3100/loki/api/v1/push</url>
+    </http>
+    <format>
+        <label>
+            <pattern>app=my-app,host=${HOSTNAME},level=%level</pattern>
+        </label>
+        <message>
+            <pattern>l=%level h=${HOSTNAME} c=%logger{20} t=%thread | %msg %ex</pattern>
+        </message>
+        <sortByTime>true</sortByTime>
+    </format>
+</appender>
+
+<root level="DEBUG">
+    <appender-ref ref="LOKI" />
+</root>
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>
