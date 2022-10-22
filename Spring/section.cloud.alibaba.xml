@@ -1000,5 +1000,67 @@ nacos.naming.data.warmup=true
 			</screen>
 			<para>解决方法，安装时间同步软件。例如 NTP</para>
 		</section>
+		<section>
+			<title>User limit of inotify instances reached or too many open files</title>
+			<screen>
+			<![CDATA[
+nacos  | 09:22:23.431 [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+nacos  | com.alibaba.nacos.api.exception.runtime.NacosRuntimeException: ErrCode:500, ErrMsg:User limit of inotify instances reached or too many open files
+nacos  | 	at com.alibaba.nacos.core.listener.StartingApplicationListener.loadPreProperties(StartingApplicationListener.java:161)
+nacos  | 	at com.alibaba.nacos.core.listener.StartingApplicationListener.environmentPrepared(StartingApplicationListener.java:100)
+nacos  | 	at com.alibaba.nacos.core.code.SpringApplicationRunListener.environmentPrepared(SpringApplicationRunListener.java:60)
+nacos  | 	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:66)
+nacos  | 	at java.util.ArrayList.forEach(ArrayList.java:1259)
+nacos  | 	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120)
+nacos  | 	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114)
+nacos  | 	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+nacos  | 	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:343)
+nacos  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:301)
+nacos  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1317)
+nacos  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306)
+nacos  | 	at com.alibaba.nacos.Nacos.main(Nacos.java:35)
+nacos  | 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+nacos  | 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+nacos  | 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+nacos  | 	at java.lang.reflect.Method.invoke(Method.java:498)
+nacos  | 	at org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner.java:49)
+nacos  | 	at org.springframework.boot.loader.Launcher.launch(Launcher.java:108)
+nacos  | 	at org.springframework.boot.loader.Launcher.launch(Launcher.java:58)
+nacos  | 	at org.springframework.boot.loader.PropertiesLauncher.main(PropertiesLauncher.java:467)
+nacos  | Caused by: com.alibaba.nacos.api.exception.NacosException: java.io.IOException: User limit of inotify instances reached or too many open files
+nacos  | 	at com.alibaba.nacos.sys.file.WatchFileCenter$WatchDirJob.<init>(WatchFileCenter.java:184)
+nacos  | 	at com.alibaba.nacos.sys.file.WatchFileCenter.registerWatcher(WatchFileCenter.java:92)
+nacos  | 	at com.alibaba.nacos.core.listener.StartingApplicationListener.registerWatcher(StartingApplicationListener.java:167)
+nacos  | 	at com.alibaba.nacos.core.listener.StartingApplicationListener.loadPreProperties(StartingApplicationListener.java:159)
+nacos  | 	... 20 common frames omitted
+nacos  | Caused by: java.io.IOException: User limit of inotify instances reached or too many open files
+nacos  | 	at sun.nio.fs.LinuxWatchService.<init>(LinuxWatchService.java:64)
+nacos  | 	at sun.nio.fs.LinuxFileSystem.newWatchService(LinuxFileSystem.java:47)
+nacos  | 	at com.alibaba.nacos.sys.file.WatchFileCenter$WatchDirJob.<init>(WatchFileCenter.java:179)
+nacos  | 	... 23 common frames omitted
+nacos  | 09:22:23.435 [Thread-4] WARN com.alibaba.nacos.common.executor.ThreadPoolManager - [ThreadPoolManager] Start destroying ThreadPool
+nacos  | 09:22:23.435 [Thread-4] WARN com.alibaba.nacos.common.executor.ThreadPoolManager - [ThreadPoolManager] Destruction of the end
+			]]>
+			</screen>
+			<para>加大 fs.inotify.max_user_instances 配置即可，默认是 128</para>
+			<screen>
+			<![CDATA[
+sysctl fs.inotify.max_user_watches
+sudo sysctl -w fs.inotify.max_user_watches=50889300
+ 
+sysctl fs.inotify.max_user_instances
+sudo sysctl -w fs.inotify.max_user_instances=65535			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>开启权限</title>
+			<screen>
+			<![CDATA[
+nacos.core.auth.enabled= true			
+			]]>
+			</screen>
+			<para>在容器中设置开启验证：NACOS_AUTH_ENABLE=true</para>
+		</section>
 	</section>
 </section>
