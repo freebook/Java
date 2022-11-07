@@ -1062,5 +1062,18 @@ nacos.core.auth.enabled= true
 			</screen>
 			<para>在容器中设置开启验证：NACOS_AUTH_ENABLE=true</para>
 		</section>
+		<section>
+			<title>ERROR Whitelabel</title>
+			<para>当Nacos开启了认证配置nacos.core.auth.enabled=true时，当前账号没有该命名空间的权限，就会出现下面的错误提示。</para>
+			<screen>
+			<![CDATA[
+2022-11-07 18:42:04,370 [,,,] INFO com.alibaba.nacos.client.config.impl.LocalConfigInfoProcessor:212 [main] - LOCAL_SNAPSHOT_PATH:/root/nacos/config
+Mon, Nov 7 2022 6:42:04 pm	2022-11-07 18:42:04,393 [,,,] ERROR com.alibaba.nacos.client.config.impl.ClientWorker:304 [main] - [fixed-nacos.default.svc.cluster.local_8848-test] [sub-server-error] no right, dataId=netkiller, group=DEFAULT_GROUP, tenant=test
+Mon, Nov 7 2022 6:42:04 pm	2022-11-07 18:42:04,393 [,,,] ERROR com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder:104 [main] - get data from Nacos error,dataId:netkiller
+Mon, Nov 7 2022 6:42:04 pm	com.alibaba.nacos.api.exception.NacosException: <html><body><h1>Whitelabel Error Page</h1><p>This application has no explicit mapping for /error, so you are seeing this as a fallback.</p><div id='created'>Mon Nov 07 18:42:04 CST 2022</div><div>There was an unexpected error (type=Forbidden, status=403).</div></body></html>			
+			]]>
+			</screen>
+			<para>解决方案，在权限控制-&gt;权限管理中「添加权限」可以解决。</para>
+		</section>
 	</section>
 </section>
