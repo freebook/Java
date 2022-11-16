@@ -993,4 +993,256 @@ Fluent Bit v1.9.7
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>Log4j2 + Gelf + Logstash</title>
+		<section>
+			<title>Maven 配置</title>
+			<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<!-- Exclude the Tomcat dependency -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+				<!-- 禁用 logback -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- 添加Log4j2 依赖 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>biz.paluch.logging</groupId>
+			<artifactId>logstash-gelf</artifactId>
+			<version>1.15.0</version>
+		</dependency>		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>log4j2.xml 配置</title>
+			<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<properties>
+		<property name="log.pattern">[%d{yyyy-MM-dd HH:mm:ss}] [${hostName}] [%p] [%t] %l - %m%n</property>
+		<property name="log.dir">/tmp/logs</property>
+		<property name="log.level">info</property>
+	</properties>
+	<Appenders>
+		<!-- 控制台 -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${log.pattern}" />
+		</Console>
+
+		<!-- INFO级别日志 -->
+		<RollingFile name="RollingFileInfo" fileName="${log.dir}/info.log" filePattern="${log.dir}/info.%d{yyyy-MM-dd}.log">
+			<Filters>
+				<ThresholdFilter level="INFO" />
+				<ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL" />
+			</Filters>
+			<PatternLayout pattern="${log.pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="false" />
+			</Policies>
+		</RollingFile>
+
+		<!-- WARN级别日志 -->
+		<RollingFile name="RollingFileWarn" fileName="${log.dir}/warn.log" filePattern="${log.dir}/warn.%d{yyyy-MM-dd}.log">
+			<Filters>
+				<ThresholdFilter level="WARN" />
+				<ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL" />
+			</Filters>
+			<PatternLayout pattern="${log.pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="false" />
+			</Policies>
+		</RollingFile>
+
+		<!-- ERROR级别日志 -->
+		<RollingFile name="RollingFileError" fileName="${log.dir}/error.log" filePattern="${log.dir}/error.%d{yyyy-MM-dd}.log">
+			<Filters>
+				<ThresholdFilter level="ERROR" />
+			</Filters>
+			<PatternLayout pattern="${log.pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="false" />
+			</Policies>
+		</RollingFile>
+
+		<Gelf name="Gelf" host="udp:172.18.200.10" port="12201" version="1.1" extractStackTrace="true" filterStackTrace="true" mdcProfiling="true" includeFullMdc="true" maximumMessageSize="8192" originHost="%host{fqdn}">
+			<Field name="timestamp" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}" />
+			<Field name="logger" pattern="%logger" />
+			<Field name="level" pattern="%level" />
+			<Field name="class" pattern="%C{1}" />
+			<Field name="method" pattern="%M" />
+			<Field name="line" pattern="%L" />
+			<Field name="marker" pattern="%marker" />
+			<Filters>
+				<MarkerFilter marker="finance" onMatch="ACCEPT" onMismatch="NEUTRAL" />
+				<MarkerFilter marker="market" onMatch="ACCEPT" onMismatch="DENY" />
+			</Filters>
+		</Gelf>
+	</Appenders>
+	<Loggers>
+		<Root level="${sys:log.level}">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="Gelf" />
+			<!-- <AppenderRef ref="RollingFileInfo" /> <AppenderRef ref="RollingFileWarn" /> <AppenderRef ref="RollingFileError" /> -->
+		</Root>
+	</Loggers>
+</Configuration>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Java 测试代码</title>
+			<screen>
+			<![CDATA[
+	@GetMapping("/log")
+	public String log() {
+		Marker finance = MarkerFactory.getMarker(LogMarker.finance.toString());
+		Marker customer = MarkerFactory.getMarker(LogMarker.customer.toString());
+		Marker market = MarkerFactory.getMarker(LogMarker.market.toString());
+		logger.info("常规日志");
+		logger.info(finance, "test");
+		logger.info(finance, "finance");
+		logger.info(customer, "customer");
+		logger.info(market, "market");
+		return "OK!!!\r\n";
+	}
+
+	@GetMapping("/log/marker")
+	public String marker(@RequestParam("marker") String marker, @RequestParam("msg") String msg) {
+		logger.info(MarkerFactory.getMarker(marker), msg);
+		msg += "\r\n";
+		return msg;
+	}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Logstash 配置</title>
+			<screen>
+			<![CDATA[
+[root@netkiller log]# cat /etc/logstash/conf.d/file.conf 
+input {
+  tcp {
+	port => 4567 
+	codec => json_lines
+  }
+  gelf {
+    port => 12201
+    use_udp => true
+    #use_tcp => true
+  }
+}
+
+filter {
+	ruby {
+	    code => "event.set('datetime', event.get('@timestamp').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+	}
+}
+
+output {
+
+    file {
+    	path => "/opt/log/%{marker}.%{+yyyy}-%{+MM}-%{+dd}.log"
+    	codec => line { format => "[%{datetime}] %{level} %{message}"}
+    }
+   
+    file {
+        path => "/opt/log/origin.%{+yyyy}-%{+MM}-%{+dd}.log.gz"
+		codec => json_lines
+        gzip => true
+    }
+
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>测试结果</title>
+			<screen>
+			<![CDATA[
+[root@netkiller log]# ls
+finance.2022-11-16.log  market.2022-11-16.log  origin.2022-11-16.log.gz
+
+[root@netkiller log]# cat finance.2022-11-16.log 
+[2022-11-16 15:02:36] INFO test
+[2022-11-16 15:02:36] INFO finance
+[2022-11-16 15:21:34] INFO test
+[2022-11-16 15:21:34] INFO finance
+
+[root@netkiller log]# cat market.2022-11-16.log 
+[2022-11-16 15:02:36] INFO market
+[2022-11-16 15:21:34] INFO market
+
+[root@netkiller log]# zcat origin.2022-11-16.log.gz |jq
+{
+  "datetime": "2022-11-16 15:21:34",
+  "timestamp": "2022-11-16 15:21:34.185",
+  "message": "market",
+  "host": "macbook-pro-neo.local",
+  "level": "INFO",
+  "line": 53,
+  "@version": "1",
+  "@timestamp": "2022-11-16T07:21:34.185Z",
+  "marker": "market",
+  "logger": "cn.netkiller.controller.HomeController",
+  "version": "1.1",
+  "method": "log",
+  "class": "HomeController",
+  "source_host": "172.18.5.142",
+  "facility": "logstash-gelf"
+}
+{
+  "datetime": "2022-11-16 15:21:34",
+  "timestamp": "2022-11-16 15:21:34.143",
+  "message": "test",
+  "host": "macbook-pro-neo.local",
+  "level": "INFO",
+  "line": 49,
+  "@version": "1",
+  "@timestamp": "2022-11-16T07:21:34.143Z",
+  "marker": "finance",
+  "logger": "cn.netkiller.controller.HomeController",
+  "version": "1.1",
+  "method": "log",
+  "class": "HomeController",
+  "source_host": "172.18.5.142",
+  "facility": "logstash-gelf"
+}
+{
+  "datetime": "2022-11-16 15:21:34",
+  "timestamp": "2022-11-16 15:21:34.184",
+  "message": "finance",
+  "host": "macbook-pro-neo.local",
+  "level": "INFO",
+  "line": 51,
+  "@version": "1",
+  "@timestamp": "2022-11-16T07:21:34.184Z",
+  "marker": "finance",
+  "logger": "cn.netkiller.controller.HomeController",
+  "version": "1.1",
+  "method": "log",
+  "class": "HomeController",
+  "source_host": "172.18.5.142",
+  "facility": "logstash-gelf"
+}
+			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>
