@@ -993,7 +993,7 @@ Fluent Bit v1.9.7
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="log4j2-gelf-logstash">
 		<title>Log4j2 + Gelf + Logstash</title>
 		<section>
 			<title>Maven 配置</title>
@@ -1243,6 +1243,121 @@ finance.2022-11-16.log  market.2022-11-16.log  origin.2022-11-16.log.gz
 			
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>Log4j2 更多技巧</title>
+			<section>
+				<title>多环境配置</title>
+				<para>方案一</para>
+				<screen>
+			<![CDATA[
+logging:
+  config: classpath:log4j2-${spring.profiles.active}.xml
+			]]>
+				</screen>
+				<para>方案二</para>
+				<screen>
+				<![CDATA[
+@SpringBootApplication
+public class Application implements CommandLineRunner {
+
+    @Autowired
+    private Environment env;
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Override
+    public void run(String... param) {
+        if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
+            Configurator.initialize(null, "/path/to/log4j2-dev.xml");
+        } else {
+            Configurator.initialize(null, "/path/to/log4j2.xml");
+        }
+    }
+}				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>控制 class 日志输出级别</title>
+				<screen>
+				<![CDATA[
+#日志配置 无特殊需求无需更改
+logging:
+  config:  classpath:log4j2.xml
+  level:
+    root: INFO
+    javax.activation: info
+    org.apache.catalina: INFO
+    org.apache.commons.beanutils.converters: INFO
+    org.apache.coyote.http11.Http11Processor: INFO
+    org.apache.http: INFO
+    org.apache.tomcat: INFO
+    org.springframework: INFO
+    com.chinamobile.cmss.bdpaas.resource.monitor: DEBUG				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>读取系统变量/环境变量</title>
+				<screen>
+				<![CDATA[
+${sys:catalina.home}/logs
+${env:log.home}/logs
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>读取 spring 配置</title>
+				<para>引入依赖</para>
+				<screen>
+				<![CDATA[
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-spring-boot</artifactId>
+		</dependency>				
+				]]>
+				</screen>
+				<para>读取方法 ${spring:profiles.active}</para>
+				<screen>
+				<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<properties>
+		<property name="log.pattern">[%d{yyyy-MM-dd HH:mm:ss}] [${hostName}] [%p] [%t] %l - %m%n</property>
+		<property name="log.home">/tmp/logs</property>
+		<property name="log.level">info</property>
+	</properties>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${log.pattern}" />
+		</Console>
+		<Gelf name="dev" host="udp:172.18.200.10" port="12201" version="1.1" extractStackTrace="true" filterStackTrace="true" mdcProfiling="true" includeFullMdc="true" maximumMessageSize="8192" originHost="%host{fqdn}">
+			<Field name="timestamp" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}" />
+			<Field name="logger" pattern="%logger" />
+			<Field name="level" pattern="%level" />
+			<Field name="class" pattern="%C{1}" />
+			<Field name="method" pattern="%M" />
+			<Field name="line" pattern="%L" />
+			<Field name="marker" pattern="%marker" />
+			<Filters>
+				<MarkerFilter marker="finance" onMatch="ACCEPT" onMismatch="NEUTRAL" />
+				<MarkerFilter marker="market" onMatch="ACCEPT" onMismatch="DENY" />
+			</Filters>
+		</Gelf>
+	</Appenders>
+	<Loggers>
+		<Root level="${sys:log.level}">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="${spring:profiles.active:-dev}" />
+		</Root>
+	</Loggers>
+</Configuration>				
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 </section>
