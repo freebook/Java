@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="index"><?dbhtml dir="thread" ?>
-	<title>Thread 线程</title>
+	<title>Java 线程</title>
 	<para></para>
 	<section>
 		<title>实现异步执行</title>
@@ -225,7 +225,53 @@ public class MultiThread {
 }
 		]]>
 		</programlisting>
+	</section>
+	<section>
+		<title>java 线程池</title>
+		<section>
+			<title>固定线程池</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test.grey;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+public class GreyTest {
+
+	public GreyTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	static class MyThread implements Runnable {
+		public void run() {
+			System.out.println("Thread Name:" + Thread.currentThread().getName());
+		}
+	}
+
+	public static void main(String[] args) {
+		// 创建五个线程池
+		int nThreads = 5;
+		ExecutorService pool = Executors.newFixedThreadPool(nThreads);
+		// 创建实现了Runnable接口对象
+		MyThread t1 = new MyThread();
+		MyThread t2 = new MyThread();
+		MyThread t3 = new MyThread();
+		MyThread t4 = new MyThread();
+		MyThread t5 = new MyThread();
+		// 将线程放入池中进行执行
+		pool.execute(t1);
+		pool.execute(t2);
+		pool.execute(t3);
+		pool.execute(t4);
+		pool.execute(t5);
+		// 关闭线程池
+		pool.shutdown();
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>
