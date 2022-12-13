@@ -25,9 +25,6 @@
 	
 	<!ENTITY % spring.doctype.entity.xml 	SYSTEM "Spring/doctype.entity.xml">
 	%spring.doctype.entity.xml;
-	
-	<!ENTITY % test.doctype.entity.xml 	SYSTEM "Test/doctype.entity.xml">
-	%test.doctype.entity.xml;
 
 ]>
 <book xml:base="http://netkiller.sourceforge.net/linux/www" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
@@ -87,7 +84,6 @@
 	&chapter.apache.xml;
 	&chapter.cache.xml;
 	&chapter.kafka.xml;
-	&chapter.test.xml;
 	&chapter.sdk.xml;
 	<!-- =========================================================================== -->
 	&part.android.xml;
