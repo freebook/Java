@@ -136,11 +136,9 @@ GRANT ALL PRIVILEGES ON nacos.* TO 'nacos'@'%';
 SHOW GRANTS FOR 'nacos'@'%';			
 			]]>
 			</programlisting>
-			<para>
-				前往
-				<ulink url="https://github.com/alibaba/nacos/blob/master/distribution/conf/nacos-mysql.sql" />
-				下来SQL文件，恢复到 nacos 数据中。
-			</para>
+			<para> 前往 <ulink
+					url="https://github.com/alibaba/nacos/blob/master/distribution/conf/nacos-mysql.sql" />
+				下来SQL文件，恢复到 nacos 数据中。 </para>
 			<programlisting>
 			<![CDATA[
 import sys
@@ -574,6 +572,28 @@ busybox                    0/1     CrashLoopBackOff   52         4h44m
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>启动指定 nacos</title>
+			<para>容器中不方便修改配置文件，我们可以使用环境变量覆盖配置</para>
+			<screen>
+			<![CDATA[ 
+JAVA_OPTS=-Dspring.cloud.nacos.username=nacos \
+-Dspring.cloud.nacos.password=nacos \
+-Dspring.cloud.nacos.config.server-addr=mse-032dbef0-nacos-ans.mse.aliyuncs.com:8848 \
+-Dspring.cloud.nacos.discovery.server-addr=mse-032dbef0-nacos-ans.mse.aliyuncs.com:8848 \
+			]]>
+			</screen>
+			<para>相当于</para>
+			<screen>
+			<![CDATA[ 
+java -Dspring.cloud.nacos.username=nacos \
+-Dspring.cloud.nacos.password=nacos \
+-Dspring.cloud.nacos.config.server-addr=mse-032dbef0-nacos-ans.mse.aliyuncs.com:8848 \
+-Dspring.cloud.nacos.discovery.server-addr=mse-032dbef0-nacos-ans.mse.aliyuncs.com:8848 \
+-jar netkiller.jar
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section>
@@ -940,7 +960,8 @@ nacos  | Update your application's configuration
 			]]>
 			</screen>
 			<para>解决方案</para>
-			<para>进入容器复制 application.properties 文件到本地，修改 server.tomcat.basedir= 配置，改为 server.tomcat.basedir=. 然后在挂载到容器卷中。</para>
+			<para>进入容器复制 application.properties 文件到本地，修改 server.tomcat.basedir= 配置，改为
+				server.tomcat.basedir=. 然后在挂载到容器卷中。</para>
 			<screen>
 			<![CDATA[
 [root@cloud ops.sfzito.com]# docker run -it --entrypoint sh  nacos/nacos-server
@@ -997,7 +1018,8 @@ nacos.naming.data.warmup=true
 		</section>
 		<section>
 			<title>不读取 bootstrap.yaml 文件</title>
-			<para>Nacos 是一个独立项目，并不依赖 Spring Cloud，如果只是想使用配置中心，在 Springboot 中引入 Nacos 依赖，你会发现 Springboot 不读取 bootstrap.yaml。</para>
+			<para>Nacos 是一个独立项目，并不依赖 Spring Cloud，如果只是想使用配置中心，在 Springboot 中引入 Nacos 依赖，你会发现
+				Springboot 不读取 bootstrap.yaml。</para>
 			<para>解决方法</para>
 			<screen>
 			<![CDATA[
@@ -1010,7 +1032,8 @@ nacos.naming.data.warmup=true
 			</screen>
 		</section>
 		<section>
-			<title>WARN [com.alibaba.nacos.client.naming:177] [,] - out of date data received, old-t: 1665711914993, new-t: 1665711902390</title>
+			<title>WARN [com.alibaba.nacos.client.naming:177] [,] - out of date data received,
+				old-t: 1665711914993, new-t: 1665711902390</title>
 			<para>出错信息如下，故障是因为每个节点的时间不同步造成的。</para>
 			<screen>
 			<![CDATA[
