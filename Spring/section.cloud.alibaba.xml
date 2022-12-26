@@ -285,6 +285,16 @@ kubernetes.main()
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>防火墙配置</title>
+			<para>配置防火墙，限制 8848 端口的访问策略，防止本地或其他服务注册到 Nacos 中。</para>
+			<screen>
+			<![CDATA[ 
+iptables -A INPUT -s 172.18.5.0/24 -p tcp --dport 8848 -j REJECT			
+			]]>
+			</screen>
+			<para>172.18.5.0/24 是办公网络，添加上面IP规则，可以防止开发人的电脑注册到测试环境。</para>
+		</section>
 	</section>
 	<section>
 		<title>Kubernetes 部署微服务</title>
