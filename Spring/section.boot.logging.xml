@@ -1360,4 +1360,95 @@ ${env:log.home}/logs
 			</section>
 		</section>
 	</section>
+	<section>
+		<title>日志报警</title>
+		<section>
+			<title>Logstash 配置</title>
+			<para>将 ERROR 和 WARN 级别的日志发送到钉钉群</para>
+			<screen>
+			<![CDATA[ 
+			[root@netkiller ~]# cat /etc/logstash/conf.d/file.conf 
+			input {
+			  tcp {
+				port => 4567 
+				codec => json_lines
+			  }
+			  gelf {
+				port => 12201
+				use_udp => true
+				#use_tcp => true
+			  }
+			}
+			
+			filter {
+				ruby {
+					code => "event.set('datetime', event.get('@timestamp').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+				}
+			}
+			
+			output {
+			
+				file {
+					path => "/opt/log/%{marker}.%{+yyyy}-%{+MM}-%{+dd}.log"
+					codec => line { format => "[%{datetime}] %{level} %{message}"}
+				}
+			   
+				file {
+					path => "/opt/log/origin.%{+yyyy}-%{+MM}-%{+dd}.log.gz"
+					codec => json_lines
+					gzip => true
+				}
+				if "ERROR" in [level] or "WARN" in [level] {
+					http {
+						url => "https://oapi.dingtalk.com/robot/send?access_token=56c27cb734a56cf549f6977ecc2761c4a16473db02d9d2881d008f9a239ba3e0"
+						http_method => "post"
+						content_type => "application/json; charset=utf-8"
+						format => "message"
+						message => '{"msgtype":"text","text":{"content":"Monitor: %{host}  - %{message}"}}'
+					}
+				}
+			}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>监控 SpringBootApplication 的启动和退出</title>
+			<screen>
+			<![CDATA[ 
+			neo@MacBook-Pro-M2 ~ % cat workspace/bottleneck/src/main/java/cn/netkiller/Application.java 
+			package cn.netkiller;
+			
+			import javax.annotation.PostConstruct;
+			import javax.annotation.PreDestroy;
+			
+			import org.springframework.boot.SpringApplication;
+			import org.springframework.boot.autoconfigure.SpringBootApplication;
+			import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+			
+			@EnableDiscoveryClient
+			@SpringBootApplication
+			public class Application {
+			
+				@PostConstruct
+				public void init() {
+					System.out.printf("==================== init ====================");
+				}
+			
+				@PreDestroy
+				public void destroy() {
+					System.out.printf("==================== destroy ====================");
+				}
+			
+				public static void main(String[] args) {
+					System.out.println("Netkiller bottleneck tool!");
+					SpringApplication.run(Application.class, args);
+				}
+			}
+			
+			]]>
+			</screen>
+			<para>@PostConstruct 可以监控 启动情况</para>
+			<para>@PreDestroy 可以监控 退出情况</para>
+		</section>
+	</section>
 </section>
