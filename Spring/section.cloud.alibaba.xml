@@ -290,10 +290,27 @@ kubernetes.main()
 			<para>配置防火墙，限制 8848 端口的访问策略，防止本地或其他服务注册到 Nacos 中。</para>
 			<screen>
 			<![CDATA[ 
-iptables -A INPUT -s 172.18.5.0/24 -p tcp --dport 8848 -j REJECT			
+$ iptables -A INPUT -s 172.18.5.0/24 -p tcp --dport 8848 -j REJECT
 			]]>
 			</screen>
 			<para>172.18.5.0/24 是办公网络，添加上面IP规则，可以防止开发人的电脑注册到测试环境。</para>
+			<para>删除规则</para>
+			<para>删除方法一</para>
+			<screen>
+			<![CDATA[ 
+$ iptables -L -n --line-number | grep 8848
+8    REJECT     tcp  --  172.18.5.0/24        0.0.0.0/0            tcp dpt:8848 reject-with icmp-port-unreachable
+134  ACCEPT     tcp  --  0.0.0.0/0            172.17.0.119         tcp dpt:8848
+
+$ iptables -D INPUT 8
+			]]>
+			</screen>
+			<para>删除方法二</para>
+			<screen>
+			<![CDATA[ 
+$ iptables -D INPUT -s 172.18.5.0/24 -p tcp --dport 8848 -j REJECT
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section>
