@@ -1630,5 +1630,42 @@ public class UploadRestController {
 		</programlisting>
 
 	</section>
+	<section id="export.csv">
+		<title>Spring boot with csv</title>
+		<para>下面是一个导出 CSV 文件的例子</para>
+		<programlisting>
+		<![CDATA[
+	@GetMapping("/export")
+	public void export(HttpServletResponse response) throws IOException {
+		response.setContentType("application/csv");
+		// response.setContentType("application/csv;charset=gb18030");
+		response.setHeader("Content-Disposition", "attachment; filename=\"file.csv\"");
+
+		BufferedWriter writer = new BufferedWriter(response.getWriter());
+
+		// 需要写入 utf8bom 头否则会出现中文乱码
+		// byte[] uft8bom = { (byte) 0xef, (byte) 0xbb, (byte) 0xbf };
+		String bom = new String(new byte[] { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF });
+		writer.write(bom);
+		writer.write("A,B,C");
+		writer.newLine();
+		tableRepository.findAll().forEach(table -> {
+			try {
+				String tmp = String.format("%s,%s,%s", table.getId(), table.getMethod(), table.getMoney());
+				writer.write(tmp);
+				writer.newLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		});
+
+		writer.flush();
+		writer.close();
+	}		
+		]]>
+		</programlisting>
+	</section>
 	&section.mvc.jackson.xml;
 </section>

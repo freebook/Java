@@ -27,6 +27,14 @@
 <!ENTITY section.boot.schedule.xml		SYSTEM "section.boot.schedule.xml">
 <!ENTITY section.boot.monitor.xml		SYSTEM "section.boot.monitor.xml">
 <!ENTITY section.boot.admin.xml			SYSTEM "section.boot.admin.xml">
+<!ENTITY section.boot.timezone.xml		SYSTEM "section.boot.timezone.xml">
+<!ENTITY section.boot.git.xml		    SYSTEM "section.boot.git.xml">
+<!ENTITY section.boot.session.xml	    SYSTEM "section.boot.session.xml">
+<!ENTITY section.boot.cache.xml 	    SYSTEM "section.boot.cache.xml">
+<!ENTITY section.boot.email.xml 	    SYSTEM "section.boot.email.xml">
+<!ENTITY section.boot.hessian.xml 	    SYSTEM "section.boot.hessian.xml">
+<!ENTITY section.boot.async.xml 	    SYSTEM "section.boot.async.xml">
+<!ENTITY section.boot.web3j.xml 	    SYSTEM "section.boot.web3j.xml">
 
 <!ENTITY chapter.mvc.xml				SYSTEM "chapter.mvc.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">

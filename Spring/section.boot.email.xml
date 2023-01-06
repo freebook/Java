@@ -1,0 +1,349 @@
+
+<section id="email">
+    <title>Spring boot with Email</title>
+    <section>
+        <title>Maven</title>
+        <programlisting>
+        <![CDATA[
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+        ]]>
+        </programlisting>
+        <example>
+            <title>Spring boot with Email (pom.xml)</title>
+            <programlisting>
+            <![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+
+<groupId>netkiller.cn</groupId>
+<artifactId>api.netkiller.cn</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+<packaging>jar</packaging>
+
+<name>api.netkiller.cn</name>
+<url>http://maven.apache.org</url>
+
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.8</java.version>
+</properties>
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.3.1.RELEASE</version>
+</parent>
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> </dependency> -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-amqp</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-devtools</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-mongodb</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-oracle</artifactId>
+        <version>1.0.0.RELEASE</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>ojdbc6</artifactId>
+        <!-- <version>12.1.0.1</version> -->
+        <version>11.2.0.3</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
+    </dependency>
+
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+<build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.3</version>
+            <configuration>
+                <source />
+                <target />
+            </configuration>
+        </plugin>
+        <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+                <warSourceDirectory>WebContent</warSourceDirectory>
+                <failOnMissingWebXml>false</failOnMissingWebXml>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+
+</project>
+
+            ]]>
+            </programlisting>
+        </example>
+    </section>
+    <section>
+        <title>Resource</title>
+        <para>application.properties</para>
+        <para>Postfix / Exam4 / Sendmail 邮件服务器配置</para>
+        <programlisting>
+        <![CDATA[
+spring.mail.host=smtp.163.com    
+        ]]>
+        </programlisting>
+        <para>SMTP 配置</para>
+        <programlisting>
+        <![CDATA[
+spring.mail.host=smtp.163.com
+spring.mail.username=openunix@163.com
+spring.mail.password=your_password
+spring.mail.properties.mail.smtp.auth=true  
+#spring.mail.properties.mail.smtp.starttls.enable=true  
+#spring.mail.properties.mail.smtp.starttls.required=true  
+        ]]>
+        </programlisting>
+    </section>
+    <section>
+        <title>POJO</title>
+        <programlisting>
+        <![CDATA[
+package api.pojo;
+
+public class Email {
+public String from;
+public String to;
+public String subject;
+public String text;
+public boolean status;
+
+public String getFrom() {
+    return from;
+}
+public void setFrom(String from) {
+    this.from = from;
+}
+public String getTo() {
+    return to;
+}
+public void setTo(String to) {
+    this.to = to;
+}
+public String getSubject() {
+    return subject;
+}
+public void setSubject(String subject) {
+    this.subject = subject;
+}
+public String getText() {
+    return text;
+}
+public void setText(String text) {
+    this.text = text;
+}
+
+public boolean isStatus() {
+    return status;
+}
+public void setStatus(boolean status) {
+    this.status = status;
+}
+
+@Override
+public String toString() {
+    return "Email [from=" + from + ", to=" + to + ", subject=" + subject + ", text=" + text + "]";
+}
+public Email() {
+
+}
+public Email(String from, String to, String subject, String text) {
+    super();
+    this.from = from;
+    this.to = to;
+    this.subject = subject;
+    this.text = text;
+}
+
+}
+
+        ]]>
+        </programlisting>
+    </section>
+    <section>
+        <title>RestController</title>
+        <programlisting>
+        <![CDATA[
+package api.rest;
+
+import java.io.File;
+
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import api.pojo.Email;
+
+@RestController
+@RequestMapping("/v1/email")
+public class EmailRestController extends CommonRestController {
+
+@Autowired
+private JavaMailSender javaMailSender;
+
+@RequestMapping("version")
+@ResponseStatus(HttpStatus.OK)
+public String version() {
+    return "[OK] Welcome to withdraw Restful version 1.0";
+}
+
+@RequestMapping(value = "send", method = RequestMethod.POST, produces = { "application/xml", "application/json" })
+public ResponseEntity<Email> sendSimpleMail(@RequestBody Email email) {
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setFrom(email.getFrom());
+    message.setTo(email.getTo());
+    message.setSubject(email.getSubject());
+    message.setText(email.getText());
+    javaMailSender.send(message);
+    email.setStatus(true);
+
+    return new ResponseEntity<Email>(email, HttpStatus.OK);
+}
+
+@RequestMapping(value = "attachments", method = RequestMethod.POST, produces = { "application/xml", "application/json" })
+public ResponseEntity<Email> attachments(@RequestBody Email email) throws Exception {
+
+    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+    mimeMessageHelper.setFrom(email.getFrom());
+    mimeMessageHelper.setTo(email.getTo());
+    mimeMessageHelper.setSubject(email.getSubject());
+    mimeMessageHelper.setText("<html><body><img src=\"cid:banner\" >" + email.getText() + "</body></html>", true);
+
+    FileSystemResource file = new FileSystemResource(new File("banner.jpg"));
+    mimeMessageHelper.addInline("banner", file);
+
+    FileSystemResource fileSystemResource = new FileSystemResource(new File("Attachment.jpg"));
+    mimeMessageHelper.addAttachment("Attachment.jpg", fileSystemResource);
+
+    javaMailSender.send(mimeMessage);
+    email.setStatus(true);
+
+    return new ResponseEntity<Email>(email, HttpStatus.OK);
+}
+
+// 如果你不想使用 application.properties 中的 spring.mail.host 配置，想自行配置SMTP主机可以参考下面例子
+@RequestMapping(value = "sendmail", method = RequestMethod.POST, produces = { "application/xml", "application/json" })
+public ResponseEntity<Email> sendmail(@RequestBody Email email) {
+    JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+    javaMailSender.setHost(email.getHost());
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setFrom(email.getFrom());
+    message.setTo(email.getTo());
+    message.setSubject(email.getSubject());
+    message.setText(email.getText());
+    try{
+        javaMailSender.send(message);
+        email.setStatus(true);
+    }catch(Exception e){
+        email.setText(e.getMessage());
+        email.setStatus(false);
+    }
+
+    return new ResponseEntity<Email>(email, HttpStatus.OK);
+}	
+}
+        ]]>
+        </programlisting>
+    </section>
+    <section>
+        <title>Test</title>
+        <screen>
+        <![CDATA[
+$ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"from":"root@netkiller.cn", "to":"21214094@qq.com","subject":"Hello","text":"Hello world!!!"}' http://172.16.0.20:8080/v1/email/send.json
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=UTF-8
+Transfer-Encoding: chunked
+Date: Wed, 10 Aug 2016 06:38:00 GMT
+
+{"from":"root@netkiller.cn","to":"21214094@qq.com","subject":"Hello","text":"Hello world!!!","status":true}
+        ]]>
+        </screen>
+    </section>
+</section>

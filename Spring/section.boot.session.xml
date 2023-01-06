@@ -1,0 +1,369 @@
+
+<section id="session">
+    <title>Spring boot with Session share</title>
+    <section>
+        <title>Redis</title>
+        <section>
+            <title>Maven</title>
+            <para>增加下面代码到pom.xml</para>
+            <programlisting>
+            <![CDATA[
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-data-redis</artifactId>
+    </dependency>
+            ]]>
+            </programlisting>
+            <para>pom.xml 文件</para>
+            <programlisting>
+            <![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+
+<groupId>cn.netkiller</groupId>
+<artifactId>deploy</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+<packaging>jar</packaging>
+
+<name>deploy.netkiller.cn</name>
+<description>Deploy project for Spring Boot</description>
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.3.1.RELEASE</version>
+    <relativePath /> <!-- lookup parent from repository -->
+</parent>
+
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
+</properties>
+
+<dependencies>
+    <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-actuator</artifactId> </dependency> -->
+    <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-jpa</artifactId> </dependency> -->
+    <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-mongodb</artifactId> </dependency> -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-data-redis</artifactId>
+    </dependency>
+    <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-jdbc</artifactId> </dependency> -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>webjars-locator</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>sockjs-client</artifactId>
+        <version>1.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>stomp-websocket</artifactId>
+        <version>2.3.3</version>
+    </dependency>
+    <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>bootstrap</artifactId>
+        <version>3.3.7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>jquery</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-jasper</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+
+<repositories>
+    <repository>
+        <id>spring-snapshots</id>
+        <name>Spring Snapshots</name>
+        <url>https://repo.spring.io/snapshot</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>spring-milestones</id>
+        <name>Spring Milestones</name>
+        <url>https://repo.spring.io/milestone</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+<pluginRepositories>
+    <pluginRepository>
+        <id>spring-snapshots</id>
+        <name>Spring Snapshots</name>
+        <url>https://repo.spring.io/snapshot</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+        <id>spring-milestones</id>
+        <name>Spring Milestones</name>
+        <url>https://repo.spring.io/milestone</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </pluginRepository>
+</pluginRepositories>
+
+</project>
+            
+            ]]>
+            </programlisting>
+        </section>
+        <section>
+            <title>application.properties</title>
+            <para>spring.session.store-type=redis 将Session 存储在Redis中</para>
+            <programlisting>
+            <![CDATA[
+spring.redis.database=0
+spring.redis.host=192.168.4.1
+spring.redis.port=6379
+#spring.redis.password=
+spring.redis.pool.max-active=8
+spring.redis.pool.max-wait=30
+spring.redis.pool.max-idle=8
+spring.redis.pool.min-idle=0
+spring.redis.timeout=10
+
+spring.session.store-type=redis
+            ]]>
+            </programlisting>
+
+        </section>
+        <section>
+            <title>Application</title>
+            <programlisting>
+            <![CDATA[
+package cn.netkiller;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan
+@EnableMongoRepositories
+@EnableJpaRepositories
+@EnableScheduling
+public class Application {
+
+public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+
+}
+}
+            ]]>
+            </programlisting>
+            <para>RedisHttpSessionConfig.java</para>
+            <programlisting>
+            <![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
+@Configuration
+@EnableRedisHttpSession
+public class RedisHttpSessionConfig {
+
+public RedisHttpSessionConfig() {
+    // TODO Auto-generated constructor stub
+}
+
+}				
+            ]]>
+            </programlisting>
+        </section>
+
+    </section>
+    <section>
+        <title>测试 Session</title>
+        <programlisting>
+        <![CDATA[
+package cn.netkiller.web;
+
+import java.util.Date;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class TestController {
+
+public TestController() {
+    // TODO Auto-generated constructor stub
+}
+
+@RequestMapping("/session/set")
+@ResponseBody
+public String set(HttpSession session) {
+    String key = "test";
+    session.setAttribute(key, new Date());
+    return key;
+}
+
+@RequestMapping("/session/get")
+@ResponseBody
+public String get(HttpSession session) {
+    String value = (String) session.getAttribute("test").toString();
+    return value;
+}
+
+}
+        ]]>
+        </programlisting>
+        <para>keys spring:session:* 查看 Session Key</para>
+        <screen>
+        <![CDATA[			
+$ telnet 192.168.4.1 6379
+Connecting to 192.168.4.1:6379...
+Connection established.
+To escape to local shell, press 'Ctrl+Alt+]'.
+keys spring:session:*
+*7
+$68
+spring:session:sessions:expires:a510f46f-0a2f-4649-af05-34bd750562c1
+$40
+spring:session:expirations:1476100200000
+$40
+spring:session:expirations:1476098400000
+$60
+spring:session:sessions:f6494a2f-591e-42ba-b381-ce2596f4046d
+$60
+spring:session:sessions:a510f46f-0a2f-4649-af05-34bd750562c1
+$112
+spring:session:index:org.springframework.session.FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME:user
+$60
+spring:session:sessions:627018c8-243e-43ac-87b9-fc07f130c899
+            ]]>
+        </screen>
+    </section>
+    <section>
+        <title>JDBC</title>
+        <programlisting>
+        <![CDATA[
+spring.session.store-type=jdbc
+spring.session.jdbc.table-name=SESSIONS			
+        ]]>
+        </programlisting>
+    </section>
+    <section>
+        <title>Springboot 2.1</title>
+        <screen>
+        <![CDATA[
+<dependency>  
+    <groupId>org.springframework.boot</groupId>  
+    <artifactId>spring-boot-starter-redis</artifactId>  
+</dependency>  
+<dependency>  
+    <groupId>org.springframework.session</groupId>  
+    <artifactId>spring-session-data-redis</artifactId>  
+</dependency>  
+        ]]>
+        </screen>
+        <para>开启Redis共享SESSION @EnableRedisHttpSession </para>
+        <screen>
+        <![CDATA[
+package cn.netkiller.oauth2;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@EnableRedisHttpSession 
+public class Application {
+public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+}
+}
+        
+        ]]>
+        </screen>
+        <para>application.properties中配置redis服务器</para>
+        <screen>
+        <![CDATA[
+spring.redis.host=localhost  
+spring.redis.port=6379 			
+        ]]>
+        </screen>
+    </section>
+</section>

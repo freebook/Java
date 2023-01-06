@@ -1457,4 +1457,159 @@ public class Application {
 			<para>@PreDestroy 可以监控 退出情况</para>
 		</section>
 	</section>
+	<section id="SpringBoot.ELK">
+		<title>Spring boot with ELK(Elasticsearch + Logstash + Kibana)</title>
+		<para>将 Spring boot 日志写入 ELK 有多种实现方式，这里仅提供三种方案：</para>
+		<orderedlist>
+			<listitem>
+				<para>Spring boot -&gt; logback -&gt; Tcp/IP -&gt; logstash -&gt; elasticsearch</para>
+				这种方式实现非常方便不需要而外包或者软件
+			</listitem>
+			<listitem>
+				<para>Spring boot -&gt; logback -&gt; Redis -&gt; logstash -&gt; elasticsearch</para>
+				利用 Redis 提供的发布订阅功能将日志投递到 elasticsearch
+			</listitem>
+			<listitem>
+				<para>Spring boot -&gt; logback -&gt; Kafka -&gt; logstash -&gt; elasticsearch</para>
+				Kafka 方法适合大数据的情况。
+			</listitem>
+		</orderedlist>
+		<section>
+			<title>TCP 方案</title>
+			<para>logstash 配置</para>
+			<programlisting>
+			<![CDATA[
+input {
+  tcp {
+    host => "172.16.1.16" 
+    port => 9250
+    mode => "server"
+    tags => ["tags"]
+    codec => json_lines  //可能需要更新logstash插件
+  }
+}
+
+output {
+ stdout{codec =>rubydebug}
+  elasticsearch {
+   hosts => ["localhost:9200"]  //这块配置需要带端口号
+    flush_size => 1000
+
+  }
+}			
+			]]>
+			</programlisting>
+			<para>Spring boot logback.xml 配置</para>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property resource="properties/logback-variables.properties" /> 
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>172.16.1.16:9250</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <!--<appender name="async" class="ch.qos.logback.classic.AsyncAppender">-->
+        <!--<appender-ref ref="stash" />-->
+    <!--</appender>-->
+    
+    <root level="info">                    <!-- 设置日志级别 -->
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH" />
+    </root>
+</configuration>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Redis 方案</title>
+			<para>https://github.com/kmtong/logback-redis-appender</para>
+			<para>Maven pom.xml 增加 Logback Redis 依赖</para>
+			<programlisting>
+			<![CDATA[
+<!-- https://mvnrepository.com/artifact/com.cwbase/logback-redis-appender -->
+<dependency>
+    <groupId>com.cwbase</groupId>
+    <artifactId>logback-redis-appender</artifactId>
+    <version>1.1.5</version>
+</dependency>			
+			]]>
+			</programlisting>
+			<para>Spring boot logback.xml 配置</para>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+	<property name="type.name" value="test" />
+	<appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
+		<source>spring-application</source>
+		<type>${type.name}</type>
+		<host>localhost</host>
+		<key>logstash:redis</key>
+		<tags>test-2</tags>
+		<mdc>true</mdc>
+		<location>true</location>
+		<callerStackIndex>0</callerStackIndex>
+		<!--additionalField添加附加字段 用于head插件显示 -->
+		<additionalField>
+			<key>MyKey</key>
+			<value>MyValue</value>
+		</additionalField>
+		<additionalField>
+			<key>MySecondKey</key>
+			<value>MyOtherValue</value>
+		</additionalField>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="LOGSTASH" />
+	</root>
+</configuration>
+			]]>
+			</programlisting>
+			<para>logstash 配置</para>
+			<programlisting>
+			<![CDATA[
+input {
+    redis {
+        host => 'localhost'
+        data_type => 'list'
+        port => "6379"
+        key => 'logstash:redis' #自定义
+        type => 'redis-input'   #自定义
+    }
+}
+output {
+    elasticsearch {
+        host => "localhost" 
+        codec => "json"
+        protocol => "http"
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Kafka 方案</title>
+			<programlisting>
+			<![CDATA[]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Other</title>
+			<programlisting>
+			<![CDATA[]]>
+			</programlisting>
+		</section>
+	</section>
 </section>

@@ -1,0 +1,289 @@
+
+<section id="cache">
+    <title>Spring boot with Caching</title>
+    <section>
+        <title>maven</title>
+        <programlisting>
+            <![CDATA[
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>			
+            ]]>
+        </programlisting>
+    </section>
+    <section id="">
+        <title>启用 Cache</title>
+        <para>添加 @EnableCaching </para>
+        <screen>
+        <![CDATA[
+package hello;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+
+@SpringBootApplication
+@EnableCaching
+public class Application {
+
+public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+}
+
+}			
+        ]]>
+        </screen>
+    </section>
+
+    <section>
+        <title>测试 Controller</title>
+        <para>缓存返回结果</para>
+        <programlisting>
+            <![CDATA[
+@Cacheable("cacheable")
+@RequestMapping("/test/cacheable")
+@ResponseBody
+public String cacheable() {
+    Date date = new Date();
+    String message = date.toString();
+    return message;
+}
+            ]]>
+        </programlisting>
+        <para>5秒钟清楚一次缓存</para>
+        <programlisting>
+            <![CDATA[
+@Scheduled(fixedDelay = 5000)
+@CacheEvict(allEntries = true, value = "cacheable")	
+public void expire() {
+    Date date = new Date();
+    String message = date.toString();
+    System.out.println(message);
+}
+            ]]>
+        </programlisting>
+    </section>
+    <section>
+        <title>@Cacheable 的用法</title>
+        <programlisting>
+        <![CDATA[
+@Cacheable(value="users", key="#id")
+public User find(Integer id) {
+
+return null;
+
+}			
+        ]]>
+        </programlisting>
+        <para>引用对象</para>
+        <programlisting>
+        <![CDATA[
+@Cacheable(value="users", key="#user.id")
+public User find(User user) {
+
+returnnull;
+
+}			
+        ]]>
+        </programlisting>
+        <para>条件判断</para>
+        <programlisting>
+        <![CDATA[
+@Cacheable(value="messagecache", key="#id", condition="id < 10")
+public String getMessage(int id){
+
+return "hello"+id;
+
+}
+
+@Cacheable(value="test",condition="#userName.length()>2")
+@Cacheable(value={"users"}, key="#user.id", condition="#user.id%2==0")
+        ]]>
+        </programlisting>
+        <para>#p0 参数索引，p0表示第一个参数</para>
+        <programlisting>
+        <![CDATA[
+@Cacheable(value="users", key="#p0")
+public User find(Integer id) {
+
+return null;
+
+}
+
+@Cacheable(value="users", key="#p0.id")
+public User find(User user) {
+
+return null;
+
+}
+        ]]>
+        </programlisting>
+        <para>@Cacheable 如果没有任何参数将会自动生成 key ，前提是必须设置 @CacheConfig(cacheNames = "test")</para>
+        <programlisting>
+        <![CDATA[
+@GetMapping("/cache/auto")
+@Cacheable()
+public Attribute auto() {
+    Attribute attribute = new Attribute();
+    attribute.setName("sdfsdf");
+    return attribute;
+}			
+        ]]>
+        </programlisting>
+        <screen>
+        <![CDATA[
+127.0.0.1:6379> keys *
+1) "test::SimpleKey []"			
+        ]]>
+        </screen>
+    </section>
+    <section id="">
+        <title>@CachePut 用法</title>
+        <para>@CachePut 每次都会执行方法，都会将结果存入指定key的缓存中，@CachePut 不会判断是否 key 已经存在，二是始终覆盖。</para>
+        <programlisting>
+        <![CDATA[
+@CachePut("users")
+public User find(Integer id) {
+
+return null;
+
+}
+        ]]>
+        </programlisting>
+    </section>
+    <section id="">
+        <title>解决Expire 和 TTL 过期时间</title>
+        <para>Springboot 1.x</para>
+        <programlisting>
+        <![CDATA[
+@Bean
+public CacheManager cacheManager(RedisTemplate redisTemplate) {
+    RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
+    cacheManager.setDefaultExpiration(60);	//缓存默认 60 秒
+    Map<String, Long> expiresMap = new HashMap<>();
+    expiresMap.put("Product", 5L);  //设置 key = Product 时 5秒缓存。你可以添加很多规则。 
+    cacheManager.setExpires(expiresMap);
+    return cacheManager;
+}			
+        ]]>
+        </programlisting>
+        <para>Springboot 2.x</para>
+        <programlisting>
+        <![CDATA[
+package api.config;
+
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Configuration
+public class CachingConfigurer {
+
+public CachingConfigurer() {
+    // TODO Auto-generated constructor stub
+}
+
+@Bean
+public KeyGenerator simpleKeyGenerator() {
+    return (o, method, objects) -> {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(o.getClass().getSimpleName());
+        stringBuilder.append(".");
+        stringBuilder.append(method.getName());
+        stringBuilder.append("[");
+        for (Object obj : objects) {
+            stringBuilder.append(obj.toString());
+        }
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
+    };
+}
+
+@Bean
+public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+    return new RedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory), 
+    this.redisCacheConfiguration(600), 	// 默认配置
+    this.initialCacheConfigurations());	// 指定key过期时间配置
+}
+           
+private Map<String, RedisCacheConfiguration> initialCacheConfigurations() {
+    Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
+    redisCacheConfigurationMap.put("UserInfoList", this.redisCacheConfiguration(3000));
+    redisCacheConfigurationMap.put("UserInfoListAnother", this.redisCacheConfiguration(18000));
+
+    return redisCacheConfigurationMap;
+}
+
+private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
+    Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+    ObjectMapper om = new ObjectMapper();
+    om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+    om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+    jackson2JsonRedisSerializer.setObjectMapper(om);
+
+    RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
+    redisCacheConfiguration = redisCacheConfiguration.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer)).entryTtl(Duration.ofSeconds(seconds));
+
+    return redisCacheConfiguration;
+}
+
+}
+
+        ]]>
+        </programlisting>
+        <para></para>
+        <programlisting>
+        <![CDATA[
+@Cacheable(value = "DefaultKey", keyGenerator = "simpleKeyGenerator") // 600秒，使用默认策略
+@Cacheable(value = "UserInfoList", keyGenerator = "simpleKeyGenerator") // 3000秒
+@Cacheable(value = "UserInfoListAnother", keyGenerator = "simpleKeyGenerator") // 18000秒
+
+        ]]>
+        </programlisting>
+        <screen>
+        <![CDATA[
+127.0.0.1:6379> keys *
+1) "test2::SimpleKey []"
+
+127.0.0.1:6379> ttl "test2::SimpleKey []"
+(integer) 584
+        
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>SpEL表达式</title>
+        <programlisting>
+        <![CDATA[
+@GetMapping("/cache/expire")
+@Cacheable("test1#${select.cache.timeout:1000}")
+public String expire() {
+    return "Test";
+}
+
+@GetMapping("/cache/expire")
+@Cacheable("test1#${select.cache.timeout:1000}#${select.cache.refresh:600}")
+public String expire() {
+    return "Test";
+}
+        ]]>
+        </programlisting>
+    </section>
+</section>
