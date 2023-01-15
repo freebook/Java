@@ -1320,7 +1320,36 @@ ${env:log.home}/logs
 		</dependency>				
 				]]>
 				</screen>
-				<para>读取方法 ${spring:profiles.active}</para>
+				<para>例子</para>
+				<screen>
+				<![CDATA[ 
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+	<property name="applicationName">${spring:spring.application.name}</property>
+	<Appenders>
+	
+	<SpringProfile name="dev | staging">
+		<Console name="Out">
+			<PatternLayout pattern="%m%n"/>
+		</Console>
+	</SpringProfile>
+	<SpringProfile name="prod">
+		<List name="Out">
+		</List>
+	</SpringProfile>
+	
+	</Appenders>
+	<Loggers>
+		<Logger name="org.apache.test" level="trace" additivity="false">
+		<AppenderRef ref="Out"/>
+		</Logger>
+		<Root level="error">
+		<AppenderRef ref="Out"/>
+		</Root>
+	</Loggers>
+</Configuration>								  
+				]]>
+				</screen>
+				<para>读取方法 ${spring:spring.profiles.active}</para>
 				<screen>
 				<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1351,7 +1380,7 @@ ${env:log.home}/logs
 	<Loggers>
 		<Root level="${sys:log.level}">
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="${spring:profiles.active:-dev}" />
+			<AppenderRef ref="${spring:spring.profiles.active:-dev}" />
 		</Root>
 	</Loggers>
 </Configuration>				
