@@ -1324,7 +1324,9 @@ ${env:log.home}/logs
 				<screen>
 				<![CDATA[ 
 <Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
-	<property name="applicationName">${spring:spring.application.name}</property>
+	<properties>
+		<property name="applicationName">${spring:spring.application.name}</property>
+	</properties>
 	<Appenders>
 	
 	<SpringProfile name="dev | staging">
@@ -1384,6 +1386,13 @@ ${env:log.home}/logs
 		</Root>
 	</Loggers>
 </Configuration>				
+				]]>
+				</screen>
+				<para>Spring 2.1.4 无法获取配置，解决方法使用 sys，同时启动的时候增加系统配置项 java -Dspring.application.name=netkiller -Dspring.profiles.active=dev -jar netkiller.jar </para>
+				<screen>
+				<![CDATA[ 
+<property name="service">${sys:spring.application.name}</property>
+<property name="environment">${sys:spring.profiles.active}</property>				
 				]]>
 				</screen>
 			</section>
