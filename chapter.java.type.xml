@@ -2058,6 +2058,58 @@ System.out.println(list == copy); // false
 	<section id="arrayList.forEach">
 		<title>ArrayList forEach</title>
 		<programlisting>
+		<![CDATA[ 
+// create an ArrayList which going to
+// contains a list of Numbers
+ArrayList<Integer> Numbers = new ArrayList<Integer>();
+
+// Add Number to list
+Numbers.add(23);
+Numbers.add(32);
+Numbers.add(45);
+Numbers.add(63);
+
+// forEach method of ArrayList and
+// print numbers
+Numbers.forEach((n) -> System.out.println(n));		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[ 
+import java.util.*;
+public class ArrayListTest {
+	
+	public static void main(String[] args)
+	{
+		// create an ArrayList which going to
+		// contains a list of Student names which is actually
+		// string values
+		ArrayList<String> students = new ArrayList<String>();
+	
+		// Add Strings to list
+		// each string represents student name
+		students.add("Ram");
+		students.add("Mohan");
+		students.add("Sohan");
+		students.add("Rabi");
+	
+		// print result
+		System.out.println("list of Students:");
+	
+		// forEach method of ArrayList and
+		// print student names
+		students.forEach((n) -> print(n));
+	}
+	
+	// printing student name
+	public static void print(String n)
+	{
+		System.out.println("Student Name is " + n);
+	}
+}		
+		]]>
+		</programlisting>
+		<programlisting>
 		<![CDATA[
 List<String> arrayList = new ArrayList<>();
 arrayList.add("A");
@@ -2079,6 +2131,51 @@ arrayList.forEach(item->{
         System.out.println(item);
     }
 });		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[ 
+package cn.netkiller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test {
+
+	public Test(int id) {
+		this.id = id;
+	}
+
+	public int id;
+	public String name;
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+		List<Test> arrayList = new ArrayList<Test>();
+		arrayList.add(new Test(1));
+		arrayList.add(new Test(2));
+		arrayList.add(new Test(3));
+		arrayList.add(new Test(4));
+		arrayList.add(new Test(5));
+
+		arrayList.forEach(item -> {
+			System.out.println(item.getId());
+			item.setId(item.getId() + 1);
+		});
+
+		arrayList.forEach(item -> {
+			System.out.println(item.getId());
+		});
+	}
+
+}				
 		]]>
 		</programlisting>
 	</section>
