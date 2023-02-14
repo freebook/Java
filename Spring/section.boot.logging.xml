@@ -18,7 +18,8 @@
 		<tip>
 			<para>旧版本</para>
 			<para>logging.file，设置文件，可以是绝对路径，也可以是相对路径。如：logging.file=my.log</para>
-			<para>logging.path，设置目录，如果 logging.file 没有设置，会在该目录下创建spring.log文件作为默认日志文件。</para>
+			<para>logging.path，设置目录，如果 logging.file
+				没有设置，会在该目录下创建spring.log文件作为默认日志文件。</para>
 			<screen>
 		<![CDATA[
 logging.file=target/spring.log
@@ -62,6 +63,16 @@ log.debug(message);
 logging.level.cn.netkiller.web.TestController=DEBUG			
 			]]>
 
+			</screen>
+			<para>YAML 配置文件写法</para>
+			<screen>
+			<![CDATA[
+logging:
+  level:
+    root: info
+    cn.netkiller.test: debug
+    cn.netkiller.sharding.MonthShardingAlgorithm: DEBUG
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -1388,7 +1399,9 @@ ${env:log.home}/logs
 </Configuration>				
 				]]>
 				</screen>
-				<para>Spring 2.1.4 无法获取配置，解决方法使用 sys，同时启动的时候增加系统配置项 java -Dspring.application.name=netkiller -Dspring.profiles.active=dev -jar netkiller.jar </para>
+				<para>Spring 2.1.4 无法获取配置，解决方法使用 sys，同时启动的时候增加系统配置项 java
+					-Dspring.application.name=netkiller -Dspring.profiles.active=dev
+					-jar netkiller.jar </para>
 				<screen>
 				<![CDATA[ 
 <property name="service">${sys:spring.application.name}</property>
@@ -1500,15 +1513,18 @@ public class Application {
 		<para>将 Spring boot 日志写入 ELK 有多种实现方式，这里仅提供三种方案：</para>
 		<orderedlist>
 			<listitem>
-				<para>Spring boot -&gt; logback -&gt; Tcp/IP -&gt; logstash -&gt; elasticsearch</para>
+				<para>Spring boot -&gt; logback -&gt; Tcp/IP -&gt; logstash -&gt;
+					elasticsearch</para>
 				这种方式实现非常方便不需要而外包或者软件
 			</listitem>
 			<listitem>
-				<para>Spring boot -&gt; logback -&gt; Redis -&gt; logstash -&gt; elasticsearch</para>
+				<para>Spring boot -&gt; logback -&gt; Redis -&gt; logstash -&gt;
+					elasticsearch</para>
 				利用 Redis 提供的发布订阅功能将日志投递到 elasticsearch
 			</listitem>
 			<listitem>
-				<para>Spring boot -&gt; logback -&gt; Kafka -&gt; logstash -&gt; elasticsearch</para>
+				<para>Spring boot -&gt; logback -&gt; Kafka -&gt; logstash -&gt;
+					elasticsearch</para>
 				Kafka 方法适合大数据的情况。
 			</listitem>
 		</orderedlist>
