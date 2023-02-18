@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>面向对象</title>
+	<section id="record">
+		<title>record</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.demo;
+
+record User(String name, Integer age) {
+
+}
+
+public class RecordDemo {
+
+	public RecordDemo() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		User user = new User("Neo", 35);
+		System.out.println(user.toString());
+	}
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>密封类</title>
+		<programlisting>
+		<![CDATA[
+		]]>
+		</programlisting>
+	</section>
+
+</section>
