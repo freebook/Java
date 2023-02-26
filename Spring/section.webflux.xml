@@ -533,7 +533,20 @@ public class SseController {
 	public Flux<Object> range() {
 		return Flux.range(10, 1).map(seq -> Tuples.of(seq, getCountDownSec())).map(data -> ServerSentEvent.<Object>builder().event("launch").id(Long.toString(data.getT1())).data(data.getT2().toString()).build());
 	}
-
+	
+	// WebFlux 服务器推送(SSE - >Server Send Event)
+	@GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	private Flux<String> flux() {
+		Flux<String> result = Flux.fromStream(IntStream.range(1, 10).mapToObj(i -> {
+			try {
+				TimeUnit.SECONDS.sleep(1);
+			} catch (InterruptedException e) {
+			}
+			logger.info("sse " + i);
+			return "flux data -- " + i;
+		}));
+		return result;
+	}
 }
 		
 		]]>
