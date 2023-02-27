@@ -130,7 +130,104 @@ Hello world!%
 			
 		</section>
 	</section>
-	
+	<section>
+		<title>WebFlux 与 SprintMVC 有什么不同？</title>
+		<section>
+			<title>实验程序</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
+
+@RestController
+@Slf4j
+public class WebFluxController {
+	private static final Logger logger = LoggerFactory.getLogger(WebFluxController.class);
+
+	public WebFluxController() {
+	}
+
+	// 阻塞5秒钟
+	private String job() {
+		try {
+			TimeUnit.SECONDS.sleep(5);
+		} catch (InterruptedException e) {
+		}
+		return "Hellowoard!!!";
+	}
+
+	// SpringMVC 方式
+	@GetMapping("/SpringMVC")
+	private String springmvc() {
+		logger.info("start");
+		String result = job();
+		logger.info("done");
+		return result;
+	}
+
+	// WebFlux 方式
+	@GetMapping("/WebFlux")
+	private Mono<String> webflux() {
+		logger.info("start");
+		Mono<String> result = Mono.fromSupplier(() -> job());
+		logger.info("done");
+		return result;
+	}
+}
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>实验结果</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~> time curl http://localhost:8080/SpringMVC
+Hellowoard!!!
+________________________________________________________
+Executed in    5.02 secs      fish           external
+   usr time    4.98 millis  242.00 micros    4.74 millis
+   sys time    5.48 millis  993.00 micros    4.49 millis			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+2023-02-24T14:13:07.063+08:00 TRACE 1552 --- [  XNIO-1 task-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#springmvc()
+2023-02-24T14:13:07.077+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : start
+2023-02-24T14:13:12.082+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done			
+			]]>
+			</screen>
+			<para>从省输出日志可以看到 start 2023-02-24T14:13:07, done 2023-02-24T14:13:12 程序运行被阻塞了 5秒钟</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~> time curl http://localhost:8080/WebFlux
+Hellowoard!!!
+________________________________________________________
+Executed in    5.02 secs      fish           external
+   usr time    5.19 millis  228.00 micros    4.96 millis
+   sys time    6.05 millis  854.00 micros    5.20 millis	
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+2023-02-24T14:14:54.720+08:00 TRACE 1583 --- [  XNIO-1 task-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()
+2023-02-24T14:14:54.729+08:00  INFO 1583 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : start
+2023-02-24T14:14:54.731+08:00  INFO 1583 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done
+2023-02-24T14:14:59.753+08:00 TRACE 1583 --- [  XNIO-1 task-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()	
+			]]>
+			</screen>
+			<para>再看 webflux 的表现，start 2023-02-24T14:14:54, done 2023-02-24T14:14:54 执行时间不到一秒钟。</para>
+		</section>
+	</section>
 	&section.webflux.xml;
 	
 </chapter>
