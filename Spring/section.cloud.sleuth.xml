@@ -2,4 +2,36 @@
 <section id="SpringCloudSleuth">
 	<title>Spring Cloud Sleuth</title>
 	<para>分布式链路追踪工具</para>
+	<screen>
+	<![CDATA[
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>	
+	]]>
+	</screen>
+	<para>字段定义</para>
+	<screen>
+	<![CDATA[
+字段					描述
+trace				从客户发起请求(request)抵达被追踪系统的边界开始，到被追踪系统向客户返回响应(response)为止的整个过程
+span				每个trace中会调用若干个服务，为了记录调用了哪些服务，以及每次调用的消耗时间等信息，在每次调用服务时，埋入一个调用记录
+X-B3-ParentSpanId	标识当前工作单元所属的上一个工作单元
+X-B3-Sampled		是否采样，1表示需要被输出，0表示不需要被输出
+X-B3-TraceId		一条请求链路(trace)的唯一标识，必须值
+X-Span-Name			工作单元的名称
+X-B3-SpanId			一个工作单元(span)的唯一标识，必须值	
+	]]>
+	</screen>
+	<section>
+		<title>logback 安装</title>
+		<screen>
+		<![CDATA[
+logging.level.org.springframework.web=DEBUG
+spring.sleuth.traceId128=true
+spring.sleuth.sampler.probability=1.0
+logging.pattern.level=[%X{traceId}/%X{spanId}] %-5p [%t] %C{2} - %m%n		
+		]]>
+		</screen>
+	</section>
 </section>
