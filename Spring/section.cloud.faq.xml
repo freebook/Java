@@ -655,7 +655,17 @@ Hello world
 			</section>
 		</section>
 	</section>
-
-
+	<section>
+		<title>feign.RetryableException: Read timed out executing</title>
+		<screen>
+		<![CDATA[
+ribbon:
+  #请求连接的超时时长
+  ConnectTimeout: 60000
+  #请求处理的超时时长
+  ReadTimeout: 60000		
+		]]>
+		</screen>
+	</section>
+	
 </section>
-
