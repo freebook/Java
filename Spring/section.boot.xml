@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="spring-boot-maven-plugin">
+	<title>Springboot with Maven</title>
+	<para>spring-boot-maven-plugin 插件</para>
+	<section>
+		<title>resource</title>
+		<para>将 resource 添加应用程序</para>
+		<screen>
+			<![CDATA[
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/java/resources</directory>
+            <filtering>true</filtering>
+            <excludes>
+                <exclude>*.jks</exclude>
+            </excludes>
+        </resource>
+    </resources>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <addResources>true</addResources>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>		
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Maven run</title>
+		<programlisting>
+			<![CDATA[
+$ mvn spring-boot:run
+$ mvn -P prod spring-boot:run
+			]]>
+		</programlisting>
+		<para>-P 指定 Maven 的 profile，如果指定 Springboot 的 profiles 请使用 -Drun.profiles=prod</para>
+		<screen>
+			<![CDATA[
+$ mvn spring-boot:run -Drun.profiles=prod			
+			]]>
+		</screen>
+		<para>打包后，使用jar包运行</para>
+		<programlisting>
+			<![CDATA[
+$ mvn verify
+$ mvn package
+$ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Spring Boot maven 插件 build-image</title>
+		<para>Spring Boot 构建 Docker 镜像，你不需要写 Dockerfile，plugin 帮你完成。</para>
+		<para>只需要简单的执行：</para>
+		<screen>
+			<![CDATA[
+mvn spring-boot:build-image			
+			]]>
+		</screen>
+		<para>执行完成后会看到成功提示信息：</para>
+		<screen>
+			<![CDATA[
+[INFO] Successfully buit image 'docker.io/library/demo:0.0.1-SNAPSHOT'			
+			]]>
+		</screen>
+		<para>运行容器测试：</para>
+		<screen>
+			<![CDATA[
+docker run -p 8000:8080 -t demo:0.0.1-SNAPSHOT			
+			]]>
+		</screen>
+		<para>注意：这里映射的本机端口是8000。</para>
+		<screen>
+			<![CDATA[
+curl http://localhost:8000/
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>生成项目信息</title>
+		<para>mvn spring-boot:build-info</para>
+		<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/microservice/config % mvn spring-boot:build-info			
+			]]>
+		</screen>
+	</section>
+</section>
+
+<section id="SpringApplication">
+	<title>SpringApplication</title>
+	<programlisting>
+		<![CDATA[
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+
+@SpringBootApplication
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@ComponentScan({"cn.netkiller.controller"})
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}
+		]]>
+	</programlisting>
+	<section id="spring.run">
+		<title>运行 Spring boot 项目</title>
+
+		<section>
+			<title>Linux systemd</title>
+			<para>/etc/systemd/system/spring.service</para>
+			<screen>
+			<![CDATA[
+####################################################
+# Homepage: http://netkiller.github.io
+# Author: netkiller<netkiller@msn.com>
+# Script: https://github.com/oscm/shell
+# Date: 2015-11-03
+####################################################
+[Unit]
+Description=Spring Boot Application
+After=network.target
+
+[Service]
+User=www
+Group=www
+Type=oneshot
+WorkingDirectory=/www/netkiller.cn/api.netkiller.cn
+ExecStart=/usr/bin/java -jar your_jar_file.jar --spring.config.location=appliction-production.properties --spring.profiles.active=profile
+#ExecStop=pkill -9 -f  
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>传统 init.d 脚本</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+##############################################
+# Author: netkiller<netkiller@msn.com>
+# Homepage: http://www.netkiller.cn
+# Date: 2017-02-08
+# $Author$
+# $Id$
+##############################################
+# chkconfig: 345 100 02
+# description: Spring boot application
+# processname: springbootd
+# File : springbootd
+##############################################
+BASEDIR="/www/netkiller.cn/api.netkiller.cn"
+JAVA_HOME=/srv/java
+JAVA_OPTS="-server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom"
+PACKAGE="api.netkiller.cn-0.0.2-release.jar"
+CONFIG="--spring.config.location=$BASEDIR/application.properties"
+USER=www
+##############################################
+NAME=springbootd
+PROG="$JAVA_HOME/bin/java $JAVA_OPTS -jar $BASEDIR/$PACKAGE $CONFIG"
+LOGFILE=/var/tmp/$NAME.log
+PIDFILE=/var/tmp/$NAME.pid
+ACCESS_LOG=/var/tmp/$NAME.access.log
+##############################################
+
+function log(){
+	echo "$(date -d "today" +"%Y-%m-%d %H:%M:%S") $1	$2" >> $LOGFILE
+}
+
+function start(){
+	if [ -f "$PIDFILE" ]; then
+		echo $PIDFILE
+		exit 2
+	fi
+
+	su - $USER -c "$PROG & echo \$! > $PIDFILE"
+	log info start
+}
+function stop(){
+	[ -f $PIDFILE ] && kill `cat $PIDFILE` && rm -rf $PIDFILE
+	log info stop
+}
+function status(){
+	ps aux | grep $PACKAGE | grep -v grep | grep -v status
+	log info status
+}
+function reset(){
+	pkill -f $PACKAGE
+  	[ -f $PIDFILE ] && rm -rf $PIDFILE
+	log info reset
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	status)
+		status
+		;;
+	restart)
+		stop
+		start
+		;;
+	log)
+		tail -f $LOGFILE
+		;;
+	reset)
+		reset
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|status|restart|log|reset}"
+esac
+exit $?
+
+			]]>
+			</screen>
+		</section>
+		<section id="war">
+			<title>编译用于Tomcat的 War</title>
+			<programlisting>
+			<![CDATA[
+package demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+public class Application extends SpringBootServletInitializer {
+
+    private static Class<Application> applicationClass = Application.class;
+    
+    public static void main(String[] args) {
+        SpringApplication.run(applicationClass, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
+    }
+}		
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+
+	<section id="SpringBootApplication">
+		<title>@SpringBootApplication</title>
+		<para>@SpringBootApplication 是 @Configuration, @EnableAutoConfiguration 跟 @ComponentScan 的集合。</para>
+		<programlisting>
+			<![CDATA[
+@SpringBootApplication
+			]]>
+		</programlisting>
+		<section>
+			<title>排除 @EnableAutoConfiguration 加载项</title>
+			<programlisting>
+				<![CDATA[
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)				
+				]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>获取 Resources 目录中的静态文件</title>
+		<programlisting>
+			<![CDATA[
+	package cn.netkiller;
+	
+	import java.io.File;
+	import java.io.IOException;
+	import java.net.URL;
+	
+	import org.springframework.core.io.ClassPathResource;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.RestController;
+	
+	@RestController
+	public class TestController {
+	
+		public TestController() {
+			// TODO Auto-generated constructor stub
+		}
+	
+		@GetMapping("/test")
+		public String test() {
+			ClassPathResource resource = new ClassPathResource("test.ttf");
+			File file = null;
+			try {
+				file = resource.getFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			// InputStream inStream = new FileInputStream(file.getPath());
+			// BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+			return file.getPath();
+		}
+		@GetMapping("/test1")
+		public String test1() {
+			URL url = Thread.currentThread().getContextClassLoader().getResource("test.ttf");
+			return url.getPath();
+		}
+		
+	}		
+			]]>
+		</programlisting>
+	</section>
+	<section id="EnableAutoConfiguration">
+		<title>@EnableAutoConfiguration</title>
+		<para>exclude 排除配置，下面例子是排除 DataSource配置</para>
+		<programlisting>
+			<![CDATA[
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+			]]>
+		</programlisting>
+	</section>
+	<section id="@ComponentScan">
+		<title>@ComponentScan</title>
+		<para>@ComponentScan 注入会扫描 @Controller 与 @RestController</para>
+		<programlisting>
+			<![CDATA[
+@ComponentScan
+@ComponentScan({"cn.netkiller.controller"})
+@ComponentScan({"cn.netkiller.controller", "cn.netkiller.rest"})
+			]]>
+		</programlisting>
+	</section>
+	<section id="@EntityScan">
+		<title>@EntityScan 实体扫描</title>
+		<programlisting>
+			<![CDATA[
+@EntityScan("common.domain")
+			]]>
+		</programlisting>
+	</section>
+	<section id="@EnableJpaRepositories">
+		<title>@EnableJpaRepositories</title>
+		<para>扫描 Jpa 仓库</para>
+		<programlisting>
+			<![CDATA[
+@EnableJpaRepositories("common.domain")			
+			]]>
+		</programlisting>
+	</section>
+	<section id="CharacterEncodingFilter">
+		<title>CharacterEncodingFilter</title>
+		<programlisting>
+			<![CDATA[
+	public @Bean Filter characterEncodingFilter() {
+		CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+		characterEncodingFilter.setEncoding("UTF-8");
+		characterEncodingFilter.setForceEncoding(true);
+		return characterEncodingFilter;
+	}			
+			]]>
+		</programlisting>
+	</section>
+	<section id="banner">
+		<title>隐藏 Banner</title>
+		<para>隐藏 Spring Boot Banner</para>
+		<screen>
+			<![CDATA[
+. ____ _ __ _ _
+/\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+\\/ ___)| |_)| | | | | || (_| | ) ) ) )
+' |____| .__|_| |_|_| |_\__, | / / / /
+=========|_|==============|___/=/_/_/_/
+:: Spring Boot :: (v2.3.1.RELEASE)
+			]]>
+		</screen>
+		<programlisting>
+			<![CDATA[
+public static void main(String[] args) {
+    SpringApplication app = new SpringApplication(Application.class);
+    app.setShowBanner(false);
+    app.run(args);
+}
+			]]>
+		</programlisting>
+	</section>
+
+	<section id="scan">
+		<title>实体与仓库扫描</title>
+		<programlisting>
+			<![CDATA[
+@EntityScan(basePackages = { "cn.netkiller.model" }) 
+@EnableJpaRepositories(basePackages = { "cn.netkiller.repository" })			
+			]]>
+		</programlisting>
+	</section>
+	<section id="beans">
+		<title>列出 Beans</title>
+		<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import java.util.Arrays;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan
+@EnableMongoRepositories
+@EnableJpaRepositories
+@EnableScheduling
+public class Application {
+
+	public static void main(String[] args) {
+		//SpringApplication.run(Application.class, args);
+
+		ApplicationContext ctx = SpringApplication.run(Application.class, args);
+
+		System.out.println("Let's inspect the beans provided by Spring Boot:");
+
+		String[] beanNames = ctx.getBeanDefinitionNames();
+		Arrays.sort(beanNames);
+		for (String beanName : beanNames) {
+			System.out.println(beanName);
+		}
+
+	}
+}
+			]]>
+		</programlisting>
+	</section>
+	<section id="spring.boot.ports">
+		<title>Tomcat 端口</title>
+		<programlisting>
+		<![CDATA[
+@Configuration
+public class TomcatConfiguration implements EmbeddedServletContainerCustomizer {
+
+	int ports[] = { 8080, 8081, 8082 };
+
+	@Override
+	public void customize(ConfigurableEmbeddedServletContainer configurableEmbeddedServletContainer) {
+
+		if (ports != null) {
+			// 判断如果是Tomcat才进行如下配置
+			if (configurableEmbeddedServletContainer instanceof TomcatEmbeddedServletContainerFactory) {
+
+				TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) configurableEmbeddedServletContainer;
+
+				for (int port : ports) {
+					// 一个Connecter监听一个端口,指定协议为HTTP/1.1
+					Connector httpConnector = new Connector("HTTP/1.1");
+					httpConnector.setPort(port);
+					tomcat.addAdditionalTomcatConnectors(httpConnector);
+				}
+
+			}
+		}
+	}
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>配置项设定</title>
+		<programlisting>
+			<![CDATA[
+public static void main(String[] args) {
+    SpringApplication.run(Backend.class,
+        "--spring.application.name=backend",
+        "--server.port=9000"
+    );
+  }			
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>spring.profiles.active</title>
+		<programlisting>
+			<![CDATA[
+在 Java 代码中激活 profile
+
+直接指定环境变量来激活 profile：
+
+System.setProperty("spring.profiles.active", "test");
+
+在 Spring 容器中激活 profile：
+
+AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+ctx.getEnvironment().setActiveProfiles("development");
+ctx.register(SomeConfig.class, StandaloneDataConfig.class, JndiDataConfig.class);
+ctx.refresh();			
+			]]>
+
+		</programlisting>
+	</section>
+</section>

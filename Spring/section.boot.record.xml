@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Java Record 新特性</title>
+	<section>
+		<title>Record 替代 POJO 类</title>
+		<para>POJO类：</para>
+		<programlisting>
+		<![CDATA[
+@Data
+public class Point {
+    private String x;
+    private String y;
+}		
+		]]>
+		</programlisting>
+		<para>record 实现方式</para>
+		<programlisting>
+		<![CDATA[
+public record Point(String x, String y) {
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Record 作为 Properties</title>
+		<programlisting>
+		<![CDATA[
+@ConfigurationProperties(prefix = "user")
+public record UserProperties(String firstName, String lastName) {
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Record 作为实体类</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.record;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "member")
+public record Member(
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+        Long id,
+        String name
+
+) {
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Record 作为 Service</title>
+		<programlisting>
+		<![CDATA[
+@Service
+public record PersonService(PersonRepository personRepository){
+
+  	//保存person
+    public Person save(Person person){
+        Person person = new Person(person.firstName(), person.lastName(), person.age());
+        return personRepository.save(person);
+    }
+  
+ 	//按照lastName查询people，返回值只有firstName和lastName
+    public List<PersonOnlyWithName> findByLastName(String lastName){
+        return personRepository.findByLastName(lastName);
+    }
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+public interface PersonRepository extends JpaRepository<Person, Long> {
+    List<PersonOnlyWithName> findByLastName(String lastName);
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Record 作为 Controller</title>
+		<programlisting>
+		<![CDATA[
+@RestController
+@RequestMapping("/people")
+public record PersonController(PersonService personService) {
+
+    @PostMapping
+    public ResponseEntity<Person> save(@RequestBody Person person){
+        return ResponseEntity.ok(personService.save(person));
+    }
+
+    @GetMapping("/findByLastName")
+    public ResponseEntity<List<PersonOnlyWithName>> findByLastName(String lastName){
+        return ResponseEntity.ok(personService.findByLastName(lastName));
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+</section>

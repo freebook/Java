@@ -5,6 +5,7 @@
 <!ENTITY chapter.tomcat.xml				SYSTEM "chapter.tomcat.xml">
 
 <!ENTITY chapter.boot.xml				SYSTEM "chapter.boot.xml">
+<!ENTITY section.boot.xml				SYSTEM "section.boot.xml">
 <!ENTITY section.boot.shutdown.xml		SYSTEM "section.boot.shutdown.xml">
 <!ENTITY section.boot.queue.xml			SYSTEM "section.boot.queue.xml">
 <!ENTITY section.boot.properties.xml	SYSTEM "section.boot.properties.xml">
@@ -35,6 +36,7 @@
 <!ENTITY section.boot.hessian.xml 	    SYSTEM "section.boot.hessian.xml">
 <!ENTITY section.boot.async.xml 	    SYSTEM "section.boot.async.xml">
 <!ENTITY section.boot.web3j.xml 	    SYSTEM "section.boot.web3j.xml">
+<!ENTITY section.boot.record.xml 	    SYSTEM "section.boot.record.xml">
 
 <!ENTITY chapter.mvc.xml				SYSTEM "chapter.mvc.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">
