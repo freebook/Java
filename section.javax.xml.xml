@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title></title>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+// write the content into xml file
+TransformerFactory transformerFactory = TransformerFactory.newInstance();
+Transformer transformer = transformerFactory.newTransformer();
+DOMSource source = new DOMSource(doc);
+StreamResult result = new StreamResult(new File("/tmp/test.xml"));
+transformer.transform(source, result);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+// Output to console for testing
+StreamResult consoleResult = new StreamResult(System.out);
+transformer.transform(source, consoleResult);		
+		]]>
+		</programlisting>
+	</section>
+</section>
