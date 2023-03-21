@@ -964,6 +964,36 @@ spring.cloud.nacos.discovery.instance-enabled=false
 			</screen>
 		</section>
 		<section>
+			<title>禁止注册</title>
+			<para>有时我们希望只获取配置，并不希望服务注册</para>
+			<para>register-enabled: false</para>
+			<screen>
+			<![CDATA[
+spring:
+  profiles:
+    active: dev
+  application:
+    name: netkiller
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      username: dev
+      password: passw0rd
+      config:
+        server-addr: http://${spring.profiles.active}.netkiller.cn:8848
+        file-extension: yaml
+        enabled: true
+        namespace: ${spring.profiles.active}
+        enable-remote-sync-config: true
+      discovery:
+        server-addr: http://${spring.profiles.active}.netkiller.cn:8848
+        namespace: ${spring.profiles.active}
+        register-enabled: true			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>Failed to bind properties under 'server.tomcat.basedir' to java.io.File:</title>
 			<para>环境 Docker 安装 nacos 提示 server.tomcat.basedir 错误</para>
 			<screen>
