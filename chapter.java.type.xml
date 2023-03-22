@@ -549,6 +549,21 @@ The SQL TIMESTAMP is: 2017-08-24 16:51:57.234
 		</screen>
 		<section id="SimpleDateFormat">
 			<title>SimpleDateFormat</title>
+			<para>字符串转日期</para>
+			<programlisting>
+			<![CDATA[
+        try {
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String str = "2018-12-11";
+            Date date = df.parse(str);
+            System.out.println(date);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }			
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
 
