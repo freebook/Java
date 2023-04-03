@@ -2114,8 +2114,6 @@ neo@MacBook-Pro ~/workspace/maven/project1 % find ~/.m2 -iname 'common-0.0.1-SNA
 			<para>查看可用的pom定义</para>
 			<screen>
 			<![CDATA[
-or alternatively, we can use an external build.xml.
-
 <project>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>my-test-app</artifactId>
@@ -2177,6 +2175,41 @@ The build.xml:
 </project>
 			]]>
 			</screen>
+			<section>
+				<title>echo 打印调试信息</title>
+				<screen>
+				<![CDATA[
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-antrun-plugin</artifactId>
+		<version>3.0.0</version>
+		<executions>
+			<execution>
+                <phase>validate</phase>
+				<goals>
+					<goal>run</goal>
+				</goals>
+				<configuration>
+					<target>
+						<echo>Current branch: ${branch}</echo>
+						<echo>[project.artifactId] ${project.artifactId}</echo>
+					</target>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+root@netkiller ~/neo (master)# mvn package -Dbranch=master
+
+[WARNING]      [echo] Current branch: master
+[WARNING]      [echo] [project.artifactId] neo
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="maven-install-plugin">
 			<title>maven-install-plugin</title>
