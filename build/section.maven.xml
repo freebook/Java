@@ -2969,4 +2969,43 @@ mvn tomcat:deploy
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>应用案例</title>
+		<section>
+			<title>并行开发解决不同环境包引用</title>
+			<para>Maven 父文件中配置</para>
+			<screen>
+			<![CDATA[
+	<properties>
+		<project.branch>-SNAPSHOT</project.branch>
+	</properties>
+			
+			]]>
+			</screen>
+			<para>模块中配置</para>
+			<screen>
+			<![CDATA[
+	<version>1.0.0-${project.branch}</version>			
+			]]>
+			</screen>
+			<para>针对不同环境打包，部署</para>
+			<screen>
+			<![CDATA[
+root@netkiller ~/neo (maven)# mvn deploy -Dproject.branch=dev
+root@netkiller ~/neo (maven)# mvn deploy -Dproject.branch=test
+root@netkiller ~/neo (maven)# mvn deploy -Dproject.branch=main			
+			]]>
+			</screen>
+			<para>依赖引用</para>
+			<screen>
+			<![CDATA[
+        <dependency>
+            <groupId>cn.netkiller</groupId>
+            <artifactId>gantt</artifactId>
+            <version>1.0.0-${project.branch}</version>
+        </dependency>			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>
