@@ -2,7 +2,7 @@
 <chapter id="java">
 	<title>Java</title>
 	&section.java.install.xml;
-	&chapter.jvm.xml;
+	&section.java.jvm.xml;
 	<section id="system">
 		<title>System</title>
 		<screen><![CDATA[
