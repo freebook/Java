@@ -240,8 +240,11 @@ class DemoApplicationTests {
 logging.config=classpath:logback.xml		
 		]]>
 		</screen>
-		<para>基本配置</para>
-		<screen>
+		<section id="logback.stdout">
+			<title>标准输出</title>
+			<para>基本配置</para>
+
+			<screen>
 		<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
@@ -255,7 +258,8 @@ logging.config=classpath:logback.xml
     </root>
 </configuration>		
 		]]>
-		</screen>
+			</screen>
+		</section>
 		<section>
 			<title>禁止 logback 日志输出</title>
 			<screen>
@@ -264,7 +268,7 @@ logging.config=classpath:logback.xml
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="logback.level">
 			<title>指定Class过滤日志</title>
 			<programlisting>
 			<![CDATA[
@@ -276,7 +280,7 @@ logging.config=classpath:logback.xml
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="logback.attr">
 			<title>configuration 属性配置</title>
 			<screen>
 			<![CDATA[
@@ -541,7 +545,7 @@ public class Application {
 			]]>
 			</programlisting>
 		</section>
-		<section id="stdout">
+		<section id="logback.file">
 			<title>标准输出</title>
 			<screen>
 			<![CDATA[
@@ -1336,6 +1340,21 @@ logging:
 				</screen>
 			</section>
 			<section>
+				<title>日志输出级别</title>
+				<programlisting>
+			<![CDATA[
+    <Loggers>
+        <Logger name="com.ensd.service.sharding.MonthShardingAlgorithm" level="ERROR" />
+        <Root level="${sys:log.level}">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="Logstash"/>
+        </Root>
+    </Loggers>			
+			]]>
+				</programlisting>
+			</section>
+			<section>
 				<title>读取系统变量/环境变量</title>
 				<screen>
 				<![CDATA[
@@ -1434,22 +1453,18 @@ ${env:log.home}/logs
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>变量默认值</title>
+				<para>格式是 ${变量名:-默认值}</para>
+				<section>
+				<![CDATA[
+<property name="service">${sys:spring.application.name:-dev}</property>
+<property name="environment">${sys:spring.profiles.active:-dev}</property>						
+				]]>
+				</section>
+			</section>
 		</section>
-		<section>
-			<title>日志输出级别</title>
-			<programlisting>
-			<![CDATA[
-    <Loggers>
-        <Logger name="com.ensd.service.sharding.MonthShardingAlgorithm" level="ERROR" />
-        <Root level="${sys:log.level}">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="File"/>
-            <AppenderRef ref="Logstash"/>
-        </Root>
-    </Loggers>			
-			]]>
-			</programlisting>
-		</section>
+
 	</section>
 	<section id="logging.dingtalk">
 		<title>日志报警</title>
