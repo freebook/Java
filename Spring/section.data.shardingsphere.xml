@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="shardingsphere">
+	<title>Apache ShardingSphere</title>
+	<section>
+		<title>微服务集群环境，雪花算法出现重复ID</title>
+		<screen>
+		<![CDATA[
+Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '854658443787632640' for key 'PRIMARY'		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+# 指定 工作机器数量 最大是2的10次方 ， 即小于 1024 就可以 
+spring.shardingsphere.sharding.tables.shard.key-generator.props.worker.id=1000
+
+max-vibration-offset 
+
+# 最大容忍的时钟回拨毫秒数, 雪花算法依据时间戳来生成的，一旦时间戳回拨就会造成 id 重复的可能
+spring.shardingsphere.sharding.tables.shard.key-generator.max.tolerate.time.difference.milliseconds=5
+		]]>
+		</screen>
+		<section>
+			<title>方案一、配置实现</title>
+			<para>随机指定 worker.id，这样在kubernetes集群环境，每次启动pod，worker.id 都会自动变化。</para>
+			<screen>
+			<![CDATA[
+spring.shardingsphere.sharding.tables.test.key-generator.props.worker.id=${random.int[1,1024]}
+			]]>
+			</screen>
+			<para>查看当前 worker.id</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller.test;//package cn.netkiller.controller;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RefreshScope
+@RestController
+public class TestRestController {
+
+    @Value("${spring.shardingsphere.sharding.tables.test.key-generator.props.worker.id}")
+    public String workerId;
+
+    public TestRestController() {
+
+    }
+
+    @GetMapping("/workerId")
+    public String snow() {
+        return this.workerId;
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>方案二、代码实现</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Configuration;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+/**
+ * 动态指定sharding jdbc 的 work.id 雪花算法中的属性，然后通过 System.setProperty() 设置环境变量
+ * workId 可以用主机名、IP地址、Mac地址，最大值 1L << 100，就是1024，即 0<= workId < 1024
+ * {@link SnowflakeShardingKeyGenerator#getWorkerId()}
+ */
+@Configuration
+public class SnowFlakeWordIdConfiguration {
+    static {
+        try {
+            InetAddress ip4 = Inet4Address.getLocalHost();
+            String addressIp = ip4.getHostAddress();
+            System.setProperty("workerId", (Math.abs(addressIp.hashCode()) % 1024) + "");
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+			]]>
+			</programlisting>
+			<para>配置文件添加 key-generator.props.worker.id 设置 ${workerId} 变量</para>
+			<screen>
+			<![CDATA[
+          key-generator:
+            column: id
+            props:
+              worker:
+                id: ${workerId}
+            type: SNOWFLAKE
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>

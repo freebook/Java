@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="data.restful">
+	<title>Spring boot with Data restful</title>
+	<para>spring-boot-starter-data-rest 能够提供将 Repository, CrudRepository 等接口直接提供给用户访问</para>
+	<section>
+		<title>Maven</title>
+		<programlisting>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+			]]>
+		</programlisting>
+	</section>
+</section>

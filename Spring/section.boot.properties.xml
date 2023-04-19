@@ -2312,7 +2312,7 @@ my.number=${random.int}
 my.bignumber=${random.long}
 my.uuid=${random.uuid}
 my.number.less.than.ten=${random.int(10)}
-my.number.in.range=${random.int[1024,65536]}	
+my.number.in.range=${random.int[1024,65536]}
 		
 # 随机字符串
 cn.netkiller.blog.value=${random.value}
