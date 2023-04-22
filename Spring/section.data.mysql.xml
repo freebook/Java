@@ -307,25 +307,15 @@ public class Article {
 			]]>
 			</programlisting>
 		</section>
-		<section id="DateTimeFormat">
-			<title>@DateTimeFormat 处理日期时间格式</title>
-			<programlisting>
-			<![CDATA[
-	public java.sql.Date createdate; 创建日期 YYYY-MM-DD
-	public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
-			]]>
-			</programlisting>
-			<para>Json默认为 yyyy-MM-ddTHH:mm:ss 注意日期与时间中间的T，修改日期格式将T去掉</para>
+		<section id="@CreateDate">
+			<title>创建日期</title>
 			<screen>
 			<![CDATA[
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createDate;
+    @Column(name = "create_at")
+    @CreatedDate
+    private Timestamp create_date;			
 			]]>
 			</screen>
-		</section>
-		<section id="time">
-			<title>默认时间规则</title>
 			<section id="CreatedDate">
 				<title>CreatedDate</title>
 				<para>Spring 提供了 import org.springframework.data.annotation.CreatedDate;</para>
@@ -547,13 +537,38 @@ CREATE TABLE `elasticsearch_trash` (
 				</programlisting>
 			</section>
 		</section>
-		<section id="enum">
-			<title>Enum 枚举数据类型</title>
-			<section>
-				<title>实体中处理 enum 类型</title>
-				<para>@Enumerated(value = EnumType.ORDINAL) //ORDINAL序数 </para>
-				<para>在实体中处理枚举类型适用于所有数据库，Spring data 将枚举视为 String 类型。</para>
-				<programlisting>
+		<section id="DateTimeFormat">
+			<title>@DateTimeFormat 处理日期时间格式</title>
+			<programlisting>
+			<![CDATA[
+	public java.sql.Date createdate; 创建日期 YYYY-MM-DD
+	public java.util.Date finisheddate; 创建日期时间 YYYY-MM-DD HH:MM:SS
+			]]>
+			</programlisting>
+			<para>Json默认为 yyyy-MM-ddTHH:mm:ss 注意日期与时间中间的T，修改日期格式将T去掉</para>
+			<screen>
+			<![CDATA[
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date createDate;
+			]]>
+			</screen>
+		</section>
+		<section id="jpa.mysql">
+			<title>MySQL 特殊数据类型</title>
+
+
+
+
+
+
+			<section id="enum">
+				<title>Enum 枚举数据类型</title>
+				<section>
+					<title>实体中处理 enum 类型</title>
+					<para>@Enumerated(value = EnumType.ORDINAL) //ORDINAL序数 </para>
+					<para>在实体中处理枚举类型适用于所有数据库，Spring data 将枚举视为 String 类型。</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.api.domain;
 
@@ -619,9 +634,9 @@ public class StatisticsHistory implements Serializable {
 
 }
 				]]>
-				</programlisting>
-				<para>默认 enum 类型创建数据库等效 int(11)</para>
-				<programlisting>
+					</programlisting>
+					<para>默认 enum 类型创建数据库等效 int(11)</para>
+					<programlisting>
 				<![CDATA[
 CREATE TABLE `statistics_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -632,18 +647,18 @@ CREATE TABLE `statistics_history` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 SELECT * FROM test.statistics;
 				]]>
-				</programlisting>
-				<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
-				<programlisting>
-					public enum StatisticsType {
-					LIKE, COMMENT, BROWSE;
-					}
+					</programlisting>
+					<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
+					<programlisting>
+						public enum StatisticsType {
+						LIKE, COMMENT, BROWSE;
+						}
 
-					@Enumerated(EnumType.STRING)
-					private StatisticsType type;
-				</programlisting>
-				<para>SQL</para>
-				<programlisting>
+						@Enumerated(EnumType.STRING)
+						private StatisticsType type;
+					</programlisting>
+					<para>SQL</para>
+					<programlisting>
 				<![CDATA[
 CREATE TABLE `statistics_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -653,12 +668,12 @@ CREATE TABLE `statistics_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>数据库枚举类型</title>
-				<para>在枚举中处理类型虽然可以适用于所有数据库，但有时我们希望适用数据库的枚举类型（例如MySQL），数据库中得枚举类型要比字符串效率更高</para>
-				<programlisting>
+					</programlisting>
+				</section>
+				<section>
+					<title>数据库枚举类型</title>
+					<para>在枚举中处理类型虽然可以适用于所有数据库，但有时我们希望适用数据库的枚举类型（例如MySQL），数据库中得枚举类型要比字符串效率更高</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.api.domain.elasticsearch;
 
@@ -696,9 +711,9 @@ public class NetkillerTrash {
 
 }				
 				]]>
-				</programlisting>
-				<para>实际对应的数据库DLL</para>
-				<programlisting>
+					</programlisting>
+					<para>实际对应的数据库DLL</para>
+					<programlisting>
 				<![CDATA[
 CREATE TABLE `netkiller_trash` (
   `id` int(11) NOT NULL,
@@ -706,12 +721,12 @@ CREATE TABLE `netkiller_trash` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 				]]>
-				</programlisting>
+					</programlisting>
+				</section>
 			</section>
-		</section>
-		<section id="set">
-			<title>SET 数据结构</title>
-			<programlisting>
+			<section id="set">
+				<title>SET 数据结构</title>
+				<programlisting>
 			<![CDATA[
 package common.domain;
 
@@ -768,15 +783,15 @@ public class ItemPool {
 	public Date mtime;
 }
 			]]>
-			</programlisting>
-			<para>定义 SET 如下，在JAVA中 SET被映射为逗号分隔的字符串（String），所以操作起来并无不同。使用字符串"A,B,C"存储即可，取出也同样是字符串。</para>
-			<programlisting>
+				</programlisting>
+				<para>定义 SET 如下，在JAVA中 SET被映射为逗号分隔的字符串（String），所以操作起来并无不同。使用字符串"A,B,C"存储即可，取出也同样是字符串。</para>
+				<programlisting>
 			<![CDATA[
 @Column(columnDefinition = "SET('A','B','C','D','E','F','G') DEFAULT NULL COMMENT '答案'")			
 			]]>
-			</programlisting>
-			<para>接入后查看</para>
-			<programlisting>
+				</programlisting>
+				<para>接入后查看</para>
+				<programlisting>
 			<![CDATA[
 mysql> select answer from item_pool;
 +--------+
@@ -786,13 +801,13 @@ mysql> select answer from item_pool;
 +--------+
 1 row in set (0.00 sec)			
 			]]>
-			</programlisting>
-			<para>完美实现</para>
-		</section>
-		<section id="json">
-			<title>JSON 数据类型</title>
-			<para>MySQL 5.7 中增加了 json 数据类型，下面是一个例子：</para>
-			<programlisting>
+				</programlisting>
+				<para>完美实现</para>
+			</section>
+			<section id="json">
+				<title>JSON 数据类型</title>
+				<para>MySQL 5.7 中增加了 json 数据类型，下面是一个例子：</para>
+				<programlisting>
 			<![CDATA[
 CREATE TABLE `test` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -800,9 +815,9 @@ CREATE TABLE `test` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8
 			]]>
-			</programlisting>
-			<para>我们需要在 Java 实体中定义 json 数据库结构，我搜索遍了整个互联网（Google,Bing,Baidu......），没有找到解决方案，功夫不负有心人，反复尝试后终于成功。记住我是第一个这样用的 ：） 。</para>
-			<programlisting>
+				</programlisting>
+				<para>我们需要在 Java 实体中定义 json 数据库结构，我搜索遍了整个互联网（Google,Bing,Baidu......），没有找到解决方案，功夫不负有心人，反复尝试后终于成功。记住我是第一个这样用的 ：） 。</para>
+				<programlisting>
 			<![CDATA[
 package common.domain;
 
@@ -857,9 +872,9 @@ public class ItemPool {
 }
 
 			]]>
-			</programlisting>
-			<para>类型转换 Class</para>
-			<programlisting>
+				</programlisting>
+				<para>类型转换 Class</para>
+				<programlisting>
 			<![CDATA[
 package common.type;
 
@@ -886,15 +901,15 @@ public class OptionConverter implements AttributeConverter<Map<String, String>, 
 	}
 }			
 			]]>
-			</programlisting>
-			<para>通过 @Column(columnDefinition = "json DEFAULT NULL") 定义数据库为 JSON 数据类型</para>
-			<para>数据存储与取出通过 @Convert(converter = OptionConverter.class) 做转换 </para>
-			<para>这里我需要使用
-				Map 数据结构 <![CDATA[public Map<String, String> options;]]>，
-				你可以根据你的实际需要定义数据类型 Class
-			</para>
-			<para>启动 Spring 项目后创建 Schema 如下：</para>
-			<programlisting>
+				</programlisting>
+				<para>通过 @Column(columnDefinition = "json DEFAULT NULL") 定义数据库为 JSON 数据类型</para>
+				<para>数据存储与取出通过 @Convert(converter = OptionConverter.class) 做转换 </para>
+				<para>这里我需要使用
+					Map 数据结构 <![CDATA[public Map<String, String> options;]]>，
+					你可以根据你的实际需要定义数据类型 Class
+				</para>
+				<para>启动 Spring 项目后创建 Schema 如下：</para>
+				<programlisting>
 			<![CDATA[
 CREATE TABLE `item_pool` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -910,9 +925,9 @@ CREATE TABLE `item_pool` (
   CONSTRAINT `FKiujumwssofow95st51ukklpgv` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8
 			]]>
-			</programlisting>
-			<para>我们做个简单的测试, 创建仓库。</para>
-			<programlisting>
+				</programlisting>
+				<para>我们做个简单的测试, 创建仓库。</para>
+				<programlisting>
 			<![CDATA[
 package common.repository;
 
@@ -926,8 +941,8 @@ public interface ItemPoolRepository extends CrudRepository<ItemPool, Integer> {
 
 }
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.restful;
 
@@ -975,9 +990,9 @@ public class TestRestController {
 }
 
 			]]>
-			</programlisting>
-			<para>只能用完美来形容</para>
-			<programlisting>
+				</programlisting>
+				<para>只能用完美来形容</para>
+				<programlisting>
 			<![CDATA[
 mysql> select options from item_pool;
 +-----------------------------+
@@ -987,8 +1002,10 @@ mysql> select options from item_pool;
 +-----------------------------+
 1 row in set (0.00 sec)			
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
+
 		<section id="index">
 			<title>索引</title>
 			<section>
@@ -2283,8 +2300,9 @@ void delete(Iterable<? extends T> entities);		//删除一个实体的集合
 void deleteAll();								//删除所有实体,不用或慎用! 		
 		]]>
 			</screen>
-
-
+		</section>
+		<section id="PagingAndSortingRepository">
+			<title>PagingAndSortingRepository</title>
 		</section>
 		<section id="JpaRepository">
 			<title>JpaRepository</title>
@@ -2854,6 +2872,18 @@ public List<MyModel> getAllRecord();
 				]]>
 				</programlisting>
 
+			</section>
+			<section>
+				<title>原生SQL查询</title>
+				<para>这里的nativeQuery=true代表在执行这个方法的时候使用原生sql语句，直接写数据库中的实际表名和表中的字段名，而不是实体表名。</para>
+				<programlisting>
+				<![CDATA[
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE project p, (SELECT MIN(start) AS start, MAX(finish) AS finish FROM project WHERE parent_id = :id) t SET p.start = t.start, p.finish = t.finish WHERE p.id = :id")
+    public void updateStartAndFinishById(@Param("id") Long id);				
+				]]>
+				</programlisting>
+				<para>在什么情况下使用呢？例如上面，同时操作两张表，做更新，如果不使用 nativeQuery = true 无法实现。</para>
 			</section>
 		</section>
 	</section>
