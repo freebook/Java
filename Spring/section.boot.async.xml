@@ -1,11 +1,11 @@
 
 <section id="enableasync">
-    <title>Spring boot with Async</title>
-    <para>异步执行</para>
-    <section>
-        <title>最简单的配置</title>
-        <para></para>
-        <programlisting>
+	<title>Spring boot with Async</title>
+	<para>异步执行</para>
+	<section id="简单异步执行">
+		<title>最简单的配置</title>
+		<para></para>
+		<programlisting>
         <![CDATA[
 @SpringBootApplication
 @EnableAsync
@@ -15,33 +15,37 @@ public static void main(String[] args) {
 }
 }
         ]]>
-        </programlisting>
-        <para></para>
-        <programlisting>
+		</programlisting>
+		<para></para>
+		<programlisting>
         <![CDATA[
 @Component
 public class Task {
 
-@Async
-public void doTaskOne() throws Exception {
-    // 业务逻辑
-}
-
-@Async
-public void doTaskTwo() throws Exception {
-    // 业务逻辑
-}
-
-@Async
-public void doTaskThree() throws Exception {
-    // 业务逻辑
-}
+	@Async
+	public void doTaskOne() throws Exception {
+	    // 业务逻辑
+	}
+	
+	@Async
+	public void doTaskTwo() throws Exception {
+	    // 业务逻辑
+	}
+	
+	@Async
+	public void doTaskThree() throws Exception {
+	    // 业务逻辑
+	}
 
 }			
         ]]>
-        </programlisting>
-        <para>设置线程池，并且运行完成后推出</para>
-        <programlisting>
+		</programlisting>
+
+	</section>
+	<section>
+		<title>线程池</title>
+		<para>设置线程池</para>
+		<programlisting>
         <![CDATA[
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -55,30 +59,29 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class Application {
 
-public static void main(String[] args) {
-    // close the application context to shut down the custom ExecutorService
-    SpringApplication.run(Application.class, args).close();
-}
-
-@Bean
-public Executor asyncExecutor() {
-    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(2);
-    executor.setMaxPoolSize(2);
-    executor.setQueueCapacity(500);
-    executor.setThreadNamePrefix("Netkiller -");
-    executor.initialize();
-    return executor;
-}
-
+	public static void main(String[] args) {
+	    // close the application context to shut down the custom ExecutorService
+	    SpringApplication.run(Application.class, args).close();
+	}
+	
+	@Bean
+	public Executor asyncExecutor() {
+	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+	    executor.setCorePoolSize(2);
+	    executor.setMaxPoolSize(2);
+	    executor.setQueueCapacity(500);
+	    executor.setThreadNamePrefix("Netkiller -");
+	    executor.initialize();
+	    return executor;
+	}
 
 }			
         ]]>
-        </programlisting>
-    </section>
-    <section>
-        <title>异步线程池</title>
-        <programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>定义多个线程池</title>
+		<programlisting>
         <![CDATA[
 package cn.netkiller.wallet.config;
 
@@ -87,85 +90,126 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @Configuration
 @EnableAsync
-public class ExecutorConfig {
-/** Set the ThreadPoolExecutor's core pool size. */
-private int corePoolSize = 10;
-/** Set the ThreadPoolExecutor's maximum pool size. */
-private int maxPoolSize = 200;
-/** Set the capacity for the ThreadPoolExecutor's BlockingQueue. */
-private int queueCapacity = 10;
-
-@Bean
-public Executor OneAsync() {
-    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(corePoolSize);
-    executor.setMaxPoolSize(maxPoolSize);
-    executor.setQueueCapacity(queueCapacity);
-    executor.setThreadNamePrefix("MySimpleExecutor-");
-    executor.initialize();
-    return executor;
-}
-
-@Bean
-public Executor TwoAsync() {
-    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(corePoolSize);
-    executor.setMaxPoolSize(maxPoolSize);
-    executor.setQueueCapacity(queueCapacity);
-    executor.setThreadNamePrefix("MyExecutor-");
-
-    // rejection-policy：当pool已经达到max size的时候，如何处理新任务
-    // CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执行
-    executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-    executor.initialize();
-    return executor;
-}
+public class ExecutorConfiguration {
+	/** Set the ThreadPoolExecutor's core pool size. */
+	private int corePoolSize = 10;
+	/** Set the ThreadPoolExecutor's maximum pool size. */
+	private int maxPoolSize = 200;
+	/** Set the capacity for the ThreadPoolExecutor's BlockingQueue. */
+	private int queueCapacity = 10;
+	
+	@Bean
+	public Executor OneAsync() {
+	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+	    executor.setCorePoolSize(corePoolSize);
+	    executor.setMaxPoolSize(maxPoolSize);
+	    executor.setQueueCapacity(queueCapacity);
+	    executor.setThreadNamePrefix("MySimpleExecutor-");
+	    executor.initialize();
+	    return executor;
+	}
+	
+	@Bean
+	public Executor TwoAsync() {
+	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+	    executor.setCorePoolSize(corePoolSize);
+	    executor.setMaxPoolSize(maxPoolSize);
+	    executor.setQueueCapacity(queueCapacity);
+	    executor.setThreadNamePrefix("MyExecutor-");
+	
+	    // rejection-policy：当pool已经达到max size的时候，如何处理新任务
+	    // CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执行
+	    executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+	    executor.initialize();
+	    return executor;
+	}
 
 }
         
         ]]>
-        </programlisting>
+		</programlisting>
 
-        <programlisting>
+		<programlisting>
         <![CDATA[
 @Service
 public class DemoAsyncServiceImpl implements DemoAsyncService {
 
-public static Random random =new Random();
-
-@Async("OneAsync")
-public Future<String> doTaskOne() throws Exception {
-    System.out.println("开始做任务一");
-    long start = System.currentTimeMillis();
-    Thread.sleep(random.nextInt(10000));
-    long end = System.currentTimeMillis();
-    System.out.println("完成任务一，耗时：" + (end - start) + "毫秒");
-    return new AsyncResult<>("任务一完成");
-}
-
-@Async("TwoAsync")
-public Future<String> doTaskTwo() throws Exception {
-    System.out.println("开始做任务二");
-    long start = System.currentTimeMillis();
-    Thread.sleep(random.nextInt(10000));
-    long end = System.currentTimeMillis();
-    System.out.println("完成任务二，耗时：" + (end - start) + "毫秒");
-    return new AsyncResult<>("任务二完成");
-}
-
-@Async
-public Future<String> doTaskThree() throws Exception {
-    System.out.println("开始做任务三");
-    long start = System.currentTimeMillis();
-    Thread.sleep(random.nextInt(10000));
-    long end = System.currentTimeMillis();
-    System.out.println("完成任务三，耗时：" + (end - start) + "毫秒");
-    return new AsyncResult<>("任务三完成");
-}
+	public static Random random =new Random();
+	
+	@Async("OneAsync")
+	public Future<String> doTaskOne() throws Exception {
+	    System.out.println("开始做任务一");
+	    long start = System.currentTimeMillis();
+	    Thread.sleep(random.nextInt(10000));
+	    long end = System.currentTimeMillis();
+	    System.out.println("完成任务一，耗时：" + (end - start) + "毫秒");
+	    return new AsyncResult<>("任务一完成");
+	}
+	
+	@Async("TwoAsync")
+	public Future<String> doTaskTwo() throws Exception {
+	    System.out.println("开始做任务二");
+	    long start = System.currentTimeMillis();
+	    Thread.sleep(random.nextInt(10000));
+	    long end = System.currentTimeMillis();
+	    System.out.println("完成任务二，耗时：" + (end - start) + "毫秒");
+	    return new AsyncResult<>("任务二完成");
+	}
+	
+	@Async
+	public Future<String> doTaskThree() throws Exception {
+	    System.out.println("开始做任务三");
+	    long start = System.currentTimeMillis();
+	    Thread.sleep(random.nextInt(10000));
+	    long end = System.currentTimeMillis();
+	    System.out.println("完成任务三，耗时：" + (end - start) + "毫秒");
+	    return new AsyncResult<>("任务三完成");
+	}
 
 }
         ]]>
-        </programlisting>
+		</programlisting>
 
-    </section>
+	</section>
+	<section>
+		<title>线程池监控</title>
+		<para>监控指标</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics | jq | grep executor
+    "executor.active",
+    "executor.completed",
+    "executor.pool.core",
+    "executor.pool.max",
+    "executor.pool.size",
+    "executor.queue.remaining",
+    "executor.queued",		
+		]]>
+		</screen>
+		<para>获取指标</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics/executor.active | jq
+{
+  "name": "executor.active",
+  "description": "The approximate number of threads that are actively executing tasks",
+  "baseUnit": "threads",
+  "measurements": [
+    {
+      "statistic": "VALUE",
+      "value": 0
+    }
+  ],
+  "availableTags": [
+    {
+      "tag": "name",
+      "values": [
+        "asyncExecutor"
+      ]
+    }
+  ]
+}		
+		]]>
+		</screen>
+	</section>
 </section>

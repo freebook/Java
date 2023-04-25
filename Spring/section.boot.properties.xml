@@ -1519,7 +1519,35 @@ spring.main.banner-mode=off
 		</section>
 		<section id="server">
 			<title>server</title>
-			<section>
+			<section id="server.shutdown">
+				<title>优雅关闭</title>
+				<screen>
+				<![CDATA[
+server.shutdown=graceful
+# timeout-per-shutdown-phase 默认缓冲 30秒,超时会强行关闭
+spring.lifecycle.timeout-per-shutdown-phase=60s
+				]]>
+				</screen>
+				<para>启动之后使用 kill / kill -2 杀掉进城，注意不能使用 kill -9</para>
+				<screen>
+				<![CDATA[
+neo@MacBook-Pro-M2 engineering % java -jar target/engineering-0.0.1-SNAPSHOT.jar
+neo@MacBook-Pro-M2 engineering % ps ax | grep engineering
+57854 s005  S+     0:12.45 /usr/bin/java -jar target/engineering-0.0.1-SNAPSHOT.jar
+53810 s006  Ss+    0:00.12 /opt/homebrew/bin/fish --init-command=source '/Applications/IntelliJ IDEA CE.app/Contents/plugins/terminal/fish/init.fish' --login -i
+56253 s007  Ss+    0:00.10 /opt/homebrew/bin/fish
+neo@MacBook-Pro-M2 engineering % kill -2 57854
+				]]>
+				</screen>
+				<para>日志输出 Graceful shutdown complete 字样</para>
+				<screen>
+				<![CDATA[
+2023-04-24T17:34:30.535+08:00  INFO 57854 --- [ionShutdownHook] o.s.b.w.e.undertow.UndertowWebServer     : Commencing graceful shutdown. Waiting for active requests to complete
+2023-04-24T17:34:30.554+08:00  INFO 57854 --- [ionShutdownHook] o.s.b.w.e.undertow.UndertowWebServer     : Graceful shutdown complete				
+				]]>
+				</screen>
+			</section>
+			<section id="server.port">
 				<title>端口配置</title>
 				<screen>
 			<![CDATA[

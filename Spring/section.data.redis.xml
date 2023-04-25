@@ -303,6 +303,12 @@ System.out.println(redisTemplate.opsForValue().setIfAbsent("name","neo"));	// na
 System.out.println(redisTemplate.opsForValue().setIfAbsent("age","11"));		// age 之前不存在	true
 			]]>
 			</programlisting>
+			<para>setIfAbsent 实现分布式锁</para>
+			<programlisting>
+			<![CDATA[
+boolean static = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent("lock:order", 1, 1, TimeUnit.DAYS));			
+			]]>
+			</programlisting>
 		</section>
 
 		<section id="multiSet">

@@ -60,27 +60,27 @@ endpoints.health.enabled=true
 		<para>常规接口</para>
 		<screen>
 		<![CDATA[
-neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator | jq
+neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator | jq
 {
   "_links": {
     "self": {
-      "href": "http://localhost:8080/actuator",
+      "href": "http://www.netkiller.cn:8080/actuator",
       "templated": false
     },
     "health": {
-      "href": "http://localhost:8080/actuator/health",
+      "href": "http://www.netkiller.cn:8080/actuator/health",
       "templated": false
     },
     "health-component": {
-      "href": "http://localhost:8080/actuator/health/{component}",
+      "href": "http://www.netkiller.cn:8080/actuator/health/{component}",
       "templated": true
     },
     "health-component-instance": {
-      "href": "http://localhost:8080/actuator/health/{component}/{instance}",
+      "href": "http://www.netkiller.cn:8080/actuator/health/{component}/{instance}",
       "templated": true
     },
     "info": {
-      "href": "http://localhost:8080/actuator/info",
+      "href": "http://www.netkiller.cn:8080/actuator/info",
       "templated": false
     }
   }
@@ -223,10 +223,10 @@ neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/act
 	</section>
 	<section>
 		<title>健康状态</title>
-		<para>curl localhost:8080/actuator/health</para>
+		<para>curl www.netkiller.cn:8080/actuator/health</para>
 		<screen>
 		<![CDATA[		
-neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator/health | jq
+neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/health | jq
 {
   "status": "UP"
 }
@@ -243,7 +243,7 @@ management.endpoint.health.show-details=always
 			<para></para>
 			<screen>
 			<![CDATA[
-neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator/health | jq
+neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/health | jq
 {
   "status": "UP",
   "details": {
@@ -272,7 +272,7 @@ management.endpoint.shutdown.enabled=true
 
 		<screen>
 		<![CDATA[
-curl -X POST localhost:8080/actuator/shutdown	
+curl -X POST www.netkiller.cn:8080/actuator/shutdown	
 		]]>
 		</screen>
 	</section>
@@ -289,7 +289,7 @@ info.app.version=v1.0.0
 		<para></para>
 		<screen>
 		<![CDATA[
-neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator/info | jq   
+neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/info | jq   
 {
   "app": {
     "name": "spring-boot-example",
@@ -303,7 +303,7 @@ neo@MacBook-Pro ~ % curl -s http://localhost:8080/actuator/info | jq
 		<title>计划任务</title>
 		<screen>
 		<![CDATA[
-http://localhost:8080/actuator/scheduledtasks		
+http://www.netkiller.cn:8080/actuator/scheduledtasks		
 		]]>
 		</screen>
 	</section>
@@ -424,6 +424,52 @@ neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/act
     }
   ]
 }
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.*;
+
+@Configuration
+@Endpoint(id = "netkiller")
+public class TestEndpoint {
+    @ReadOperation
+    public Map<String, Object> threadPoolsMetric() {
+        Map<String, Object> metricMap = new HashMap<>();
+        List<Map> threadPools = new ArrayList<>();
+        Map<String, Object> poolInfo = new HashMap<>();
+        poolInfo.put("thread.pool.name", "netkiller");
+        poolInfo.put("thread.pool.core.size", 100);
+        poolInfo.put("thread.pool.time", new Date());
+        threadPools.add(poolInfo);
+        metricMap.put("netkiller", threadPools);
+        return metricMap;
+    }
+}		
+		]]>
+		</programlisting>
+		<para>验证</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/netkiller | jq
+{
+  "netkiller": [
+    {
+      "thread.pool.time": "2023-04-24T09:08:14.407+00:00",
+      "thread.pool.core.size": 100,
+      "thread.pool.name": "netkiller"
+    }
+  ]
+}		
 		]]>
 		</screen>
 	</section>

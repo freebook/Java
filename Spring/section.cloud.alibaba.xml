@@ -877,7 +877,7 @@ public class ConfigController {
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>配置文件</title>
 			<screen>
 			<![CDATA[
 #debug=true
@@ -1173,6 +1173,32 @@ Mon, Nov 7 2022 6:42:04 pm	com.alibaba.nacos.api.exception.NacosException: <html
 			]]>
 			</screen>
 			<para>解决方案，在权限控制-&gt;权限管理中「添加权限」可以解决。</para>
+		</section>
+		<section>
+			<title></title>
+			<para></para>
+			<screen>
+			<![CDATA[
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        metadata: 
+          preserved.heart.beat.interval: 1000 	# 客户端上报心跳的间隔时间。（单位:毫秒）
+          preserved.heart.beat.timeout: 3000	# 不发送心跳后，从健康到不健康的时间。（单位:毫秒）
+          preserved.ip.delete.timeout: 3000		# 不发送心跳后，被nacos下掉该实例的时间。（单位:毫秒）
+			]]>
+			</screen>
+			<para>Spring cloud 网关 Gateway 的 ribbion 配置 </para>
+			<screen>
+			<![CDATA[
+#ribbon config,Interval to refresh the server list from the source
+ribbon: 
+  ServerListRefreshInterval: 3000		
+			]]>
+			</screen>
+			<para>最终 Openfeign 获得注册服务的时间是 Nacos + Gateway = 6ms</para>
 		</section>
 	</section>
 </section>

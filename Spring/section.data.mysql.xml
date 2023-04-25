@@ -2432,16 +2432,23 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Long countByFirstName(String firstName);
 
-    @Transactional
-    Long deleteByFirstName(String firstName);
-
-    @Transactional
-    List<User> removeByFirstName(String firstName);
-
 }
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>delete 删除操作</title>
+			<programlisting>
+			<![CDATA[
+    @Transactional
+    Long deleteByFirstName(String firstName);
+    
+    @Transactional
+    List<User> removeByFirstName(String firstName);    			
+			]]>
+			</programlisting>
+		</section>
+
 		<section id="OrderBy">
 			<title>OrderBy</title>
 			<programlisting>
