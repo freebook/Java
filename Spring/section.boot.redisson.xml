@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="redisson">
+	<title>Sprint boot with Redisson</title>
+	<section>
+		<title>Springboot 3.x</title>
+		<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Springboot 2.1</title>
+		<para>注意：排除 redisson-spring-data-23，引用 redisson-spring-data-21</para>
+		<screen>
+		<![CDATA[
+ 		<dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.14.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.redisson</groupId>
+                    <artifactId>redisson-spring-data-23</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-data-21</artifactId>
+            <version>3.14.0</version>
+        </dependency>
+		
+		]]>
+		</screen>
+	</section>
+
+</section>

@@ -55,7 +55,103 @@ public class MyThread extends Thread {
 }
 		]]>
 		</programlisting>
-		<para></para>
+		
+		<section>
+			<title>设置线程名称</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+
+    public static void setThreadName1() {
+        new Thread("thread-name-1") {
+            public void run() {
+                try {
+                    Thread.sleep(1000 * 15);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("threadName1: " + this.getName());
+
+            }
+        }.start();
+    }
+
+    public static void setThreadName2() {
+        new Thread() {
+            @SneakyThrows
+            public void run() {
+                this.setName("thread-name-2");
+                Thread.sleep(1000 * 15);
+                System.out.println("threadName2: " + this.getName());
+
+            }
+        }.start();
+    }
+
+    public static void setThreadName3() {
+        Thread thread = new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(1000 * 15);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("threadName3: " + this.getName());
+
+            }
+        };
+
+        thread.setName("thread-name-3");
+        thread.start();
+    }
+
+    public static void setThreadName4() {
+        new Thread("测试线程-1") {
+            public void run() {
+                try {
+                    Thread.sleep(1000 * 15);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("threadName1: " + this.getName());
+
+            }
+        }.start();
+    }			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+public class MyThread extends Thread {
+    public MyThread(){
+
+    }
+    public MyThread(String name){
+        super(name);
+    }
+    @Override
+    public void run(){
+        System.out.println(Thread.currentThread().getName());
+    }
+}
+
+public class DemoThreadName {
+
+    public static void main(String[] args) {
+
+        MyThread mt = new MyThread();
+        mt.setName("景峰");
+        mt.start();
+
+        new MyThread("netkiller").start();
+
+    }
+}
+
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="Runnable">
 		<title>实现 Runnable 接口</title>
@@ -226,10 +322,24 @@ public class MultiThread {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="ThreadPool">
 		<title>java 线程池</title>
+		<section id="Executors.newCachedThreadPool">
+			<title>newCachedThreadPool</title>
+			<programlisting>
+			<![CDATA[
+	private void startTask(List<String> usersList){
+        ExecutorService executor = Executors.newCachedThreadPool();
+        executor.submit(()->{
+			//do someting
+        });
+    }
+			
+			]]>
+			</programlisting>
+		</section>
 		<section>
-			<title>固定线程池</title>
+			<title>固定线程池(newFixedThreadPool)</title>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.test.grey;
@@ -273,5 +383,61 @@ public class GreyTest {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>Executors.newScheduledThreadPool</title>
+			<programlisting>
+			<![CDATA[
+
+@Configuration
+public class ScheduleConfig implements SchedulingConfigurer {
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        //当然了，这里设置的线程池是corePoolSize也是很关键了，自己根据业务需求设定
+        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(10));
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="ThreadLocal">
+		<title>ThreadLocal</title>
+		<programlisting>
+		<![CDATA[
+    public static void threadLocal() {
+        ThreadLocal<String> local = new ThreadLocal<>();
+
+        IntStream.range(0, 10).forEach(i -> new Thread(() -> {
+            local.set(Thread.currentThread().getName() + ":" + i);
+            System.out.println("线程：" + Thread.currentThread().getName() + ",local:" + local.get());
+        }).start());
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section id="InheritableThreadLocal">
+		<title>InheritableThreadLocal</title>
+		<programlisting>
+		<![CDATA[
+    public static void inheritableThreadLocal() {
+        InheritableThreadLocal threadLocal = new InheritableThreadLocal();
+        IntStream.range(0, 10).forEach(i -> {
+            //每个线程的序列号，希望在子线程中能够拿到
+            threadLocal.set(i);
+            //这里来了一个子线程，我们希望可以访问上面的threadLocal
+            new Thread(() -> {
+                System.out.println(Thread.currentThread().getName() + ":" + threadLocal.get());
+            }).start();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+    }		
+		]]>
+		</programlisting>
 	</section>
 </section>

@@ -1,50 +1,64 @@
 
 <section id="enableasync">
 	<title>Spring boot with Async</title>
-	<para>异步执行</para>
-	<section id="简单异步执行">
-		<title>最简单的配置</title>
-		<para></para>
+
+	<section>
+		<title>配置线程池</title>
+		<para>编辑 application.yml 配置文件</para>
 		<programlisting>
-        <![CDATA[
-@SpringBootApplication
+		<![CDATA[
+spring:
+  task:
+    execution:
+      pool:
+        # 最大线程数
+        max-size: 16
+        # 核心线程数
+        core-size: 16
+        # 存活时间
+        keep-alive: 10s
+        # 队列大小
+        queue-capacity: 100
+        # 是否允许核心线程超时
+        allow-core-thread-timeout: true
+      # 线程名称前缀
+      thread-name-prefix: async-task-
+		]]>
+		</programlisting>
+		<para>启用异步执行 @EnableAsync</para>
+		<programlisting>
+		<![CDATA[
 @EnableAsync
-public class Application {
-public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-}
-}
-        ]]>
+@SpringBootApplication
+public class ThreadPoolApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ThreadPoolApplication.class, args);
+    }
+
+}		
+		]]>
 		</programlisting>
-		<para></para>
+		<para>编写异步执行代码</para>
 		<programlisting>
-        <![CDATA[
+		<![CDATA[
 @Component
-public class Task {
-
-	@Async
-	public void doTaskOne() throws Exception {
-	    // 业务逻辑
-	}
-	
-	@Async
-	public void doTaskTwo() throws Exception {
-	    // 业务逻辑
-	}
-	
-	@Async
-	public void doTaskThree() throws Exception {
-	    // 业务逻辑
-	}
-
-}			
-        ]]>
+@Slf4j
+public class AsyncTask {
+    @Async
+    public void  asyncRun() throws InterruptedException {
+        Thread.sleep(10);
+        log.info(Thread.currentThread().getName()+":处理完成");
+    }
+}		
+		]]>
 		</programlisting>
-
 	</section>
+
 	<section>
 		<title>线程池</title>
-		<para>设置线程池</para>
+		<para>自定义线程池</para>
+		<para>设置线程池参数</para>
 		<programlisting>
         <![CDATA[
 import org.springframework.boot.SpringApplication;
@@ -75,9 +89,70 @@ public class Application {
 	    return executor;
 	}
 
+	@Bean("thread")
+    public Executor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // 设置核心线程数
+        executor.setCorePoolSize(5);
+        // 设置最大线程数
+        executor.setMaxPoolSize(10);
+        // 设置队列容量
+        executor.setQueueCapacity(20);
+        // 设置线程活跃时间（秒）
+        executor.setKeepAliveSeconds(60);
+        // 设置线程名称
+        executor.setThreadNamePrefix("hello-");
+        // 设置拒绝策略
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        // 等待所有任务结束后再关闭线程池
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+
+        return executor;
+    }
+
 }			
         ]]>
 		</programlisting>
+		<section id="简单异步执行">
+			<title>最简单的配置</title>
+			<para></para>
+			<programlisting>
+        <![CDATA[
+@SpringBootApplication
+@EnableAsync
+public class Application {
+public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+}
+}
+        ]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+        <![CDATA[
+@Component
+public class Task {
+
+	@Async
+	public void doTaskOne() throws Exception {
+	    // 业务逻辑
+	}
+	
+	@Async
+	public void doTaskTwo() throws Exception {
+	    // 业务逻辑
+	}
+	
+	@Async("asyncExecutor")
+	public void doTaskThree() throws Exception {
+	    // 业务逻辑
+	}
+
+}			
+        ]]>
+			</programlisting>
+
+		</section>
 	</section>
 	<section>
 		<title>定义多个线程池</title>
@@ -170,6 +245,24 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
         ]]>
 		</programlisting>
 
+	</section>
+	<section>
+		<title>设置线程名称</title>
+		<programlisting>
+		<![CDATA[
+public static Random random = new Random();
+
+    @Async("jobExecutor")
+    public void doAsyncTask() throws InterruptedException {
+        Thread.currentThread().setName("测试线程-" + random.nextInt(1000));
+        System.out.println("开始做任务一");
+        long start = System.currentTimeMillis();
+        Thread.sleep(random.nextInt(100000));
+        long end = System.currentTimeMillis();
+        System.out.println("完成任务一，耗时：" + (end - start) + "毫秒");
+    }		
+		]]>
+		</programlisting>
 	</section>
 	<section>
 		<title>线程池监控</title>

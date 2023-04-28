@@ -1,1 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Java 相关命令</title>
+	<section>
+		<title>jps</title>
+		<screen>
+		<![CDATA[
+参数	说明
+-l	输出主类全名或jar路径
+-q	只输出LVMID
+-m	输出JVM启动时传递给main()的参数
+-v	输出JVM启动时显示指定的JVM参数		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> jps
+6560 Jps
+6273 Launcher
+6274 TestThread
+88034 Eclipse
+6404 XMLServerLauncher
+97828 org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar
+1176
+2891
+98015 BootLanguageServerBootApp
+
+neo@MacBook-Pro-M2 ~> jps -m
+6273 Launcher /Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/jps-builders.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/jps-builders-6.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/jps-javac-extension.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/util.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/util-8.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/util_rt.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/annotations.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/3rd-party-rt.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/protobuf.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/jps-model.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/javac2.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/forms_rt.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/aether-dependency-resolver.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/idea_rt.jar:/Applications/IntelliJ IDEA CE.ap
+6274 TestThread
+6562 Jps -m
+88034 Eclipse
+6404 XMLServerLauncher
+97828 org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar -configuration /Users/neo/Library/Application Support/Code/User/globalStorage/redhat.java/1.17.0/config_mac -data /Users/neo/Library/Application Support/Code/User/workspaceStorage/c0c3760503bc4a3db6b66b0155e50c5b/redhat.java/jdt_ws
+1176
+2891
+98015 BootLanguageServerBootApp
+
+neo@MacBook-Pro-M2 ~> jps -l
+6273 org.jetbrains.jps.cmdline.Launcher
+6274 cn.netkiller.TestThread
+88034 Eclipse
+6564 jdk.jcmd/sun.tools.jps.Jps
+6404 org.eclipse.lemminx.XMLServerLauncher
+97828 /Users/neo/.vscode/extensions/redhat.java-1.17.0-darwin-arm64/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar
+1176
+2891
+98015 org.springframework.ide.vscode.boot.app.BootLanguageServerBootApp		
+		]]>
+		</screen>
+	</section>
+	
+</section>

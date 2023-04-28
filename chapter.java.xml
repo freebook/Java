@@ -3,6 +3,7 @@
 	<title>Java</title>
 	&section.java.install.xml;
 	&section.java.jvm.xml;
+	&section.java.cmd.xml;
 	<section id="system">
 		<title>System</title>
 		<screen><![CDATA[

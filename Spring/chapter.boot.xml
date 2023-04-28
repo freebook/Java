@@ -32,5 +32,6 @@
 	&section.boot.async.xml;
 	&section.boot.web3j.xml;
 	&section.boot.record.xml;
-
+	&section.boot.redisson.xml;
+	
 </chapter>
