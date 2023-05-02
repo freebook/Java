@@ -3,28 +3,7 @@
 	<title>Spring boot with Async</title>
 
 	<section>
-		<title>配置线程池</title>
-		<para>编辑 application.yml 配置文件</para>
-		<programlisting>
-		<![CDATA[
-spring:
-  task:
-    execution:
-      pool:
-        # 最大线程数
-        max-size: 16
-        # 核心线程数
-        core-size: 16
-        # 存活时间
-        keep-alive: 10s
-        # 队列大小
-        queue-capacity: 100
-        # 是否允许核心线程超时
-        allow-core-thread-timeout: true
-      # 线程名称前缀
-      thread-name-prefix: async-task-
-		]]>
-		</programlisting>
+		<title>启用线程池</title>
 		<para>启用异步执行 @EnableAsync</para>
 		<programlisting>
 		<![CDATA[
@@ -56,8 +35,7 @@ public class AsyncTask {
 	</section>
 
 	<section>
-		<title>线程池</title>
-		<para>自定义线程池</para>
+		<title>配置线程池</title>
 		<para>设置线程池参数</para>
 		<programlisting>
         <![CDATA[
@@ -153,6 +131,55 @@ public class Task {
 			</programlisting>
 
 		</section>
+		<section>
+			<title>队列</title>
+			<para>线程池能接受多少队列？</para>
+			<para>下面配置是 executor.setQueueCapacity(10); 也就是 10个，但是实测结果跟你想的不同</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.ThreadPoolExecutor;
+
+@Configuration
+@EnableAsync
+public class ThreadPoolTaskExecutorConfiguration {
+    @Bean("asyncExecutor")
+    public ThreadPoolTaskExecutor executor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setThreadGroupName("job");
+        executor.setThreadNamePrefix("async-job-");
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(10);
+        executor.setKeepAliveSeconds(60);
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+        executor.setAwaitTerminationSeconds(60);
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.initialize();
+        return executor;
+    }
+}
+			]]>
+			</programlisting>
+			<para>实测结果是，首次执行可以容纳 20 个线程，20个线程执行完毕之后，再添加任务，就只接受 10 个，超过的部分会跑出异常</para>
+			<screen>
+			<![CDATA[
+ Executor [java.util.concurrent.ThreadPoolExecutor@7e729046[Running, pool size = 10, active threads = 10, queued tasks = 10, completed tasks = 0]] did not accept task: org.springframework.aop.interceptor.AsyncExecutionInterceptor$$Lambda$1775/0x0000000801b6afb0@20eaccc2			
+			]]>
+			</screen>
+			<para>这是因为线程池可以容纳 10 个任务，队列还能排队 10 个任务。</para>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section>
 		<title>定义多个线程池</title>
@@ -247,6 +274,49 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 
 	</section>
 	<section>
+		<title>自定义线程池</title>
+		<para>自定义线程池</para>
+		<section>
+			<title>ThreadPoolExecutor</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+    @Bean("queueThreadPool")
+    public ThreadPoolExecutor queueThreadPool() {
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+                5,
+                10,
+                60,
+                TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(10),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
+        return threadPoolExecutor;
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>注入自定义线程池bean</title>
+			<programlisting>
+		<![CDATA[
+	 // 注入自定义线程池bean
+    @Autowired
+    private ThreadPoolExecutor threadPoolExecutor;
+    
+    threadPoolExecutor.execute(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("=======");
+
+        }
+    });
+    
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
 		<title>设置线程名称</title>
 		<programlisting>
 		<![CDATA[
@@ -304,5 +374,23 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics/exec
 }		
 		]]>
 		</screen>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+    @Autowired
+    ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    		
+    @GetMapping("/pool")
+    public String pool() {
+        int activeCount = threadPoolTaskExecutor.getActiveCount();
+        long completedTaskCount = threadPoolTaskExecutor.getThreadPoolExecutor().getCompletedTaskCount();
+        long taskCount = threadPoolTaskExecutor.getThreadPoolExecutor().getTaskCount();
+        int queue = threadPoolTaskExecutor.getThreadPoolExecutor().getQueue().size();
+        String monitor = String.format("Task: %d, Queue: %d, Active: %d, Completed: %d\n", taskCount, queue, activeCount, completedTaskCount);
+        log.info(monitor);
+        return monitor;
+    }	
+		]]>
+		</programlisting>
 	</section>
 </section>

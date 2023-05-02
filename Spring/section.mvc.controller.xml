@@ -1668,4 +1668,43 @@ public class UploadRestController {
 		</programlisting>
 	</section>
 	&section.mvc.jackson.xml;
+	<section id="rest.synchronized">
+		<title>synchronized</title>
+		<para>避免接口无序执行，被同时多次执行，同一时间只能有一个请求，请求完毕之后才能进行下一次请求。</para>
+		<programlisting>
+		<![CDATA[
+   @GetMapping("/lock/{id}")
+    public String lock1(@PathVariable("id") String id) throws InterruptedException {
+        synchronized (id.intern()) {
+            log.info(Thread.currentThread().getName() + " 上锁");
+            Thread.sleep(10000);
+            log.info(Thread.currentThread().getName() + " 解锁");
+        }
+        return Thread.currentThread().getName();
+    }		
+		]]>
+		</programlisting>
+		<para>使用 ConcurrentHashMap 数据共享</para>
+		<programlisting>
+		<![CDATA[
+	private final Map<String, Object> share = new ConcurrentHashMap<>();
+
+    @GetMapping("/share/{id}")
+    public Map<String, Object> shareTest(@PathVariable("id") String id) throws InterruptedException {
+
+//        share.computeIfAbsent(id, k -> new Object());
+        share.computeIfAbsent(id, key -> {
+            return new Date();
+        });
+
+        synchronized (share) {
+            log.info(Thread.currentThread().getName() + " 上锁");
+            Thread.sleep(1000);
+            log.info(Thread.currentThread().getName() + " 解锁");
+        }
+        return share;
+    }
+		]]>
+		</programlisting>
+	</section>
 </section>
