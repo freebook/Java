@@ -523,4 +523,39 @@ ctx.refresh();
 
 		</programlisting>
 	</section>
+	<section>
+		<title>@Profile("dev") / @ActiveProfiles("dev")</title>
+		<para>不同环境运行不同的逻辑</para>
+		<programlisting>
+		<![CDATA[
+@Configuration
+public class DataSourceConfig {
+
+    @Bean
+    @Profile("dev")
+    public DataSource devDataSource() {
+        System.out.println(" dev DataSource !!");
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        basicDataSource.setUrl("jdbc:mysql://localhost:3308/neo");
+        basicDataSource.setUsername("root");
+        basicDataSource.setPassword("123456");
+        return basicDataSource;
+    }
+
+    @Bean
+    @Profile("prod")
+    public DataSource prodDataSource() {
+        System.out.println(" prod DataSource !!");
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        basicDataSource.setUrl("jdbc:mysql://localhost:3306/neo");
+        basicDataSource.setUsername("root");
+        basicDataSource.setPassword("123456");
+        return basicDataSource;
+    }
+}
+		]]>
+		</programlisting>
+	</section>
 </section>

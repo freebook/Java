@@ -1034,6 +1034,7 @@ Fluent Bit v1.9.7
 
 	<section id="log4j2-gelf-logstash">
 		<title>Log4j2 + Gelf + Logstash</title>
+		<para>https://logging.paluch.biz/examples/log4j-2.x.html</para>
 		<section>
 			<title>Maven 配置</title>
 			<screen>
