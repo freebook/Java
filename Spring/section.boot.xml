@@ -557,5 +557,11 @@ public class DataSourceConfig {
 }
 		]]>
 		</programlisting>
+		<para>匹配多个环境</para>
+		<programlisting>
+		<![CDATA[
+@Profile({"dev", "test", "grey", "prod"})		
+		]]>
+		</programlisting>
 	</section>
 </section>
