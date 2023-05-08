@@ -3,6 +3,22 @@
 	<title>Java 线程</title>
 	<para></para>
 	<section>
+		<title>多线程 Lambda 表达式</title>
+		<programlisting>
+		<![CDATA[
+	new Thread(() -> {
+		Thread.sleep(millis);
+	});		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+new Thread(() -> System.out.println("多线程")).start();
+		]]>
+		</programlisting>
+	</section>
+
+	<section>
 		<title>实现异步执行</title>
 		<programlisting>
 		<![CDATA[
@@ -55,7 +71,7 @@ public class MyThread extends Thread {
 }
 		]]>
 		</programlisting>
-		
+
 		<section>
 			<title>设置线程名称</title>
 			<para></para>
