@@ -488,4 +488,234 @@ public class ThreadLocaTest {
 		]]>
 		</programlisting>
 	</section>
+	<section id="CompletableFuture">
+		<title>CompletableFuture</title>
+		<section>
+			<title>supplyAsync 创建带有返回值的异步任务。</title>
+			<para>supplyAsync 创建带有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是带有自定义线程池的重载方法</para>
+			<screen>
+			<![CDATA[
+// 带返回值异步请求，默认线程池
+public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier)
+ 
+// 带返回值的异步请求，可以自定义线程池
+public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier, Executor executor)			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println("do something....");
+            return "done";
+        });
+
+        System.out.println("Result ->" + completableFuture.get());
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+    }
+}			
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+do something....
+Result ->done
+=======================================================================================
+|   ID |                             Name | Group | Daemon |         State | Priority |
+---------------------------------------------------------------------------------------
+|    1 |                             main |  main |  false |      RUNNABLE |        5 |
+|   21 | ForkJoinPool.commonPool-worker-1 |  main |   true | TIMED_WAITING |        5 |
+=======================================================================================		
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println("do something....");
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "done";
+        }, executorService);
+
+        System.out.println("Result ->" + completableFuture.get());
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+    }
+}
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+do something....
+Result ->done
+======================================================================
+|   ID |            Name | Group | Daemon |         State | Priority |
+----------------------------------------------------------------------
+|    1 |            main |  main |  false |      RUNNABLE |        5 |
+|   21 | pool-1-thread-1 |  main |  false |       WAITING |        5 |
+======================================================================			
+			]]>
+			</screen>
+			<para>设置线程名称</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println("do something....");
+            Thread.currentThread().setName("测试有返回值的异步执行");
+            return "done";
+        });
+
+        System.out.println("Result ->" + completableFuture.get());
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+    }
+}			
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+do something....
+Result ->done
+==================================================================
+|   ID |        Name | Group | Daemon |         State | Priority |
+------------------------------------------------------------------
+|    1 |        main |  main |  false |      RUNNABLE |        5 |
+|   21 | 测试有返回值的异步执行 |  main |   true | TIMED_WAITING | 5 |
+==================================================================	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>runAsync 创建没有返回值的异步任务</title>
+			<para>runAsync 创建没有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是自定义线程池的重载方法</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        CompletableFuture.runAsync(() -> {
+            System.out.println("do something...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        CompletableFuture.runAsync(() -> {
+            System.out.println("do something...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, executorService);
+
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            System.out.println("do something....");
+//            Thread.currentThread().setName("测试有返回值的异步执行");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Result ->" + completableFuture.isDone());
+
+
+    }
+}
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+			<![CDATA[
+do something...
+do something...
+do something....
+
+=======================================================================================
+|   ID |                             Name | Group | Daemon |         State | Priority |
+---------------------------------------------------------------------------------------
+|    1 |                             main |  main |  false |      RUNNABLE |        5 |
+|   21 | ForkJoinPool.commonPool-worker-1 |  main |   true | TIMED_WAITING |        5 |
+|   22 |                  pool-1-thread-1 |  main |  false | TIMED_WAITING |        5 |
+|   23 | ForkJoinPool.commonPool-worker-2 |  main |   true | TIMED_WAITING |        5 |
+=======================================================================================
+
+Result ->true
+			]]>
+			</screen>
+		</section>
+		
+	</section>
 </section>

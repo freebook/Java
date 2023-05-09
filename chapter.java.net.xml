@@ -25,11 +25,23 @@ public class URLReader {
 		</programlisting>
 	</section>
 	<section>
-		<title>java.io.tmpdir</title>
+		<title>获取IP地址何机器名</title>
 		<para>改变java.io.tmpdir的默认值</para>
 		<programlisting>
-System.setProperty("java.io.tmpdir", "/vat/tmp");
-System.out.println(System.getProperty("java.io.tmpdir"));
+		<![CDATA[
+    @GetMapping("/host")
+    public ResponseEntity<String> host() {
+        try {
+            InetAddress addr = InetAddress.getLocalHost();
+            String hostAddress = addr.getHostAddress().toString();
+            String hostName = addr.getHostName().toString();
+            String tmp = String.format("%s: %s", hostAddress, hostName);
+            return ResponseEntity.ok(tmp);
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.toString());
+        }
+    }		
+		]]>		
 		</programlisting>
 	</section>
 </section>

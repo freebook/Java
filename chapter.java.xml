@@ -6,7 +6,8 @@
 	&section.java.cmd.xml;
 	<section id="system">
 		<title>System</title>
-		<screen><![CDATA[
+		<screen>
+		<![CDATA[
 Java.version 运行时环境版本
 
 java.vendor 运行时环境供应商
@@ -62,7 +63,8 @@ user.name 用户的账户名称
 user.home 用户的主目录
 
 user.dir 用户的当前工作目录	
-	]]></screen>
+		]]>
+		</screen>
 		<section id="System">
 			<title>user.dir</title>
 			<programlisting>
@@ -81,6 +83,7 @@ public class Test {
 		]]>
 			</programlisting>
 		</section>
+		
 		<section>
 			<title>java.io.tmpdir</title>
 			<para>改变java.io.tmpdir的默认值</para>
