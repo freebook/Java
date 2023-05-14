@@ -922,6 +922,52 @@ java.lang.RuntimeException
 			]]>
 			</screen>
 		</section>
-		
+	</section>
+	<section>
+		<title>Java 协程</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.thread;
+
+import static java.lang.Thread.*;
+
+public class VirtualThreadsTest {
+    public static void main(String[] args) throws InterruptedException {
+        var virtualThread = startVirtualThread(() -> System.out.println("Hello from the virtual thread"));
+        virtualThread.join();
+    }
+}		
+		]]>
+		</programlisting>
+		<para>运行演示</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 thread % java --source 20 --enable-preview VirtualThreadsTest.java
+注: VirtualThreadsTest.java 使用 Java SE 20 的预览功能。
+注: 有关详细信息，请使用 -Xlint:preview 重新编译。
+Hello from the virtual thread
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
+
+public class Main {
+    public static void main(String[] args) {
+
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            IntStream.range(0, 10000).forEach(i -> {
+                executor.submit(() -> {
+                    Thread.sleep(Duration.ofSeconds(1));
+                    return i;
+                });
+            });
+        }
+    }
+}
+		]]>
+		</programlisting>
 	</section>
 </section>
