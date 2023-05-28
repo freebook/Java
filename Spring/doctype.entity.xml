@@ -46,6 +46,7 @@
 <!ENTITY section.mvc.validation.xml		SYSTEM "section.mvc.validation.xml">
 <!ENTITY section.mvc.interceptor.xml	SYSTEM "section.mvc.interceptor.xml">
 <!ENTITY section.mvc.jackson.xml		SYSTEM "section.mvc.jackson.xml">
+<!ENTITY section.mvc.ProblemDetails.xml	SYSTEM "section.mvc.ProblemDetails.xml">
 
 <!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 <!ENTITY section.security.oauth.xml		SYSTEM "section.security.oauth.xml">
