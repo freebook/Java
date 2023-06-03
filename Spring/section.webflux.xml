@@ -484,6 +484,10 @@ public class UserMongoController {
 		</section>
 	</section>
 	<section>
+		<title>Mono/Flux</title>
+		<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
+	</section>
+	<section>
 		<title>SSE</title>
 		<programlisting>
 		<![CDATA[
@@ -600,9 +604,42 @@ data:发射
 		
 		]]>
 		</screen>
+		<programlisting>
+		<![CDATA[
+@GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<String> streamFlux() {
+    return Flux.interval(Duration.ofSeconds(1))
+      .map(sequence -> "Flux - " + LocalTime.now().toString());
+}
+
+@GetMapping("/stream-sse")
+public Flux<ServerSentEvent<String>> streamEvents() {
+    return Flux.interval(Duration.ofSeconds(1))
+      .map(sequence -> ServerSentEvent.<String> builder()
+        .id(String.valueOf(sequence))
+          .event("periodic-event")
+          .data("SSE - " + LocalTime.now().toString())
+          .build());
+}
+
+public void consumeServerSentEvent() {
+    WebClient client = WebClient.create("http://localhost:8080/sse-server");
+    ParameterizedTypeReference<ServerSentEvent<String>> type
+     = new ParameterizedTypeReference<ServerSentEvent<String>>() {};
+
+    Flux<ServerSentEvent<String>> eventStream = client.get()
+      .uri("/stream-sse")
+      .retrieve()
+      .bodyToFlux(type);
+
+    eventStream.subscribe(
+      content -> logger.info("Time: {} - event: name[{}], id [{}], content[{}] ",
+        LocalTime.now(), content.event(), content.id(), content.data()),
+      error -> logger.error("Error receiving SSE: {}", error),
+      () -> logger.info("Completed!!!"));
+}
+		]]>
+		</programlisting>
 	</section>
-	<section>
-		<title>Mono/Flux</title>
-		<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
-	</section>
+
 </section>
