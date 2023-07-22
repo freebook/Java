@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.location">
 	<title>定位</title>
-	<section id="location.manifest">
-		<title>manifest 权限配置</title>
-		<programlisting>
+	<section>
+		<title></title>
+
+		<section id="location.manifest">
+			<title>manifest 权限配置</title>
+			<programlisting>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,11 +36,11 @@
 
 </manifest>		
 		]]>
-		</programlisting>
-	</section>
-	<section id="location.layout">
-		<title>layout</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="location.layout">
+			<title>layout</title>
+			<programlisting>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -170,11 +173,11 @@
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 </android.support.constraint.ConstraintLayout>		
 		]]>
-		</programlisting>
-	</section>
-	<section id="location.Activity">
-		<title>Activity</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="location.Activity">
+			<title>Activity</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.location;
 
@@ -433,6 +436,234 @@ public class MainActivity extends AppCompatActivity {
 
 }
 		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>只从 GPS 获取定位</title>
+		<para>默认安卓系统使用 GPS + 网络定位，网络定位速度非常快，GPS 需要一些搜星。但是网络定位没有海拔高度数据，所以有些场景需要 GPS 定位。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.ropeway;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import cn.netkiller.ropeway.databinding.ActivityMainBinding;
+
+public class MainActivity extends AppCompatActivity {
+
+    private ActivityMainBinding binding;
+
+    private static final int REQUEST_PERMISSION_CODE = 12;
+    private TextView textViewLatitude;
+    private TextView textViewLongitude;
+    private TextView textViewAltitude;
+    private TextView textViewSpeed;
+    private TextView textViewTime;
+    private TextView status;
+
+    private final ArrayList<String> loglist = new ArrayList<String>();
+    private ArrayAdapter<String> loggerArrayAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications).build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        textViewLatitude = findViewById(R.id.textViewLatitude);
+        textViewLongitude = findViewById(R.id.textViewLongitude);
+        textViewAltitude = findViewById(R.id.textViewAltitude);
+        textViewSpeed = findViewById(R.id.textViewSpeed);
+        textViewTime = findViewById(R.id.textViewTime);
+        status = findViewById(R.id.status);
+
+        ListView listViewLogger = findViewById(R.id.listViewLogger);
+        loggerArrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, loglist);
+        listViewLogger.setAdapter(loggerArrayAdapter);
+
+
+        this.location();
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void location() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_CODE);
+            return;
+        } else {
+            status.setText("正在获取GPS坐标请稍候...");
+        }
+
+        //获取LocationManager对象
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        boolean gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        locationManager.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER,false);
+        Log.d("Location", "GPS Status: " + gpsStatus);
+
+
+        boolean networkStatus = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        Log.d("Location", "Network Status: " + networkStatus);
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+        //根据当前provider对象获取最后一次位置信息
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        loglist.add(String.format("GPS Status: %s, Network Status: %s, Criteria: %s", gpsStatus, networkStatus, criteria));
+
+        //如果位置信息不为null，则请求更新位置信息
+        if (location != null) {
+
+            textViewLatitude.setText(location.getLatitude() + "");
+            textViewLongitude.setText(location.getLongitude() + "");
+            textViewAltitude.setText(location.getAltitude() + "");
+            textViewSpeed.setText(location.getSpeed() + "");
+            textViewTime.setText(location.getTime() + "");
+
+            Log.d("Location", "Latitude: " + location.getLatitude());
+            Log.d("Location", "Location: " + location.getLongitude());
+            Log.d("Location", "Altitude: " + location.getAltitude());
+            loglist.add(String.format("Provider: %s, Latitude: %s, Location: %s, Altitude: %s", location.getProvider(), location.getLatitude(), location.getLongitude(), location.getAltitude()));
+        } else {
+
+            Log.d("Location", "Latitude: " + 0);
+            Log.d("Location", "location: " + 0);
+
+        }
+
+    }
+
+    //创建位置监听器
+    private final LocationListener locationListener = new LocationListener() {
+
+        //位置发生改变时调用
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onLocationChanged(Location location) {
+            status.setText("onLocationChanged");
+
+            //位置信息变化时触发
+            Log.e("Location", "定位方式：" + location.getProvider());
+            Log.e("Location", "纬度：" + location.getLatitude());
+            Log.e("Location", "经度：" + location.getLongitude());
+            Log.e("Location", "海拔：" + location.getAltitude());
+            Log.e("Location", "时间：" + location.getTime());
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            textViewLatitude.setText(location.getLatitude() + "");
+            textViewLongitude.setText(location.getLongitude() + "");
+            textViewAltitude.setText(location.getAltitude() + "");
+            textViewSpeed.setText(location.getSpeed() + "");
+            textViewTime.setText(simpleDateFormat.format(new Date(location.getTime())) + "");
+
+            loglist.add(String.format("Provider: %s, Latitude: %s, Location: %s, Altitude: %s", location.getProvider(), location.getLatitude(), location.getLongitude(), location.getAltitude()));
+            loggerArrayAdapter.notifyDataSetChanged();
+
+        }
+
+        //provider失效时调用
+        @Override
+        public void onProviderDisabled(String provider) {
+
+            Log.d("Location", "onProviderDisabled");
+            status.setText("onProviderDisabled");
+
+        }
+
+        //provider启用时调用
+        @Override
+        public void onProviderEnabled(String provider) {
+
+            Log.d("Location", "onProviderEnabled");
+            status.setText("onProviderEnabled");
+
+        }
+
+        //状态改变时调用
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            Log.d("Location", "onStatusChanged");
+            //GPS状态变化时触发
+            switch (status) {
+                case LocationProvider.AVAILABLE:
+                    Log.e("Location", "当前GPS状态为可见状态");
+                    break;
+                case LocationProvider.OUT_OF_SERVICE:
+                    Log.e("Location", "当前GPS状态为服务区外状态");
+                    break;
+                case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                    Log.e("Location", "当前GPS状态为暂停服务状态");
+                    break;
+            }
+
+        }
+
+    };
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+        }
+    }
+}		
 		]]>
 		</programlisting>
 	</section>
