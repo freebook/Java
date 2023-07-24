@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.service">
-	<title>Service</title>
+	<title>Service 服务</title>
+	<para>手动调用方法</para>
+	<screen>
+			<![CDATA[
+手动调用方法		作用
+startService()	启动服务
+stopService()	关闭服务
+bindService()	绑定服务
+unbindService()	解绑服务
+
+			]]>
+	</screen>
+	<para>自动调用的方法</para>
+	<screen>
+			<![CDATA[
+自动调用方法			作用
+onCreate()			创建服务
+onStartCommand()	开始服务
+onDestroy()			销毁服务
+onBind()			绑定服务
+onUnbind()			解绑服务
+			]]>
+	</screen>
+	<para>生命周期调用</para>
+	<screen>
+			<![CDATA[
+
+1. 启动Service服务
+
+单次：startService() —> onCreate() —> onStartCommand()
+多次：startService() —> onCreate() —> onStartCommand() —> onStartCommand()
+
+2. 停止Service服务
+
+stopService() —> onDestroy()
+
+3. 绑定Service服务
+
+bindService() —> onCreate() —> onBind()
+
+4. 解绑Service服务
+
+unbindService() —> onUnbind() —> onDestroy()
+
+5. 启动绑定Service服务
+
+startService() —> onCreate() —> onStartCommand() —> bindService() —> onBind()
+
+6. 解绑停止Service服务
+
+unbindService() —> onUnbind() —> stopService() —> onDestroy()
+
+7. 解绑绑定Service服务
+
+unbindService() —> onUnbind(ture) —> bindService() —> onRebind()
+
+			]]>
+	</screen>
 	<section id="service.basic">
 		<title>Service的基本用法</title>
 		<section id="service.manifest">
@@ -35,7 +92,9 @@
 </manifest>			
 			]]>
 			</programlisting>
-			<para>这段代码不是手工加入的，只需在 Android Studio 中选择 File - New - Service - Service 创建 Service 会自动加入下面代码</para>
+			<para>这段代码不是手工加入的，只需在 Android Studio 中选择 File - New - Service -
+				Service 创建 Service 会自动加入下面代码
+			</para>
 			<programlisting>
 			<![CDATA[
 <service
@@ -47,8 +106,10 @@
 		</section>
 		<section id="service.myservice">
 			<title>创建 Service</title>
-			<para>在 Android Studio 中选择 File - New - Service - Service 创建 Service</para>
-			<para>MyService继承自Service，并重写父类的onCreate()、onStartCommand()和onDestroy()方法</para>
+			<para>在 Android Studio 中选择 File - New - Service - Service 创建 Service
+			</para>
+			<para>MyService继承自Service，并重写父类的onCreate()、onStartCommand()和onDestroy()方法
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.service;

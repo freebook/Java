@@ -19,4 +19,5 @@
 	&chapter.android.okhttp.xml;
 	&chapter.android.eventbus.xml;
 	&chapter.android.singleton.xml;
+	&section.android.mqtt.xml;
 	&chapter.android.faq.xml;

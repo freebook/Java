@@ -3,15 +3,7 @@
 	<section>
 		<title>切换UI</title>
 		<section id="setContentView">
-			<title></title>
-			<programlisting>
-			<![CDATA[
-setContentView(R.layout.view);			
-			]]>
-			</programlisting>
-		</section>
-		<section id="startActivity">
-			<title>startActivity()</title>
+			<title>定义 UI </title>
 			<programlisting>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
@@ -27,6 +19,15 @@ setContentView(R.layout.view);
 </manifest>		
 		]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+setContentView(R.layout.view);			
+			]]>
+			</programlisting>
+		</section>
+		<section id="startActivity">
+			<title>startActivity()</title>
+
 			<para></para>
 			<programlisting>
 		<![CDATA[
@@ -63,8 +64,7 @@ String name=bundle.getString("name");
 			</programlisting>
 		</section>
 	</section>
-	
-	
+
 	<section id="Button">
 		<title>Button</title>
 		<programlisting>
@@ -340,7 +340,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
 	]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="GardView">
 		<title>GardView</title>
 	</section>
@@ -355,6 +355,26 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
 	</section>
 	<section id="Fragment">
 		<title>Fragment</title>
+		<section>
+			<title>在 Fragment 中使用 findViewById</title>
+			<tip>
+				<para>使用 getView() 方法返回当前 fragment 的根视图。</para>
+				<programlisting>
+				<![CDATA[
+Button btn = getView().findViewById(R.id.btn);	
+				]]>
+				</programlisting>
+			</tip>
+		</section>
+		<section>
+			<title>在 Fragment 中使用 Intent 跳转</title>
+			<programlisting>
+			<![CDATA[
+Intent intent = new Intent(getActivity(), MyService.class);
+startActivity(intent);			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="Dialog">
 		<title>Dialog</title>
