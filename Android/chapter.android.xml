@@ -14,7 +14,7 @@
 	&chapter.android.location.xml;	
 	&chapter.android.phone.xml;
 	&chapter.android.broadcast.xml;
-	&chapter.android.service.xml;
+	&section.android.service.xml;
 	&chapter.android.nfc.xml;
 	&chapter.android.okhttp.xml;
 	&chapter.android.eventbus.xml;
