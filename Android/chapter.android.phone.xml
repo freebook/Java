@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.phone">
+<chapter id="index"><?dbhtml dir="phone" ?>
 	<title>电话</title>
 	
 	<section id="android.phone.sim">

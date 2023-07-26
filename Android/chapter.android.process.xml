@@ -9,4 +9,13 @@ android.os.Process.myTid()
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>handler</title>
+		<programlisting>
+		<![CDATA[
+        handler.postDelayed(() -> {
+        }, 1000);		
+		]]>
+		</programlisting>
+	</section>
 </chapter>

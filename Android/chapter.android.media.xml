@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.media">
+<chapter id="index"><?dbhtml dir="media" ?>
 	<title>多媒体开发</title>
 	<section id="MediaPlayer">
 		<title>MediaPlayer</title>

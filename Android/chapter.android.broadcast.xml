@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.broadcast">
+<chapter id="index"><?dbhtml dir="broadcast" ?>
 	<title>消息广播</title>
 	<para>安卓中有两种广播，一种是系统发出的广播信息，例如网络改变，电池的电量低等等，另一种是用户发出的广播信息。</para>
 	<para>Android 中的广播类型可以分为两种类型，标准广播和有序广播。</para>
-	<para>标准广播（Normal broadcasts）：标准广播是一种完全异步执行的广播，在广播发出之后，所有的广播接收器几乎会在同一时刻接收到这条广播消息。这种广播效率比较高，但同时也意味着它是无法被截断的。</para>
-	<para>有序广播（Ordered broadcasts）：有序广播则是一种同步执行的广播，在广播发出之后，同一时刻只会有一个广播接收器能够收到这条广播消息，当这个广播接收器中的逻辑执行完毕之后，广播才会继续传递。</para>
+	<para>标准广播（Normal
+		broadcasts）：标准广播是一种完全异步执行的广播，在广播发出之后，所有的广播接收器几乎会在同一时刻接收到这条广播消息。这种广播效率比较高，但同时也意味着它是无法被截断的。
+	</para>
+	<para>有序广播（Ordered
+		broadcasts）：有序广播则是一种同步执行的广播，在广播发出之后，同一时刻只会有一个广播接收器能够收到这条广播消息，当这个广播接收器中的逻辑执行完毕之后，广播才会继续传递。
+	</para>
 	<screen>
 	<![CDATA[
 android.intent.action.BATTERY_CHANGED	持久广播含充电状态，级别，以及其他相关的电池信息。
@@ -220,7 +224,8 @@ public class MyReceiver extends BroadcastReceiver {
 		
 		]]>
 		</programlisting>
-		<para>现在重启 Android 模拟器，启动后虽然 App 并没有进入，但是屏幕底部会看到 "程序已启动，接收到系统启动广播"</para>
+		<para>现在重启 Android 模拟器，启动后虽然 App 并没有进入，但是屏幕底部会看到 "程序已启动，接收到系统启动广播"
+		</para>
 	</section>
 	<section id="broadcast.user">
 		<title>自定义用户消息广播</title>
@@ -297,7 +302,8 @@ public class MainActivity extends AppCompatActivity {
 	</section>
 	<section id="broadcast.local">
 		<title>本地广播</title>
-		<para>上面讲的系统广播是全局的，任何APP都能接收到你的广播，这样就很容易引起APP的安全性问题。很多时候我们只想接收来自本应用程序发出的广播。</para>
+		<para>上面讲的系统广播是全局的，任何APP都能接收到你的广播，这样就很容易引起APP的安全性问题。很多时候我们只想接收来自本应用程序发出的广播。
+		</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.broadcast;

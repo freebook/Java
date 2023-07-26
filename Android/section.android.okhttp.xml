@@ -1,5 +1,7 @@
 <section id="okhttp">
-	<title>OkHttp - An HTTP &amp; HTTP/2 client for Android and Java applications</title>
+	<title>OkHttp - An HTTP &amp; HTTP/2 client for Android and Java
+		applications
+	</title>
 	<para>
 		<ulink url="http://square.github.io/okhttp/" />
 	</para>
@@ -90,8 +92,11 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/AndroidManifes
 	</section>
 	<section id="okhttp.http">
 		<title>okhttp 默认是 HTTPS 开启 HTTP</title>
-		<para>如果你尝试使用 http 链接 OkHttp3 就抛出异常: CLEARTEXT communication to " + host + " not permitted by network security policy</para>
-		<para>开发过程中由于 https ssl 需要购买证书，费用较高，通常测试环境我们仍然使用 http 下面方法是开启 http 模式，</para>
+		<para>如果你尝试使用 http 链接 OkHttp3 就抛出异常: CLEARTEXT communication to " +
+			host + " not permitted by network security policy
+		</para>
+		<para>开发过程中由于 https ssl 需要购买证书，费用较高，通常测试环境我们仍然使用 http 下面方法是开启 http 模式，
+		</para>
 		<para>创建文件 res/xml/network_security_config.xml 内容如下</para>
 		<screen>
 		<![CDATA[
@@ -104,7 +109,9 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/networ
 </network-security-config>		
 		]]>
 		</screen>
-		<para>再 app/src/main/AndroidManifest.xml 文件中增加 android:networkSecurityConfig="@xml/network_security_config"</para>
+		<para>再 app/src/main/AndroidManifest.xml 文件中增加
+			android:networkSecurityConfig="@xml/network_security_config"
+		</para>
 		<screen>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
@@ -158,6 +165,59 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/networ
     System.out.println(response.body().string());		
 		]]>
 		</programlisting>
+		<section>
+			<title>URL 组装</title>
+			<programlisting>
+			<![CDATA[
+		HttpUrl.Builder urlBuilder = HttpUrl.parse("https://www.netkiller.cn").newBuilder();
+		urlBuilder.addPathSegments("search/cache_vector_chatgpt");
+		urlBuilder.addQueryParameter("question", "Helloworld!!!");
+		String url = urlBuilder.build().toString();
+		
+		Log.d("API", url);
+		OkHttpClient client = new OkHttpClient();
+		try {
+		    Request request = new Request.Builder().url(url).build();
+		    Response response = client.newCall(request).execute();
+		    if (response.isSuccessful()) {
+		        Log.d("API", response.body().string());
+		    }
+		} catch (IOException e) {
+		    throw new RuntimeException(e);
+		}			
+			]]>
+			</programlisting>
+			<para>URL 输出</para>
+			<screen>
+			<![CDATA[
+https://www.netkiller.cn/search/cache_vector_chatgpt?question=Helloworld%21%21%21
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Get 异步调用</title>
+			<programlisting>
+			<![CDATA[
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder().url(url).build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.i("TAG", "Async: " + response.body().string());
+                }
+            }
+        });			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="okhttp.post">
 		<title>POST</title>
@@ -739,7 +799,9 @@ public class Oauth2jwtActivity extends AppCompatActivity {
 }
 		]]>
 		</programlisting>
-		<para>上面的例子演示了，怎样获取 access token 以及 HTTP 基本操作 GET 和 POST，再Restful接口中还可能会用到 PUT, DELETE 等等，原来相同，这里就不在演示。</para>
+		<para>上面的例子演示了，怎样获取 access token 以及 HTTP 基本操作 GET 和
+			POST，再Restful接口中还可能会用到 PUT, DELETE 等等，原来相同，这里就不在演示。
+		</para>
 	</section>
 	<section id="okhttp.h2">
 		<title>HTTP/2</title>
@@ -822,5 +884,107 @@ D/okhttp: HTTP Code 200 TEXT {"status":false,"reason":"","code":0,"data":{"id":n
 		</screen>
 		<para>输出 h2 表示当前接口与服务器连接是通过 http2 完成。</para>
 
+	</section>
+	<section>
+		<title>异步更新 UI</title>
+		<programlisting>
+		<![CDATA[
+ 		buttonSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(apiUrl).newBuilder();
+                urlBuilder.addPathSegments("search/cache_vector_chatgpt");
+                urlBuilder.addQueryParameter("question", editTextMessage.getText().toString());
+                String url = urlBuilder.build().toString();
+                Log.d("API", url);
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder().url(url).build();
+                Call call = client.newCall(request);
+
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            answer = response.body().string();
+                            updateResult(answer);
+                            Log.i("TAG", "Async: " + answer);
+                        }
+                    }
+                });
+            }
+        });		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    private void updateResult(final String response) {
+        //在子线程中更新UI
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // 在这里进行UI操作，将结果显示到界面上
+                text_dashboard.setText(response);
+            }
+        });
+    }		
+		]]>
+		</programlisting>
+		<para>Lambda 表达式 </para>
+		<programlisting>
+		<![CDATA[
+	private void showResponse(final String response) {
+        //在子线程中更新UI
+        runOnUiThread(() -> {
+			// 在这里进行UI操作，将结果显示到界面上
+			responseText.setText(response);
+        });
+    }		
+		]]>
+		</programlisting>
+		<para>在 Fragment 中需这样使用 getActivity().runOnUiThread()</para>
+		<programlisting>
+		<![CDATA[
+        buttonSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(apiUrl).newBuilder();
+                urlBuilder.addPathSegments("search/cache_vector_chatgpt");
+                urlBuilder.addQueryParameter("question", editTextMessage.getText().toString());
+                String url = urlBuilder.build().toString();
+                Log.d("API", url);
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder().url(url).build();
+                Call call = client.newCall(request);
+
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            answer = response.body().string();
+                            getActivity().runOnUiThread(() -> {
+                                text_dashboard.setText(answer);
+                            });
+                            Log.i("TAG", "Async: " + answer);
+                        }
+                    }
+                });
+            }
+        });		
+		]]>
+		</programlisting>
 	</section>
 </section>

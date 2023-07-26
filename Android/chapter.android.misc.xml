@@ -1,20 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.misc">
-	<title>Misc</title>
+<chapter id="index"><?dbhtml dir="misc" ?>
+	<title>杂项</title>
 	<section id="thread.sleep">
 		<title>Sleep</title>
 		<programlisting>
 		<![CDATA[
-            try {
+    try {
 
-                Thread.sleep(10000);
+        Thread.sleep(10000);
 
-            } catch (InterruptedException e) {
+    } catch (InterruptedException e) {
 
-                Log.e("Location", e.getMessage());
+        Log.e("Location", e.getMessage());
 
-            }		
+    }		
 		]]>
 		</programlisting>
+	</section>
+	<section>
+		<title>Caused by: java.net.UnknownServiceException: CLEARTEXT
+			communication to 47.100.253.187 not permitted by network security
+			policy</title>
+		<para>在AndroidManifest.xml的文件的application节点中增加
+			android:usesCleartextTraffic="true"</para>
+		<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Ropeway"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <service
+            android:name=".service.RopewayService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".service.BroadcastService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+    <meta-data
+        android:name="apiUrl"
+        android:value="http://47.100.25.18:8000" />
+</manifest>
+			]]>
+		</screen>
 	</section>
 </chapter>

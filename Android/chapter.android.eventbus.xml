@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="EventBus">
+<chapter id="index"><?dbhtml dir="eventbus" ?>
 	<title>EventBus</title>
 	<para>
 		<ulink url="http://greenrobot.org/eventbus" />
@@ -289,7 +289,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-			
 			]]>
 			</programlisting>
 		</section>

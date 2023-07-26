@@ -105,4 +105,38 @@ String apiKey = BuildConfig.API_KEY;
 		]]>
 		</programlisting>		
 	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+import java.io.InputStream; 
+import java.util.Properties; 
+  
+import android.content.Context; 
+  
+public class Config {
+	public static Properties getProperties(Context c){ 
+		Properties properties = new Properties(); 
+		try { 
+			//方法一：通过activity中的context攻取setting.properties的FileInputStream 
+			InputStream in = c.getAssets().open("appConfig.properties"); 
+	      	//方法二：通过class获取setting.properties的FileInputStream 
+	      	//InputStream in = PropertiesUtill.class.getResourceAsStream("/assets/setting.properties "));  
+      		properties.load(in); 
+		} catch (Exception e1) { 
+			e1.printStackTrace(); 
+		} 
+		return props; 
+	}
+}  		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Properties properties = Config.getProperties(context.getApplicationContext()); 
+serverUrl = properties.getProperty("serverUrl"); 
+Log.i("URL", serverUrl);
+		]]>
+		</programlisting>
+	</section>
 </section>

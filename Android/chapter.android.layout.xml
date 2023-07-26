@@ -106,6 +106,23 @@ ResolveInfo resolveInfo = getActivity().getPackageManager().resolveActivity(inte
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>在 Fragment 中使用 runOnUiThread</title>
+			<programlisting>
+			<![CDATA[
+    private void showResponse(final String response) {
+        //在子线程中更新UI
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text_dashboard.setText(response);
+            }
+        });
+    }			
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 
 </chapter>

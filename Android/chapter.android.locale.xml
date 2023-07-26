@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.i18n">
+<chapter id="index"><?dbhtml dir="i18n" ?>
 	<title>Internationalization i18n with Android (国际化)</title>
 	<section id="android.i18n.new">
 		<title>创建国际化文件</title>
