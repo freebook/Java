@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.config">
+<section id="android.config">
 	<title>配置文件</title>
 	<section id="android.config.properties">
 		<title>*.properties 文件</title>
@@ -105,4 +105,4 @@ String apiKey = BuildConfig.API_KEY;
 		]]>
 		</programlisting>		
 	</section>
-</chapter>
+</section>

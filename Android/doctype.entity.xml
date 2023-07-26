@@ -4,13 +4,18 @@
 <!ENTITY chapter.android.studio.xml	 		SYSTEM "chapter.android.studio.xml">
 <!ENTITY chapter.android.manifest.xml 		SYSTEM "chapter.android.manifest.xml">
 <!ENTITY chapter.android.layout.xml 		SYSTEM "chapter.android.layout.xml">
+
 <!ENTITY chapter.android.ui.xml	 			SYSTEM "chapter.android.ui.xml">
 <!ENTITY section.android.ui.button.xml 		SYSTEM "section.android.ui.button.xml">
-<!ENTITY chapter.android.environment.xml	SYSTEM "chapter.android.environment.xml">
+
+<!ENTITY chapter.android.device.xml		 	SYSTEM "chapter.android.device.xml">
+<!ENTITY section.android.environment.xml	SYSTEM "section.android.environment.xml">
+<!ENTITY section.android.config.xml		 	SYSTEM "section.android.config.xml">
+
 <!ENTITY chapter.android.network.xml	 	SYSTEM "chapter.android.network.xml">
 <!ENTITY section.android.okhttp.xml		 	SYSTEM "section.android.okhttp.xml">
 <!ENTITY section.android.wifi.xml		 	SYSTEM "section.android.wifi.xml">
-<!ENTITY chapter.android.config.xml		 	SYSTEM "chapter.android.config.xml">
+
 <!ENTITY chapter.android.schedule.xml	 	SYSTEM "chapter.android.schedule.xml">
 <!ENTITY chapter.android.nfc.xml		 	SYSTEM "chapter.android.nfc.xml">
 <!ENTITY chapter.android.locale.xml		 	SYSTEM "chapter.android.locale.xml">

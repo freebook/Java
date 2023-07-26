@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	&chapter.android.studio.xml;
 	&chapter.android.manifest.xml;
-	&chapter.android.config.xml;
+	&chapter.android.device.xml;
 	&chapter.android.layout.xml;
 	&chapter.android.ui.xml;
-	&chapter.android.environment.xml;
 	&chapter.android.schedule.xml;
 	&chapter.android.locale.xml;
 	&chapter.android.storage.xml;

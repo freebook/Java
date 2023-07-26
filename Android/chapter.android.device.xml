@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="device" ?>
+	<title>设备信息</title>
+	&section.android.environment.xml;
+	&section.android.config.xml;
+	<section>
+		<title>设备ID</title>
+		<programlisting>
+			<![CDATA[
+String machineId = Settings.System.getString(getContentResolver(), "android_id");
+			]]>
+		</programlisting>
+	</section>
+		
+</chapter>	

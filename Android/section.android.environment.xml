@@ -1,55 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="device" ?>
-	<title>设备信息</title>
-	<section id="android.environment">
-		<title>环境变量</title>
-		<section>
-			<title>扩展存储</title>
-			<para>状态</para>
-			<programlisting>
+<section id="android.environment">
+	<title>环境变量</title>
+	<section>
+		<title>扩展存储</title>
+		<para>状态</para>
+		<programlisting>
 		<![CDATA[
 Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);		
 		]]>
-			</programlisting>
-			<para>绝对路径</para>
-			<programlisting>
+		</programlisting>
+		<para>绝对路径</para>
+		<programlisting>
 		<![CDATA[
 Environment.getExternalStorageDirectory().getAbsolutePath();		
 		]]>
-			</programlisting>
-			<programlisting>
+		</programlisting>
+		<programlisting>
 		<![CDATA[
 Log.i("Environment", "getExternalStorageDirectory(): " + Environment.getExternalStorageDirectory().toString());
 
 Log.i("Environment","getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES): " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());				
 		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>下载缓存目录</title>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>下载缓存目录</title>
+		<programlisting>
 		<![CDATA[
 Log.i("Environment", "getDownloadCacheDirectory(): "+ Environment.getDownloadCacheDirectory().toString());		
 		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>数据目录</title>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>数据目录</title>
+		<programlisting>
 			<![CDATA[
 Log.i("Environment", "getRootDirectory(): " + Environment.getRootDirectory().toString());
 Log.i("Environment", "getDataDirectory(): " + Environment.getDataDirectory().toString());
 			]]>
-			</programlisting>
-		</section>
-	</section>
-	<section>
-		<title>设备ID</title>
-		<programlisting>
-		<![CDATA[
-String machineId = Settings.System.getString(getContentResolver(), "android_id");
-		]]>
 		</programlisting>
 	</section>
-	
-</chapter>
+</section>
