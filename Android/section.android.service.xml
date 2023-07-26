@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.service">
+<chapter id="index"><?dbhtml dir="service" ?>
 	<title>Service 服务</title>
 	<para>手动调用方法</para>
 	<screen>

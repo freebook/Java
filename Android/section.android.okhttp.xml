@@ -8,7 +8,7 @@
 		<para>再 app/build.gradle 文件中增加依赖包</para>
 		<screen>
 		<![CDATA[
-implementation 'com.squareup.okhttp3:okhttp:3.11.0'		
+implementation "com.squareup.okhttp3:okhttp:4.10.0"
 		]]>
 		</screen>
 		<para>app/build.gradle</para>

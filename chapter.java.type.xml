@@ -198,7 +198,7 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="string.line">
 			<title>行数统计</title>
 			<screen>
 			<![CDATA[
@@ -206,7 +206,7 @@ public class Test {
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="string.repeat">
 			<title>复制字符串</title>
 			<programlisting>
 			<![CDATA[
@@ -367,7 +367,36 @@ Mon Aug 23 01:30:30 CST 2021
 				</screen>
 			</section>
 
-		</section>
+		<section id="string.replaceAll">
+			<title>Ascii</title>
+			<programlisting>
+			<![CDATA[
+		String string = "佛山市123南海区ABC精密abc机械有限公司􁵪􁻠􁴹􄲀􀞜􀨨,";
+
+		String clean = string.replaceAll("\\P{Print}", "");
+		System.out.println(clean);			
+			]]>
+			</programlisting>
+		</section><section id="string.unicode">
+			<title>字符串处理，删除中文以外的字符</title>
+			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
+			<programlisting>
+			<![CDATA[
+	String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
+	System.out.println(string.replaceAll("[^\u4e00-\u9fa5]", ""));			
+			]]>
+			</programlisting>
+		</section><section id="string.regex">
+			<title>取出字符串中的中文字符</title>
+			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
+			<programlisting>
+			<![CDATA[
+		String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
+		String regex = "[\u4e00-\u9fa5]";
+		System.out.println(string.replaceAll(regex, ""));			
+			]]>
+			</programlisting>
+		</section></section>
 		<section id="substring">
 			<title>substring</title>
 			<programlisting>
@@ -423,39 +452,7 @@ hell
 			]]>
 			</screen>
 		</section>
-		<section>
-			<title>Ascii</title>
-			<programlisting>
-			<![CDATA[
-		String string = "佛山市123南海区ABC精密abc机械有限公司􁵪􁻠􁴹􄲀􀞜􀨨,";
-
-		String clean = string.replaceAll("\\P{Print}", "");
-		System.out.println(clean);			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>字符串处理，删除中文以外的字符</title>
-			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
-			<programlisting>
-			<![CDATA[
-	String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
-	System.out.println(string.replaceAll("[^\u4e00-\u9fa5]", ""));			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>取出字符串中的中文字符</title>
-			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
-			<programlisting>
-			<![CDATA[
-		String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
-		String regex = "[\u4e00-\u9fa5]";
-		System.out.println(string.replaceAll(regex, ""));			
-			]]>
-			</programlisting>
-		</section>
-		<section>
+		<section id="string.block">
 			<title>文本块</title>
 			<programlisting>
 			<![CDATA[
@@ -480,6 +477,30 @@ public class Test {
 }			
 			]]>
 			</programlisting>
+		</section>
+		<section id="string.split">
+			<title>分割字符串</title>
+		
+			<screen>
+			<![CDATA[
+        String[] string = topic.split("/");
+        Log.d("Service", string.length + "");
+        for (String str: string) {
+            Log.d("Service", str);
+        }		
+        
+		String str2 = new String("www.netkiller.cn");
+        for (String retval: str2.split("\\.", 3)){
+            System.out.println(retval);
+        }
+ 
+        System.out.println("");
+        String str3 = new String("acount=? and uu =? or n=?");
+        for (String retval: str3.split("and|or")){
+            System.out.println(retval);
+        }                
+			]]>
+			</screen>	
 		</section>
 	</section>
 	<section id="long">

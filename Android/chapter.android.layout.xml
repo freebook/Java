@@ -1,4 +1,4 @@
-<chapter id="android.layout">
+<chapter id="index"><?dbhtml dir="layout" ?>
 	<title>UI Layout</title>
 	<section>
 		<title>切换UI</title>
@@ -372,6 +372,14 @@ Button btn = getView().findViewById(R.id.btn);
 			<![CDATA[
 Intent intent = new Intent(getActivity(), MyService.class);
 startActivity(intent);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Fragment 中调用 getPackageManager()</title>
+			<programlisting>
+			<![CDATA[
+ResolveInfo resolveInfo = getActivity().getPackageManager().resolveActivity(intent, 0);			
 			]]>
 			</programlisting>
 		</section>

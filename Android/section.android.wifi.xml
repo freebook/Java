@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Wifi 配置</title>
+	<para>sysctl 优化</para>
+	<programlisting>
+		<![CDATA[
+        Button buttonWifi = root.findViewById(R.id.buttonWifi);
+        buttonWifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+                intent.setComponent(componentName);
+                ResolveInfo resolveInfo = getActivity().getPackageManager().resolveActivity(intent, 0);
+                if (resolveInfo != null) {
+                    startActivity(intent);
+                }
+            }
+        });		
+		]]>
+	</programlisting>
+</section>

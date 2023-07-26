@@ -8,6 +8,7 @@
 	&chapter.android.schedule.xml;
 	&chapter.android.locale.xml;
 	&chapter.android.storage.xml;
+	&chapter.android.network.xml;
 	&chapter.android.camera.xml;
 	&chapter.android.voice.xml;
 	&chapter.android.media.xml;
@@ -16,7 +17,6 @@
 	&chapter.android.broadcast.xml;
 	&section.android.service.xml;
 	&chapter.android.nfc.xml;
-	&chapter.android.okhttp.xml;
 	&chapter.android.eventbus.xml;
 	&chapter.android.singleton.xml;
 	&section.android.mqtt.xml;
