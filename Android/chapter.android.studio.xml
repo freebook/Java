@@ -218,4 +218,34 @@ bin/sdkmanager "platforms;android-26"
 		]]>
 		</screen>
 	</section>
+	<section id="android.adb">
+		<title>adb 命令</title>
+		<para>默认情况执行 adb 会提示找不到命令</para>
+		<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb
+zsh: command not found: adb			
+			]]>
+		</screen>
+		<tip>
+			<para>这里我使用的是 zsh shell</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~ % open -e .zprofile
+			
+export PATH=${PATH}:~/Library/Android/sdk/platform-tools
+			]]>
+			</screen>
+		</tip>
+		<para>现在可以正常使用了</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb version                                             
+Android Debug Bridge version 1.0.41
+Version 34.0.4-10411341
+Installed as /Users/neo/Library/Android/sdk/platform-tools/adb
+Running on Darwin 23.0.0 (arm64)		
+		]]>
+		</screen>
+	</section>
 </chapter>
