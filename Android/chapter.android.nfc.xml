@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.nfc">
+<chapter id="index"><?dbhtml dir="nfc" ?>
 	<title>NFC (Near field communication)</title>
 	<section id="nfc.AndroidManifest.xml">
 		<title>AndroidManifest.xml 文件配置</title>

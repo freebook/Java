@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.camera">
+<chapter id="index"><?dbhtml dir="camera" ?>
 	<title>相机与相册</title>
 	<section id="camera.manifest">
 		<title>manifest 文件</title>
