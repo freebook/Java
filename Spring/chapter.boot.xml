@@ -23,7 +23,6 @@
 	&section.boot.aop.xml;	
 	&section.boot.starter.xml;
 	&section.boot.monitor.xml;
-	&section.boot.timezone.xml;
 	&section.boot.git.xml;
 	&section.boot.session.xml;
 	&section.boot.cache.xml;
