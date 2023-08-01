@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="notification" ?>
+	<title>Notification 通知中心</title>
+	<section>
+		<title>文本通知</title>
+		<programlisting>
+		<![CDATA[
+    private int createNotification(String title, String text) {
+        String channelId = "channelId";
+        String channelName = "channelName";
+        String description = "description";
+        String group = "group";
+        int notificationId = new Random().nextInt(101);
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription(description);
+        notificationManagerCompat.createNotificationChannel(channel);
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelId)
+                .setContentTitle(title).setContentText(text)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true).setGroup(group);
+
+        notificationManagerCompat.notify(notificationId, notification.build());
+        return notificationId;
+    }
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+        CharSequence name = "test";
+        String description = "test";
+        NotificationChannel channel = new NotificationChannel("test", name, NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription(description);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
+        Notification.Builder builder = new Notification.Builder(this, "test")
+                .setContentTitle("XXX 门票打折")          //标题
+                .setContentText("参与 XXX 领取 XXX")      //内容
+                .setSubText("打折信息")                   //内容下面的一小段文字
+                .setWhen(System.currentTimeMillis())     //设置通知时间
+                .setSmallIcon(R.mipmap.ic_launcher)      //设置小图标
+                .setAutoCancel(false);                   //设置点击后取消Notification
+
+        notificationManager.notify(1, builder.build());		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>添加点击操作</title>
+		<programlisting>
+		<![CDATA[
+    private int createNotification(String title, String text) {
+        String channelId = "channelId";
+        String channelName = "channelName";
+        String description = "description";
+        String group = "group";
+        int notificationId = new Random().nextInt(101);
+
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription(description);
+        notificationManagerCompat.createNotificationChannel(channel);
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelId)
+                .setContentTitle(title).setContentText(text)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        notificationManagerCompat.notify(notificationId, notification.build());
+        return notificationId;
+    }		
+		]]>
+		</programlisting>
+	</section>
+</chapter>

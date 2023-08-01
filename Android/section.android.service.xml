@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		</programlisting>
 	</section>
 	<section id="service.activity">
-		<title>Service和Activity通信</title>
+		<title>Service 和 Activity 通信</title>
 		<section>
 			<title>Layout</title>
 			<programlisting>
@@ -492,5 +492,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title>Service 和 Toast</title>
+		<programlisting>
+		<![CDATA[
+Handler handler=new Handler(Looper.getMainLooper());
+handler.post(new Runnable(){
+    public void run(){
+        Toast.makeText(getApplicationContext() ,"显示Toast在屏幕上！",Toast.LENGTH_LONG).show();
+    }
+});		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Handler handler = new Handler(Looper.getMainLooper());
+handler.post(() -> {
+    Toast.makeText(getApplicationContext(), "显示Toast在屏幕上！", Toast.LENGTH_LONG).show();
+    notify1();
+});		
+		]]>
+		</programlisting>
 	</section>
 </chapter>
