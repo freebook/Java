@@ -2,7 +2,7 @@
 <chapter id="index"><?dbhtml dir="manifest" ?>
 	<title>AndroidManifest.xml</title>
 	<section id="android:minSdkVersion">
-		<title></title>
+		<title>SDK 版本配置</title>
 		<screen>
 		<![CDATA[
 <uses-sdk
