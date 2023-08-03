@@ -9,6 +9,7 @@
 <!ENTITY section.android.ui.button.xml 		SYSTEM "section.android.ui.button.xml">
 
 <!ENTITY chapter.android.device.xml		 	SYSTEM "chapter.android.device.xml">
+<!ENTITY section.android.device.sound.xml 	SYSTEM "section.android.device.sound.xml">
 <!ENTITY section.android.environment.xml	SYSTEM "section.android.environment.xml">
 <!ENTITY section.android.config.xml		 	SYSTEM "section.android.config.xml">
 

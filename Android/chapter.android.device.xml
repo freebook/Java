@@ -12,27 +12,7 @@ String androidId = Settings.System.getString(getContentResolver(), "android_id")
 			]]>
 		</programlisting>
 	</section>
-	<section id="android.soundcard">
-		<title>声卡</title>
-		<screen>
-		<![CDATA[
-rk3288:/ $ cd /dev/snd/                                                                                                                                   
-rk3288:/dev/snd $ ls
-controlC0 pcmC0D0c pcmC0D0p pcmC0D1p timer		
-		]]>
-		</screen>
-		<para>播放测试</para>
-		<screen>
-		<![CDATA[
-tinyplay netkiller.wav -D 0 -d 0 -r 48000 -c 2		
-		]]>
-		</screen>
-		<para>录音测试</para>
-		<screen>
-		<![CDATA[
-tinycap netkiller.wav -D 0 -d 0 -c 1 -r 48000		
-		]]>
-		</screen>
-	</section>
+
+	&section.android.device.sound.xml;
 	
 </chapter>	
