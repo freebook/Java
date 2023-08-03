@@ -131,4 +131,34 @@ public class RunnableActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>TimerTask 更新 UI</title>
+		<programlisting>
+		<![CDATA[
+	Timer timer = new Timer();
+		
+	private void Clock() {
+
+        TextView textViewTime = findViewById(R.id.textViewTime);
+        TimerTask task = new TimerTask() {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+            public void run() {
+                String current = dateFormat.format(new Date());
+                textViewTime.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewTime.setText(current);
+                    }
+                });
+                Log.d(TAG, current);
+            }
+        };
+        timer.schedule(task, 1000 * 5, 1000);
+//        timer.cancel();
+    }
+		]]>
+		</programlisting>
+	</section>
+	
 </chapter>

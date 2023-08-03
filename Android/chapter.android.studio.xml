@@ -247,5 +247,14 @@ Installed as /Users/neo/Library/Android/sdk/platform-tools/adb
 Running on Darwin 23.0.0 (arm64)		
 		]]>
 		</screen>
+		<section>
+			<title>上传文件</title>
+			<programlisting>
+			<![CDATA[
+adb push libtinyalsa.so /system/lib/			
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 </chapter>
