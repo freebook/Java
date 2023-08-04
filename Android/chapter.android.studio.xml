@@ -568,6 +568,15 @@ neo@MacBook-Pro-M2 ~> adb push netkiller.wav /sdcard/
 			</screen>
 		</section>
 		<section>
+			<title>下载文件</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 tmp % adb pull /sdcard/file.wav
+/sdcard/file.wav: 1 file pulled, 0 skipped. 0.0 MB/s (44 bytes in 0.002s)			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>产品型号</title>
 			<programlisting>
 			<![CDATA[

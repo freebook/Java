@@ -8,8 +8,6 @@ rk3288:/dev/snd $ ls
 controlC0 pcmC0D0c pcmC0D0p pcmC0D1p timer		
 		]]>
 	</screen>
-
-
 	<section>
 		<title>播放</title>
 		<para>播放测试</para>
@@ -35,6 +33,27 @@ Playing sample: 1 ch, 16000 hz, 16 bit
 		<screen>
 		<![CDATA[
 tinycap netkiller.wav -D 0 -d 0 -c 1 -r 48000		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+-D  card        声卡
+
+-d  device     设备
+
+-c  channels  通道
+
+-r  rate   采样率
+
+-b  bits   pcm 位宽
+
+-p  period_size   一次中断的帧数
+
+-n  n_periods     周期数
+
+例子： tinycap /sdcard/test.pcm -D 0 -d 0 -c 4 -r 48000 -b 32 -p 768 -n 10
+
+声卡0；设备0；四通道；48K采样率；32位位宽；一帧数据存储大小；采样n次
 		]]>
 		</screen>
 	</section>
@@ -112,7 +131,7 @@ Device does not exist.
 		]]>
 		</screen>
 	</section>
-	
+
 	<section>
 		<title>/proc/asound 设备信息</title>
 		<screen>

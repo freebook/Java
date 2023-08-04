@@ -20,4 +20,5 @@
 	&chapter.android.eventbus.xml;
 	&chapter.android.singleton.xml;
 	&section.android.mqtt.xml;
+	&chapter.android.board.xml;
 	&chapter.android.faq.xml;

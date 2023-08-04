@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="board" ?>
+	<title>安卓开发版</title>
+	<section>
+		<title>rk3568</title>
+		<section>
+			<title>声卡</title>
+			<screen>
+			<![CDATA[
+rk3568_r:/storage/emulated/0 # cat /proc/asound/cards                                                   
+ 0 [rockchiphdmi   ]: rockchip_hdmi - rockchip,hdmi
+                      rockchip,hdmi
+ 1 [rockchiprk809co]: rockchip_rk809- - rockchip,rk809-codec
+                      rockchip,rk809-codec
+ 2 [UR22C          ]: USB-Audio - Steinberg UR22C
+                      Yamaha Corporation Steinberg UR22C at usb-xhci-hcd.5.auto-1, high speed			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+rk3568_r:/storage/emulated/0 # cat /proc/asound/devices                                                
+  2: [ 0- 0]: digital audio playback
+  3: [ 0]   : control
+  4: [ 1- 0]: digital audio playback
+  5: [ 1- 0]: digital audio capture
+  6: [ 1]   : control
+  7: [ 2- 0]: digital audio playback
+  8: [ 2- 0]: digital audio capture
+  9: [ 2]   : control
+ 10: [ 2- 0]: raw midi
+ 33:        : timer
+			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+rk3568_r:/storage/emulated/0 # cat /proc/asound/pcm
+00-00: fe400000.i2s-i2s-hifi i2s-hifi-0 : fe400000.i2s-i2s-hifi i2s-hifi-0 : playback 1
+01-00: fe410000.i2s-rk817-hifi rk817-hifi-0 : fe410000.i2s-rk817-hifi rk817-hifi-0 : playback 1 : capture 1
+02-00: USB Audio : USB Audio : playback 1 : capture 1			
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>
