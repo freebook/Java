@@ -105,8 +105,8 @@ String apiKey = BuildConfig.API_KEY;
 		]]>
 		</programlisting>		
 	</section>
-	<section>
-		<title></title>
+	<section id="android.config.assets">
+		<title>从 assets 目录读取配置文件</title>
 		<programlisting>
 		<![CDATA[
 import java.io.InputStream; 
@@ -138,5 +138,76 @@ serverUrl = properties.getProperty("serverUrl");
 Log.i("URL", serverUrl);
 		]]>
 		</programlisting>
+		<section>
+			<title>配置文件例子</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.album.config;
+
+import cn.netkiller.album.MainApp;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
+
+public class Config {
+    private static final String TAG = "Config";
+    private Properties properties = null;
+    public Config() {
+        try {
+            properties = new Properties();
+            InputStream inputStream = MainApp.getContext().getAssets().open("config.properties");
+            InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            properties.load(isr);
+            isr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public String getServerURI() {
+        return properties.getProperty("mqtt.serveruri").trim();
+    }
+
+    public String getUsername() {
+        return properties.getProperty("mqtt.username").trim();
+    }
+
+    public String getPassword() {
+        return properties.getProperty("mqtt.password").trim();
+    }
+
+    public String getProjectName() {
+        return properties.getProperty("project.name").trim();
+    }
+
+    public String getProjectScenes() {
+        return properties.getProperty("project.scenes").trim();
+    }
+
+    public String getProjectGroup() {
+        return properties.getProperty("project.group").trim();
+    }
+
+    public String getTopicBroadcast() {
+
+        return properties.getProperty("mqtt.topic.broadcast").trim();
+    }
+
+    public String getTopicRegister() {
+        return properties.getProperty("mqtt.topic.register").trim();
+    }
+    public String getTopicNotification(){
+        return properties.getProperty("mqtt.topic.notification").trim();
+    }
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 </section>

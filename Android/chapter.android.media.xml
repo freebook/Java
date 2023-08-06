@@ -3,6 +3,9 @@
 	<title>多媒体开发</title>
 	<section id="MediaPlayer">
 		<title>MediaPlayer</title>
+		<section>
+			<title>播放Raw下的元数据</title>
+		
 		<para>播放一段特效声音，例如铃音，可以在点击按钮德时候调用 playSound()</para>
 		<programlisting>
 		<![CDATA[
@@ -21,6 +24,137 @@
     }		
 		]]>
 		</programlisting>
+		</section>
+		<section>
+			<title>播放assets文件夹中的音乐</title>
+			<programlisting>
+			<![CDATA[
+ //需将资源文件放在assets文件夹
+ AssetFileDescriptor fd = getAssets().openFd("samsara.mp3");
+ mMediaPlayer.setDataSource(fd)
+ mMediaPlayer.prepare() 
+ 
+ AssetFileDescriptor fd = getAssets().openFd("samsara.mp3");
+ mMediaPlayer.setDataSource(fd, fd.getStartOffset(), fd.getLegth())
+ mMediaPlayer.prepare();			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>播放互联网音乐</title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.demo.skill;
+
+import android.media.MediaPlayer;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import java.io.IOException;
+
+public class Bible {
+    private static final String TAG = Bible.class.getSimpleName();
+
+    public Bible(JSONArray array) {
+        Log.i(TAG, array.toString());
+        JSONObject item = (JSONObject) array.get(1);
+        String url = item.getString("url");
+        Log.i(TAG, "Audio url: " + url);
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(url);//设置播放来源
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mediaPlayer.prepareAsync();//异步准备
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            //异步准备监听
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+
+                Log.i(TAG, "Voice异步文件时长: " + mediaPlayer.getDuration() / 1000 + "");
+                mediaPlayer.start();//播放
+            }
+        });
+        mediaPlayer.setScreenOnWhilePlaying(true);// 设置播放的时候一直让屏幕变亮
+        mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+            //文件缓冲监听
+            @Override
+            public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+
+                Log.i(TAG, "Voice进度: " + i + "% Voice文件长度" + mediaPlayer.getDuration() / 1000 + "");
+            }
+        });
+    }
+}
+ 		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>使用单例模式</title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.demo.skill;
+
+import android.media.MediaPlayer;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import java.io.IOException;
+
+public class Bible {
+    private static final String TAG = Bible.class.getSimpleName();
+
+    private static MediaPlayer mediaPlayer;
+
+    public synchronized static MediaPlayer getInstance() {
+        if (mediaPlayer == null)
+            mediaPlayer = new MediaPlayer();
+        return mediaPlayer;
+    }
+
+    public Bible(@NonNull JSONArray array) {
+//        Log.i(TAG, array.toString());
+        JSONObject item = (JSONObject) array.get(1);
+        String url = item.getString("url");
+//        Log.i(TAG, "Audio url: " + item.toString());
+        MediaPlayer mediaPlayer = Bible.getInstance();
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(url);//设置播放来源
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mediaPlayer.prepareAsync();//异步准备
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            //异步准备监听
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                Log.i(TAG, "Voice 播放异步文件，时长: " + mediaPlayer.getDuration() / 1000 + " Audio: " + item.toString());
+                mediaPlayer.start();//播放
+            }
+        });
+        mediaPlayer.setScreenOnWhilePlaying(true);// 设置播放的时候一直让屏幕变亮
+        mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+            //文件缓冲监听
+            @Override
+            public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+                Log.i(TAG, "Voice 缓冲区加载进度: " + i + "%");
+            }
+        });
+    }
+}
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="VideoView">
 		<title>VideoView 开发</title>
@@ -502,6 +636,76 @@ public class VideoViewActivity extends AppCompatActivity implements View.OnClick
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section id="android.media.SoundPool">
+		<title>SoundPool</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.sound;
+
+import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.util.Log;
+
+import cn.aigcsst.demo.ContextHolder;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+
+public class SoundPoolUtil {
+    private static final String TAG = SoundPoolUtil.class.getSimpleName();
+    private static SoundPool soundPool;
+    private static HashMap<String, Integer> soundPoolMap = new HashMap();
+
+    public static void create() {
+        if (soundPool != null) {
+            return;
+        }
+
+        int maxStreams = 3;
+        soundPool = new SoundPool.Builder().setMaxStreams(maxStreams).build();
+        //加载音频到内存
+        try {
+            AssetManager am = ContextHolder.getContext().getAssets();
+            soundPoolMap.put("唤醒提示音", soundPool.load(am.openFd("audio/wakeResponse.mp3"), 1));
+            soundPoolMap.put("未联网提示音", soundPool.load(am.openFd("audio/offline.mp3"), 1));
+            soundPoolMap.put("在", soundPool.load(am.openFd("audio/zai.wav"), 1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //资源加载完成回调
+        soundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> Log.i(TAG, "音频加载完毕，id=" + sampleId));
+    }
+
+    public static void release() {
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
+    }
+
+    public static void play(String audioName) {
+        if (soundPool == null) {
+            Log.e(TAG, "soundPool未初始化");
+            return;
+        }
+        /**
+         * 参数1：加载返回的声音Id
+         * leftVolume：左声道音量，0.0-1.0f
+         * rightVolume：右声道音量，0.0-1.0f
+         * priority：优先级
+         * loop：循环播放:  0(不循环)   -1(循环)
+         * rate：播放速率  0.5--2.0f
+         */
+        soundPool.play(soundPoolMap.get(audioName), 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+
+}
+		
+		]]>
+		</programlisting>
 	</section>
 	<section id="SurfaceView">
 		<title>SurfaceView</title>

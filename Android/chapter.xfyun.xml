@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+	<title>讯飞云</title>
+	<section>
+		<title>AIUI</title>
+		<programlisting>
+		<![CDATA[
+// 写入文本
+//                byte[] content= "你好".getBytes();
+//                String params = "data_type=text";
+//                AIUIMessage msg = new AIUIMessage(AIUIConstant.CMD_WRITE, 0, 0, "tag=write_data_1", content);
+//                mAIUIAgent.sendMessage(msg);
+
+                AIUIMessage aiuiMessage = new AIUIMessage(0, 0, 0, "", null);
+                aiuiMessage.msgType = AIUIConstant.CMD_WRITE;
+                aiuiMessage.arg1 = 0;
+                aiuiMessage.arg2 = 0;
+                // 在输入参数中设置tag，则对应结果中也将携带该tag，可用于关联输入输出
+                aiuiMessage.params = "data_type=text,tag=text-tag";
+                aiuiMessage.data = "天气".getBytes(StandardCharsets.UTF_8);
+                mAIUIAgent.sendMessage(aiuiMessage);		
+		]]>
+		</programlisting>
+	</section>
+</chapter>
