@@ -334,7 +334,7 @@ public class VideoViewActivity extends AppCompatActivity {
 			]]>
 			</programlisting>
 		</section>
-		<section id="">
+		<section>
 			<title>更新进度条</title>
 			<programlisting>
 			<![CDATA[
@@ -633,6 +633,56 @@ public class VideoViewActivity extends AppCompatActivity implements View.OnClick
     }
 
 }
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>循环播放</title>
+			<programlisting>
+			<![CDATA[
+        String uri = "android.resource://" + getPackageName() + "/" + R.raw.vfo1;
+        VideoView videoView = (VideoView) this.findViewById(R.id.videoView);
+        videoView.setMediaController(new MediaController(this));
+        videoView.setVideoURI(Uri.parse(uri));
+        videoView.start();
+        videoView.requestFocus();
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.d(TAG, "我播完了");
+                // 下一个视频
+//                videoView.setVideoURI(Uri.parse(uri));
+                videoView.seekTo(10);
+                videoView.start();
+            }
+        });			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>静音播放</title>
+			<para>静音播放，只需设置音量位 0，使用这个方法 mediaPlayer.setVolume(0f, 0f);</para>
+			<programlisting>
+			<![CDATA[
+        String uri = "android.resource://" + getPackageName() + "/" + R.raw.vfo1;
+        VideoView videoView = (VideoView) this.findViewById(R.id.videoView);
+        videoView.setMediaController(new MediaController(this));
+        videoView.setVideoURI(Uri.parse(uri));
+        videoView.start();
+        videoView.requestFocus();
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                videoView.seekTo(2);
+                videoView.start();
+            }
+        });
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.setVolume(0f, 0f);
+            }
+        });			
 			]]>
 			</programlisting>
 		</section>

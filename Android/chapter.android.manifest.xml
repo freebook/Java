@@ -79,4 +79,85 @@
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>全屏-无标题</title>
+		<para>首先定义主题</para>
+		<programlisting>
+		<![CDATA[
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Main.Fullscreen" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>//无ActionBar
+        <item name="windowNoTitle">true</item> //无标题
+        <item name="android:windowFullscreen">true</item> //全屏
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:windowBackground">@drawable/fo2</item>//背景图
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
+    </style>
+</resources>
+		]]>
+		</programlisting>
+		<para>Layout</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="cn.aigcsst.demo.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="matrix"
+        app:srcCompat="@drawable/fo2"
+        tools:ignore="MissingConstraints" />
+</androidx.constraintlayout.widget.ConstraintLayout>		
+		]]>
+		</programlisting>
+		<para>AndroidManifest.xml 切换主题</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:name="cn.aigcsst.demo.ContextHolder"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Demo"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Main.Fullscreen"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="cn.aigcsst.demo.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+    </application>
+
+</manifest>		
+		]]>
+		</programlisting>
+	</section>
+	
 </chapter>

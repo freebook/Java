@@ -1,6 +1,6 @@
-<chapter id="index"><?dbhtml dir="layout" ?>
+<section id="layout">
 	<title>样式布局</title>
-	<section>
+	<section id="layout.ui">
 		<title>切换UI</title>
 		<section id="setContentView">
 			<title>定义 UI </title>
@@ -66,16 +66,6 @@ String name=bundle.getString("name");
 	</section>
 
 
-	<section id="GardView">
-		<title>GardView</title>
-	</section>
-	<section id="GridView">
-		<title>GridView</title>
-	</section>
-
-	<section id="ImageView">
-		<title>ImageView</title>
-	</section>
 	<section id="Fragment">
 		<title>Fragment</title>
 		<section>
@@ -122,7 +112,7 @@ ResolveInfo resolveInfo = getActivity().getPackageManager().resolveActivity(inte
 			]]>
 			</programlisting>
 		</section>
-		
+
 	</section>
 
-</chapter>
+</section>
