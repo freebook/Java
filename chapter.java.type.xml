@@ -1816,4 +1816,54 @@ byte[] sum2 = list1.ToArray();
 			</programlisting>
 		</section>
 	</section>
+	<section>
+		<title>布尔型 Boolean</title>
+		<para>将boolean转换成Boolean</para>
+		<programlisting>
+		<![CDATA[
+		Boolean b1 = new Boolean(true);
+		Boolean b2 = Boolean.valueOf(true);		
+		]]>
+		</programlisting>
+		<para>将Boolean转boolean</para>
+		<programlisting>
+		<![CDATA[
+		Boolean b3=new Boolean(true);
+		boolean b4=b3.booleanValue();
+		]]>
+		</programlisting>
+		<para>将String转Boolean</para>
+		<programlisting>
+		<![CDATA[
+		String s="true";
+		Boolean bo1=new Boolean(s);
+		Boolean bo2=Boolean.valueOf(s);
+		]]>
+		</programlisting>
+		<para>将Boolean转String</para>
+		<programlisting>
+		<![CDATA[
+		Boolean boo=new Boolean(true);
+		String s1=boo. toString();
+		String s2=Boolean.toString(boo);
+		String s3=String.valueOf(boo);
+		]]>
+		</programlisting>
+		<para>boolean转String</para>
+		<programlisting>
+		<![CDATA[
+		boolean  b =true;
+		String st1 = String.valueOf(b);
+		]]>
+		</programlisting>
+		<para>String转boolean</para>
+		<programlisting>
+		<![CDATA[
+		String str="true";
+		boolean boo11=Boolean.parseBoolean(str);
+		Boolean boo12=new Boolean(str);
+		boolean bool3=boo12.booleanValue();		
+		]]>
+		</programlisting>
+	</section>
 </section>
