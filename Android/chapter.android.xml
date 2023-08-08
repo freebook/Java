@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	&chapter.android.studio.xml;
 	&chapter.android.manifest.xml;
+	&chapter.android.activity.xml;
 	&chapter.android.device.xml;
 	&chapter.android.palette.xml;
 	&chapter.android.schedule.xml;

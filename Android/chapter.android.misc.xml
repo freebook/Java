@@ -20,9 +20,11 @@
 	<section>
 		<title>Caused by: java.net.UnknownServiceException: CLEARTEXT
 			communication to 47.100.253.187 not permitted by network security
-			policy</title>
+			policy
+		</title>
 		<para>在AndroidManifest.xml的文件的application节点中增加
-			android:usesCleartextTraffic="true"</para>
+			android:usesCleartextTraffic="true"
+		</para>
 		<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
@@ -73,5 +75,9 @@
 </manifest>
 			]]>
 		</screen>
+	</section>
+	<section id="ButterKnife">
+		<title>Butter Knife</title>
+		<para>http://jakewharton.github.io/butterknife/</para>
 	</section>
 </chapter>

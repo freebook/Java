@@ -3,6 +3,7 @@
 <!ENTITY chapter.android.xml		 		SYSTEM "chapter.android.xml">
 <!ENTITY chapter.android.studio.xml	 		SYSTEM "chapter.android.studio.xml">
 <!ENTITY chapter.android.manifest.xml 		SYSTEM "chapter.android.manifest.xml">
+<!ENTITY chapter.android.activity.xml 		SYSTEM "chapter.android.activity.xml">
 <!ENTITY chapter.android.palette.xml 		SYSTEM "chapter.android.palette.xml">
 <!ENTITY section.android.layout.xml 		SYSTEM "section.android.layout.xml">
 <!ENTITY section.android.ui.xml	 			SYSTEM "section.android.ui.xml">

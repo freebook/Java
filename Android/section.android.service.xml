@@ -488,7 +488,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 }
-			
 			]]>
 			</programlisting>
 		</section>
@@ -515,4 +514,15 @@ handler.post(() -> {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>Service 中启动 Activity</title>
+		<programlisting>
+		<![CDATA[
+	Intent intent = new Intent(getBaseContext(), FullscreenActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    getApplication().startActivity(intent);
+		]]>
+		</programlisting>
+	</section>
+	
 </chapter>

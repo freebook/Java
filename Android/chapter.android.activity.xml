@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="activity" ?>
+	<title>Activity</title>
+
+	<section id="setContentView">
+		<title>定义 UI </title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     <application android:label="Test">
+ 
+		...
+		...
+        <activity android:name=".WriteActivity"></activity>
+
+    </application>
+
+</manifest>		
+		]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+setContentView(R.layout.view);			
+			]]>
+		</programlisting>
+	</section>
+
+	<section>
+		<title>显式四种跳转方式</title>
+		<programlisting>
+		<![CDATA[
+    Intent intent = new Intent(MainActivity.this,HomeActivity.class);
+    startActivity(intent);
+
+    Intent intent = new Intent();
+    intent.setClass(MainActivity.this,HomeActivity.class);
+    startActivity(intent);
+
+    Intent intent = new Intent();
+    ComponentName componentName = new ComponentName(MainActivity.this,HomeActivity.class);
+    intent.setComponent(componentName);
+    startActivity(intent);
+
+
+	startActivity(new Intent(MainActivity.this,HomeActivity.class));
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>定时关闭</title>
+		<programlisting>
+		<![CDATA[
+   @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Toast.makeText(getApplicationContext(), "5秒后关闭", Toast.LENGTH_SHORT).show();
+        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            public void run() {
+                //结束本界面并跳转到收派员列表的界面
+                finish();
+            }
+        }, 5000);
+
+    }
+		]]>
+		</programlisting>
+	</section>
+	<section id="startActivity">
+		<title>startActivity()</title>
+
+		<para></para>
+		<programlisting>
+		<![CDATA[
+		Button button = (Button) findViewById(R.id.writeButton);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                setContentView(R.layout.activity_write);
+                Intent intent = new Intent(MainActivity.this,WriteActivity.class);
+                startActivity(intent);
+            }
+        });		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Intent">
+		<title>Activity 间数据传递</title>
+		<section>
+			<title>Intent 方式</title>
+			<para>设置数据</para>
+			<programlisting>
+			<![CDATA[
+Intent intent= new Intent();
+intent.putExtra("name","zhangsan");			
+			]]>
+			</programlisting>
+			<para>取出数据</para>
+			<programlisting>
+			<![CDATA[
+ Intent intent = getIntent();
+ String name=intent.getStringExtra("name");			
+			]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>Bundle 方式</title>
+
+			<programlisting>
+		<![CDATA[
+Intent it = new Intent(Activity.Main.this, Activity2.class);
+Bundle bundle=new Bundle();
+bundle.putString("name", "This is from MainActivity!");
+it.putExtras(bundle);
+startActivity(it);		
+		]]>
+			</programlisting>
+			<para>获取数据</para>
+			<programlisting>
+		<![CDATA[
+Bundle bundle=getIntent().getExtras();
+String name=bundle.getString("name");		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Flag 属性</title>
+			<para>Flag属性用来设定Activity的启动模式</para>
+			<programlisting>
+			<![CDATA[
+Intent intent = new Intent();
+intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			]]>
+			</programlisting>
+			<para>与清单文件中的设置launchMode属性值相同</para>
+			<programlisting>
+			<![CDATA[
+Intent.FLAG_ACTIVITY_CLEAR_TOP = singleTask
+Intent.FLAG_ACTIVITY_SINGLE_TOP = singleTop
+Intent.FLAG_ACTIVITY_NEW_TASK = singleInstance			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>返回值</title>
+			<para>有返回值的跳转</para>
+			<programlisting>
+			<![CDATA[
+Intent intent = new Intent(MainActivity.this,HomeActivity.class);
+intent.putExtra("nickname","netkiller");
+// 第一个参数Intent对象, 第二个参数 RequestCode
+startActivityForResult(intent,REQUSET_CODE);
+			
+			]]>
+			</programlisting>
+			<para>第一个参数 是不是我要的返回结果  第二个参数 是谁返回给我的 第三个参数 返回的附加信息</para>
+			<programlisting>
+			<![CDATA[
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if(requestCode == REQUSET_CODE && resultCode == HomeActivity.RESULT_CODE){
+            String msg = data.getStringExtra("msg");
+            Toast.makeText(MainActivity.this,msg,Toast.LENGTH_SHORT).show();
+        }
+    }			
+			]]>
+			</programlisting>
+			<para>返回结果</para>
+			<programlisting>
+			<![CDATA[
+Intent intent = new Intent();
+Intent oldIntent = getIntent();
+String nickname = oldIntent.getStringExtra("nickname");
+if(TextUtils.isEmpty(nickname)){
+    intent.putExtra("msg",nickname);
+}else{
+    intent.putExtra("msg","Neo");
+}
+
+setResult(RESULT_CODE,intent);
+//关闭页面
+finish();
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="Fragment">
+		<title>Fragment</title>
+		<section>
+			<title>在 Fragment 中使用 findViewById</title>
+			<tip>
+				<para>使用 getView() 方法返回当前 fragment 的根视图。</para>
+				<programlisting>
+				<![CDATA[
+Button btn = getView().findViewById(R.id.btn);	
+				]]>
+				</programlisting>
+			</tip>
+		</section>
+		<section>
+			<title>在 Fragment 中使用 Intent 跳转</title>
+			<programlisting>
+			<![CDATA[
+Intent intent = new Intent(getActivity(), MyService.class);
+startActivity(intent);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Fragment 中调用 getPackageManager()</title>
+			<programlisting>
+			<![CDATA[
+ResolveInfo resolveInfo = getActivity().getPackageManager().resolveActivity(intent, 0);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>在 Fragment 中使用 runOnUiThread</title>
+			<programlisting>
+			<![CDATA[
+    private void showResponse(final String response) {
+        //在子线程中更新UI
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text_dashboard.setText(response);
+            }
+        });
+    }
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+</chapter>
