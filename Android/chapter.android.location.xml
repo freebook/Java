@@ -2,7 +2,7 @@
 <chapter id="android.location">
 	<title>定位</title>
 	<section>
-		<title></title>
+		<title>GPS + 网络 定位</title>
 
 		<section id="location.manifest">
 			<title>manifest 权限配置</title>

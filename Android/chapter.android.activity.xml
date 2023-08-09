@@ -57,8 +57,8 @@ setContentView(R.layout.view);
         super.onCreate(savedInstanceState);
 
         Toast.makeText(getApplicationContext(), "5秒后关闭", Toast.LENGTH_SHORT).show();
-        final Timer t = new Timer();
-        t.schedule(new TimerTask() {
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             public void run() {
                 //结束本界面并跳转到收派员列表的界面
                 finish();
@@ -66,6 +66,33 @@ setContentView(R.layout.view);
         }, 5000);
 
     }
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>恢复触发</title>
+		<para>程序回到桌面，例如设置WI-FI，让步在回到程序，安卓会调用 onResume()</para>
+		<programlisting>
+		<![CDATA[
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.other();
+    }		
+		]]>
+		</programlisting>
+	</section>
+	
+	<section>
+		<title>返回触发</title>
+		<programlisting>
+		<![CDATA[
+    @Override
+    public void onBackPressed() {
+        // code here to show dialog
+        super.onBackPressed();  // optional depending on your needs
+        ...
+    }		
 		]]>
 		</programlisting>
 	</section>
