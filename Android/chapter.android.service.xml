@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="Service 和 Toast">
 		<title>Service 和 Toast</title>
 		<programlisting>
 		<![CDATA[
@@ -514,7 +514,7 @@ handler.post(() -> {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="Service 中启动 Activity">
 		<title>Service 中启动 Activity</title>
 		<programlisting>
 		<![CDATA[
