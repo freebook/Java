@@ -682,7 +682,7 @@ public class VideoViewActivity extends AppCompatActivity implements View.OnClick
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.setVolume(0f, 0f);
             }
-        });			
+        });
 			]]>
 			</programlisting>
 		</section>

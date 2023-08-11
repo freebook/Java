@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="graphics">
+	<title>图形开发</title>
+	<section id="graphics.paint">
+		<title>Paint</title>
+		<programlisting>
+		<![CDATA[
+        paint = new Paint();
+        paint.setColor(Color.GREEN);
+        paint.setColor(0xFF00F8C1);
+        paint.setStrokeWidth(1);
+		]]>
+		</programlisting>
+	</section>
+</chapter>

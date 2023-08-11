@@ -19,6 +19,7 @@
 	&chapter.android.nfc.xml;
 	&chapter.android.eventbus.xml;
 	&chapter.android.singleton.xml;
+	&chapter.android.graphics.xml;
 	&section.android.mqtt.xml;
 	&chapter.android.board.xml;
 	&chapter.android.faq.xml;
