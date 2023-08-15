@@ -28,14 +28,9 @@
 <!ENTITY chapter.android.location.xml 		SYSTEM "chapter.android.location.xml">
 <!ENTITY chapter.android.phone.xml			SYSTEM "chapter.android.phone.xml">
 <!ENTITY chapter.android.broadcast.xml		SYSTEM "chapter.android.broadcast.xml">
-<<<<<<< HEAD
-<!ENTITY chatper.android.notification.xml	SYSTEM "chatper.android.notification.xml">
-<!ENTITY chapter.android.service.xml		SYSTEM "chatper.android.service.xml">
-<!ENTITY chapter.android.graphics.xml		SYSTEM "chapter.android.graphics.xml">
-=======
 <!ENTITY chapter.android.notification.xml	SYSTEM "chapter.android.notification.xml">
 <!ENTITY chapter.android.service.xml		SYSTEM "chapter.android.service.xml">
->>>>>>> branch 'master' of git@github.com:freebook/Java.git
+<!ENTITY chapter.android.graphics.xml		SYSTEM "chapter.android.graphics.xml">
 <!ENTITY chapter.android.eventbus.xml		SYSTEM "chapter.android.eventbus.xml">
 <!ENTITY chapter.android.singleton.xml		SYSTEM "chapter.android.singleton.xml">
 <!ENTITY section.android.mqtt.xml			SYSTEM "section.android.mqtt.xml">
