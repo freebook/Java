@@ -12,4 +12,20 @@
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>AnimationDrawable</title>
+		<programlisting>
+		<![CDATA[
+    private int getTotalDuration(AnimationDrawable animationDrawable) {
+        int totalDuration = 0;
+        for (int i = 0; i < animationDrawable.getNumberOfFrames(); i++) {
+            totalDuration += animationDrawable.getDuration(i);
+        }
+        return totalDuration;
+    }		
+		]]>
+		</programlisting>
+	</section>
+	
+	
 </chapter>

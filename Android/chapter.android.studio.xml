@@ -247,7 +247,36 @@ Installed as /Users/neo/Library/Android/sdk/platform-tools/adb
 Running on Darwin 23.0.0 (arm64)		
 		]]>
 		</screen>
-		<section>
+		<section id="adb.devices">
+			<title>设备管理</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb devices
+List of devices attached
+0123456789ABCDEF        device
+CFE6R21625003544        device
+			]]>
+			</screen>
+			<para>查看详细信息</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb devices -l
+List of devices attached
+0123456789ABCDEF       device usb:1310720X product:full_aiv8167sm3_bsp model:aiv8167sm3_bsp device:aiv8167sm3_bsp transport_id:2
+CFE6R21625003544       device usb:1114112X product:MRR-W29 model:MRR_W29 device:HWMRR-Q transport_id:1
+			]]>
+			</screen>
+		</section>
+		<section id="adb.shell">
+			<title>Shell</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb -s CFE6R21625003544 shell
+HWMRR-Q:/ $ 			
+			]]>
+			</screen>
+		</section>
+		<section id="adb.shell.settings">
 			<title>设备 ID</title>
 			<screen>
 			<![CDATA[
@@ -256,7 +285,7 @@ neo@MacBook-Pro-M2 ~> adb shell settings get secure android_id
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="adb.shell.getprop">
 			<title>查看安卓版本</title>
 			<screen>
 			<![CDATA[
@@ -265,6 +294,16 @@ neo@MacBook-Pro-M2 ~> adb shell getprop ro.build.version.release
 			]]>
 			</screen>
 		</section>
+		<section id="adb.logcat">
+			<title>Logcat</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~> adb logcat
+neo@MacBook-Pro-M2 ~> adb -s CFE6R21625003544 logcat			
+			]]>
+			</screen>
+		</section>
+		
 		<section>
 			<title>查看 IP 地址</title>
 			<screen>

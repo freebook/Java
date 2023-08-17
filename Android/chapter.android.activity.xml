@@ -52,7 +52,7 @@ setContentView(R.layout.view);
 		<title>定时关闭</title>
 		<programlisting>
 		<![CDATA[
-   @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -66,6 +66,17 @@ setContentView(R.layout.view);
         }, 5000);
 
     }
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+	new Handler().postDelayed(new Runnable() {
+        @Override
+        public void run() {
+            view.close();
+        }
+    }, 10000);		
 		]]>
 		</programlisting>
 	</section>

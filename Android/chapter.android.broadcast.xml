@@ -302,8 +302,8 @@ public class MainActivity extends AppCompatActivity {
 	</section>
 	<section id="broadcast.local">
 		<title>本地广播</title>
-		<para>上面讲的系统广播是全局的，任何APP都能接收到你的广播，这样就很容易引起APP的安全性问题。很多时候我们只想接收来自本应用程序发出的广播。
-		</para>
+		<para>注意：LocalBroadcastManager 已经被废弃</para>
+		<para>上面讲的系统广播是全局的，任何APP都能接收到你的广播，这样就很容易引起APP的安全性问题。很多时候我们只想接收来自本应用程序发出的广播。</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.broadcast;
