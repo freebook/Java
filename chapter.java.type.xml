@@ -323,7 +323,9 @@ date = date.replace(/(.{4})/, "$1-");
 date = date.replace(/(.{7})/, "$1-");				
 				]]>
 				</programlisting>
-				<para>用正则处理 Alertmanager 日期 rfc3339 格式 2021-08-23T01:30:30.2206015+08:00，Alertmanager 日期格式中有7位数的毫秒，使用 SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX") 无法正常读取。</para>
+				<para>用正则处理 Alertmanager 日期 rfc3339 格式
+					2021-08-23T01:30:30.2206015+08:00，Alertmanager 日期格式中有7位数的毫秒，使用
+					SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX") 无法正常读取。</para>
 				<programlisting>
 				<![CDATA[
 package cn.netkiller.alertmanager;
@@ -367,36 +369,41 @@ Mon Aug 23 01:30:30 CST 2021
 				</screen>
 			</section>
 
-		<section id="string.replaceAll">
-			<title>Ascii</title>
-			<programlisting>
+			<section id="string.replaceAll">
+				<title>Ascii</title>
+				<programlisting>
 			<![CDATA[
 		String string = "佛山市123南海区ABC精密abc机械有限公司􁵪􁻠􁴹􄲀􀞜􀨨,";
 
 		String clean = string.replaceAll("\\P{Print}", "");
 		System.out.println(clean);			
 			]]>
-			</programlisting>
-		</section><section id="string.unicode">
-			<title>字符串处理，删除中文以外的字符</title>
-			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="string.unicode">
+				<title>字符串处理，删除中文以外的字符</title>
+				<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html
+				</para>
+				<programlisting>
 			<![CDATA[
 	String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
 	System.out.println(string.replaceAll("[^\u4e00-\u9fa5]", ""));			
 			]]>
-			</programlisting>
-		</section><section id="string.regex">
-			<title>取出字符串中的中文字符</title>
-			<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="string.regex">
+				<title>取出字符串中的中文字符</title>
+				<para>Unicode 码表 https://www.ssec.wisc.edu/~tomw/java/unicode.html
+				</para>
+				<programlisting>
 			<![CDATA[
 		String string = "2017-12-18 netkiller http://www.netkiller.cn -  网站正常";
 		String regex = "[\u4e00-\u9fa5]";
 		System.out.println(string.replaceAll(regex, ""));			
 			]]>
-			</programlisting>
-		</section></section>
+				</programlisting>
+			</section>
+		</section>
 		<section id="substring">
 			<title>substring</title>
 			<programlisting>
@@ -424,21 +431,27 @@ hell
 			<title>string to timestamp</title>
 			<para>Timestamp转化为String:</para>
 			<programlisting>
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //定义格式，不显示毫秒
-				Timestamp now = new Timestamp(System.currentTimeMillis());
+				SimpleDateFormat df = new
+				SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //定义格式，不显示毫秒
+				Timestamp now =
+				new Timestamp(System.currentTimeMillis());
 				//获取系统当前时间
-				String str = df.format(now);
+				String str =
+				df.format(now);
 			</programlisting>
 			<para>String转化为Timestamp:</para>
 			<programlisting>
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String time = df.format(new Date());
+				SimpleDateFormat df = new
+				SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String time = df.format(new
+				Date());
 				Timestamp ts = Timestamp.valueOf(time);
 			</programlisting>
 		</section>
 		<section id="String.strip">
 			<title>String.strip</title>
-			<para>java11对String类新增了strip，stripLeading以及stripTrailing方法，除了strip相关的方法还新增了isBlank、lines、repeat(int)等方法</para>
+			<para>java11对String类新增了strip，stripLeading以及stripTrailing方法，除了strip相关的方法还新增了isBlank、lines、repeat(int)等方法
+			</para>
 			<screen>
 			<![CDATA[
 	@Test
@@ -480,7 +493,7 @@ public class Test {
 		</section>
 		<section id="string.split">
 			<title>分割字符串</title>
-		
+
 			<screen>
 			<![CDATA[
         String[] string = topic.split("/");
@@ -500,7 +513,7 @@ public class Test {
             System.out.println(retval);
         }                
 			]]>
-			</screen>	
+			</screen>
 		</section>
 	</section>
 	<section id="long">
@@ -1276,7 +1289,9 @@ public class Test {
 }			
 			]]>
 			</programlisting>
-			<para>发现输出有问题 100000.000000000008180305391403130954586231382563710212707519531250000000000</para>
+			<para>发现输出有问题
+				100000.000000000008180305391403130954586231382563710212707519531250000000000
+			</para>
 			<para>换种方法</para>
 			<programlisting>
 			<![CDATA[
@@ -1816,7 +1831,7 @@ byte[] sum2 = list1.ToArray();
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="java.boolean">
 		<title>布尔型 Boolean</title>
 		<para>将boolean转换成Boolean</para>
 		<programlisting>

@@ -7,7 +7,7 @@
 <!ENTITY chapter.android.palette.xml 		SYSTEM "chapter.android.palette.xml">
 <!ENTITY section.android.layout.xml 		SYSTEM "section.android.layout.xml">
 <!ENTITY section.android.ui.xml	 			SYSTEM "section.android.ui.xml">
-<!ENTITY section.android.ui.button.xml 		SYSTEM "section.android.ui.button.xml">
+<!ENTITY section.android.widgets.xml 		SYSTEM "section.android.widgets.xml">
 
 <!ENTITY chapter.android.device.xml		 	SYSTEM "chapter.android.device.xml">
 <!ENTITY section.android.device.sound.xml 	SYSTEM "section.android.device.sound.xml">

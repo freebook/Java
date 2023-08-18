@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Widgets</title>
+	<section id="ImageView">
+		<title>ImageView</title>
+		<para>全屏显示</para>
+		<programlisting>
+			<![CDATA[
+android:scaleType="matrix"
+			]]>
+		</programlisting>
+		<para>水平居中显示 android:layout_gravity="center"</para>
+		<screen>
+			<![CDATA[
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/niboer"
+        tools:ignore="MissingConstraints" />			
+			]]>
+		</screen>
+		<section>
+			<title>唱片播放效果（旋转PNG图片）</title>
+			<para>旋转 PNG 动画效果，用于显示唱片播放效果</para>
+			<section>
+				<title>UI 布局</title>
+				<programlisting>
+				<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="cn.aigcsst.album.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/fo2"
+        tools:ignore="MissingConstraints" />
+
+    <cn.aigcsst.album.view.SoundWaveView
+        android:id="@+id/sound_wave_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView" />
+
+    <ImageView
+        android:id="@+id/imageViewWan"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/sound_wave_view"
+        app:layout_constraintEnd_toEndOf="@+id/sound_wave_view"
+        app:layout_constraintStart_toStartOf="@+id/sound_wave_view"
+        app:srcCompat="@drawable/wan"
+        tools:ignore="MissingConstraints" />
+</androidx.constraintlayout.widget.ConstraintLayout>				
+				]]>
+				</programlisting>
+				
+			</section>
+			<section>
+				<title>旋转动画效果文件</title>
+				<para>创建旋转动画效果 res/anim/rotate.xml</para>
+				<programlisting>
+				<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android">
+    <rotate
+        android:duration="2000"
+        android:fromDegrees="0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:repeatCount="-1"
+        android:toDegrees="359"></rotate>
+</rotate>				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>启动旋转效果</title>
+				<programlisting>
+				<![CDATA[
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        LinearInterpolator linearInterpolator = new LinearInterpolator();
+        rotateAnimation.setInterpolator(linearInterpolator);
+        View imageViewWan = findViewById(R.id.imageViewWan);
+        imageViewWan.startAnimation(rotateAnimation);				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		
+	</section>
+</section>

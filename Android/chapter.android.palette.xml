@@ -2,30 +2,8 @@
 <chapter id="index"><?dbhtml dir="palette" ?>
 	&section.android.layout.xml;
 	&section.android.ui.xml;
-	<section>
-		<title>Widgets</title>
-		<section id="ImageView">
-			<title>ImageView</title>
-			<para>全屏显示</para>
-			<programlisting>
-			<![CDATA[
-android:scaleType="matrix"
-			]]>
-			</programlisting>
-			<para>水平剧中显示 android:layout_gravity="center"</para>
-			<screen>
-			<![CDATA[
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        app:srcCompat="@drawable/niboer"
-        tools:ignore="MissingConstraints" />			
-			]]>
-			</screen>
-		</section>
-	</section>
+	&section.android.widgets.xml;
+	
 	<section>
 		<title>Legacy</title>
 		<section id="GardView">

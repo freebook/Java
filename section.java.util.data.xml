@@ -119,7 +119,8 @@ public class Test {
 			A A B E F G C D
 			A B C D E F G
 			A B C D E F G
-			A B E F G C D
+			A B E
+			F G C D
 		</screen>
 		<section>
 			<title>静态 List</title>
@@ -209,8 +210,46 @@ public class TestList {
 
 	<section id="ArrayList">
 		<title>ArrayList</title>
-		<para>判断元素是否存在</para>
-		<programlisting>
+		<section>
+			<title>初始化</title>
+			<para>最常用的初始化方式,先创建一个list1，再给list1赋值。</para>
+			<programlisting>
+			<![CDATA[
+List<String> list1 = new ArrayList<String>();
+list1.add("apple");
+list1.add("banana");
+list1.add("orange");
+			]]>
+			</programlisting>
+			<para>使用一个List来初始化</para>
+			<programlisting>
+			<![CDATA[
+List<String> list2 = new ArrayList<String>(Arrays.asList("apple", "banana", "orange"));			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+List<String> list3 = new ArrayList<String>(Collections.nCopies(2, "orange"));
+			]]>
+			</programlisting>
+			<para>使用匿名内部类来初始化</para>
+			<programlisting>
+			<![CDATA[
+List<String> list4 = new ArrayList<String>() {
+     {
+         add("apple");
+         add("banana");
+         add("orange");
+     }
+}; 	
+			]]>
+			</programlisting>	
+		</section>
+		<section>
+			<title>判断元素是否存在</title>
+			<para>判断元素是否存在</para>
+			<programlisting>
 		<![CDATA[
 import java.util.ArrayList;
 
@@ -232,9 +271,13 @@ public class arraylist {
 
 }
 		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
+			</programlisting>
+		</section>
+
+		<section>
+			<title>循环打印</title>
+			<programlisting>
+			<![CDATA[
 package cn.netkiller.type;
 
 import java.util.ArrayList;
@@ -276,11 +319,14 @@ public class ArrayListExample {
 	}
 
 }
-		]]>
-		</programlisting>
-		<para>ArrayList 转为 Array</para>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>ArrayList to Array</title>
+			<para>ArrayList 转为 Array</para>
+			<programlisting>
+			<![CDATA[
 		String[] array = {"/bin/sh","-c"};
 		List<String> list = new ArrayList<String>(Arrays.asList(array));
 	    list.add("command");
@@ -288,8 +334,10 @@ public class ArrayListExample {
 	   
 	    String[] command = (String[]) list.toArray(new String[0]);
 	    System.out.println(Arrays.toString(command));
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+
+		</section>
 		<section>
 			<title>ArrayList to String</title>
 			<programlisting>
@@ -304,6 +352,7 @@ public class ArrayListExample {
 	    		]]>
 			</programlisting>
 		</section>
+
 		<section>
 			<title>Array to List</title>
 			<programlisting>
@@ -892,7 +941,9 @@ numbers.stream().map( i -> i*i).forEach(System.out::println);
 		</section>
 		<section>
 			<title>limit/skip</title>
-			<para>limit 返回 Stream 的前面 n 个元素；skip 则是扔掉前 n 个元素。以下代码片段使用 limit 方法保理4个元素：</para>
+			<para>limit 返回 Stream 的前面 n 个元素；skip 则是扔掉前 n 个元素。以下代码片段使用 limit
+				方法保理4个元素：
+			</para>
 			<programlisting>
 		<![CDATA[
 List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
@@ -926,7 +977,8 @@ numbers.stream().distinct().forEach(System.out::println);
 
 		<section>
 			<title>forEach</title>
-			<para>Stream 提供了方法 'forEach' 来迭代流中的每个数据。以下代码片段使用 forEach 输出了10个随机数：</para>
+			<para>Stream 提供了方法 'forEach' 来迭代流中的每个数据。以下代码片段使用 forEach 输出了10个随机数：
+			</para>
 			<programlisting>
 		<![CDATA[
 Random random = new Random();
@@ -997,7 +1049,9 @@ Stream s = strings.stream().filter(string -> string.length()<= 6).map(String::le
 		</section>
 		<section id="Collectors.teeing">
 			<title>Collectors.teeing()</title>
-			<para>teeing 收集器已公开为静态方法Collectors::teeing。该收集器将其输入转发给其他两个收集器，然后将它们的结果使用函数合并。</para>
+			<para>teeing
+				收集器已公开为静态方法Collectors::teeing。该收集器将其输入转发给其他两个收集器，然后将它们的结果使用函数合并。
+			</para>
 			<programlisting>
 		<![CDATA[
 package cn.netkiller.demo;
@@ -1080,7 +1134,9 @@ Optional.of("javastack").orElseThrow(); // javastack
 		</screen>
 		<section id="Optional.of()">
 			<title>of() 为非null的值创建一个Optional。</title>
-			<para>of方法通过工厂方法创建Optional类。需要注意的是，创建对象时传入的参数不能为null。如果传入参数为null，则抛出NullPointerException 。</para>
+			<para>of方法通过工厂方法创建Optional类。需要注意的是，创建对象时传入的参数不能为null。如果传入参数为null，则抛出NullPointerException
+				。
+			</para>
 			<programlisting>
 		<![CDATA[
 		Optional<String> name = Optional.of("netkiller");
@@ -1098,7 +1154,8 @@ Optional<String> someNull = Optional.of(null);
 			</programlisting>
 		</section>
 		<section id="Optional.ofNullable()">
-			<title>ofNullable() 为指定的值创建一个Optional，如果指定的值为null，则返回一个空的Optional。</title>
+			<title>ofNullable() 为指定的值创建一个Optional，如果指定的值为null，则返回一个空的Optional。
+			</title>
 			<programlisting>
 		<![CDATA[
 		Optional<String> name = Optional.ofNullable("netkiller");
@@ -1329,7 +1386,8 @@ public class OptionalTest {
 		</section>
 		<section id="Optional.map()">
 			<title>map() 方法用来对Optional实例的值执行一系列操作</title>
-			<para>map方法用来对Optional实例的值执行一系列操作。通过一组实现了Function接口的lambda表达式传入操作。map方法示例如下：</para>
+			<para>map方法用来对Optional实例的值执行一系列操作。通过一组实现了Function接口的lambda表达式传入操作。map方法示例如下：
+			</para>
 			<programlisting>
 		<![CDATA[
 	Optional<String> name = Optional.ofNullable("netkiller");
