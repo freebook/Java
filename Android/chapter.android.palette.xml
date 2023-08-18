@@ -12,10 +12,16 @@
 android:scaleType="matrix"
 			]]>
 			</programlisting>
-			<para></para>
+			<para>水平剧中显示 android:layout_gravity="center"</para>
 			<screen>
 			<![CDATA[
-			
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/niboer"
+        tools:ignore="MissingConstraints" />			
 			]]>
 			</screen>
 		</section>
