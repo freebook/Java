@@ -25,7 +25,16 @@ setContentView(R.layout.view);
 			]]>
 		</programlisting>
 	</section>
-
+	<section>
+		<title>隐藏虚拟键</title>
+		<programlisting>
+		<![CDATA[
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        getWindow().getDecorView().setSystemUiVisibility(uiOptions);		
+		]]>
+		</programlisting>
+	</section>
+	
 	<section>
 		<title>显式四种跳转方式</title>
 		<programlisting>

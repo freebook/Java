@@ -303,10 +303,11 @@ neo@MacBook-Pro-M2 ~> adb -s CFE6R21625003544 logcat
 			]]>
 			</screen>
 		</section>
-		
 		<section>
-			<title>查看 IP 地址</title>
-			<screen>
+			<title>网络相关</title>
+			<section>
+				<title>查看 IP 地址</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro-M2 ~> adb shell ifconfig
 wlan0     Link encap:Ethernet  HWaddr c0:84:7d:2b:3c:24
@@ -334,20 +335,33 @@ eth0      Link encap:Ethernet  HWaddr 86:7a:05:cc:ae:72
           RX bytes:0 TX bytes:508 
           Interrupt:42 			
 			]]>
-			</screen>
-			<para>只查看无线 IP 地址</para>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>无线 IP 地址</title>
+				<para>只查看无线 IP 地址</para>
+				<screen>
 			<![CDATA[
 adb shell ifconfig wlan0
 			]]>
-			</screen>
-			<para>查看 MAC 地址</para>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>Mac 地址</title>
+				<screen>
+				<![CDATA[
+rk3568_r:/ $ cat /sys/class/net/wlan0/address
+30:7b:c9:0f:12:b9				
+				]]>
+				</screen>
+				<para>查看 MAC 地址</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro-M2 ~> adb shell cat /sys/class/net/wlan0/address
 c0:84:7d:2b:3c:24			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>内存信息</title>
@@ -592,7 +606,7 @@ Android
 			]]>
 			</screen>
 		</section>
-		
+
 		<section>
 			<title>上传文件</title>
 			<programlisting>
@@ -756,5 +770,51 @@ neo@MacBook-Pro-M2 ~> adb shell dumpsys
 			</screen>
 		</section>
 
+	</section>
+	<section id="adb.settings">
+		<title>settings</title>
+		<programlisting>
+		<![CDATA[
+RK3566:/ # settings put global policy_control immersive.full=*
+RK3566:/ # settings put global policy_control immersive.status=*
+RK3566:/ # settings put global policy_control immersive.navigation=*
+		]]>
+		</programlisting>
+		<section>
+			<title>显示/关闭虚拟键</title>
+			<para>设置属性值为0表示一直打开虚拟按键，属性值为1 表示隐藏虚拟按键</para>
+			<programlisting>
+			<![CDATA[
+adb root
+adb remount
+adb shell
+$ getprop qemu.hw.mainkeys
+$ setprop qemu.hw.mainkeys 0 
+$ stop
+$ start
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+			<![CDATA[
+setprop persist.qemu.hw.mainkeys 0
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>解锁</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb root
+neo@MacBook-Pro-M2 ~ % adb reboot bootloader
+neo@MacBook-Pro-M2 ~ % fastboot flashing unlock
+neo@MacBook-Pro-M2 ~ % fastboot getvar unlocked
+neo@MacBook-Pro-M2 ~ % adb disable-verity
+neo@MacBook-Pro-M2 ~ % adb reboot
+neo@MacBook-Pro-M2 ~ % adb root
+neo@MacBook-Pro-M2 ~ % adb remount
+		]]>		
+		</screen>
 	</section>
 </chapter>

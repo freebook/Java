@@ -159,5 +159,30 @@
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>设置为默认开机启动</title>
+		<programlisting>
+		<![CDATA[
+<category android:name="android.intent.category.HOME" />
+<category android:name="android.intent.category.DEFAULT" />		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+        <activity
+            android:name="cn.aigcsst.album.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>		
+		]]>
+		</programlisting>
+	</section>
 	
 </chapter>
