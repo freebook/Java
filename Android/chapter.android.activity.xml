@@ -30,7 +30,16 @@ setContentView(R.layout.view);
 		<programlisting>
 		<![CDATA[
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
-        getWindow().getDecorView().setSystemUiVisibility(uiOptions);		
+        getWindow().getDecorView().setSystemUiVisibility(uiOptions);	
+        
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        decorView.setSystemUiVisibility(uiOptions);        	
 		]]>
 		</programlisting>
 	</section>
@@ -237,6 +246,28 @@ finish();
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+// 定义跳转
+ActivityResultLauncher<Intent> intentActivityResultLauncher =
+        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+    Intent data = result.getData();
+    if (result.getResultCode() == RESULT_OK && data != null) {
+       // 一些逻辑
+    }
+
+});
+                
+// 使用时
+Intent intent = new Intent(this,跳转到的.class);
+
+// 执行跳转
+intentActivityResultLauncher.launch(intent);		
+		]]>
+		</programlisting>
 	</section>
 	<section id="Fragment">
 		<title>Fragment</title>
