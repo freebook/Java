@@ -31,8 +31,13 @@
 <!ENTITY chapter.android.notification.xml	SYSTEM "chapter.android.notification.xml">
 <!ENTITY chapter.android.service.xml		SYSTEM "chapter.android.service.xml">
 <!ENTITY chapter.android.graphics.xml		SYSTEM "chapter.android.graphics.xml">
+
 <!ENTITY chapter.android.eventbus.xml		SYSTEM "chapter.android.eventbus.xml">
-<!ENTITY chapter.android.singleton.xml		SYSTEM "chapter.android.singleton.xml">
 <!ENTITY section.android.mqtt.xml			SYSTEM "section.android.mqtt.xml">
 <!ENTITY chapter.android.board.xml			SYSTEM "chapter.android.board.xml">
+<!ENTITY chapter.android.things.xml			SYSTEM "chapter.android.things.xml">
+<!ENTITY chapter.android.misc.xml			SYSTEM "chapter.android.misc.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">
+
+<!ENTITY chapter.xfyun.xml				 	SYSTEM "chapter.xfyun.xml">
+<!ENTITY section.xfyun.aiui.xml				SYSTEM "section.xfyun.aiui.xml">

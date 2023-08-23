@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
 	<title>Wifi 配置</title>
-	<para>sysctl 优化</para>
+	<para>方法一</para>
+	<programlisting>
+	<![CDATA[
+        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));	
+	]]>
+	</programlisting>
+	<para>方法二</para>
 	<programlisting>
 		<![CDATA[
         Button buttonWifi = root.findViewById(R.id.buttonWifi);

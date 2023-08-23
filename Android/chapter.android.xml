@@ -20,6 +20,9 @@
 	&chapter.android.eventbus.xml;
 	&chapter.android.singleton.xml;
 	&chapter.android.graphics.xml;
+	&chapter.android.things.xml;
 	&section.android.mqtt.xml;
 	&chapter.android.board.xml;
+	&chapter.android.misc.xml;
 	&chapter.android.faq.xml;
+	&chapter.xfyun.xml;
