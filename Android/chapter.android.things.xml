@@ -3,5 +3,18 @@
 	<title>Android Things</title>
 	<section>
 		<title>GPIO</title>
+		<para>配置权限</para>
+		<screen>
+		<![CDATA[
+<uses-permission android:name="com.google.android.things.permission.USE_PERIPHERAL_IO" />
+<uses-permission android:name="com.google.android.things.permission.MANAGE_INPUT_DRIVERS" />
+		]]>
+		</screen>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
 	</section>
 </chapter>

@@ -2,6 +2,7 @@
 <!ENTITY part.android.xml			 		SYSTEM "part.android.xml">
 <!ENTITY chapter.android.xml		 		SYSTEM "chapter.android.xml">
 <!ENTITY chapter.android.studio.xml	 		SYSTEM "chapter.android.studio.xml">
+<!ENTITY section.android.adb.xml	 		SYSTEM "section.android.adb.xml">
 <!ENTITY chapter.android.manifest.xml 		SYSTEM "chapter.android.manifest.xml">
 <!ENTITY chapter.android.activity.xml 		SYSTEM "chapter.android.activity.xml">
 <!ENTITY chapter.android.palette.xml 		SYSTEM "chapter.android.palette.xml">

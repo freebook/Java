@@ -26,13 +26,20 @@ aiv8167sm3_bsp:/storage/emulated/0 # tinyplay zai.wav -D 0 -d 0 -r 48000
 Playing sample: 1 ch, 16000 hz, 16 bit
 		]]>
 		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 tmp % adb shell tinyplay /sdcard/zai.wav
+Playing sample: 1 ch, 16000 hz, 16 bit		
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>录音</title>
 		<para>录音测试</para>
 		<screen>
 		<![CDATA[
-tinycap netkiller.wav -D 0 -d 0 -c 1 -r 48000		
+tinycap netkiller.wav -D 0 -d 0 -c 1 -r 48000
 		]]>
 		</screen>
 		<screen>
@@ -54,6 +61,44 @@ tinycap netkiller.wav -D 0 -d 0 -c 1 -r 48000
 例子： tinycap /sdcard/test.pcm -D 0 -d 0 -c 4 -r 48000 -b 32 -p 768 -n 10
 
 声卡0；设备0；四通道；48K采样率；32位位宽；一帧数据存储大小；采样n次
+		]]>
+		</screen>
+		<para>查看录音设备</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 tmp % adb shell ls "/dev/snd/pcmC*c"
+/dev/snd/pcmC0D10c
+/dev/snd/pcmC0D1c
+/dev/snd/pcmC0D2c
+/dev/snd/pcmC0D4c
+/dev/snd/pcmC0D6c
+/dev/snd/pcmC0D8c
+/dev/snd/pcmC0D9c		
+		]]>
+		</screen>
+		<para>默认录音参数 Capturing sample: 2 ch, 44100 hz, 16 bit </para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 tmp % adb shell tinycap /sdcard/file.pcm -D 0 -d 2 -T 5     
+Capturing sample: 2 ch, 44100 hz, 16 bit
+Captured 0 frames		
+		]]>
+		</screen>
+		<para>指定参数</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 tmp % adb pull /sdcard/file.pcm                         
+/sdcard/file.wav: 1 file pulled, 0 skipped. 14.6 MB/s (1851436 bytes in 0.121s)
+neo@MacBook-Pro-M2 tmp % adb shell tinycap /sdcard/file.wav -D 0 -d 2 -c 2 -r 48000 -b 16 -T 5
+Capturing sample: 2 ch, 48000 hz, 16 bit
+Captured 0 frames		
+		]]>
+		</screen>
+		<para>下载录音文件</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 tmp % adb pull /sdcard/file.pcm                                            
+/sdcard/file.wav: 1 file pulled, 0 skipped. 7.0 MB/s (966700 bytes in 0.132s)		
 		]]>
 		</screen>
 	</section>
