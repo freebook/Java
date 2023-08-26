@@ -183,6 +183,89 @@ android.os.Process.myTid()
 			</programlisting>
 		</section>
 	</section>
+	<section>
+		<title>fastjson android</title>
+		<screen>
+		<![CDATA[
+implementation 'com.alibaba:fastjson:2.0.20.android'
+		]]>
+		</screen>
+		<section>
+			<title>对象转字符串</title>
+			<programlisting>
+			<![CDATA[
+String json = JSON.toJSONString(user); //序列化			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JsonObject 转对象</title>
+			<para>对象转JsonObject</para>
+			<programlisting>
+			<![CDATA[
+User user =JSON.parseObject(json,User.class); //反序列化
+JSONObject jsonObject=(JSONObject)JSON.toJSON(user);
+jsonObject.getIntValue("id");
+			]]>
+			</programlisting>
+			<para>jsonObject 转 Java Object</para>
+			<programlisting>
+			<![CDATA[
+User user=JSON.toJavaObject(jsonObject, User.class);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>字符串 与 json 互转</title>
+			<para>json 转 字符串</para>
+			<programlisting>
+			<![CDATA[
+String jsonString=JSON.toJSONString(jsonObject);			
+			]]>
+			</programlisting>
+			<para>字符串 转 json</para>
+			<programlisting>
+			<![CDATA[
+JSONObject jsonObject=JSON.parseObject(jsonString);
+jsonObject.getString("name");
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>json 转 数组</title>
+			<programlisting>
+			<![CDATA[
+JSONArray jArray=JSON.parseArray(JSON.toJSONString(userList));
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JSON数组转List</title>
+			<programlisting>
+			<![CDATA[
+List<Map> listMaps = JSONArray.parseArray(JSON.toJSONString(data),Map.class);
+List<Map> mapsList = JSONObject.parseArray(JSON.toJSONString(data), Map.class);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Map 与 Json 互转</title>
+			<para>Json 转 map</para>
+			<programlisting>
+			<![CDATA[
+Map<String,Object> maps = JSONObject.parseObject(json2,Map.class);
+			]]>
+			</programlisting>
+			<para>Map转JSON</para>
+			<programlisting>
+			<![CDATA[
+JSONObject jsonObject = JSONObject.parseObject(JSON.toJSONString(maps));			
+			]]>
+			</programlisting>
+		</section>
+		
+	</section>
+	
 	<section id="ButterKnife">
 		<title>Butter Knife</title>
 		<para>http://jakewharton.github.io/butterknife/</para>
