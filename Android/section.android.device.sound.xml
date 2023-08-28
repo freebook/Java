@@ -415,4 +415,120 @@ RECMIXR INR Switch: Off
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>麦克风阵列调试</title>
+		<para>USB-Audio - Yundea M1051</para>
+		<screen>
+		<![CDATA[
+rk3568_r:/ # cat /proc/asound/cards                                                                                                                                                    
+ 0 [rockchiphdmi   ]: rockchip_hdmi - rockchip,hdmi
+                      rockchip,hdmi
+ 1 [rockchiprk809co]: rockchip_rk809- - rockchip,rk809-codec
+                      rockchip,rk809-codec
+ 2 [M1051          ]: USB-Audio - Yundea M1051
+                      Yundea Technology Yundea M1051 at usb-xhci-hcd.5.auto-1, full speed
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+rk3568_r:/ # cat /proc/asound/card2/usbmixer                                                                                                                                           
+USB Mixer: usb_id=0x4c4a3135, ctrlif=1, ctlerr=0
+Card: Yundea Technology Yundea M1051 at usb-xhci-hcd.5.auto-1, full speed
+  Unit: 5
+    Control: name="Auto Gain Control", index=0
+    Info: id=5, control=7, cmask=0x0, channels=1, type="BOOLEAN"
+    Volume: min=0, max=1, dBmin=0, dBmax=0
+  Unit: 5
+    Control: name="Mic Capture Volume", index=0
+    Info: id=5, control=2, cmask=0x0, channels=1, type="S16"
+    Volume: min=-7264, max=-241, dBmin=-2837, dBmax=-94
+  Unit: 5
+    Control: name="Mic Capture Switch", index=0
+    Info: id=5, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+    Volume: min=0, max=1, dBmin=0, dBmax=0
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+rk3568_r:/ # cat /proc/asound/card2/stream0                                                                                                                                            
+Yundea Technology Yundea M1051 at usb-xhci-hcd.5.auto-1, full speed : USB Audio
+
+Capture:
+  Status: Stop
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 3 IN (ASYNC)
+    Rates: 16000		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+rk3568_r:/ # cat /proc/asound/card2/pcm0c/info                                                                                                                                         
+card: 2
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: USB Audio
+name: USB Audio
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1		
+		]]>
+		</screen>
+		<section>
+			<title>录音测试</title>
+			<para>尝试录音失败，参数设置不对</para>
+			<screen>
+			<![CDATA[
+rk3568_r:/ # tinycap /sdcard/test.pcm -D 2 -d 0 -T 5                                                                                                                              
+Unable to open PCM device (cannot set hw params: Invalid argument)
+Captured 0 frames
+
+rk3568_r:/ # tinycap /sdcard/test.pcm -D 2 -d 0 -c 2 -T 5                                                                                                                              
+Unable to open PCM device (cannot set hw params: Invalid argument)
+Captured 0 frames
+			]]>
+			</screen>
+			<para>查看麦克风参数</para>
+			<screen>
+			<![CDATA[
+rk3568_r:/ # cat /proc/asound/card2/stream0                                                                                                                                            
+Yundea Technology Yundea M1051 at usb-xhci-hcd.5.auto-1, full speed : USB Audio
+
+Capture:
+  Status: Stop
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 3 IN (ASYNC)
+    Rates: 16000				
+			]]>
+			</screen>
+			<para>这里可以看到 通道是 1，码率是 16000，调整录音参数之后，正常录音</para>
+			<screen>
+			<![CDATA[
+rk3568_r:/ # tinycap /sdcard/test.pcm -D 2 -d 0 -c 1 -r 16000 -T 5                                                                                                                     
+Capturing sample: 1 ch, 16000 hz, 16 bit
+Captured 81920 frames			
+			]]>
+			</screen>
+			<para>下载录音文件</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~ % cd tmp 
+neo@MacBook-Pro-M2 tmp % adb pull /sdcard/test.pcm
+/sdcard/test.pcm: 1 file pulled, 0 skipped. 21.1 MB/s (163884 bytes in 0.007s)
+			]]>
+			</screen>
+		</section>
+	</section>
+	
+	
 </section>
