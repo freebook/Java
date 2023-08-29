@@ -818,6 +818,74 @@ public class SoundPoolUtil {
 		]]>
 		</programlisting>
 	</section>
+	<section id="AudioManager">
+		<title>音量控制</title>
+		<programlisting>
+		<![CDATA[
+    private void volume(String control) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int minVolume = 10;
+        int stepVolume = 5;
+        int currentMusicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int currentTTSVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+
+
+        switch (control) {
+            case "VOLUME_MINUS": //步进减小
+                currentMusicVolume -= stepVolume;
+                if (currentMusicVolume < minVolume) {
+                    currentMusicVolume = minVolume;
+                }
+                currentTTSVolume -= stepVolume;
+                if (currentTTSVolume < minVolume) {
+                    currentTTSVolume = minVolume;
+                }
+                break;
+            case "VOLUME_PLUS": //步进累加
+                currentMusicVolume += stepVolume;
+                if (currentMusicVolume >= maxVolume) {
+                    currentMusicVolume = maxVolume;
+                }
+                currentTTSVolume += stepVolume;
+                if (currentTTSVolume > maxVolume) {
+                    currentTTSVolume = maxVolume;
+                }
+                break;
+
+            case "VOLUME_MAX": // 最大
+                currentMusicVolume = currentTTSVolume = maxVolume;
+
+                break;
+            case "VOLUME_MIN": //最小
+                currentMusicVolume = currentTTSVolume = minVolume;
+
+                break;
+            case "MUTE": //静音
+                currentMusicVolume = currentTTSVolume = minVolume;
+                break;
+
+        }
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentMusicVolume, AudioManager.FLAG_SHOW_UI);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, currentTTSVolume, AudioManager.FLAG_PLAY_SOUND);
+        Log.d(TAG, String.format("volume: currentMusicVolume=%s, currentTTSVolume=%s, maxVolume=%s", currentMusicVolume, currentTTSVolume, maxVolume));
+    }
+
+    private void volume(double percent) {
+        if (percent < 0.3) {
+            return;
+        }
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int currentMusicVolume, currentTTSVolume;
+        currentMusicVolume = currentTTSVolume = (int) (maxVolume * percent);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentMusicVolume, AudioManager.FLAG_SHOW_UI);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, currentTTSVolume, AudioManager.FLAG_PLAY_SOUND);
+        Log.d(TAG, String.format("volume: currentMusicVolume=%s, currentTTSVolume=%s, maxVolume=%s", currentMusicVolume, currentTTSVolume, maxVolume));
+    }		
+		]]>
+		</programlisting>
+	</section>
 	<section id="SurfaceView">
 		<title>SurfaceView</title>
 	</section>
