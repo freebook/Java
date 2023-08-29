@@ -1167,6 +1167,44 @@ double amount = Double.parseDouble(value);
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>百分数转Double</title>
+			<programlisting>
+			<![CDATA[
+import java.text.NumberFormat;
+import java.text.ParseException;
+try {
+
+    Double num = (Double)NumberFormat.getInstance().parse("67.89%"); // 转换的结果是67.89
+    Double num2 = (Double)NumberFormat.getPercentInstance().parse("67.89%"); // 转换的结果是0.6789
+
+    System.out.println(num);
+} catch (ParseException e) {
+    e.printStackTrace();
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Double转百分数</title>
+			<programlisting>
+			<![CDATA[
+import java.text.NumberFormat;
+import java.text.ParseException;
+
+try {
+    NumberFormat percentInstance = NumberFormat.getPercentInstance();
+    percentInstance.setMaximumFractionDigits(2); // 保留小数两位
+    String format = percentInstance.format(0.81247); // 结果是81.25% ，最后一们四舍五入了
+
+    System.out.println(num);
+} catch (ParseException e) {
+    e.printStackTrace();
+}
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="BigDecimal">
 		<title>BigDecimal</title>

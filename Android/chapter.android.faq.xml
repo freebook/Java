@@ -80,4 +80,24 @@ StrictMode.setThreadPolicy(policy);
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>java.lang.IllegalStateException: Player is accessed on the wrong thread.</title>
+		<programlisting>
+		<![CDATA[
+// 在 Service 中定义一个 Handler
+private Handler mHandler = new Handler(Looper.getMainLooper());
+
+// 在 Service 中定义一个 Runnable 对象
+private Runnable mRunnable = new Runnable() {
+    @Override
+    public void run() {
+        // 在这里执行与 UI 相关的操作
+    }
+};
+
+// 在 Service 中使用 Handler 将 Runnable 对象发送到 UI 线程的消息队列中
+mHandler.post(mRunnable);		
+		]]>
+		</programlisting>
+	</section>
 </chapter>
