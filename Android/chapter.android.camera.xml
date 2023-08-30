@@ -411,35 +411,5 @@ public class FlashLightActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>startActivityForResult 替代方案</title>
-		<para>startActivityForResult 即将废弃</para>
-		<programlisting>
-		<![CDATA[
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        try {
-            startActivityForResult(takePictureIntent, 1);
-        } catch (ActivityNotFoundException e) {
-            // display error state to the user
-        }
-    }		
-		]]>
-		</programlisting>
-		<para>替代方案是</para>
-		<programlisting>
-		<![CDATA[
-   //拍照
-    private final ActivityResultLauncher<Void> mLauncherCamera = registerForActivityResult(
-    new ActivityResultContracts.TakePicturePreview(), result -> {
-        //result为拍摄照片Bitmap格式
-    });
-
-    //开启拍照, 返回结果Bitmap
-    private void launchCamera() {
-        mLauncherCamera.launch(null);
-    }		
-		]]>
-		</programlisting>
-	</section>
+	
 </chapter>

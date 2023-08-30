@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		</programlisting>
 	</section>
 	<section id="android.phone.sms">
-		<title></title>
+		<title>发送短信</title>
 		<programlisting>
 		<![CDATA[
 <uses-permission android:name="android.permission.SEND_SMS" />		
