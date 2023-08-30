@@ -19,4 +19,374 @@
                 mAIUIAgent.sendMessage(aiuiMessage);		
 		]]>
 	</programlisting>
+	<section>
+		<title>AIUIPlayer</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.aiui;
+
+import android.content.Context;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.iflytek.aiui.player.common.data.MetaItem;
+import com.iflytek.aiui.player.core.AIUIPlayer;
+import com.iflytek.aiui.player.core.PlayState;
+import com.iflytek.aiui.player.core.PlayerListener;
+import com.iflytek.aiui.player.players.KuwoMusicRemote;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function2;
+
+public class MusicSkillComponent {
+    private static final String TAG = MusicSkillComponent.class.getSimpleName();
+    private static MusicSkillComponent musicSkillComponent = null;
+    private static String kuwoParams = null;
+    private static int playListIndex = 0; //当前播放歌曲序号
+    private static JSONArray mPlayList = null; //播放列表
+    private static AIUIPlayer mAIUIPlayer = null;
+    private static KuwoMusicRemote kuwoRemote = null;
+    private final Context context;
+    private final PlayerListener mPlayListener = new PlayerListener() {
+        @Override
+        public void onMediaUrl(@NonNull JSONObject jsonObject) {
+            Log.d(TAG, "onMediaUrl: " + jsonObject);
+        }
+
+        @Override
+        public void onPlayerReady() {
+            Log.i(TAG, "onPlayerReady()");
+        }
+
+        @Override
+        public void onStateChange(@NonNull PlayState state) {
+            Log.i(TAG, "onStateChange: PlayState is" + state);
+            switch (state) {
+                case READY:
+                    Log.d(TAG, "AIUIPlayer 播放准备就绪");
+                    break;
+                case PLAYING:
+                    Log.d(TAG, "播放");
+                    break;
+                case PAUSED:
+                    Log.d(TAG, "停止");
+                    break;
+                case LOADING:
+                    Log.d(TAG, "音乐加载中……");
+                    break;
+                case COMPLETE:
+                    Log.d(TAG, "继续");
+                    startPlayMusic();
+                    break;
+                case IDLE:
+                    long currentPosition = mAIUIPlayer.getCurrentPosition();
+                    Log.d(TAG, String.format("CurrentPosition: %l", currentPosition));
+                    break;
+                case ERROR:
+                    Log.d(TAG, "播放出错");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void onMediaChange(@NonNull MetaItem metaItem) {
+            String songName = metaItem.getTitle();      //歌名
+            String author = metaItem.getAuthor();      //作者
+            playListIndex = getPlayIndex(songName);
+            Log.d(TAG, "onMediaChange: " + metaItem);
+        }
+
+        @Override
+        public void onError(int code, @NonNull String info) {
+            Log.e(TAG, "onError 播放出错：" + code + " ，错误信息为：" + info);
+            // 真实错误码需要从 info 中解析   "track link failed code: 40006 description:"
+            if (info.isEmpty()) {
+                if (code == 200001) {
+                    Log.d(TAG, "歌曲\"" + "" + "\"播放出错: " + code + "\nINFO：产品未通过酷我验收,仅支持获取奇数id资源\n");
+                    if (!mAIUIPlayer.next()) {
+                    }
+                }
+            }
+//            else {
+//                String[] split = info.split(" ");
+//                String errCode = split[4];
+//                switch (errCode) {
+//                    case "40000":
+//                        Log.d(TAG, "播放出错: " + errCode + "\n设备音乐装机量超限");
+//                        break;
+//                    case "40001":
+//                        Log.d(TAG, "播放出错: " + errCode + "\n设备激活限制");
+//                        break;
+//                    case "40004":
+//                        Log.d(TAG, "播放出错: " + errCode + "\n设备音乐未激活");
+//                        break;
+//                    case "40006":
+//                        Log.d(TAG, "播放出错: " + errCode + "\n酷我用户账号未登陆绑定");
+//                        break;
+//                    case "40007":
+//                        Log.d(TAG, "播放出错: " + errCode + "\n厂商ID与设备当前绑定用户ID不一致");
+//                        break;
+//                    default:
+//                        Log.d(TAG, "播放出错: " + errCode + "  错误码查询：https://www.yuque.com/iflyaiui/zzoolv/rft07m");
+//                        break;
+//                }
+//            }
+        }
+
+        @Override
+        public void onPlayerRelease() {
+
+        }
+    };
+
+    public MusicSkillComponent(Context context) {
+        this.context = context;
+        initSDK();
+    }
+
+    public synchronized static MusicSkillComponent getInstance(Context context) {
+        if (musicSkillComponent == null) {
+            musicSkillComponent = new MusicSkillComponent(context);
+        }
+        return musicSkillComponent;
+    }
+
+    public boolean previous() {
+        if (mAIUIPlayer != null) {
+            return mAIUIPlayer.previous();
+        }
+        return false;
+    }
+
+    public boolean next() {
+        if (mAIUIPlayer != null) {
+            return mAIUIPlayer.next();
+        }
+        return false;
+    }
+
+    public void pause() {
+        if (mAIUIPlayer == null) {
+            return;
+        }
+        if (mAIUIPlayer.getCurrentState() == PlayState.PLAYING) {
+            mAIUIPlayer.pause();
+        }
+    }
+
+    public void resume() {
+        if (mAIUIPlayer == null) {
+            return;
+        }
+        if (mAIUIPlayer.getCurrentState() == PlayState.PAUSED) {
+            mAIUIPlayer.resume();
+        }
+    }
+
+    public boolean play(@NonNull JSONObject object) {
+
+//        Log.d(TAG, object.toString());
+
+        try {
+
+            JSONArray musics = object.getJSONArray("result");
+            if (null != musics) {
+                mPlayList = musics;
+                playListIndex = 0;
+            }
+            return startPlayMusic();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public void initSDK() {
+        //TODO 开发者需要实现生成sn的代码，参考：https://www.yuque.com/iflyaiui/zzoolv/tgftb5
+        //注意事项1: sn每台设备需要唯一！！！！WakeupEngine的sn和AIUI的sn要一致
+        //注意事项2: 获取的值要保持稳定，否则会重复授权，浪费授权量
+        String serialNumber = "test";
+        String appId = "c84e1ddb";
+        String appKey = "7a1583c3190b83fe4d62573ee9cfbfc1";
+
+        //TODO 设置酷我音乐SDK设置相关参数，appid和appkey请使用自己的进行开发，并且与aiui.cfg一致
+        kuwoParams = "appId=" + appId + ",appKey=" + appKey + "," + "serialNumber=" + serialNumber + ",deviceModel=" + serialNumber + ",userId=" + serialNumber;
+
+
+        if (null == kuwoRemote) {
+            kuwoRemote = new KuwoMusicRemote(kuwoParams);
+            // 酷我SDK日志开关 ：true 打开，false 关闭
+            kuwoRemote.setDebug(false);
+
+            if (null != kuwoRemote) {
+                Log.i(TAG, "KuwoRemote 初始化成功");
+            }
+
+        }
+
+        if (null == mAIUIPlayer) {
+            mAIUIPlayer = new AIUIPlayer(context, kuwoParams);
+            // 播放前焦点占用设置
+            mAIUIPlayer.setParameter("customAudioFocus", "true");
+            // 回调信息设置
+            mAIUIPlayer.addListener(mPlayListener);
+            // AIUIPlayer SDK调试日志设置 ：true 打开，false 关闭
+            mAIUIPlayer.setDebug(false);
+            // 初始化播放器
+            mAIUIPlayer.initialize();
+            Log.i(TAG, "AIUIPlayer 初始化成功");
+
+        }
+    }
+
+    public void release() {
+        mPlayList = null;
+        if (null != mAIUIPlayer) {
+            mAIUIPlayer.release();
+            mAIUIPlayer = null;
+        }
+        if (null != kuwoRemote) {
+            kuwoRemote.destroy();
+            kuwoRemote = null;
+        }
+    }
+
+    private void activate() {
+//        if (isActivated) {
+////            showToast("当前设备已激活酷我音乐");
+//            return;
+//        }
+        kuwoRemote.active(() -> {
+            Log.i(TAG, "激活成功");
+            return null;
+        }, (errCode, errInfo) -> {
+            Log.i(TAG, "激活失败，错误码为：" + errCode + " ,信息为： " + errInfo);
+            return null;
+        });
+    }
+
+    private void login() {
+        //酷我不强制用户登陆，开发者自己实现登陆代码，可参考下方酷狗音乐代码，改一下接口
+//        Intent intent = new Intent(KuwoDemo.this, LoginActivity.class);
+//        startActivityForResult(intent, 3);
+    }
+
+    private void logout() {
+        kuwoRemote.logout(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                Log.i(TAG, "酷我账号退出成功");
+//                LoginBtn.setText("手机登陆");
+                return null;
+            }
+        }, new Function2<Integer, String, Unit>() {
+            @Override
+            public Unit invoke(Integer errCode, String errInfo) {
+                Log.i(TAG, "酷我账号退出失败，错误码为：" + errCode + " ,信息为： " + errInfo);
+                return null;
+            }
+        });
+    }
+
+    public void stop() {
+        if (mAIUIPlayer != null) {
+            mAIUIPlayer.stop();
+        }
+    }
+
+    private boolean startPlayMusic() {
+        if (null == mPlayList || mPlayList.length() == 0) {
+            Log.w(TAG, "播放列表为空");
+            return false;
+        }
+        Log.i(TAG, "mPlayList is: " + mPlayList.toString());
+        mAIUIPlayer.reset();
+        return mAIUIPlayer.play(mPlayList, "musicX", "", false, playListIndex);
+    }
+
+    //构建虚假播放信息测试AIUIPlayer SDK播放是否可以正常调用
+//    private void mockPlayMusic() {
+//        try {
+//            JSONArray musiclist = new JSONArray();
+//            JSONObject music = new JSONObject();
+//            music.put("source", "kuwo");
+//            music.put("songname", "天地龙鳞");
+//            music.put("itemid", "353833243");
+//            musiclist.put(0, music);
+//            mPlayList = musiclist;
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (null == mPlayList || mPlayList.length() == 0) {
+////            showToast("播放列表为空");
+//            return;
+//        }
+//        Log.i(TAG, "mPlayList is:\n" + mPlayList.toString());
+//        mAIUIPlayer.reset();
+//        mAIUIPlayer.play(mPlayList, "musicX", "", false, playListIndex);
+//    }
+
+    // 获取当前播放下标
+    private int getPlayIndex(String songName) {
+        if (mPlayList != null) {
+            try {
+                String playData = null;
+                for (int i = 0; i < mPlayList.length(); i++) {
+                    playData = mPlayList.getJSONObject(i).toString();
+                    if (playData.contains(songName)) {
+                        return i;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+        return 0;
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="kuwomusic">
+		<title>酷我音乐</title>
+		<section>
+			<title>获取音乐URL</title>
+			<para>通过 itemId 获取 audio URL</para>
+			<programlisting>
+			<![CDATA[
+    kuwoRemote.getAudioUrl("26383685", "128kmp3", new Function1<AudioUrl, Unit>() {
+        @Override
+        public Unit invoke(AudioUrl audioUrl) {
+            Log.d(TAG, audioUrl.toString());
+            return null;
+        }
+    }, new Function2<Integer, String, Unit>() {
+        @Override
+        public Unit invoke(Integer code, String msg) {
+            Log.d(TAG, "Code: " + code + ", Msg: " + msg);
+            return null;
+        }
+    });		
+			]]>
+			</programlisting>
+			<para>日志输出结果</para>
+			<screen>
+			<![CDATA[
+AudioUrl(expiretime=, itemid=26383685, source=kuwo, audiopath=http://other.player.ri01.sycdn.kuwo.cn/6dcbdb125c72dfff3978fe29ab50fdd4/64eeef6f/resource/n2/27/48/2060696053.mp3)			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>
