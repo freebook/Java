@@ -22,7 +22,7 @@ android:scaleType="matrix"
 			]]>
 		</screen>
 		<section>
-			<title></title>
+			<title>剧中效果</title>
 			<para>android:scaleType="fitCenter"</para>
 			<programlisting>
 			<![CDATA[
@@ -33,6 +33,56 @@ android:scaleType="matrix"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/fo2"
         tools:ignore="MissingConstraints" />			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>ImageView 显示 URL 图片</title>
+			<programlisting>
+			<![CDATA[
+   private Drawable getImageDrawableFromUrl(String url) {
+        try {
+            InputStream inputStream = (InputStream) new URL(url).getContent();
+            Drawable drawable = Drawable.createFromStream(inputStream, "image.jpg");
+//            Drawable drawable = Drawable.createFromStream(new URL(url).openStream(), "image.jpg");
+//            Drawable drawable = Drawable.createFromStream(getContext().getContentResolver().openInputStream(Uri.parse(url)), null);
+
+            return drawable;
+        } catch (IOException e) {
+            Log.d("VoicePopup", e.getMessage());
+
+        } catch (Exception e) {
+            Log.d("VoicePopup", e.getMessage());
+        }
+        return null;
+    }
+    			
+    Drawable drawable = getImageDrawableFromUrl(image);
+    imageView = findViewById(R.id.imageView);
+    imageView.setImageDrawable(drawable);			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+  			imageView = findViewById(R.id.imageView);
+            
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        InputStream is = (InputStream) new URL(image).getContent();
+                        final Drawable d = Drawable.createFromStream(is, null);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageDrawable(d);
+                            }
+                        });
+                    } catch (Exception e) {
+                    }
+                }
+            }).start();			
 			]]>
 			</programlisting>
 		</section>

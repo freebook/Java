@@ -269,7 +269,7 @@ intentActivityResultLauncher.launch(intent);
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="startActivityForResult">
 		<title>startActivityForResult 替代方案</title>
 		<para>startActivityForResult 即将废弃</para>
 		<programlisting>

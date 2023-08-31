@@ -524,7 +524,7 @@ handler.post(() -> {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="Service 中更新 UI">
 		<title>Service 中更新 UI</title>
 		<programlisting>
 		<![CDATA[
