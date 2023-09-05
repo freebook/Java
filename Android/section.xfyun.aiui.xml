@@ -115,30 +115,7 @@ public class MusicSkillComponent {
                     }
                 }
             }
-//            else {
-//                String[] split = info.split(" ");
-//                String errCode = split[4];
-//                switch (errCode) {
-//                    case "40000":
-//                        Log.d(TAG, "播放出错: " + errCode + "\n设备音乐装机量超限");
-//                        break;
-//                    case "40001":
-//                        Log.d(TAG, "播放出错: " + errCode + "\n设备激活限制");
-//                        break;
-//                    case "40004":
-//                        Log.d(TAG, "播放出错: " + errCode + "\n设备音乐未激活");
-//                        break;
-//                    case "40006":
-//                        Log.d(TAG, "播放出错: " + errCode + "\n酷我用户账号未登陆绑定");
-//                        break;
-//                    case "40007":
-//                        Log.d(TAG, "播放出错: " + errCode + "\n厂商ID与设备当前绑定用户ID不一致");
-//                        break;
-//                    default:
-//                        Log.d(TAG, "播放出错: " + errCode + "  错误码查询：https://www.yuque.com/iflyaiui/zzoolv/rft07m");
-//                        break;
-//                }
-//            }
+
         }
 
         @Override
@@ -388,5 +365,156 @@ AudioUrl(expiretime=, itemid=26383685, source=kuwo, audiopath=http://other.playe
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section id="AIUI.control">
+		<title>控制技能</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.skill;
+
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSONObject;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+
+public class ControlSkillComponent {
+    private static final String TAG = ControlSkillComponent.class.getName();
+    private final Context context;
+    private MusicSkillComponent musicSkillComponent = null;
+
+    public ControlSkillComponent(Context context, JSONObject object) {
+        this.context = context;
+        musicSkillComponent = MusicSkillComponent.getInstance(context);
+        Log.d(TAG, "控制技能: " + object);
+        String semanticIntent = object.getString("intent");
+        switch (semanticIntent) {
+            case "PAUSE":
+                musicSkillComponent.pause();
+                break;
+            case "CHOOSE_NEXT":
+                musicSkillComponent.next();
+                break;
+            case "CHOOSE_PREVIOUS":
+                musicSkillComponent.previous();
+                break;
+            case "VOLUME_MINUS":
+                this.volume("VOLUME_MINUS");
+                break;
+            case "VOLUME_PLUS":
+                this.volume("VOLUME_PLUS");
+                break;
+            case "VOLUME_MIN":
+                this.volume("VOLUME_MIN");
+                break;
+            case "VOLUME_MAX":
+                this.volume("VOLUME_MAX");
+                break;
+            case "MUTE":
+                this.volume("MUTE");
+                break;
+            case "VOLUME_SET":
+
+                JSONObject slots = (JSONObject) object.getJSONArray("slots").get(0);
+                String stringPercent = slots.getString("value");
+                try {
+                    double doublePercent = (Double) NumberFormat.getPercentInstance().parse(stringPercent);
+//                    int percent = floatPercent.intValue();
+                    this.volume(doublePercent);
+                    Log.d(TAG, String.valueOf(doublePercent));
+                } catch (ParseException e) {
+                    Log.e(TAG, e.toString());
+                }
+                break;
+            case "SETTING_OPEN":
+                Log.e(TAG, "设置无线网络");
+                this.wifi();
+                break;
+            case "SHUTDOWN":
+                break;
+            case "RESET":
+                break;
+        }
+
+
+    }
+
+    public void wifi() {
+        //        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        Intent intent = new Intent();
+        intent.setAction("androad.network.wlan");
+        intent.putExtra("message", "");
+        context.sendBroadcast(intent);
+    }
+
+    private void volume(String control) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+//        int minVolume = audioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC);
+        int minVolume = 10;
+        int stepVolume = 5;
+        int currentMusicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int currentTTSVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+
+
+        switch (control) {
+            case "VOLUME_MINUS": //步进减小
+                currentMusicVolume -= stepVolume;
+                if (currentMusicVolume < minVolume) {
+                    currentMusicVolume = minVolume;
+                }
+                currentTTSVolume -= stepVolume;
+                if (currentTTSVolume < minVolume) {
+                    currentTTSVolume = minVolume;
+                }
+                break;
+            case "VOLUME_PLUS": //步进累加
+                currentMusicVolume += stepVolume;
+                if (currentMusicVolume >= maxVolume) {
+                    currentMusicVolume = maxVolume;
+                }
+                currentTTSVolume += stepVolume;
+                if (currentTTSVolume > maxVolume) {
+                    currentTTSVolume = maxVolume;
+                }
+                break;
+
+            case "VOLUME_MAX": // 最大
+                currentMusicVolume = currentTTSVolume = maxVolume;
+
+                break;
+            case "VOLUME_MIN": //最小
+                currentMusicVolume = currentTTSVolume = minVolume;
+
+                break;
+            case "MUTE": //静音
+                currentMusicVolume = currentTTSVolume = minVolume;
+                break;
+
+        }
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentMusicVolume, AudioManager.FLAG_SHOW_UI);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, currentTTSVolume, AudioManager.FLAG_PLAY_SOUND);
+        Log.d(TAG, String.format("volume: currentMusicVolume=%s, currentTTSVolume=%s, maxVolume=%s", currentMusicVolume, currentTTSVolume, maxVolume));
+    }
+
+    private void volume(double percent) {
+        if (percent < 0.3) {
+            return;
+        }
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int currentMusicVolume, currentTTSVolume;
+        currentMusicVolume = currentTTSVolume = (int) (maxVolume * percent);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentMusicVolume, AudioManager.FLAG_SHOW_UI);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, currentTTSVolume, AudioManager.FLAG_PLAY_SOUND);
+        Log.d(TAG, String.format("volume: currentMusicVolume=%s, currentTTSVolume=%s, maxVolume=%s", currentMusicVolume, currentTTSVolume, maxVolume));
+    }
+}		
+		]]>
+		</programlisting>
 	</section>
 </section>

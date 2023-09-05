@@ -125,6 +125,20 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>保持屏幕常开</title>
+		<programlisting>
+		<![CDATA[
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);		
+		]]>
+		</programlisting>
+		<para>取消设置</para>
+		<programlisting>
+		<![CDATA[
+getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);		
+		]]>
+		</programlisting>
+	</section>
 	<section id="startActivity">
 		<title>startActivity()</title>
 
@@ -143,6 +157,7 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
+
 	<section id="Intent">
 		<title>Activity 间数据传递</title>
 		<section>
