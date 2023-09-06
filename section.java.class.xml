@@ -28,9 +28,45 @@ public class RecordDemo {
 		</programlisting>
 	</section>
 	<section>
-		<title>密封类</title>
+		<title>Callback 回调</title>
 		<programlisting>
 		<![CDATA[
+package cn.netkiller;
+
+interface Callback {
+    void call();
+}
+
+abstract class Task {
+    public final void executeWith(Callback callback) {
+        this.execute();
+        if (callback != null)
+            callback.call();
+    }
+
+    protected abstract void execute();
+}
+
+class SimpleTask extends Task {
+    protected void execute() {
+        System.out.println("Do some tasks before the callback method.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        System.out.println("Hello world!");
+
+        Task task = new SimpleTask();
+        Callback callback = new Callback() {
+            public void call() {
+                System.out.println("The callback method has been called!");
+            }
+        };
+        task.executeWith(callback);
+    }
+}		
 		]]>
 		</programlisting>
 	</section>
