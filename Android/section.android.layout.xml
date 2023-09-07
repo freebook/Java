@@ -19,6 +19,17 @@
     android:clickable="true">			
 			]]>
 			</programlisting>
+			<para>方法二</para>
+			<programlisting>
+			<![CDATA[
+	mFrameLayout.setOnTouchListener(new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            return true;
+        }
+    });			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	
