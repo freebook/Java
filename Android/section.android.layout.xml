@@ -1,6 +1,28 @@
 <section id="layout">
 	<title>样式布局</title>
 	<section>
+		<title>FrameLayout</title>
+		<section>
+			<title>FrameLayout 事件穿透</title>
+			<para>FrameLayout 浮动在另其他 UI 上方，点击 FrameLayout 某些问之，触发了下面的事件，解决方法是增加: </para>
+			<para>android:clickable="true"</para>
+			<programlisting>
+			<![CDATA[
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:RoundedCornerImageView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    tools:ignore="MissingDefaultResource"
+    android:clickable="true">			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	
+	<section>
 		<title>动画</title>
 		<para></para>
 		<itemizedlist>
