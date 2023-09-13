@@ -206,6 +206,28 @@ public class TestList {
 			]]>
 			</programlisting>
 		</section>
+		<section id="list.containsAll">
+			<title>containsAll</title>
+			<programlisting>
+			<![CDATA[
+        List<String> inputStringList = Arrays.asList("Neo|Netkiller|Tom|Jerry".split("|"));
+        List<String> wordsList = Arrays.asList("Neo|Tom".split("|"));
+        System.out.println(inputStringList.containsAll(wordsList));			
+			]]>
+			</programlisting>
+		</section>
+		<section id="stream.allMatch">
+			<title>stream().allMatch()</title>
+			<programlisting>
+			<![CDATA[
+        List<String> inputStringList = Arrays.asList("Neo|Netkiller|Tom|Jerry".split("|"));
+        List<String> wordsList = Arrays.asList("Neo","Tom");
+        System.out.println(wordsList.stream().allMatch(inputStringList::contains));			
+			]]>
+			</programlisting>
+		</section>
+		
+		
 	</section>
 
 	<section id="ArrayList">

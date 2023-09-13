@@ -143,6 +143,191 @@ public class RunnableActivity extends AppCompatActivity {
 		</programlisting>
 	</section>
 	<section>
+		<title>循环执行</title>
+		<programlisting>
+		<![CDATA[
+//首先创建一个Handler对象
+Handler handler=new Handler();   
+//然后创建一个Runnable对像
+Runnable runnable=new Runnable(){  
+   @Override  
+   public void run() {  
+    // TODO Auto-generated method stub  
+    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
+    handler.postDelayed(this, 2000);  
+   }  
+};
+  		]]>
+		</programlisting>
+		<tip>请使用单例模式，否则每次都拿到 handler 都是新对象，无法管理已经运行的对象。</tip>
+		<programlisting>
+		<![CDATA[
+//使用PostDelayed方法，调用此Runnable对象  
+handler.postDelayed(runnable, 2000);
+  
+//关闭此定时器，可以这样操作
+handler.removeCallbacks(runnable);  
+
+//移除所有的消息
+handler.removeCallbacksAndMessages(null);		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>TimerTask 实现循环播放</title>
+		<programlisting>
+		<![CDATA[
+
+    static class LoopPlayer {
+        private static Timer timer;
+        private static LoopPlayer loopPlayer;
+
+        public synchronized static LoopPlayer getInstance() {
+            if (loopPlayer == null) {
+                loopPlayer = new LoopPlayer();
+            }
+            return loopPlayer;
+        }
+
+        public void schedule(TimerTask timerTask) {
+            if (timer == null) {
+                timer = new Timer();
+            }
+            timer.schedule(timerTask, 1000, 30000);
+        }
+
+        public void cannel() {
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
+        }
+    }		
+		]]>
+		</programlisting>
+		<example>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.album.skill;
+
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import cn.netkiller.album.R;
+
+public class AlbumSkillComponent {
+    private static final String TAG = AlbumSkillComponent.class.getSimpleName();
+    private final Timer timer = new Timer();
+    boolean status = false;
+    Context context;
+    Map<Integer, String> map = new HashMap<Integer, String>() {{
+        put(R.drawable.kouhong, "娇兰KissKiss系列口红：这款口红以其立方形的金色包装而闻名，提供多种饱满且持久的颜色。其配方含有透明度调节剂和金色反射颗粒，可以为嘴唇带来光滑且饱满的效果。");
+        put(R.drawable.xiangshui, "Miss Dior是Dior的另一款经典香水，首次推出是在1947年，与Dior的第一款时装系列同时推出。这款香水的香调包括粉红胡椒、柑橘、玫瑰、茉莉、香根草等，散发出一种浪漫、活力的气息。");
+        put(R.drawable.xiezhuangshui, "美宝莲的卸妆水能有效地去除脸部和眼部的彩妆，包括防水和长效彩妆。它的配方温和，不会对皮肤造成刺激。");
+        put(R.drawable.fendi, "这是香奈儿的一款经典粉底，以其轻薄的质地和自然的妆效而受到喜爱。Vitalumiere粉底能提供中等的遮瑕力，同时给肌肤带来光泽感，使肌肤看起来更加健康。");
+        put(R.drawable.sfs, "说神仙水是最适合油皮痘肌的爽肤水绝对不夸大！主要在于它的神奇成分Pitera，专业术语是半乳糖酵母样菌发酵产物滤液，含有维生素、氨基酸、矿物质、有机酸这些对皮肤有益的成分，可以很好地帮助皮肤调整水油平衡，改善肤质。如果是因为出油长痘的话，一定要试试它！");
+    }};
+
+    private TimerTask timerTask;
+
+    public AlbumSkillComponent(Context context, String question) {
+        this.context = context;
+        LoopPlayer loopPlayer = LoopPlayer.getInstance();
+        if (question.contains("口红")) {
+            this.play(R.drawable.kouhong, "娇兰KissKiss系列口红：这款口红以其立方形的金色包装而闻名，提供多种饱满且持久的颜色。其配方含有透明度调节剂和金色反射颗粒，可以为嘴唇带来光滑且饱满的效果。\n");
+            this.status = true;
+        } else if (question.contains("香水")) {
+            this.play(R.drawable.xiangshui, "Miss Dior是Dior的另一款经典香水，首次推出是在1947年，与Dior的第一款时装系列同时推出。这款香水的香调包括粉红胡椒、柑橘、玫瑰、茉莉、香根草等，散发出一种浪漫、活力的气息。\n");
+            this.status = true;
+        } else if (question.contains("卸妆水")) {
+            this.play(R.drawable.xiezhuangshui, "美宝莲的卸妆水能有效地去除脸部和眼部的彩妆，包括防水和长效彩妆。它的配方温和，不会对皮肤造成刺激。\n");
+            this.status = true;
+        } else if (question.contains("粉底")) {
+            this.play(R.drawable.fendi, "这是香奈儿的一款经典粉底，以其轻薄的质地和自然的妆效而受到喜爱。Vitalumiere粉底能提供中等的遮瑕力，同时给肌肤带来光泽感，使肌肤看起来更加健康。\n");
+            this.status = true;
+        } else if (question.contains("爽肤水")) {
+            this.play(R.drawable.sfs, "说神仙水是最适合油皮痘肌的爽肤水绝对不夸大！主要在于它的神奇成分Pitera，专业术语是半乳糖酵母样菌发酵产物滤液，含有维生素、氨基酸、矿物质、有机酸这些对皮肤有益的成分，可以很好地帮助皮肤调整水油平衡，改善肤质。如果是因为出油长痘的话，一定要试试它！");
+            this.status = true;
+        } else if (question.contains("停止")) {
+            loopPlayer.cannel();
+        } else if (question.contains("轮播")) {
+            timerTask = new TimerTask() {
+                final Integer[] keys = map.keySet().toArray(new Integer[0]);
+                final Random random = new Random();
+
+                @Override
+                public void run() {
+
+                    Integer randomKey = keys[random.nextInt(keys.length)];
+                    String value = map.get(randomKey);
+                    play(randomKey, value);
+                    Log.d(TAG, value);
+
+                }
+            };
+            loopPlayer.schedule(timerTask);
+            this.status = true;
+        } else {
+
+            loopPlayer.cannel();
+            this.play(R.drawable.logo, "没有找到产品，你可以这样对我说，小美小美，介绍一下口红");
+            this.status = true;
+        }
+    }
+
+    public boolean hit() {
+        return this.status;
+    }
+
+    public boolean play(int resource, String message) {
+        Intent intent = new Intent();
+        intent.setAction("album.broadcast.change");
+        intent.putExtra("image", resource);
+        intent.putExtra("message", message);
+        context.sendBroadcast(intent);
+        SkillMatching.say(message);
+        return this.status;
+    }
+
+    static class LoopPlayer {
+        private static Timer timer;
+        private static LoopPlayer loopPlayer;
+
+        public synchronized static LoopPlayer getInstance() {
+            if (loopPlayer == null) {
+                loopPlayer = new LoopPlayer();
+            }
+            return loopPlayer;
+        }
+
+        public void schedule(TimerTask timerTask) {
+            if (timer == null) {
+                timer = new Timer();
+            }
+            timer.schedule(timerTask, 1000, 30000);
+        }
+
+        public void cannel() {
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</example>
+	</section>
+	<section>
 		<title>TimerTask 更新 UI</title>
 		<programlisting>
 		<![CDATA[
