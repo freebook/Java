@@ -5,6 +5,17 @@
 		<title>Time 和 TimerTask 定时刷新</title>
 		<programlisting>
 		<![CDATA[
+new Timer().schedule(new TimerTask() {
+   @Override
+   public void run() {
+    //TODO: 定时做某件事情
+   }
+}, 5 * 1000, 5 * 1000);
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
 package cn.netkiller.okhttp;
 
 import android.os.Handler;

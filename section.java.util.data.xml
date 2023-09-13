@@ -824,6 +824,32 @@ public class TestLinkedHashMap {
 		]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>遍历数据</title>
+			<programlisting>
+			<![CDATA[
+        Map<Integer, String> map = new HashMap<Integer, String>(){{
+            put(1, "127.0.0.1");
+            put(2, "192.168.0.1");
+            put(3, "172.16.0.1");
+        }};
+        for (Integer key : map.keySet()) {
+            System.out.println("key= "+ key + ", value= " + map.get(key));
+        }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>迭代器</title>
+			<programlisting>
+			<![CDATA[
+        Iterator<Map.Entry<Integer, String>> iterator = map.entrySet().iterator();
+        while(iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }			
+			]]>
+			</programlisting>
+		</section>
 		<section id="map.forEach">
 			<title>Map forEach</title>
 			<programlisting>
@@ -848,10 +874,27 @@ key : F value : 60
 
 items.forEach((k,v)->{
     System.out.println("key : " + k + " value : " + v);
-});
-
-	
+});	
 		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>随机取值</title>
+			<programlisting>
+			<![CDATA[
+        Map<Integer, String> map = new HashMap<Integer, String>(){{
+            put(1, "127.0.0.1");
+            put(2, "192.168.0.1");
+            put(3, "172.16.0.1");
+        }};
+
+        Integer[] keys = map.keySet().toArray(new Integer[0]);
+        Random random = new Random();
+        Integer randomKey = keys[random.nextInt(keys.length)];
+        String randomValue = map.get(randomKey);
+
+        System.out.println(randomValue);			
+			]]>
 			</programlisting>
 		</section>
 	</section>
