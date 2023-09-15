@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="index"><?dbhtml dir="java/util" ?>
 	<title>Util</title>
-	<section id="properties">
+	<section id="java.util.Properties">
 		<title>Properties 处理 *.properties 文件</title>
 		<programlisting>
 		<![CDATA[
@@ -418,7 +418,7 @@ Helloworld
 			</screen>
 		</section>
 	</section>
-	<section id="logging">
+	<section id="java.util.logging">
 		<title>Logging</title>
 		<programlisting>
 		<![CDATA[
@@ -572,7 +572,7 @@ public class Main {
 			</programlisting>
 		</section>
 	</section>
-	<section id="base64">
+	<section id="java.util.Base64">
 		<title>BASE64</title>
 		<programlisting>
 		<![CDATA[
@@ -696,7 +696,7 @@ Arrays.equals(array1, array2)
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="java.util.Random">
 		<title>Random 随机字符串</title>
 		<programlisting>
 		<![CDATA[
@@ -879,6 +879,124 @@ public class CRC {
 }		
 		]]>
 		</programlisting>
+	</section>
+	<section id="java.util.regex">
+		<title>正则表达式</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Test {
+
+
+    public static void main(String[] args) {
+
+        Pattern pattern = Pattern.compile("www|netkiller");
+        Matcher matcher = pattern.matcher("http://www.netkiller.cn/linux/index.html");
+        if (matcher.find()) {
+            System.out.println(matcher.group());
+        }
+
+    }
+}
+		]]>
+		</programlisting>
+		<section>
+			<title>正则查找</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+        Matcher matcher = Pattern.compile("播放|暂停|停止").matcher("当前暂停音乐");
+
+        if(matcher.find()){
+            System.out.println(matcher.group(0));
+        }
+        
+        if(Pattern.compile("播放|暂停|停止").matcher("当前停音乐").find()){
+            System.out.println("查找到");
+        }
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>正则替换</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Test {
+
+    public static void main(String[] args) {
+
+        Pattern pattern = Pattern.compile("www|netkiller");
+        Matcher matcher = pattern.matcher("https://www.netkiller.cn/linux/index.html");
+        if (matcher.find()) {
+            String s = matcher.replaceFirst("api"); //替换后的字符串
+            System.out.println(s);
+        }
+
+    }
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Test {
+
+
+    public static void main(String[] args) {
+
+        Pattern pattern = Pattern.compile("www|netkiller");
+        Matcher matcher = pattern.matcher("https://www.netkiller.cn/linux/index.html");
+        if (matcher.find()) {
+            String s = matcher.replaceAll("test"); //替换后的字符串
+            System.out.println(s);
+            // 输出结果：https://test.test.cn/linux/index.html
+        }
+
+    }
+}
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+"aab".replaceAll("a{1}", "x"); //xxb
+"aba".replaceAll("a{1}", "x"); //xbx
+
+"abaaabaaaba".replaceAll("a{2}", "x");  //abxabxaba
+"abaabaaaaba".replaceAll("a{2}", "x"); //abxbxxba			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>字符串分割</title>
+			<programlisting>
+			<![CDATA[
+        String input = "苹果!!香蕉!!鸭梨!!橘子";
+        System.out.println(Arrays.toString(Pattern.compile("!!").split(input)));
+        System.out.println(Arrays.toString(Pattern.compile("!!").split(input, 3)));
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+[苹果, 香蕉, 鸭梨, 橘子]
+[苹果, 香蕉, 鸭梨!!橘子]			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	&section.java.util.concurrent.xml;
 </section>
