@@ -28,6 +28,44 @@ Installed as /Users/neo/Library/Android/sdk/platform-tools/adb
 Running on Darwin 23.0.0 (arm64)		
 		]]>
 	</screen>
+	<section>
+		<title>获得 root 权限</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb push public.libraries.txt /system/etc/public.libraries.txt   
+public.libraries.txt: 1 file pushed, 0 skipped. 1.0 MB/s (485 bytes in 0.000s)
+adb: error: failed to copy 'public.libraries.txt' to '/system/etc/public.libraries.txt': remote couldn't create file: Read-only file system	
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb root
+neo@MacBook-Pro-M2 ~ % adb push public.libraries.txt /system/etc/public.libraries.txt  
+public.libraries.txt: 1 file pushed, 0 skipped. 1.4 MB/s (485 bytes in 0.000s)
+adb: error: failed to copy 'public.libraries.txt' to '/system/etc/public.libraries.txt': remote couldn't create file: Read-only file system
+	
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+
+neo@MacBook-Pro-M2 ~ % adb remount
+Using overlayfs for /system
+Using overlayfs for /vendor
+Using overlayfs for /odm
+Using overlayfs for /product
+Using overlayfs for /system_ext
+Now reboot your device for settings to take effect
+remount succeeded
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb push public.libraries.txt /system/etc/public.libraries.txt  
+public.libraries.txt: 1 file pushed, 0 skipped. 1.5 MB/s (485 bytes in 0.000s)				
+		]]>
+		</screen>
+	</section>
 	<section id="adb.devices">
 		<title>设备管理</title>
 		<screen>
