@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="palette" ?>
 	<title>Palette 视觉设计</title>
-	&section.android.layout.xml;
+	&section.android.palette.layouts.xml;
 	&section.android.ui.xml;
 	&section.android.widgets.xml;
+	&section.android.palette.containers.xml;
 
 	<section>
 		<title>Legacy</title>

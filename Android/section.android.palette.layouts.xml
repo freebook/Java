@@ -1,6 +1,10 @@
 <section id="layout">
 	<title>样式布局</title>
 	<section>
+		<title>LinearLayout</title>
+		
+	</section>
+	<section>
 		<title>FrameLayout</title>
 		<section>
 			<title>FrameLayout 事件穿透</title>
