@@ -1,7 +1,50 @@
 <section id="layout">
 	<title>样式布局</title>
-	<section>
+	<section id="LinearLayout">
 		<title>LinearLayout</title>
+		<section>
+			<title>边距设置</title>
+			<programlisting>
+			<![CDATA[
+android:layout_marginTop="10dp"
+android:layout_marginBottom="10dp" 	
+android:layout_marginLeft="10dp"
+android:layout_marginRight="10dp"
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>水平剧中</title>
+			<para>android:gravity="center_horizontal"</para>
+			<programlisting>
+			<![CDATA[
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="唤醒词"
+                    android:textColor="#70ffffff"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="小梅小梅"
+                    android:textColor="#00F8C1"
+                    android:textSize="24sp" />
+            </LinearLayout>			
+			]]>
+			</programlisting>
+		</section>
 		
 	</section>
 	<section>
@@ -32,6 +75,43 @@
             return true;
         }
     });			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>叠加层</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foregroundGravity="left|top"
+    tools:context=".BlankFragment">
+
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@color/colorPrimary"
+        android:gravity="bottom|right"
+        android:text="第一层" />
+
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@color/colorAccent"
+        android:gravity="bottom|right"
+        android:text="第二层" />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="bottom|right"
+        android:text="第三层" />
+
+</FrameLayout>			
 			]]>
 			</programlisting>
 		</section>
