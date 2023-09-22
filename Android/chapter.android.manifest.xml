@@ -302,4 +302,24 @@ public class BootReceiver extends BroadcastReceiver {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>默认横屏</title>
+		<para>android:screenOrientation="landscape"</para>
+		<programlisting>
+		<![CDATA[
+ 		<activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+		]]>
+		</programlisting>
+	</section>
 </chapter>

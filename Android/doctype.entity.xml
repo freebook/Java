@@ -8,8 +8,8 @@
 <!ENTITY chapter.android.palette.xml 		SYSTEM "chapter.android.palette.xml">
 <!ENTITY section.android.palette.layouts.xml 		SYSTEM "section.android.palette.layouts.xml">
 <!ENTITY section.android.palette.containers.xml		SYSTEM "section.android.palette.containers.xml">
-<!ENTITY section.android.ui.xml	 			SYSTEM "section.android.ui.xml">
-<!ENTITY section.android.widgets.xml 		SYSTEM "section.android.widgets.xml">
+<!ENTITY section.android.palette.ui.xml	 			SYSTEM "section.android.palette.ui.xml">
+<!ENTITY section.android.palette.widgets.xml 		SYSTEM "section.android.palette.widgets.xml">
 
 
 <!ENTITY chapter.android.device.xml		 	SYSTEM "chapter.android.device.xml">

@@ -2,8 +2,8 @@
 <chapter id="index"><?dbhtml dir="palette" ?>
 	<title>Palette 视觉设计</title>
 	&section.android.palette.layouts.xml;
-	&section.android.ui.xml;
-	&section.android.widgets.xml;
+	&section.android.palette.ui.xml;
+	&section.android.palette.widgets.xml;
 	&section.android.palette.containers.xml;
 
 	<section>
