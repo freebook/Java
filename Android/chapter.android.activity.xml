@@ -43,7 +43,7 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section>
 		<title>显式四种跳转方式</title>
 		<programlisting>
@@ -111,7 +111,7 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section>
 		<title>返回触发</title>
 		<programlisting>
@@ -228,7 +228,7 @@ startActivityForResult(intent,REQUSET_CODE);
 			
 			]]>
 			</programlisting>
-			<para>第一个参数 是不是我要的返回结果  第二个参数 是谁返回给我的 第三个参数 返回的附加信息</para>
+			<para>第一个参数 是不是我要的返回结果 第二个参数 是谁返回给我的 第三个参数 返回的附加信息</para>
 			<programlisting>
 			<![CDATA[
 	@Override
@@ -314,53 +314,118 @@ intentActivityResultLauncher.launch(intent);
     }		
 		]]>
 		</programlisting>
+		<section>
+			<title>返回值</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+ 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+ 
+public class SubActivity extends Activity{
+	private TextView tv1;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.sub);
+		tv1 = (TextView)this.findViewById(R.id.tv1);
+		Intent intent = new Intent(); 
+		intent.putExtra("response", "返回码为200");
+		setResult(200,intent); 
+		finish();
+	}
+ 
+}
+
+			
+			]]>
+			</programlisting>
+
+
+			<programlisting>
+		<![CDATA[
+package cn.netkiller;
+ 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+ 
+public class IntentActivity extends Activity {
+	private Button btn1;
+	private TextView tv1;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        btn1 = (Button)this.findViewById(R.id.brn1);
+        tv1 = (TextView)this.findViewById(R.id.tv2);
+        btn1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(IntentActivity.this, SubActivity.class);
+				startActivityForResult(intent, 100); //requestcode=100
+				
+			}
+		});
+    }
+    //回调函数，会根据requesrCode进行不同的响应
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==100){
+			// TODO: 响应逻辑
+		}
+		if(resultCode==200){
+			Bundle bundle = data.getExtras();
+			String response = bundle.getString("response");
+			tv1.setText(response);
+		}
+	}
+    
+}
+		]]>
+			</programlisting>
+		</section>
 	</section>
-	<section id="Fragment">
-		<title>Fragment</title>
-		<section>
-			<title>在 Fragment 中使用 findViewById</title>
-			<tip>
-				<para>使用 getView() 方法返回当前 fragment 的根视图。</para>
-				<programlisting>
-				<![CDATA[
-Button btn = getView().findViewById(R.id.btn);	
-				]]>
-				</programlisting>
-			</tip>
-		</section>
-		<section>
-			<title>在 Fragment 中使用 Intent 跳转</title>
-			<programlisting>
-			<![CDATA[
-Intent intent = new Intent(getActivity(), MyService.class);
-startActivity(intent);			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Fragment 中调用 getPackageManager()</title>
-			<programlisting>
-			<![CDATA[
-ResolveInfo resolveInfo = getActivity().getPackageManager().resolveActivity(intent, 0);			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>在 Fragment 中使用 runOnUiThread</title>
-			<programlisting>
-			<![CDATA[
-    private void showResponse(final String response) {
-        //在子线程中更新UI
-        getActivity().runOnUiThread(new Runnable() {
+	<section id="Activity.finish()">
+		<title>Activity 关闭</title>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.album;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class HotelActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_hotel);
+
+        TextView hotelClose = (TextView) findViewById(R.id.hotelClose);
+
+        hotelClose.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                text_dashboard.setText(response);
+            public void onClick(View v) {
+                finish();
             }
         });
-    }
-			]]>
-			</programlisting>
-		</section>
 
+    }
+}		
+		]]>
+		</programlisting>
 	</section>
 </chapter>

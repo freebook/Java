@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="palette" ?>
 	<title>Palette 视觉设计</title>
+	<section>
+		<title>父容器定位</title>
+		<para>在相对布局中，可以通过以下的属性让的组合让控件处于父容器左上角、右上角、左下角、右下角、上下左右居中，正居中等九个位置。属性如下：</para>
+		<programlisting>
+		<![CDATA[
+android:layout_alignParentLeft="true" 	父容器左边
+android:layout_alignParentRight="true" 	父容器右边
+android:layout_alignParentTop="true" 	父容器顶部
+android:layout_alignParentBottom="true" 父容器底部
+android:layout_centerHorizontal="true" 	水平方向居中
+android:layout_centerVertical="true" 	垂直方向居中
+android:layout_centerInParent="true" 	水平垂直都居中
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+android:layout_toLeftOf="@+id/button1" 	在button1控件左方
+android:layout_toRightOf="@+id/button1" 在button1控件右方
+android:layout_above="@+id/button1" 	在button1控件上方
+android:layout_below="@+id/button1" 	在button1控件下方
+
+android:layout_alignLeft="@+id/button1" 与button1控件左边平齐
+android:layout_alignRight="@+id/button1" 	与button1控件右边平齐
+android:layout_alignTop="@+id/button1" 	与button1控件上边平齐
+android:layout_alignBottom="@+id/button1" 	与button1控件下边平齐		
+		]]>
+		</programlisting>
+	</section>
 	&section.android.palette.layouts.xml;
 	&section.android.palette.ui.xml;
 	&section.android.palette.widgets.xml;
@@ -15,4 +43,84 @@
 			<title>GridView</title>
 		</section>
 	</section>
+	<section>
+		<title>渐变背景色</title>
+		<para>实现界面背景颜色渐变效果</para>
+		<para>background_gradient.xml</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--实现应用背景颜色渐变-->
+    <gradient
+        android:startColor="#F5736287"
+        android:endColor="#FA7E7162"
+        android:angle="1"/>
+</shape>
+		]]>
+		</programlisting>
+		<para>设置背景</para>
+		<programlisting>
+		<![CDATA[
+android:background="@drawable/background_gradient"		
+		]]>
+		</programlisting>
+		<para>android:angle 角度参数</para>
+		<screen>
+		<![CDATA[
+android:angle="0"	//效果是：是从左到右，按照开始颜色到结束颜色来渲染的
+android:angle="90"	//效果是：是从下到上，按照开始颜色到结束颜色来渲染的
+android:angle="180"	//效果是：是从右到左，按照开始颜色到结束颜色来渲染的
+android:angle="270"	//效果是：是从上到下，按照开始颜色到结束颜色来渲染的		
+		]]>
+		</screen>
+		<para>设置圆角</para>
+		<programlisting>
+		<![CDATA[
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient android:startColor="#00FFEA"
+                android:endColor="#DA00FF"
+                android:angle="45"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+</selector>		
+		]]>
+		</programlisting>
+		<para>三色渐变</para>
+		<programlisting>
+		<![CDATA[
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#FF9800"
+                android:centerColor="#11A5E8"
+                android:endColor="#5C00FF"
+                android:angle="45"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+</selector>
+
+		
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#FF9800"
+                android:centerColor="#11A5E8"
+                android:endColor="#5C00FF"
+                android:angle="45"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+</selector>
+		
+		]]>
+		</programlisting>
+	</section>
+	
 </chapter>

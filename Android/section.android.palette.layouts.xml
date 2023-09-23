@@ -53,13 +53,61 @@
 			]]>
 			</programlisting>
 		</section>
-		
+
 	</section>
-	<section>
+	<section id="FrameLayout">
 		<title>FrameLayout</title>
+
+		<section>
+			<title>在 Fragment 中使用 findViewById</title>
+			<tip>
+				<para>使用 getView() 方法返回当前 fragment 的根视图。</para>
+				<programlisting>
+				<![CDATA[
+Button btn = getView().findViewById(R.id.btn);	
+				]]>
+				</programlisting>
+			</tip>
+		</section>
+		<section>
+			<title>在 Fragment 中使用 Intent 跳转</title>
+			<programlisting>
+			<![CDATA[
+Intent intent = new Intent(getActivity(), MyService.class);
+startActivity(intent);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Fragment 中调用 getPackageManager()</title>
+			<programlisting>
+			<![CDATA[
+ResolveInfo resolveInfo = getActivity().getPackageManager().resolveActivity(intent, 0);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>在 Fragment 中使用 runOnUiThread</title>
+			<programlisting>
+			<![CDATA[
+    private void showResponse(final String response) {
+        //在子线程中更新UI
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text_dashboard.setText(response);
+            }
+        });
+    }
+			]]>
+			</programlisting>
+		</section>
+
+
 		<section>
 			<title>FrameLayout 事件穿透</title>
-			<para>FrameLayout 浮动在另其他 UI 上方，点击 FrameLayout 某些问之，触发了下面的事件，解决方法是增加: </para>
+			<para>FrameLayout 浮动在另其他 UI 上方，点击 FrameLayout 某些问之，触发了下面的事件，解决方法是增加:
+			</para>
 			<para>android:clickable="true"</para>
 			<programlisting>
 			<![CDATA[
@@ -212,14 +260,67 @@ public class ClockFragment extends Fragment {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>替换 FrameLayout</title>
+			<para>屏某个区域布局</para>
+			<programlisting>
+			<![CDATA[
+    <FrameLayout
+        android:id="@+id/controller"
+        android:layout_width="409dp"
+        android:layout_height="681dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="49dp"
+        tools:ignore="MissingConstraints">
+
+    </FrameLayout>			
+			]]>
+			</programlisting>
+			<para>点击事件 android:onClick="hotelMenuClick"</para>
+			<screen>
+			<![CDATA[
+		<androidx.cardview.widget.CardView
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:onClick="hotelMenuClick"
+             app:cardCornerRadius="10dp"
+             app:cardElevation="0dp">
+
+             <ImageView
+                 android:id="@+id/imageView4"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"
+                 android:scaleType="fitXY"
+                 app:srcCompat="@drawable/bg_tavern_menu" />
+         </androidx.cardview.widget.CardView>			
+			]]>
+			</screen>
+			<para>事件响应</para>
+			<programlisting>
+			<![CDATA[
+    public void hotelMenuClick(View v) {
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.controller, new HotelFragment(), null)
+                .addToBackStack(null)
+                .commit();
+
+    }
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	
-	<section>
+
+	<section id="AnimationDrawable">
 		<title>动画</title>
 		<para></para>
 		<itemizedlist>
 			<title>参数</title>
-			<listitem>android:oneshot 代表播放次数 true 只展示一遍，设置为false会不停的循环播放动画</listitem>
+			<listitem>android:oneshot 代表播放次数 true 只展示一遍，设置为false会不停的循环播放动画
+			</listitem>
 			<listitem>android:duration 表示展示所用的该图片的时间长度 </listitem>
 		</itemizedlist>
 		<programlisting>
@@ -260,7 +361,7 @@ public class ClockFragment extends Fragment {
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="soundwave">
 		<title>声音波形图</title>
 		<programlisting>
