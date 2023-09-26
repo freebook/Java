@@ -172,8 +172,8 @@ intent.putExtra("name","zhangsan");
 			<para>取出数据</para>
 			<programlisting>
 			<![CDATA[
- Intent intent = getIntent();
- String name=intent.getStringExtra("name");			
+Intent intent = getIntent();
+String name=intent.getStringExtra("name");			
 			]]>
 			</programlisting>
 		</section>
@@ -428,4 +428,5 @@ public class HotelActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
+	&section.android.res.xml;
 </chapter>

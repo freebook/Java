@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Res 资源</title>
+	<section>
+		<title>通过名称查找 layout ID</title>
+		<para>查找 layout 资源</para>
+		<programlisting>
+		<![CDATA[
+        // 用法 context.getResources().getIdentifier("test_layout", "layout", context.getPackageName());
+        int test = context.getResources().getIdentifier("test", "layout", "cn.netkiller.album ");
+        Log.d(TAG, test + " id ");		
+		]]>
+		</programlisting>
+
+	</section>
+	<section>
+		<title>查找 drawable 资源 ID</title>
+		<para>查找 drawable 资源</para>
+		<programlisting>
+		<![CDATA[
+		// 用法 context.getResources().getIdentifier("ic_launcher","drawable",context.getPackageName())
+		
+        int identifier = context.getResources().getIdentifier("hotel1", "drawable", context.getPackageName());
+        Log.d(TAG, "Resource identifier: " + identifier + " ");		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>获取 color 颜色 ID</title>
+		<para>获取res文件夹下的color.xml文件下某个颜色字段的id</para>
+		<programlisting>
+		<![CDATA[
+		context.getResources().getIdentifier("yellow","color",context.getPackageName())
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>获取 array.xml 文件下某个字段的 ID</title>
+		<para>获取array.xml文件里名为“my_array”的id</para>
+		<programlisting>
+		<![CDATA[
+context.getResources().getIdentifier("my_array","array",context.getPackageName())		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>获取 style.xml 文件下的某个样式的 id</title>
+		<para>获取value下style.xml文件下的某个样式的id</para>
+		<screen>
+		<![CDATA[
+context.getResources().getIdentifier("dialog_style","style",context.getPackageName())		
+		]]>
+		</screen>
+	</section>
+</section>

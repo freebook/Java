@@ -326,17 +326,25 @@ public class ClockFragment extends Fragment {
 		<programlisting>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
-<animation-list 
- xmlns:android="http://schemas.android.com/apk/res/android" 
- android:oneshot="true" 
-   
-  <item android:drawable="@drawable/icon1" android:duration="150" </item  
-  <item android:drawable="@drawable/icon2" android:duration="150" </item  
-  <item android:drawable="@drawable/icon3" android:duration="150" </item  
-  <item android:drawable="@drawable/icon4" android:duration="150" </item  
-  <item android:drawable="@drawable/icon5" android:duration="150" </item  
-  <item android:drawable="@drawable/icon6" android:duration="150" </item  
-</animation-list  		
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+
+    <item
+        android:drawable="@drawable/hotel1"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel2"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel3"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel4"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel5"
+        android:duration="150" />
+</animation-list>
 		]]>
 		</programlisting>
 		<para></para>
@@ -354,8 +362,8 @@ public class ClockFragment extends Fragment {
 		<para></para>
 		<programlisting>
 		<![CDATA[
-    ImageView mImageView = findViewById(R.id.load_image);
-    animationDrawable = (AnimationDrawable) mImageView.getDrawable();
+    ImageView imageView = findViewById(R.id.imageView);
+    animationDrawable = (AnimationDrawable) imageView.getDrawable();
     //直接就开始执行，性能不是最佳的。
     animationDrawable.start();		
 		]]>
