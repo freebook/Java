@@ -177,6 +177,13 @@ List list = Arrays.asList(arr);
 		</section>
 		<section>
 			<title>Stream.toList() 方法</title>
+			<para>数组转List</para>
+			<programlisting>
+			<![CDATA[
+String[] arrays = {"tom", "jack", "kate"};
+List<String> stringList= Stream.of(arrays).collect(Collectors.toList());			
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.demo;
@@ -226,8 +233,8 @@ public class TestList {
 			]]>
 			</programlisting>
 		</section>
-		
-		
+
+
 	</section>
 
 	<section id="ArrayList">
@@ -266,7 +273,7 @@ List<String> list4 = new ArrayList<String>() {
      }
 }; 	
 			]]>
-			</programlisting>	
+			</programlisting>
 		</section>
 		<section>
 			<title>判断元素是否存在</title>
@@ -550,8 +557,8 @@ arrayList.stream()
 			<title>string 转换为 ArrayList</title>
 			<programlisting>
 		<![CDATA[
-　　string str="1,2,3,4,5";
-　　ArrayList b = new ArrayList( str.Split(',') ) ;		
+　　String str="1,2,3,4,5";
+　　ArrayList b = new ArrayList( str.split(',') ) ;		
 		]]>
 			</programlisting>
 		</section>
@@ -923,7 +930,85 @@ items.forEach((k,v)->{
 	<section id="java.util.Queue">
 		<title>Queue</title>
 		<programlisting>
-	<![CDATA[
+		<![CDATA[
+	Queue<String> queue = new Queue<String>();
+	queue.offer("1");
+	queue.offer("2");
+	queue.offer("3");
+	queue.offer("4");
+	System.out.println("当前第一个元素: " + queue.peek());// 取队列第一个元素
+	System.out.println("出列第一个元素: " + queue.poll());// 出列第一个元素
+	System.out.println("当前第一个元素: " + queue.peek());// 取队列第一个元素		
+		]]>
+		</programlisting>
+		
+		<section>
+			<title>阻塞队列</title>
+			<para>阻塞队列是一个可以阻塞的先进先出集合，比如某个线程在空队列获取元素时、或者在已存满队列存储元素时，都会被阻塞。</para>
+			<para>BlockingQueue 接口常用的实现类如下：</para>
+			<literallayout>
+			<![CDATA[
+ArrayBlockingQueue ：基于数组的有界阻塞队列，必须指定大小。
+LinkedBlockingQueue ：基于单链表的无界阻塞队列，不需指定大小。
+PriorityBlockingQueue ：基于最小二叉堆的无界、优先级阻塞队列。
+DelayQueue：基于延迟、优先级、无界阻塞队列。
+SynchronousQueue ：基于 CAS 的阻塞队列。			
+			]]>
+			</literallayout>
+			<section>
+				<title>LinkedBlockingQueue</title>
+				<programlisting>
+				<![CDATA[
+	LinkedBlockingQueue<String> voice = new LinkedBlockingQueue<String>();
+    voice.add("第一句，你是哪里的人");
+    voice.add("第二句，你住在哪里啊");
+    voice.add("第三句，你叫什么名字");
+    voice.add("第四句，你从事什么职业");
+    voice.add("第五句，问完了");				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section>
+			<title>Deque 双端队列</title>
+			<programlisting>
+			<![CDATA[
+public class Main  {
+    public static void main(String[] args) {
+
+        Deque deque = new LinkedList<String>();
+        deque.push("one");
+        deque.push("two");
+        deque.push("three");
+        while (deque.peek() != null) 
+             System.out.println(deque.pop());
+    }
+}			
+			]]>
+			</programlisting>
+		<section>
+			<title>LinkedList</title>
+			<programlisting>
+			<![CDATA[
+public class QueueTest {
+    public static void main(String[] args) {
+        Queue<String> queue = new LinkedList();
+        queue.offer("元素A");
+        queue.offer("元素B");
+        queue.offer("元素C");
+        queue.offer("元素D");
+        queue.offer("元素E");
+        while (queue.size() > 0) {
+            String element = queue.poll();
+            System.out.println(element);
+        }
+    }
+}
+			]]>
+			</programlisting>
+
+			<programlisting>
+			<![CDATA[
 package cn.netkiller.test;
 
 import java.util.LinkedList;
@@ -939,6 +1024,7 @@ public class QueueTest {
         queue.offer("c");
         queue.offer("d");
         queue.offer("e");
+        
         for(String q : queue){
             System.out.println(q);
         }
@@ -960,9 +1046,54 @@ public class QueueTest {
         //add()和remove()方法在失败的时候会抛出异常(不推荐)
     }
 }
-	
-	]]>
-		</programlisting>
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+public class Main {
+    public static void main(String[] args) {
+        LinkedList queue = new LinkedList();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+
+        //FIFO 先进先出 通过removeFirst()验证一下
+        while (!queue.isEmpty())
+            System.out.println(queue.removeFirst());
+    }
+}
+			
+public class Main {
+    public static void main(String[] args) {
+        LinkedList queue = new LinkedList();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+
+        // 当作栈区使用 removeLast() 先进后出
+        while (!queue.isEmpty())
+            System.out.println(queue.removeLast());
+    }
+}
+
+输出结果
+3
+2
+1			
+			]]>
+			</programlisting>
+		</section>
+		</section>
+		<section>
+			<title>数据转换</title>
+			<programlisting>
+			<![CDATA[
+		String str = "酒店坐落于青岛崂山区金融CBD，背靠历史悠久的“海上名山第一”崂山，迎黄海湾峡绵延悠长。风景秀美壮观，于酒店眺望闻名于世的青岛石老人景观，清风朗日浪花缱绻让人沉醉。国际娱乐标杆美高梅集团精心打造334间奢华畅阔客房，成为同城豪华旅居全新乐选之地。酒店拥有五间风格迥异餐厅、酒吧吧及糕点屋，资深大厨呈现五洲美食，惊喜不绝。";
+        String[] arr = str.split("。");
+        LinkedBlockingQueue<String> voice = new LinkedBlockingQueue<String>(Arrays.asList(arr));			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="stream">
 		<title>Stream</title>
