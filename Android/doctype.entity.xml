@@ -5,6 +5,7 @@
 <!ENTITY section.android.adb.xml	 		SYSTEM "section.android.adb.xml">
 <!ENTITY chapter.android.manifest.xml 		SYSTEM "chapter.android.manifest.xml">
 <!ENTITY chapter.android.activity.xml 		SYSTEM "chapter.android.activity.xml">
+<!ENTITY section.android.res.xml	 		SYSTEM "section.android.res.xml">
 <!ENTITY chapter.android.palette.xml 		SYSTEM "chapter.android.palette.xml">
 <!ENTITY section.android.palette.layouts.xml 		SYSTEM "section.android.palette.layouts.xml">
 <!ENTITY section.android.palette.containers.xml		SYSTEM "section.android.palette.containers.xml">
