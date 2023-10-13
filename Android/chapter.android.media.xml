@@ -214,6 +214,17 @@ public class Bible {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>设置速度，快进播放</title>
+			<programlisting>
+			<![CDATA[
+                PlaybackParams params = new PlaybackParams();
+//                params.setSpeed(1.5f);
+                params.setSpeed(5f);
+                mediaPlayer.setPlaybackParams(params);			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="VideoView">
 		<title>VideoView 开发</title>

@@ -62,7 +62,9 @@ public final class Writer {
 			</programlisting>
 			<para>运行后输出</para>
 			<screen>
-				{"nickname":"netkiller","name":"Neo","department":"IT","role":"Admin","phone":["12355566688","0755-2222-3333"],"address":{"street":"Longhua","city":"Shenzhen","zipcode":"518000"}}
+			<![CDATA[
+{"nickname":"netkiller","name":"Neo","department":"IT","role":"Admin","phone":["12355566688","0755-2222-3333"],"address":{"street":"Longhua","city":"Shenzhen","zipcode":"518000"}}			
+			]]>
 			</screen>
 		</section>
 		<section id="json.decode">
@@ -272,5 +274,25 @@ JsonNode jsonNode = mapper.convertValue(picture, JsonNode.class);
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title>org.json</title>
+		<section>
+			<title>JSONArray forEach</title>
+			<programlisting>
+			<![CDATA[
+            JSONArray playlists = object.getJSONArray("result");
+            Log.i(TAG, "播放数量：" + playlists.size() + " 列表" + playlists);
+
+            List<String> lists = new ArrayList<String>();
+
+            playlists.forEach(jsonObject -> {
+                JSONObject obj = (JSONObject) jsonObject;
+                lists.add(obj.getString("url"));
+            });
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 </chapter>
