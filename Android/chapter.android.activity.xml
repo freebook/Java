@@ -428,5 +428,47 @@ public class HotelActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>屏幕触摸事件 onTouchEvent(MotionEvent event)</title>
+		<programlisting>
+		<![CDATA[
+    private float x;
+    private float y;
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x = event.getX();
+                y = event.getY();
+                Log.d("Motion", "ACTION_DOWN-> X: " + x + "," + "Y: " + y);
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d("Motion", "ACTION_UP-> X: " + event.getX() + ", Y: " + event.getY());
+                if (event.getX() - x > 60) {
+                    Log.d("Motion", "从左至右滑动: ➡️");
+                }
+                if (x - event.getX() > 60) {
+                    Log.d("Motion", "从右至左滑动：⬅️");
+                }
+
+                if (y - event.getY() > 60) {
+                    Log.d("Motion", "从下至上滑动：⬆️");
+                }
+
+                if (event.getY() - y > 60) {
+                    Log.d("Motion", "从上至下滑动：⬇️");
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d("Motion", "ACTION_MOVE-> X: " + event.getX() + ", Y: " + event.getY());
+                break;
+        }
+        return false;
+    }		
+		]]>
+		</programlisting>
+	</section>
+	
 	&section.android.res.xml;
 </chapter>
