@@ -25,7 +25,7 @@ setContentView(R.layout.view);
 			]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="隐藏虚拟键">
 		<title>隐藏虚拟键</title>
 		<programlisting>
 		<![CDATA[
@@ -44,7 +44,7 @@ setContentView(R.layout.view);
 		</programlisting>
 	</section>
 
-	<section>
+	<section id="显式四种跳转方式">
 		<title>显式四种跳转方式</title>
 		<programlisting>
 		<![CDATA[
@@ -66,7 +66,7 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="定时关闭">
 		<title>定时关闭</title>
 		<programlisting>
 		<![CDATA[
@@ -98,7 +98,7 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="恢复触发">
 		<title>恢复触发</title>
 		<para>程序回到桌面，例如设置WI-FI，让步在回到程序，安卓会调用 onResume()</para>
 		<programlisting>
@@ -112,7 +112,7 @@ setContentView(R.layout.view);
 		</programlisting>
 	</section>
 
-	<section>
+	<section id="返回触发">
 		<title>返回触发</title>
 		<programlisting>
 		<![CDATA[
@@ -125,7 +125,7 @@ setContentView(R.layout.view);
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="保持屏幕常开">
 		<title>保持屏幕常开</title>
 		<programlisting>
 		<![CDATA[
@@ -262,7 +262,7 @@ finish();
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="intentActivityResultLauncher">
 		<title>intentActivityResultLauncher 跳转</title>
 		<programlisting>
 		<![CDATA[
@@ -399,7 +399,7 @@ public class IntentActivity extends Activity {
 		<title>Activity 关闭</title>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.album;
+package cn.netkiller.album;
 
 import android.os.Bundle;
 import android.view.View;
@@ -428,7 +428,7 @@ public class HotelActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="屏幕触摸事件">
 		<title>屏幕触摸事件 onTouchEvent(MotionEvent event)</title>
 		<programlisting>
 		<![CDATA[
@@ -469,6 +469,17 @@ public class HotelActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="App间跳转">
+		<title>App 间跳转</title>
+		<programlisting>
+		<![CDATA[
+    Intent intent = new Intent(Intent.ACTION_MAIN);
+    //前提：知道要跳转应用的包名、类名
+    ComponentName componentName = new ComponentName("cn.netkiller.album.hotel", "cn.netkiller.album.hotel.MainActivity");
+    intent.setComponent(componentName);
+    startActivity(intent);
+		]]>
+		</programlisting>
+	</section>
 	&section.android.res.xml;
 </chapter>
