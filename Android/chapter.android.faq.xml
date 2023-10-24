@@ -100,4 +100,50 @@ mHandler.post(mRunnable);
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>Manifest merger failed with multiple errors, see logs</title>
+		<para>通过 gradle processDebugManifest --stacktrace 定位问题</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 album % gradle processDebugManifest --stacktrace
+
+> Task :test:copyTask
+copyTask
+
+> Task :test:preBuild
+preBuild
+
+> Task :test:preDebugBuild
+preDebugBuild
+
+> Task :test:createDebugCompatibleScreenManifests
+createDebugCompatibleScreenManifests
+
+> Task :test:generateDebugResValues
+generateDebugResValues
+
+> Task :test:extractDeepLinksDebug
+extractDeepLinksDebug
+
+> Task :test:processDebugMainManifest
+[androidx.vectordrawable:vectordrawable-animated:1.0.0] /Users/neo/.gradle/caches/transforms-3/4ea0058e0b06b5f932e694b630ab8fbf/transformed/vectordrawable-animated-1.0.0/AndroidManifest.xml Warning:
+        Namespace 'androidx.vectordrawable' used in: androidx.vectordrawable:vectordrawable-animated:1.0.0, androidx.vectordrawable:vectordrawable:1.0.0.
+processDebugMainManifest
+
+> Task :test:processDebugManifest
+processDebugManifest
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.4/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 8s
+26 actionable tasks: 24 executed, 2 up-to-date
+neo@MacBook-Pro-M2 album % 
+		
+		]]>
+		</screen>
+	</section>
 </chapter>

@@ -82,6 +82,18 @@ USAGE: gradle [option...] [task...]
 neo@MacBook-Pro ~ %  brew install gradle
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 test % gradle 
+
+ERROR: JAVA_HOME is set to an invalid directory: @@HOMEBREW_JAVA@@
+
+Please set the JAVA_HOME variable in your environment to match the
+location of your Java installation.
+
+neo@MacBook-Pro-M2 test % export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home  			
+			]]>
+			</screen>
 		</section>
 		
 
@@ -195,7 +207,7 @@ Total time: 5.157 secs
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="build.gradle">
 		<title>build.gradle</title>
 		<para>apply plugin</para>
 		<screen>
@@ -253,6 +265,54 @@ jar {
         attributes 'Class-Path': 'junit5.jar'
     }
 }			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Task</title>
+			<screen>
+			<![CDATA[
+task Hello {
+    doFirst {
+        // 调用 Hello 任务时 , 先调用该闭包内容
+        println 'doFirst1'
+    }
+    doFirst {
+        // 调用 Hello 任务时 , 先调用该闭包内容
+        println 'doFirst2'
+    }
+
+    // 任务主体内容
+    println 'Hello World!'
+
+    doLast {
+        // 调用 Hello 任务结束时 , 最后调用该闭包内容
+        println 'doLast1'
+    }
+    doLast {
+        // 调用 Hello 任务结束时 , 最后调用该闭包内容
+        println 'doLast2'
+    }
+}
+			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 test % gradle Hello
+
+> Configure project :
+Hello World!
+
+> Task :Hello
+doFirst2
+doFirst1
+doLast1
+doLast2
+
+BUILD SUCCESSFUL in 444ms
+1 actionable task: 1 executed
+neo@MacBook-Pro-M2 test % 			
 			]]>
 			</screen>
 		</section>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="gradle">
+	<title>gradle</title>
+	<section>
+		<title>编译前处理</title>
+		<para>在编译之前 preBuild 任务依赖已有的任务</para>
+		<para>在编译之前将某个文件复制到指定目录</para>
+		<screen>
+		<![CDATA[
+task copyTask(type: Copy) {
+    from 'src/main/config/test.xml'
+    into 'build/'
+}
+
+preBuild.dependsOn copyTask		
+		]]>
+		</screen>
+		<para>删除文件的任务,编译前调用</para>
+		<screen>
+		<![CDATA[
+task deleteFile{
+    File file = file('src/main/assets/fonts.png')
+    file.delete()
+    println("delete success")
+}
+
+preBuild.dependsOn deleteFile
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>打印任务列表</title>
+		<screen>
+		<![CDATA[
+this.project.afterEvaluate { project ->
+    project.tasks.each { task ->
+        task.doLast {
+            println("${task.name}")
+//            def fromFile = "${project.getProjectDir().path}/build/outputs/apk/debug/test-debug.apk"
+//            def intoFile = file('app').absolutePath + "/src/main/assets/"
+//
+//            try {
+//                println("start copy ")
+//                println("fromFile = " + fromFile)
+//                println("intoFile = " + intoFile)
+//                copy {
+//                    from fromFile
+//                    into intoFile
+//                    rename("plugindemo1-debug.apk", "plugin.apk")
+//                }
+//                println("=======================build.dolast success====================")
+//            } catch (Exception e) {
+//                e.printStackTrace()
+//            }
+        }
+    }
+}		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>任务依赖</title>
+		<screen>
+		<![CDATA[
+		task taskX {
+  doLast{
+    println 'taskX'
+  }
+}
+
+task taskY {
+  doLast{
+    println 'taskY'
+  }
+}
+
+task taskZ(dependsOn:taskX) { // 多依赖方式：dependsOn:[taskX,taskY]
+  doLast{
+    println 'taskZ'
+  }
+}
+		]]>
+		</screen>
+		<para>多任务依赖</para>
+		<screen>
+		<![CDATA[
+task taskZ(dependsOn:[taskX,taskY]) {
+  doLast{
+    println 'taskZ'
+  }
+}		
+		]]>
+		</screen>
+		<para>通过task的dependsOn方法，也可以指定task的依赖task。</para>
+		<screen>
+		<![CDATA[
+task taskZ {
+  doLast{
+    println 'taskZ'
+  }
+}
+
+
+taskZ.dependsOn(taskX,taskY)		
+		]]>
+		</screen>
+		<para>动态添加依赖</para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+	</section>
+</section>
