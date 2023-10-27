@@ -35,6 +35,7 @@
 <!ENTITY chapter.android.notification.xml	SYSTEM "chapter.android.notification.xml">
 <!ENTITY chapter.android.service.xml		SYSTEM "chapter.android.service.xml">
 <!ENTITY chapter.android.graphics.xml		SYSTEM "chapter.android.graphics.xml">
+<!ENTITY section.android.download.xml		SYSTEM "section.android.download.xml">
 
 <!ENTITY chapter.android.eventbus.xml		SYSTEM "chapter.android.eventbus.xml">
 <!ENTITY section.android.mqtt.xml			SYSTEM "section.android.mqtt.xml">

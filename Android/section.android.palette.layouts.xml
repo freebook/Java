@@ -1,5 +1,21 @@
 <section id="layout">
 	<title>样式布局</title>
+	<section>
+		<title>对齐布局</title>
+		<para>垂直/水平剧中</para>
+		<programlisting>
+		<![CDATA[
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />		
+		]]>
+		</programlisting>
+	</section>
 	<section id="LinearLayout">
 		<title>LinearLayout</title>
 		<section>

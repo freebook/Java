@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="storage" ?>
 	<title>存储</title>
+	<section>
+		<title>存储目录</title>
+		<screen>
+		<![CDATA[
+Log.d(TAG, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
+Log.d(TAG, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString());
+            		
+/storage/emulated/0/Pictures
+
+/storage/emulated/0/Android/data/cn.aigcsst.album.education/files/Pictures		
+		]]>
+		</screen>
+	</section>
+	
 	<section id="SharedPreferences">
 		<title>SharedPreferences</title>
 

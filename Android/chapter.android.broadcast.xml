@@ -382,4 +382,27 @@ public class MainActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>动态监听广播</title>
+		<programlisting>
+		<![CDATA[
+	private void broadcast(final long Id) {
+ 
+		// 注册广播监听系统的下载完成事件。
+		IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+		broadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				long ID = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+				if (ID == Id) {
+					Toast.makeText(getApplicationContext(), "任务:" + Id + " 下载完成!", Toast.LENGTH_LONG).show();
+				}
+			}
+		};
+ 
+		registerReceiver(broadcastReceiver, intentFilter);
+	}		
+		]]>
+		</programlisting>
+	</section>
 </chapter>

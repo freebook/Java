@@ -17,8 +17,9 @@
 	&chapter.android.service.xml;
 	&chapter.android.notification.xml;
 	&chapter.android.nfc.xml;
-	&chapter.android.eventbus.xml;
 	&chapter.android.graphics.xml;
+	&section.android.download.xml;
+	&chapter.android.eventbus.xml;
 	&chapter.android.things.xml;
 	&section.android.mqtt.xml;
 	&chapter.android.board.xml;

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="android.download">
+	<title>下载管理</title>
+	<section>
+		<title>从 URL 下来文件</title>
+		<programlisting>
+		<![CDATA[
+    DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+    Uri uri = Uri.parse("https://www.netkiller.cn/linux/images/cover.png");
+    DownloadManager.Request request = new DownloadManager.Request(uri);
+    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+    long reference = manager.enqueue(request);		
+		]]>
+		</programlisting>
+	</section>
+	
+	<section>
+		<title>安装 APK</title>
+		<screen>
+		<![CDATA[
+fun installApk(apkPath: Uri?) {
+    val intent = Intent()
+    intent.action = Intent.ACTION_VIEW
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    intent.setDataAndType(apkPath, "application/vnd.android.package-archive")
+    builder.context.startActivity(intent)
+}		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>下载后接收广播通知</title>
+		<programlisting>
+		<![CDATA[
+
+    public void download(String url) {
+        try {
+            //下载路径，如果路径无效了，可换成你的下载路径
+//            String url = "https://www.netkiller.cn/linux/images/cover.png";
+            String fileName = "test.jpg";
+            if (!url.contains("https")) {
+                url = url.replaceFirst("http", "https");
+            }
+            //创建下载任务,downloadUrl就是下载链接
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            //指定下载路径和下载文件名
+//            request.setDestinationInExternalPublicDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), url.substring(url.lastIndexOf("/") + 1));
+//            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+//            request.setTitle("Image Download");
+//            request.setDescription("Image download using DownloadManager.");
+//            request.setDestinationInExternalPublicDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "", "sample2.jpg");
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, fileName);
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            //request.allowScanningByMediaScanner();
+
+            //获取下载管理器
+            DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            //将下载任务加入下载队列，否则不会进行下载
+            long reference = downloadManager.enqueue(request);
+            broadcast(reference);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void broadcast(final long downloadId) {
+
+        // 注册广播监听系统的下载完成事件。
+        IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                try {
+//                long ID = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                    long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                    if (id == downloadId) {
+                        Toast.makeText(getApplicationContext(), "任务:" + id + " 下载完成!", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "任务:" + id + " 下载完成!");
+                    }
+                    if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
+                        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+//                        Uri uri = downloadManager.getUriForDownloadedFile(id);
+//                        Log.d(TAG, uri.toString());
+                        DownloadManager.Query query = new DownloadManager.Query();
+//                    //在广播中取出下载任务的id
+                        query.setFilterById(id);
+                        Cursor cursor = downloadManager.query(query);
+                        if (cursor.moveToFirst()) {
+
+//                        int fileNameIdx = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
+                            //获取文件下载路径
+                            int fileUriIdx = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
+
+//                        String fileName = cursor.getString(fileNameIdx);
+
+                            String fileUri = cursor.getString(fileUriIdx);
+                            Log.d(TAG, "fileUri: " + fileUri);
+
+
+//                        //如果文件名不为空，说明已经存在了，拿到文件名想干嘛都好
+                            if (fileUri != null) {
+//                            Intent intent = new Intent();
+                                intent.setAction("image");
+                                intent.putExtra("image", fileUri);
+                                context.sendBroadcast(intent);
+                            }
+                        }
+                        cursor.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        registerReceiver(broadcastReceiver, intentFilter);
+
+    }
+		]]>
+		</programlisting>
+	</section>
+	
+</section>
