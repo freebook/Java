@@ -227,4 +227,35 @@ android:scaleType="matrix"
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>进度条</title>
+		<para>style属性：</para>
+		<screen>
+		<![CDATA[
+@android:style/Widget.ProgressBar.Horizontal：水平进度条
+@android:style/Widget.ProgressBar.Inverse：普通大小的进度条
+@android:style/Widget.ProgressBar.Large：大环形进度条
+@android:style/Widget.ProgressBar.Large.Inverse：大环形进度条
+@android:style/Widget.ProgressBar.Small：小环形进度条
+@android:style/Widget.ProgressBar.Small.Inverse：小环形进度条		
+		]]>
+		</screen>
+		<para>案例</para>
+		<programlisting>
+		<![CDATA[
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="13dp"
+        android:progress="0"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="179dp" />		
+		]]>
+		</programlisting>
+	</section>
+	
 </section>

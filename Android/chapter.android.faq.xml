@@ -146,4 +146,14 @@ neo@MacBook-Pro-M2 album %
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>从 Android API 30 废弃 setSystemUiVisibility(uiOptions) </title>
+		<para>替代方案</para>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
+	
 </chapter>

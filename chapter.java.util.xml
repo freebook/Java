@@ -647,14 +647,13 @@ ResourceBundle res = ResourceBundle.getBundle("message", locale);
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="Scanner">
 		<title>Scanner</title>
 		<programlisting>
 		<![CDATA[
 Scanner in = new Scanner(System.in);
 System.out.println("Username:");
 String username = in.next();
-      		
 		]]>
 		</programlisting>
 	</section>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="thread" ?>
+	<title>Android 多线程</title>
+	<section>
+		<title>GPIO</title>
+		<para>配置权限</para>
+		<screen>
+		<![CDATA[
+    new Thread("画画线程") {
+         @Override
+         public void run() {
+             picture(question);
+         }
+     }.start();
+     
+     new Thread("GPT线程") {
+         @Override
+         public void run() {
+             if (question != null) {
+                 String sentence = cleaning();
+                 chatgpt(sentence);
+             }
+         }
+     }.start();
+		]]>
+		</screen>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+// 步骤1：创建线程类，继承自Thread类
+class MyThread extends Thread{
+
+	// 步骤2：复写run（），内容 = 定义线程行为
+    @Override
+    public void run(){
+    ... // 定义的线程行为
+    }
+}
+
+// 步骤3：实例化线程类
+MyThread mt=new MyThread(“线程名称”);
+
+// 步骤4：通过线程对象控制线程的状态，如 运行、睡眠、挂起  / 停止
+// start（）开启线程
+mt.start();		
+		]]>
+		</programlisting>
+	</section>
+</chapter>

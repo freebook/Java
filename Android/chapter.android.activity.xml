@@ -42,6 +42,15 @@ setContentView(R.layout.view);
         decorView.setSystemUiVisibility(uiOptions);        	
 		]]>
 		</programlisting>
+		<para>Android API 30</para>
+		<programlisting>
+		<![CDATA[
+        WindowInsetsController controller = getWindow().getDecorView().getWindowInsetsController();
+        controller.hide(WindowInsets.Type.statusBars());
+        controller.hide(WindowInsets.Type.navigationBars());
+        controller.hide(WindowInsets.Type.systemBars());		
+		]]>
+		</programlisting>
 	</section>
 
 	<section id="显式四种跳转方式">

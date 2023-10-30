@@ -19,8 +19,8 @@
 	&chapter.android.nfc.xml;
 	&chapter.android.graphics.xml;
 	&section.android.download.xml;
+	&chapter.android.thread.xml;
 	&chapter.android.eventbus.xml;
-	&chapter.android.things.xml;
 	&section.android.mqtt.xml;
 	&chapter.android.board.xml;
 	&chapter.android.misc.xml;
