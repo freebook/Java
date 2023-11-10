@@ -438,8 +438,34 @@ public class HotelActivity extends AppCompatActivity {
 		</programlisting>
 	</section>
 	<section id="屏幕触摸事件">
-		<title>屏幕触摸事件 onTouchEvent(MotionEvent event)</title>
-		<programlisting>
+		<title>屏幕触摸事件 onTouch(View view, MotionEvent motionEvent)</title>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+
+                    break;
+                case MotionEvent.ACTION_UP:
+                    view.performClick();
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+    };			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>屏幕触摸事件 onTouchEvent(MotionEvent event)</title>
+
+			<programlisting>
 		<![CDATA[
     private float x;
     private float y;
@@ -476,7 +502,8 @@ public class HotelActivity extends AppCompatActivity {
         return false;
     }		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
 	<section id="App间跳转">
 		<title>App 间跳转</title>

@@ -38,6 +38,7 @@ android:scaleType="matrix"
 		</section>
 		<section>
 			<title>ImageView 显示 URL 图片</title>
+			<para>方法一</para>
 			<programlisting>
 			<![CDATA[
    private Drawable getImageDrawableFromUrl(String url) {
@@ -62,27 +63,80 @@ android:scaleType="matrix"
     imageView.setImageDrawable(drawable);			
 			]]>
 			</programlisting>
-			<para></para>
+			<para>方法二</para>
 			<programlisting>
 			<![CDATA[
-  			imageView = findViewById(R.id.imageView);
-            
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        InputStream is = (InputStream) new URL(image).getContent();
-                        final Drawable d = Drawable.createFromStream(is, null);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                imageView.setImageDrawable(d);
-                            }
-                        });
-                    } catch (Exception e) {
+	imageView = findViewById(R.id.imageView);
+       
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                InputStream is = (InputStream) new URL(image).getContent();
+                final Drawable d = Drawable.createFromStream(is, null);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setImageDrawable(d);
                     }
-                }
-            }).start();			
+                });
+            } catch (Exception e) {
+            }
+        }
+    }).start();	
+            
+            
+	new Thread(new Runnable() {
+	    @Override
+	    public void run() {
+	        try {
+	            InputStream inputStream = new URL("https://img.netkiller.cn/2d/f4873238-7860-11ee-8344-0242ac12000c.png").openStream();
+	            final Drawable drawable = Drawable.createFromStream(inputStream, null);
+	            runOnUiThread(new Runnable() {
+	                @Override
+	                public void run() {
+	                    imageView.setImageDrawable(drawable);
+	                }
+	            });
+	        } catch (Exception e) {
+	        }
+	    }
+	}).start();
+			]]>
+			</programlisting>
+			<para>方法三</para>
+			<programlisting>
+			<![CDATA[
+	try {
+	    URL url = new URL("https://img.netkiller.cn/2d/f4873238-7860-11ee-8344-0242ac12000c.png");
+	
+	    new Thread(new Runnable() {
+	        @Override
+	        public void run() {
+	            Bitmap bitmap = null;
+	            try {
+	                bitmap = BitmapFactory.decodeStream(url.openStream());
+	                showImg(bitmap);
+	
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	
+	        }
+	    }).start();
+	} catch (MalformedURLException e) {
+	    e.printStackTrace();
+	}
+
+
+    private void showImg(final Bitmap bitmap) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImageBitmap(bitmap);
+            }
+        });
+    }
 			]]>
 			</programlisting>
 		</section>

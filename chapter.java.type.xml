@@ -370,7 +370,18 @@ Mon Aug 23 01:30:30 CST 2021
 			</section>
 
 			<section id="string.replaceAll">
-				<title>Ascii</title>
+				<title>replaceAll</title>
+				<para>替换一组字符串</para>
+				<programlisting>
+				<![CDATA[
+        String str1 = "广东省，福建省，北京市，海淀区，河北省，上海市";
+        str1 = str1.replaceAll("(省|市|区)", "");
+        System.out.println("替换多个中文：" + str1);
+        
+        替换多个中文：广东，福建，北京，海淀，河北，上海				
+				]]>
+				</programlisting>
+				<para>替换 Ascii</para>
 				<programlisting>
 			<![CDATA[
 		String string = "佛山市123南海区ABC精密abc机械有限公司􁵪􁻠􁴹􄲀􀞜􀨨,";

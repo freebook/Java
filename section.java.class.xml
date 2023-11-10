@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="Java面向对象">
 	<title>面向对象</title>
+	<para>获取 Class 名称</para>
+	<programlisting>
+	<![CDATA[
+Log.d(TAG, this.getClass().getName());	
+	]]>
+	</programlisting>
 	<section id="record">
 		<title>record</title>
 		<programlisting>
@@ -27,7 +33,7 @@ public class RecordDemo {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="Callback例子">
 		<title>Callback 回调</title>
 		<programlisting>
 		<![CDATA[

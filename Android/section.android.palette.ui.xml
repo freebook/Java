@@ -168,6 +168,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			]]>
 			</programlisting>
 		</section>
+		<section id="圆形按钮">
+			<title>圆形按钮</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:shape="oval"
+    android:useLevel="false"
+    tools:ignore="ResourceName">
+    <solid android:color="#FFa500" />
+</shape>			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+            <Button
+                android:id="@+id/imeButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="right"
+                android:background="@drawable/rond"
+                android:text="+"
+                android:textColor="#ffffff"
+                android:textSize="50dp" />			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ListView">
 		<title>ListView</title>

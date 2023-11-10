@@ -303,7 +303,8 @@ public class MainActivity extends AppCompatActivity {
 	<section id="broadcast.local">
 		<title>本地广播</title>
 		<para>注意：LocalBroadcastManager 已经被废弃</para>
-		<para>上面讲的系统广播是全局的，任何APP都能接收到你的广播，这样就很容易引起APP的安全性问题。很多时候我们只想接收来自本应用程序发出的广播。</para>
+		<para>上面讲的系统广播是全局的，任何APP都能接收到你的广播，这样就很容易引起APP的安全性问题。很多时候我们只想接收来自本应用程序发出的广播。
+		</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.broadcast;
@@ -382,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="动态监听广播">
 		<title>动态监听广播</title>
 		<programlisting>
 		<![CDATA[
@@ -402,6 +403,88 @@ public class MainActivity extends AppCompatActivity {
  
 		registerReceiver(broadcastReceiver, intentFilter);
 	}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="广播重复接收">
+		<title>广播重复接收</title>
+		<para>广播重复接收，解决方案，编辑 AndroidManifest.xml 文件，在所有 activity 中加入
+			singleTask</para>
+		<programlisting>
+		<![CDATA[
+android:launchMode="singleTask"		
+		]]>
+		</programlisting>
+	</section>
+	<section id="指定静态广播接收者">
+		<title>指定静态广播接收者</title>
+		<para>系统中注册了多个广播，需要发送给指定接收者。</para>
+		<programlisting>
+		<![CDATA[
+    private void broadcastStory(String id, String image, String story) {
+        Intent intent = new Intent();
+        intent.setAction("story");
+        intent.putExtra("id", id);
+        intent.putExtra("image", image);
+        intent.putExtra("story", story);
+        intent.setClassName(context.getPackageName(), MainBroadcastReceiver.class.getName());
+        context.sendBroadcast(intent);
+    }
+
+    private void broadcastShare(String id, String image, String story) {
+        Intent intent = new Intent();
+        intent.setAction("share");
+        intent.putExtra("id", id);
+        intent.putExtra("image", image);
+        intent.putExtra("story", story);
+        intent.setClassName(context.getPackageName(), ShareBroadcastReceiver.class.getName());
+        context.sendBroadcast(intent);
+    }
+		]]>
+		</programlisting>
+	</section>
+	<section id="异步执行广播">
+		<title>异步执行广播</title>
+		<programlisting>
+		<![CDATA[
+public class MyBroadcastReceiver extends BroadcastReceiver {
+        private static final String TAG = "MyBroadcastReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final PendingResult pendingResult = goAsync();
+            Task asyncTask = new Task(pendingResult, intent);
+            asyncTask.execute();
+        }
+
+        private static class Task extends AsyncTask<String, Integer, String> {
+
+            private final PendingResult pendingResult;
+            private final Intent intent;
+
+            private Task(PendingResult pendingResult, Intent intent) {
+                this.pendingResult = pendingResult;
+                this.intent = intent;
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Action: " + intent.getAction() + "\n");
+                sb.append("URI: " + intent.toUri(Intent.URI_INTENT_SCHEME).toString() + "\n");
+                String log = sb.toString();
+                Log.d(TAG, log);
+                return log;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                // Must call finish() so the BroadcastReceiver can be recycled.
+                pendingResult.finish();
+            }
+        }
+    }		
 		]]>
 		</programlisting>
 	</section>
