@@ -653,4 +653,58 @@ neo@MacBook-Pro-M2 ~ % adb remount
 		]]>
 		</screen>
 	</section>
+	<section id="adb.bluetooth">
+		<title>蓝牙管理</title>
+		<para>蓝牙相关adb命令</para>
+		<para>查看蓝牙信息</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb shell dumpsys bluetooth_manager
+Bluetooth Status
+  enabled: true
+  state: ON
+  address: 22:22:9D:4D:03:00
+  name: Bluetooth
+  time since enabled: 00:12:52.801		
+		]]>
+		</screen>
+		<para>获取蓝牙开关状态</para>
+		<screen>
+		<![CDATA[
+adb shell settings get global bluetooth_on
+		]]>
+		</screen>
+		<para>返回1表示开启，0表示关闭</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~ % adb shell settings get global bluetooth_on
+1		
+		]]>
+		</screen>
+		<para>打开蓝牙</para>
+		<screen>
+		<![CDATA[
+adb shell service call bluetooth_manager 6
+		]]>
+		</screen>
+		<para>关闭蓝牙</para>
+		<screen>
+		<![CDATA[
+adb shell service call bluetooth_manager 8
+		]]>
+		</screen>
+		<para>允许被发现，此时屏幕会弹出，需要按键确认</para>
+		<screen>
+		<![CDATA[
+adb shell am start -a android.bluetooth.adapter.action.REQUEST_DISCOVERABLE
+		]]>
+		</screen>
+		<para>获取蓝牙MAC地址</para>
+		<screen>
+		<![CDATA[
+adb shell settings get secure bluetooth_address		
+		]]>
+		</screen>
+	</section>
+	
 </section>
