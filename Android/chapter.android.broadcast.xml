@@ -488,4 +488,45 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>电源管理</title>
+		<para>静态注册</para>
+		<programlisting>
+		<![CDATA[
+        <receiver
+            android:name=".receiver.StaticBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_CHANGED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
+                <action android:name="android.intent.action.ACTION_BATTERY_OKAY" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>		
+		]]>
+		</programlisting>
+		<para>动态注册</para>
+		<programlisting>
+		<![CDATA[
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            filter.addAction(Intent.ACTION_BATTERY_LOW);
+            filter.addAction(Intent.ACTION_BATTERY_OKAY);
+            filter.addAction(Intent.ACTION_POWER_CONNECTED);
+            filter.addAction(Intent.ACTION_POWER_DISCONNECTED);		
+		]]>
+		</programlisting>
+		<para>处理代码</para>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
+	
 </chapter>
