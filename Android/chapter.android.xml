@@ -3,6 +3,7 @@
 	&chapter.android.manifest.xml;
 	&chapter.android.device.xml;
 	&chapter.android.activity.xml;
+	&chapter.android.fragment.xml;
 	&chapter.android.palette.xml;
 	&chapter.android.schedule.xml;
 	&chapter.android.locale.xml;
