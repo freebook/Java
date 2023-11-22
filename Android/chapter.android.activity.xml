@@ -73,7 +73,24 @@ setContentView(R.layout.view);
 	startActivity(new Intent(MainActivity.this,HomeActivity.class));
 		
 		]]>
+		</programlisting><section id="startActivity">
+		<title>startActivity()</title>
+
+		<para></para>
+		<programlisting>
+		<![CDATA[
+		Button button = (Button) findViewById(R.id.writeButton);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                setContentView(R.layout.activity_write);
+                Intent intent = new Intent(MainActivity.this,WriteActivity.class);
+                startActivity(intent);
+            }
+        });		
+		]]>
 		</programlisting>
+	</section>
 	</section>
 	<section id="定时关闭">
 		<title>定时关闭</title>
@@ -204,24 +221,7 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		]]>
 		</programlisting>
 	</section>
-	<section id="startActivity">
-		<title>startActivity()</title>
-
-		<para></para>
-		<programlisting>
-		<![CDATA[
-		Button button = (Button) findViewById(R.id.writeButton);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setContentView(R.layout.activity_write);
-                Intent intent = new Intent(MainActivity.this,WriteActivity.class);
-                startActivity(intent);
-            }
-        });		
-		]]>
-		</programlisting>
-	</section>
+	
 
 	<section id="Intent">
 		<title>Activity 间数据传递</title>
@@ -492,6 +492,51 @@ public class HotelActivity extends AppCompatActivity {
 }		
 		]]>
 		</programlisting>
+		<section>
+			<title>退出 App</title>
+			<para>AndroidManifest.xml 中 activity 添加 android:launchMode="singleTask"</para>
+			<programlisting>
+			<![CDATA[
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>			
+			]]>
+			</programlisting>
+			<para>MainActivity 中添加 onNewIntent(Intent intent)</para>
+			<programlisting>
+			<![CDATA[
+  	@Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            boolean isExit = intent.getBooleanExtra("QUIT", false);
+            if (isExit) {
+                this.finish();
+            }
+        }
+    }			
+			]]>
+			</programlisting>
+			<para>调用 quit 方法即可正常退出主程序</para>
+			<programlisting>
+			<![CDATA[
+    public void quit(View v) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("QUIT", true);
+        startActivity(intent);
+    }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="屏幕触摸事件">
 		<title>屏幕触摸事件 onTouch(View view, MotionEvent motionEvent)</title>
