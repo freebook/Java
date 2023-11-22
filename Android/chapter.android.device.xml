@@ -12,7 +12,14 @@ String androidId = Settings.System.getString(getContentResolver(), "android_id")
 			]]>
 		</programlisting>
 	</section>
-
+	<section>
+		<title>Physical density</title>
+		<programlisting>
+		<![CDATA[
+SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties.getInt("ro.sf.lcd_density", DENSITY_DEFAULT));		
+		]]>
+		</programlisting>
+	</section>
 	&section.android.device.sound.xml;
 	
 </chapter>	

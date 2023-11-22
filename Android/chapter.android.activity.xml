@@ -148,6 +148,62 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		]]>
 		</programlisting>
 	</section>
+	<section id="标题栏添加返回按钮">
+		<title>标题栏添加返回按钮</title>
+		<para>onCreate 中添加</para>
+		<programlisting>
+		<![CDATA[
+	@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.settings_activity);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+	}
+		]]>
+		</programlisting>
+		<para>Activity 中添加</para>
+		<programlisting>
+		<![CDATA[
+ 	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+		]]>
+		</programlisting>
+		<para>在AndroidManifest.xml中标明Activity的主题</para>
+		<programlisting>
+		<![CDATA[
+<activity
+            android:name=".ui.ShareActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"/>		
+		]]>
+		</programlisting>
+		<para>values/styles.xml 文件中增加</para>
+		<programlisting>
+		<![CDATA[
+ 	<style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorThemeBackGround</item>
+        <item name="colorPrimaryDark">@color/colorThemeBackGround</item>
+        <item name="colorAccent">@color/colorThemeBackGround</item>
+    </style>
+		
+		]]>
+		</programlisting>
+	</section>
 	<section id="startActivity">
 		<title>startActivity()</title>
 

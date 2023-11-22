@@ -293,6 +293,19 @@ JsonNode jsonNode = mapper.convertValue(picture, JsonNode.class);
 			]]>
 			</programlisting>
 		</section>
-		
+
+	</section>
+	<section>
+		<title>Google Json</title>
+		<section>
+			<title>json 转 map</title>
+			<programlisting>
+			<![CDATA[
+ 		HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap<String, String>>();
+        Gson gson = new Gson();
+        data = gson.fromJson(jsonString, data.getClass());		
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>

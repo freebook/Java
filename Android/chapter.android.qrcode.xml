@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+	<title>QR Code 二维码</title>
+	<section>
+		<title>生成二维码</title>
+		<programlisting>
+		<![CDATA[
+implementation 'com.google.zxing:core:3.5.2'
+		]]>
+		</programlisting>
+	</section>
+	
+</chapter>

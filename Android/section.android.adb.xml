@@ -605,6 +605,36 @@ WINDOW MANAGER DISPLAY CONTENTS (dumpsys window displays)
 			
 			]]>
 		</screen>
+		<section>
+			<title>查看 dpi</title>
+
+			<para>dpi</para>
+			<screen>
+		<![CDATA[
+rk3568_r:/ $ wm size                                                                                                                                                                                                           
+Physical size: 1536x2048
+
+rk3568_r:/ $ wm density
+Physical density: 240
+
+
+rk3566_rgo:/ # wm size
+Physical size: 1536x2048
+
+rk3566_rgo:/ # wm density                                                                                                                                                                                                          
+Physical density: 680	
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>设置 dpi</title>
+			<screen>
+			<![CDATA[
+RK3566:/ $ wm density 480
+RK3566:/ $ wm density 320			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="adb.shell.dumpsys">
 		<title>dump 系统信息</title>
@@ -706,5 +736,5 @@ adb shell settings get secure bluetooth_address
 		]]>
 		</screen>
 	</section>
-	
+
 </section>

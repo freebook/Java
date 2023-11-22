@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="Fragment 中使用 Button">
 			<title>Fragment 中使用 Button</title>
 			<programlisting>
 			<![CDATA[
