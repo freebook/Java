@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="android.schedule">
 	<title>Schedule 计划任务</title>
+	<section id="延迟执行">
+		<title>延迟执行</title>
+		<programlisting>
+		<![CDATA[
+	new Handler().postDelayed(() -> {
+        picture.browsePictureFolder();
+    }, 30000);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    new Handler().postDelayed(new Runnable() {
+        @Override
+        public void run() {
+            MainActivity.this.finish();
+        }
+    }, 1800);		
+		]]>
+		</programlisting>
+	</section>
 	<section id="time.timetask">
 		<title>Time 和 TimerTask 定时刷新</title>
 		<programlisting>

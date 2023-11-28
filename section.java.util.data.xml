@@ -233,7 +233,17 @@ public class TestList {
 			]]>
 			</programlisting>
 		</section>
-
+		<section>
+			<title>随机 List</title>
+			<programlisting>
+			<![CDATA[
+List<String> list = Arrays.asList("a","b","c");
+int index = (int) (Math.random()* list.size());
+System.out.println(list.get(index));			
+			]]>
+			</programlisting>
+		</section>
+		
 
 	</section>
 

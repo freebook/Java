@@ -11,7 +11,7 @@
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="android.permission.INTERNET">
 		<title>开启网络</title>
 		<screen>
 		<![CDATA[
@@ -319,6 +319,15 @@ public class BootReceiver extends BroadcastReceiver {
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+		]]>
+		</programlisting>
+	</section>
+	<section id="禁止屏幕旋转">
+		<title>禁止屏幕旋转变化</title>
+		<para>landscape = 横向，portrait = 纵向</para>
+		<programlisting>
+		<![CDATA[
+android:screenOrientation="landscape" 		
 		]]>
 		</programlisting>
 	</section>

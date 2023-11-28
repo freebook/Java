@@ -518,6 +518,17 @@ public class ControlSkillComponent {
 		</programlisting>
 	</section>
 	<section>
+		<title>唤醒词</title>
+		<section>
+			<title>手工唤醒</title>
+			<programlisting>
+			<![CDATA[
+AiuiEngine.MSG_wakeup(EngineConstants.WAKEUPTYPE_VOICE);			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
 		<title>汉字转拼音</title>
 		<screen>
 		<![CDATA[
