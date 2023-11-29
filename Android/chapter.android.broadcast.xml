@@ -226,7 +226,59 @@ public class MyReceiver extends BroadcastReceiver {
 		</programlisting>
 		<para>现在重启 Android 模拟器，启动后虽然 App 并没有进入，但是屏幕底部会看到 "程序已启动，接收到系统启动广播"
 		</para>
+		<section id="电源管理">
+			<title>电源管理</title>
+			<para>静态注册</para>
+			<programlisting>
+		<![CDATA[
+        <receiver
+            android:name=".receiver.StaticBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_CHANGED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
+                <action android:name="android.intent.action.ACTION_BATTERY_OKAY" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>		
+		]]>
+			</programlisting>
+			<para>动态注册</para>
+			<programlisting>
+		<![CDATA[
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            filter.addAction(Intent.ACTION_BATTERY_LOW);
+            filter.addAction(Intent.ACTION_BATTERY_OKAY);
+            filter.addAction(Intent.ACTION_POWER_CONNECTED);
+            filter.addAction(Intent.ACTION_POWER_DISCONNECTED);		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>接收不到消息</title>
+			<para>Android 8 以上，静态广播必须指定包名 intent.setPackage(context.getPackageName());</para>
+			<programlisting>
+			<![CDATA[
+    public static void broadcastTest(String message) {
+        Log.d(TAG, "发送广播: " + message);
+        Context context = ContextHolder.getContext();
+        Intent intent = new Intent();
+        intent.setAction("test.broadcast");
+        intent.setPackage(context.getPackageName());
+        intent.putExtra("message", message);
+        context.sendBroadcast(intent);
+    }
+			]]>
+			</programlisting>
+		</section>
 	</section>
+	
 	<section id="broadcast.user">
 		<title>自定义用户消息广播</title>
 		<programlisting>
@@ -409,7 +461,8 @@ public class MainActivity extends AppCompatActivity {
 	<section id="广播重复接收">
 		<title>广播重复接收</title>
 		<para>广播重复接收，解决方案，编辑 AndroidManifest.xml 文件，在所有 activity 中加入
-			singleTask</para>
+			singleTask
+		</para>
 		<programlisting>
 		<![CDATA[
 android:launchMode="singleTask"		
@@ -488,45 +541,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>电源管理</title>
-		<para>静态注册</para>
-		<programlisting>
-		<![CDATA[
-        <receiver
-            android:name=".receiver.StaticBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.ACTION_BATTERY_CHANGED" />
-                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
-                <action android:name="android.intent.action.ACTION_BATTERY_OKAY" />
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>		
-		]]>
-		</programlisting>
-		<para>动态注册</para>
-		<programlisting>
-		<![CDATA[
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-            filter.addAction(Intent.ACTION_BATTERY_LOW);
-            filter.addAction(Intent.ACTION_BATTERY_OKAY);
-            filter.addAction(Intent.ACTION_POWER_CONNECTED);
-            filter.addAction(Intent.ACTION_POWER_DISCONNECTED);		
-		]]>
-		</programlisting>
-		<para>处理代码</para>
-		<programlisting>
-		<![CDATA[
-		
-		]]>
-		</programlisting>
-	</section>
+	
 	
 </chapter>
