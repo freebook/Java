@@ -280,6 +280,16 @@ Intent.FLAG_ACTIVITY_SINGLE_TOP = singleTop
 Intent.FLAG_ACTIVITY_NEW_TASK = singleInstance			
 			]]>
 			</programlisting>
+			<section>
+				<title>在 Service，BroadcastReceiver 中切换 View</title>
+				<para>FLAG_ACTIVITY_NEW_TASK</para>
+				<programlisting>
+				<![CDATA[
+context.startActivity(new Intent(context, PictureBookFullscreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));				
+				]]>
+				</programlisting>
+				<para>在非Activity（比如Service，BroadcastReceiver）中startActivity需要添加flag Intent.FLAG_ACTIVITY_NEW_TASK</para>
+			</section>
 		</section>
 		<section>
 			<title>返回值</title>
@@ -538,74 +548,7 @@ public class HotelActivity extends AppCompatActivity {
 			</programlisting>
 		</section>
 	</section>
-	<section id="屏幕触摸事件">
-		<title>屏幕触摸事件 onTouch(View view, MotionEvent motionEvent)</title>
-		<section>
-			<title></title>
-			<programlisting>
-			<![CDATA[
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-
-                    break;
-                case MotionEvent.ACTION_UP:
-                    view.performClick();
-                    break;
-                default:
-                    break;
-            }
-            return false;
-        }
-    };			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>屏幕触摸事件 onTouchEvent(MotionEvent event)</title>
-
-			<programlisting>
-		<![CDATA[
-    private float x;
-    private float y;
-    
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                x = event.getX();
-                y = event.getY();
-                Log.d("Motion", "ACTION_DOWN-> X: " + x + "," + "Y: " + y);
-                break;
-            case MotionEvent.ACTION_UP:
-                Log.d("Motion", "ACTION_UP-> X: " + event.getX() + ", Y: " + event.getY());
-                if (event.getX() - x > 60) {
-                    Log.d("Motion", "从左至右滑动: ➡️");
-                }
-                if (x - event.getX() > 60) {
-                    Log.d("Motion", "从右至左滑动：⬅️");
-                }
-
-                if (y - event.getY() > 60) {
-                    Log.d("Motion", "从下至上滑动：⬆️");
-                }
-
-                if (event.getY() - y > 60) {
-                    Log.d("Motion", "从上至下滑动：⬇️");
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                Log.d("Motion", "ACTION_MOVE-> X: " + event.getX() + ", Y: " + event.getY());
-                break;
-        }
-        return false;
-    }		
-		]]>
-			</programlisting>
-		</section>
-	</section>
+	
 	<section id="App间跳转">
 		<title>App 间跳转</title>
 		<programlisting>

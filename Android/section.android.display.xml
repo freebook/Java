@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>屏幕</title>
+	<section>
+		<title>尺寸</title>
+		<programlisting>
+		<![CDATA[
+        Resources resource = this.getResources();
+        DisplayMetrics displayMetrics = resource.getDisplayMetrics();
+
+        Log.d(TAG, "getCurrentWindowMetrics: " + displayMetrics.toString());		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+getCurrentWindowMetrics: DisplayMetrics{density=1.5, width=1536, height=1964, scaledDensity=1.9499999, xdpi=240.0, ydpi=240.0}		
+		]]>
+		</screen>
+
+		 
+	</section>
+	<section id="屏幕触摸事件">
+		<title>屏幕触摸事件 onTouch(View view, MotionEvent motionEvent)</title>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+
+                    break;
+                case MotionEvent.ACTION_UP:
+                    view.performClick();
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+    };			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>屏幕触摸事件 onTouchEvent(MotionEvent event)</title>
+
+			<programlisting>
+		<![CDATA[
+    private float x;
+    private float y;
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x = event.getX();
+                y = event.getY();
+                Log.d("Motion", "ACTION_DOWN-> X: " + x + "," + "Y: " + y);
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d("Motion", "ACTION_UP-> X: " + event.getX() + ", Y: " + event.getY());
+                if (event.getX() - x > 60) {
+                    Log.d("Motion", "从左至右滑动: ➡️");
+                }
+                if (x - event.getX() > 60) {
+                    Log.d("Motion", "从右至左滑动：⬅️");
+                }
+
+                if (y - event.getY() > 60) {
+                    Log.d("Motion", "从下至上滑动：⬆️");
+                }
+
+                if (event.getY() - y > 60) {
+                    Log.d("Motion", "从上至下滑动：⬇️");
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d("Motion", "ACTION_MOVE-> X: " + event.getX() + ", Y: " + event.getY());
+                break;
+        }
+        return false;
+    }		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>手势事件</title>
+		<programlisting>
+		<![CDATA[
+        gridView = (GridView) findViewById(R.id.gridView);
+
+        GestureDetector gestureDetector = new GestureDetector(this, new MyGesture());
+        gridView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Log.e("MainActivity", event.getX()+"");
+                return gestureDetector.onTouchEvent(event);
+            }
+        });		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+
+    public class MyGesture implements GestureDetector.OnGestureListener {
+
+
+        public MyGesture() {
+
+        }
+
+        // 用户轻触触摸屏，由1个MotionEvent ACTION_DOWN触发
+        public boolean onDown(MotionEvent arg0) {
+            Log.i("MyGesture", "onDown");
+            Toast.makeText(PictureBookFullscreenActivity.this, "onDown", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        /*
+         * 用户轻触触摸屏，尚未松开或拖动，由一个1个MotionEvent ACTION_DOWN触发
+         * 注意和onDown()的区别，强调的是没有松开或者拖动的状态
+         */
+        public void onShowPress(MotionEvent e) {
+            Log.i("MyGesture", "onShowPress");
+            Toast.makeText(PictureBookFullscreenActivity.this, "onShowPress", Toast.LENGTH_SHORT).show();
+        }
+
+        // 用户（轻触触摸屏后）松开，由一个1个MotionEvent ACTION_UP触发
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.i("MyGesture", "onSingleTapUp");
+            Toast.makeText(PictureBookFullscreenActivity.this, "onSingleTapUp", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        // 用户按下触摸屏、快速移动后松开，由1个MotionEvent ACTION_DOWN, 多个ACTION_MOVE, 1个ACTION_UP触发
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            Log.i("MyGesture", "onFling");
+            Toast.makeText(PictureBookFullscreenActivity.this, "onFling", Toast.LENGTH_LONG).show();
+            if (velocityX > -50) {
+                startActivity(new Intent(PictureBookFullscreenActivity.this, ShareFullscreenActivity.class));
+            }
+            if (velocityX > 50) {
+                startActivity(new Intent(PictureBookFullscreenActivity.this, FavoritesFullscreenActivity.class));
+            }
+            return true;
+        }
+
+        // 用户按下触摸屏，并拖动，由1个MotionEvent ACTION_DOWN, 多个ACTION_MOVE触发
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.i("MyGesture", "onScroll e1: " + e1.getX() + " e2: " + e2.getX() + " distanceX: " + distanceX + " distanceY: " + distanceY);
+            Toast.makeText(PictureBookFullscreenActivity.this, "onScroll", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        // 用户长按触摸屏，由多个MotionEvent ACTION_DOWN触发
+        public void onLongPress(MotionEvent e) {
+            Log.i("MyGesture", "onLongPress");
+            Toast.makeText(PictureBookFullscreenActivity.this, "onLongPress", Toast.LENGTH_LONG).show();
+        }
+    }
+		
+		]]>
+		</programlisting>
+	</section>
+</section>
