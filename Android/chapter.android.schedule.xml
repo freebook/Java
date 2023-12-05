@@ -20,6 +20,16 @@
     }, 1800);		
 		]]>
 		</programlisting>
+		<para>Android 11</para>
+		<programlisting>
+		<![CDATA[
+	new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        public void run() {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }, 3000);		
+		]]>
+		</programlisting>
 	</section>
 	<section id="time.timetask">
 		<title>Time 和 TimerTask 定时刷新</title>
