@@ -20,6 +20,7 @@
 	&chapter.android.nfc.xml;
 	&chapter.android.graphics.xml;
 	&section.android.download.xml;
+	&section.android.resources.xml;
 	&chapter.android.thread.xml;
 	&chapter.android.eventbus.xml;
 	&section.android.mqtt.xml;

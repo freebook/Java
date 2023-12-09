@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="android.resources">
+	<title>Resources</title>
+	<section>
+		<title>strings.xml</title>
+		<para>字符串</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nickname">netkiller</string>
+    <string name="play" formatted="false">缓冲进度为%d%%，播放进度为%d%%</string>
+<resources>    		
+		]]>
+		</programlisting>
+		<para>定义数组</para>
+		<programlisting>
+		<![CDATA[
+    <string-array name="language">
+        <item>普通话</item>
+        <item>粤语</item>
+        <item>英语</item>
+    </string-array>		
+		]]>
+		</programlisting>
+	</section>
+	
+</chapter>

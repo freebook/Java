@@ -2,6 +2,37 @@
 <chapter id="index"><?dbhtml dir="fragment" ?>
 	<title>Fragment</title>
 	<section>
+		<title>启动 Fragment</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/fullscreenBackgroundColor"
+    android:theme="@style/ThemeOverlay.裸眼3D产品.FullscreenContainer"
+    tools:context=".ui.PictureBookFullscreenActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+ 	getSupportFragmentManager()
+        .beginTransaction()
+        .add(R.id.fragmentContainerView, new PictureBookStoryFullscreenFragment(bookId))
+        .commit();		
+		]]>
+		</programlisting>
+	</section>
+	
+	<section>
 		<title>关闭 Fragment</title>
 		<programlisting>
 		<![CDATA[
