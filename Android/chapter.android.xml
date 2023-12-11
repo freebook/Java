@@ -4,6 +4,7 @@
 	&chapter.android.device.xml;
 	&chapter.android.activity.xml;
 	&chapter.android.fragment.xml;
+	&section.android.resources.xml;
 	&chapter.android.palette.xml;
 	&chapter.android.schedule.xml;
 	&chapter.android.locale.xml;
@@ -20,7 +21,7 @@
 	&chapter.android.nfc.xml;
 	&chapter.android.graphics.xml;
 	&section.android.download.xml;
-	&section.android.resources.xml;
+	
 	&chapter.android.thread.xml;
 	&chapter.android.eventbus.xml;
 	&section.android.mqtt.xml;

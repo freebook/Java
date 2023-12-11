@@ -3,8 +3,10 @@
 	<title>Resources</title>
 	<section>
 		<title>strings.xml</title>
-		<para>字符串</para>
-		<programlisting>
+		<section>
+			<title></title>
+			<para>字符串</para>
+			<programlisting>
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -12,9 +14,12 @@
     <string name="play" formatted="false">缓冲进度为%d%%，播放进度为%d%%</string>
 <resources>    		
 		]]>
-		</programlisting>
-		<para>定义数组</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<para>定义数组</para>
+			<programlisting>
 		<![CDATA[
     <string-array name="language">
         <item>普通话</item>
@@ -22,7 +27,16 @@
         <item>英语</item>
     </string-array>		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>获取 Resource</title>
+			<programlisting>
+			<![CDATA[
+context.getString(R.string.app_id)			
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	
+
 </chapter>
