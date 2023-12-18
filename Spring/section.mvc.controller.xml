@@ -1220,6 +1220,32 @@ public class TestController {
 	<title>@RestController</title>
 	<para></para>
 	<section>
+		<title>上传文件</title>
+		<programlisting>
+		<![CDATA[
+    @PostMapping("/{device}/question/voice")
+    public String questionVoice(@PathVariable String device, @RequestParam("file") MultipartFile file, @RequestParam("session") String session) {
+
+        if (file.isEmpty()) {
+            logger.error("上传失败，请选择文件");
+        }
+
+        String fileName = file.getOriginalFilename();
+        String filePath = "/tmp/".concat(session.concat(".mp3"));
+        File saveAs = new File(filePath);
+        try {
+            file.transferTo(saveAs);
+            logger.info("上传成功 " + fileName);
+        } catch (IOException e) {
+            logger.error(e.toString(), e);
+            return "上传失败";
+        }
+        return "上传成功";
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>返回实体</title>
 		<programlisting>
 		<![CDATA[
@@ -1312,7 +1338,7 @@ public class JacksonConfig {
 		</programlisting>
 
 	</section>
-	<section>
+	<section id="restful.xml">
 		<title>XML</title>
 		<para>restful 将同时支持 json 和 xml 数据传递</para>
 		<programlisting>
@@ -1360,7 +1386,7 @@ public class ArticleRestController {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="restful.json">
 		<title>兼容传统 json 接口</title>
 		<para>开发中发现很多人不适应新的接口方式，有时候只能妥协，这些顽固不化的人需要这样的数据库格式</para>
 		<programlisting>

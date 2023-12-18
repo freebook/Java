@@ -50,3 +50,4 @@
 <!ENTITY chapter.xfyun.xml				 	SYSTEM "chapter.xfyun.xml">
 <!ENTITY section.xfyun.aiui.xml				SYSTEM "section.xfyun.aiui.xml">
 <!ENTITY section.xfyun.tts.xml				SYSTEM "section.xfyun.tts.xml">
+<!ENTITY section.xfyun.wakeup.xml			SYSTEM "section.xfyun.wakeup.xml">

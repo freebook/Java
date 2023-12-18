@@ -2,8 +2,15 @@
 <section id="tts">
 	<title>讯飞 TTS</title>
 	<section>
-		<title></title>
-
+		<title>设置日志输出级别</title>
+		<programlisting>
+		<![CDATA[
+Setting.setLogLevel(Setting.LOG_LEVEL.low);		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>流式语音合成</title>
 		<programlisting>
 		<![CDATA[
 package com.iflytek.mscv5plusdemo;

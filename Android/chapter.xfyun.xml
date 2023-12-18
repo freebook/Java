@@ -3,4 +3,5 @@
 	<title>讯飞云</title>
 	&section.xfyun.aiui.xml;
 	&section.xfyun.tts.xml;
+	&section.xfyun.wakeup.xml;
 </chapter>
