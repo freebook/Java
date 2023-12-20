@@ -33,9 +33,54 @@ public class AsyncTask {
 		]]>
 		</programlisting>
 	</section>
-
 	<section>
 		<title>配置线程池</title>
+		<para>默认线程池的配置很简单，配置参数如下：</para>
+		<screen>
+		<![CDATA[
+spring.task.execution.pool.core-size：线程池创建时的初始化线程数，默认为8
+spring.task.execution.pool.max-size：线程池的最大线程数，默认为int最大值
+spring.task.execution.pool.queue-capacity：用来缓冲执行任务的队列，默认为int最大值
+spring.task.execution.pool.keep-alive：线程终止前允许保持空闲的时间
+spring.task.execution.pool.allow-core-thread-timeout：是否允许核心线程超时
+spring.task.execution.shutdown.await-termination：是否等待剩余任务完成后才关闭应用
+spring.task.execution.shutdown.await-termination-period：等待剩余任务完成的最大时间
+spring.task.execution.thread-name-prefix：线程名的前缀，设置好了之后可以方便我们在日志中查看处理任务所在的线程池		
+		]]>
+		</screen>
+		<para>具体配置含义如下：</para>
+		<screen>
+		<![CDATA[
+spring.task.execution.pool.core-size=8
+spring.task.execution.pool.max-size=20
+spring.task.execution.pool.queue-capacity=10
+spring.task.execution.pool.keep-alive=60s
+spring.task.execution.pool.allow-core-thread-timeout=true
+spring.task.execution.shutdown.await-termination=true
+spring.task.execution.shutdown.await-termination-period=60
+spring.task.execution.thread-name-prefix=task-
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+spring:
+  task:
+    execution:
+      thread-name-prefix: task- # 线程池的线程名的前缀。默认为 task- ，建议根据自己应用来设置
+      pool: # 线程池相关
+        core-size: 8 # 核心线程数，线程池创建时候初始化的线程数。默认为 8 。
+        max-size: 20 # 最大线程数，线程池最大的线程数，只有在缓冲队列满了之后，才会申请超过核心线程数的线程。默认为 Integer.MAX_VALUE
+        keep-alive: 60s # 允许线程的空闲时间，当超过了核心线程之外的线程，在空闲时间到达之后会被销毁。默认为 60 秒
+        queue-capacity: 200 # 缓冲队列大小，用来缓冲执行任务的队列的大小。默认为 Integer.MAX_VALUE 。
+        allow-core-thread-timeout: true # 是否允许核心线程超时，即开启线程池的动态增长和缩小。默认为 true 。
+      shutdown:
+        await-termination: true # 应用关闭时，是否等待定时任务执行完成。默认为 false ，建议设置为 true
+        await-termination-period: 60 # 等待任务完成的最大时长，单位为秒。默认为 0 ，根据自己应用来设置		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Bean 注入配置线程池</title>
 		<para>设置线程池参数</para>
 		<programlisting>
         <![CDATA[
@@ -134,7 +179,8 @@ public class Task {
 		<section>
 			<title>队列</title>
 			<para>线程池能接受多少队列？</para>
-			<para>下面配置是 executor.setQueueCapacity(10); 也就是 10个，但是实测结果跟你想的不同</para>
+			<para>下面配置是 executor.setQueueCapacity(10); 也就是 10个，但是实测结果跟你想的不同
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.config;
@@ -167,7 +213,8 @@ public class ThreadPoolTaskExecutorConfiguration {
 }
 			]]>
 			</programlisting>
-			<para>实测结果是，首次执行可以容纳 20 个线程，20个线程执行完毕之后，再添加任务，就只接受 10 个，超过的部分会跑出异常</para>
+			<para>实测结果是，首次执行可以容纳 20 个线程，20个线程执行完毕之后，再添加任务，就只接受 10 个，超过的部分会跑出异常
+			</para>
 			<screen>
 			<![CDATA[
  Executor [java.util.concurrent.ThreadPoolExecutor@7e729046[Running, pool size = 10, active threads = 10, queued tasks = 10, completed tasks = 0]] did not accept task: org.springframework.aop.interceptor.AsyncExecutionInterceptor$$Lambda$1775/0x0000000801b6afb0@20eaccc2			
@@ -330,7 +377,7 @@ public static Random random = new Random();
         Thread.sleep(random.nextInt(100000));
         long end = System.currentTimeMillis();
         System.out.println("完成任务一，耗时：" + (end - start) + "毫秒");
-    }		
+    }
 		]]>
 		</programlisting>
 	</section>

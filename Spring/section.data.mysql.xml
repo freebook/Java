@@ -86,6 +86,69 @@ private int id;
 @GeneratedValue(strategy= GenerationType.TABLE) 	使用一个特定的数据库表格来保存主键，较少使用。
 			]]>
 			</screen>
+			<para>Long = bigint</para>
+			<screen>
+			<![CDATA[
+package cn.netkiller.domain;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table
+@Data
+public class Picture implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = true, updatable = false)
+    private Long id;
+    private String device;
+    private String model;
+    private String session;
+    private String prompt;
+    private String thumbnail;
+    private String image;
+    private String story;
+    private boolean share;
+    private int likes;
+    private int favorites;
+    private int forward;
+    private Date ctime;
+    private Date mtime;
+
+}
+			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+CREATE TABLE `picture` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `ctime` datetime(6) DEFAULT NULL,
+  `favorites` int NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `likes` int NOT NULL,
+  `mtime` datetime(6) DEFAULT NULL,
+  `prompt` varchar(255) DEFAULT NULL,
+  `session` varchar(255) DEFAULT NULL,
+  `share` bit(1) NOT NULL,
+  `story` varchar(255) DEFAULT NULL,
+  `thumbnail` varchar(255) DEFAULT NULL,
+  `device` varchar(255) DEFAULT NULL,
+  `model` varchar(255) DEFAULT NULL,
+  `forward` int NOT NULL
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci			
+			]]>
+			</screen>
 			<para>字符串做主键</para>
 			<screen>
 			<![CDATA[
@@ -537,7 +600,7 @@ CREATE TABLE `elasticsearch_trash` (
 				</programlisting>
 			</section>
 		</section>
-		<section id="DateTimeFormat">
+		<section id="@DateTimeFormat">
 			<title>@DateTimeFormat 处理日期时间格式</title>
 			<programlisting>
 			<![CDATA[
@@ -553,15 +616,19 @@ CREATE TABLE `elasticsearch_trash` (
 	private Date createDate;
 			]]>
 			</screen>
+			<programlisting>
+			<![CDATA[
+    /**
+     * 日期 DATE  YYYY-MM-DD
+     */
+    @Column(name = "create_date")
+    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date date;			
+			]]>
+			</programlisting>
 		</section>
 		<section id="jpa.mysql">
 			<title>MySQL 特殊数据类型</title>
-
-
-
-
-
-
 			<section id="enum">
 				<title>Enum 枚举数据类型</title>
 				<section>
@@ -2190,6 +2257,49 @@ public class Member  implements Serializable {
 		]]>
 				</programlisting>
 			</section>
+		</section>
+		<section id="@Comment">
+			<title>注释 @Comment</title>
+			<programlisting>
+			<![CDATA[
+    @Column(columnDefinition = "int unsigned NOT NULL DEFAULT '0'")
+    @Comment("点赞")
+    private int likes;
+    @Column(columnDefinition = "int unsigned NOT NULL DEFAULT '0'")
+    @Comment("收藏")
+    private int favorites;
+    @Column(columnDefinition = "int unsigned NOT NULL DEFAULT '0'")
+    @Comment("转发")
+    private int forward;			
+			]]>
+			</programlisting>
+		</section>
+		<section id="@Pattern">
+			<title>@Pattern 数据匹配</title>
+			<programlisting>
+			<![CDATA[
+    /**
+     * 性别 CHAR(1) 0:女 1:男
+     */
+    @Pattern(regexp = "[01]")
+    @Column(name = "gender",columnDefinition = "char(1)")
+    private String gender;
+
+    /**
+     * 身份证号 CHAR(18)
+     */
+    @Pattern(regexp = "^([1-6][1-9]|50)\\d{4}(18|19|20)\\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$")
+    @Column(name = "identityCard",columnDefinition = "char(18)")
+    private String identityCard;
+
+    /**
+     * 所属部门 CHAR(2)  01：金融一部, 02：金融二部, 03：创新中心
+     */
+    @Pattern(regexp = "(01|02|03)")
+    @Column(name = "department",columnDefinition = "char(2)")
+    private String department;			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 

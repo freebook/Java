@@ -287,7 +287,7 @@ public class Application extends SpringBootServletInitializer {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="获取Resources中的文件">
 		<title>获取 Resources 目录中的静态文件</title>
 		<programlisting>
 			<![CDATA[
@@ -366,6 +366,94 @@ public class Application extends SpringBootServletInitializer {
 			<![CDATA[
 @EnableJpaRepositories("common.domain")			
 			]]>
+		</programlisting>
+	</section>
+	<section id="启动和销毁">
+		<title>启动和销毁</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller;
+
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
+
+@SpringBootApplication
+@EnableJpaRepositories
+@EnableAutoConfiguration
+@EnableAsync
+public class Application {
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+
+    @Value("${spring.application.name}")
+    public String name;
+
+    public static void main(String[] args) {
+        System.out.println("Watch interface start...");
+        SpringApplication.run(Application.class, args);
+    }
+
+    @PostConstruct
+    public void init() {
+        logger.info(String.format("==================== %s 系统启动 ====================", name));
+    }
+
+    @PreDestroy
+    public void destroy() {
+        logger.info(String.format("==================== %s 系统销毁 ====================", name));
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="打印环境变量">
+		<title>打印环境变量</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller;
+
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
+
+@SpringBootApplication
+@EnableJpaRepositories
+@EnableAutoConfiguration
+@EnableAsync
+public class Application {
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+
+    public static void main(String[] args) {
+        System.out.println("Watch interface start...");
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    ApplicationRunner applicationRunner(Environment environment) {
+        return args -> {
+            // log.info("our database URL connection will be " +
+            // environment.getProperty("spring.datasource.url"));
+            System.out.println(environment.getProperty("spring.application.name"));
+        };
+    }
+}		
+		]]>
 		</programlisting>
 	</section>
 	<section id="CharacterEncodingFilter">
@@ -490,7 +578,7 @@ public class TomcatConfiguration implements EmbeddedServletContainerCustomizer {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="启动配置项">
 		<title>配置项设定</title>
 		<programlisting>
 			<![CDATA[
@@ -503,7 +591,7 @@ public static void main(String[] args) {
 			]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="spring.profiles.active">
 		<title>spring.profiles.active</title>
 		<programlisting>
 			<![CDATA[
