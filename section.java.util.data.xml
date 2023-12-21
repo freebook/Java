@@ -243,7 +243,7 @@ System.out.println(list.get(index));
 			]]>
 			</programlisting>
 		</section>
-		
+
 
 	</section>
 
@@ -683,10 +683,10 @@ WeakHashMap类
 	};		
 		]]>
 			</programlisting>
-		</section>
-		<section id="map.static">
-			<title>static map</title>
-			<programlisting>
+
+			<section id="map.static">
+				<title>static map</title>
+				<programlisting>
 			<![CDATA[
 	private static final Map<String, String> point;
 	static {
@@ -696,8 +696,8 @@ WeakHashMap类
 		point.put("TW", "Taiwan");
 	};
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 	public final static Map<String, String> hostMap = new HashMap<String, String>() {
         {
@@ -712,9 +712,105 @@ WeakHashMap类
 	    put("key2", "value2");      
 	}};  		
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>Collections 初始化 Map</title>
+				<para></para>
+				<programlisting>
+				<![CDATA[
+Map<String, String> emptyMap = Collections.emptyMap();
+				
+public static Map<String, String> createSingletonMap() {
+    return Collections.singletonMap("username1", "password1");
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>使用 Collectors.toMap（）初始化 Map</title>
+				<para>数组方式</para>
+				<programlisting>
+				<![CDATA[
+Map<String, String> map = Stream.of(new String[][] {
+  { "Hello", "World" }, 
+  { "Neo", "Chen" }, 
+}).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+				
+				]]>
+				</programlisting>
+				<para>对象方式</para>
+				<programlisting>
+				<![CDATA[
+ Map<String, Integer> map = Stream.of(new Object[][] { 
+     { "Neo", 1 }, 
+     { "Netkiller", 2 }, 
+ }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));				
+				]]>
+				</programlisting>
+				<para>使用 Collectors.collectingAndThen（）初始化不可变的Map</para>
+				<programlisting>
+				<![CDATA[
+Map<String, String> map = Stream.of(new String[][] { 
+    { "Hello", "World" }, 
+    { "John", "Doe" },
+}).collect(Collectors.collectingAndThen(
+    Collectors.toMap(data -> data[0], data -> data[1]), 
+    Collections::<String, String> unmodifiableMap));
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>使用Map.Entry流初始化 Map</title>
+				<para>使用 Entry 接口的SimpleEntry 实现 ：</para>
+				<programlisting>
+				<![CDATA[
+Map<String, Integer> map = Stream.of(
+  new AbstractMap.SimpleEntry<>("idea", 1), 
+  new AbstractMap.SimpleEntry<>("mobile", 2))
+  .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+				]]>
+				</programlisting>
+				<para>使用SimpleImmutableEntry 实现：</para>
+				<programlisting>
+				<![CDATA[
+Map<String, Integer> map = Stream.of(
+  new AbstractMap.SimpleImmutableEntry<>("idea", 1),    
+  new AbstractMap.SimpleImmutableEntry<>("mobile", 2))
+  .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Map.of()</title>
+				<para></para>
+				<programlisting>
+				<![CDATA[
+Map<String, String> emptyMap = Map.of();
+Map<String, String> singletonMap = Map.of("key1", "value");
+Map<String, String> map = Map.of("key1","value1", "key2", "value2");				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Map.ofEntries()</title>
+				<para></para>
+				<programlisting>
+				<![CDATA[
+Map<String, String> map = Map.ofEntries(
+  new AbstractMap.SimpleEntry<String, String>("name", "Neo"),
+  new AbstractMap.SimpleEntry<String, String>("city", "Shenzhen"),
+  new AbstractMap.SimpleEntry<String, String>("zip", "518000"),
+  new AbstractMap.SimpleEntry<String, String>("home", "https://www.netkiller.cn")
+);				
+				]]>
+				</programlisting>
+			</section>
 		</section>
-		<section id="hashmap">
+		<section id="HashMap">
 			<title>HashMap</title>
 			<section>
 				<title>遍历 HashMap</title>
@@ -863,7 +959,7 @@ public class TestLinkedHashMap {
 		]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="Map.loop">
 			<title>遍历数据</title>
 			<programlisting>
 			<![CDATA[
@@ -878,7 +974,7 @@ public class TestLinkedHashMap {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="Map.Iterator">
 			<title>迭代器</title>
 			<programlisting>
 			<![CDATA[
@@ -917,7 +1013,7 @@ items.forEach((k,v)->{
 		]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="Map随机取值">
 			<title>随机取值</title>
 			<programlisting>
 			<![CDATA[
@@ -951,7 +1047,7 @@ items.forEach((k,v)->{
 	System.out.println("当前第一个元素: " + queue.peek());// 取队列第一个元素		
 		]]>
 		</programlisting>
-		
+
 		<section>
 			<title>阻塞队列</title>
 			<para>阻塞队列是一个可以阻塞的先进先出集合，比如某个线程在空队列获取元素时、或者在已存满队列存储元素时，都会被阻塞。</para>
@@ -996,9 +1092,9 @@ public class Main  {
 }			
 			]]>
 			</programlisting>
-		<section>
-			<title>LinkedList</title>
-			<programlisting>
+			<section>
+				<title>LinkedList</title>
+				<programlisting>
 			<![CDATA[
 public class QueueTest {
     public static void main(String[] args) {
@@ -1015,9 +1111,9 @@ public class QueueTest {
     }
 }
 			]]>
-			</programlisting>
+				</programlisting>
 
-			<programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.test;
 
@@ -1057,8 +1153,8 @@ public class QueueTest {
     }
 }
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 public class Main {
     public static void main(String[] args) {
@@ -1091,8 +1187,8 @@ public class Main {
 2
 1			
 			]]>
-			</programlisting>
-		</section>
+				</programlisting>
+			</section>
 		</section>
 		<section>
 			<title>数据转换</title>

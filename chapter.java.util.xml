@@ -728,6 +728,17 @@ public class QueueTest {
 		]]>
 		</screen>
 		<section>
+			<title>取 0-n 范围内随机数</title>
+			<programlisting>
+			<![CDATA[
+    private int salt() {
+        Random random = new Random();
+        return random.nextInt(99999999);
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>指定随机数范围</title>
 			<programlisting>
 			<![CDATA[
