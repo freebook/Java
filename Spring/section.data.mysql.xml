@@ -254,7 +254,7 @@ scale		int	列的精度，仅对十进制数值有效，表示小数位的总位
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="TEXT">
 				<title>TEXT 类型</title>
 				<programlisting>
 				<![CDATA[
@@ -381,7 +381,9 @@ public class Article {
 			</screen>
 			<section id="CreatedDate">
 				<title>CreatedDate</title>
-				<para>Spring 提供了 import org.springframework.data.annotation.CreatedDate;</para>
+				<para>Spring 提供了 import
+					org.springframework.data.annotation.CreatedDate;
+				</para>
 				<para>但是这些只能作用于实体类。</para>
 				<screen>
 				<![CDATA[
@@ -493,10 +495,15 @@ CREATE TABLE `elasticsearch_trash` (
 			<section>
 				<title>数据库级别的默认创建日期与更新时间定义</title>
 				<para>需求是这样的：</para>
-				<para>1. 创建时间与更新时间只能由数据库产生，不允许在实体类中产生，因为每个节点的时间/时区不一定一直。另外防止人为插入自定义时间时间。</para>
+				<para>1.
+					创建时间与更新时间只能由数据库产生，不允许在实体类中产生，因为每个节点的时间/时区不一定一直。另外防止人为插入自定义时间时间。
+				</para>
 				<para>2. 插入记录的时候创建默认时间，创建时间不能为空，时间一旦插入不允许日后在实体类中修改。</para>
-				<para>3. 记录创建后更新日志字段为默认为 null 表示该记录没有被修改过。一旦数据被修改，修改日期字段将记录下最后的修改时间。</para>
-				<para>4. 甚至你可以通过触发器实现一个history 表，用来记录数据的历史修改，详细请参考作者另一部电子书《Netkiller Architect 手札》数据库设计相关章节。</para>
+				<para>3. 记录创建后更新日志字段为默认为 null 表示该记录没有被修改过。一旦数据被修改，修改日期字段将记录下最后的修改时间。
+				</para>
+				<para>4. 甚至你可以通过触发器实现一个history 表，用来记录数据的历史修改，详细请参考作者另一部电子书《Netkiller
+					Architect 手札》数据库设计相关章节。
+				</para>
 				<programlisting>
 				<![CDATA[
 package cn.netkiller.api.domain.elasticsearch;
@@ -627,15 +634,40 @@ CREATE TABLE `elasticsearch_trash` (
 			]]>
 			</programlisting>
 		</section>
-		<section id="jpa.mysql">
-			<title>MySQL 特殊数据类型</title>
-			<section id="enum">
-				<title>Enum 枚举数据类型</title>
-				<section>
-					<title>实体中处理 enum 类型</title>
-					<para>@Enumerated(value = EnumType.ORDINAL) //ORDINAL序数 </para>
-					<para>在实体中处理枚举类型适用于所有数据库，Spring data 将枚举视为 String 类型。</para>
-					<programlisting>
+		<section id="enum">
+			<title>Enum 枚举数据类型</title>
+			<para>Enum 枚举数据类型 MySQL 特殊数据类型</para>
+			<section id="EnumType.STRING">
+				<title>实体中处理 enum 类型，存储字符串</title>
+				<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
+				<programlisting>
+					<![CDATA[
+	public enum StatisticsType {
+		LIKE, COMMENT, BROWSE;
+	}
+
+	@Enumerated(EnumType.STRING)
+	private StatisticsType type;
+					]]>
+				</programlisting>
+				<para>SQL</para>
+				<programlisting>
+				<![CDATA[
+CREATE TABLE `statistics_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_id` bigint(20) NOT NULL,
+  `statistics_id` bigint(20) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+				]]>
+				</programlisting>
+			</section>
+			<section id="EnumType.ORDINAL">
+				<title>实体中处理 enum 类型，存储序号</title>
+				<para>@Enumerated(value = EnumType.ORDINAL) //ORDINAL序数 </para>
+				<para>在实体中处理枚举类型适用于所有数据库，Spring data 将枚举视为 String 类型。</para>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.api.domain;
 
@@ -701,9 +733,9 @@ public class StatisticsHistory implements Serializable {
 
 }
 				]]>
-					</programlisting>
-					<para>默认 enum 类型创建数据库等效 int(11)</para>
-					<programlisting>
+				</programlisting>
+				<para>默认 enum 类型创建数据库等效 int(11)</para>
+				<programlisting>
 				<![CDATA[
 CREATE TABLE `statistics_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -714,33 +746,14 @@ CREATE TABLE `statistics_history` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 SELECT * FROM test.statistics;
 				]]>
-					</programlisting>
-					<para>@Enumerated(EnumType.STRING) 注解可以使其成功字符串类型。</para>
-					<programlisting>
-						public enum StatisticsType {
-						LIKE, COMMENT, BROWSE;
-						}
+				</programlisting>
 
-						@Enumerated(EnumType.STRING)
-						private StatisticsType type;
-					</programlisting>
-					<para>SQL</para>
-					<programlisting>
-				<![CDATA[
-CREATE TABLE `statistics_history` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `member_id` bigint(20) NOT NULL,
-  `statistics_id` bigint(20) NOT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-				]]>
-					</programlisting>
-				</section>
-				<section>
-					<title>数据库枚举类型</title>
-					<para>在枚举中处理类型虽然可以适用于所有数据库，但有时我们希望适用数据库的枚举类型（例如MySQL），数据库中得枚举类型要比字符串效率更高</para>
-					<programlisting>
+			</section>
+			<section>
+				<title>数据库枚举类型</title>
+				<para>在枚举中处理类型虽然可以适用于所有数据库，但有时我们希望适用数据库的枚举类型（例如MySQL），数据库中得枚举类型要比字符串效率更高
+				</para>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.api.domain.elasticsearch;
 
@@ -778,9 +791,9 @@ public class NetkillerTrash {
 
 }				
 				]]>
-					</programlisting>
-					<para>实际对应的数据库DLL</para>
-					<programlisting>
+				</programlisting>
+				<para>实际对应的数据库DLL</para>
+				<programlisting>
 				<![CDATA[
 CREATE TABLE `netkiller_trash` (
   `id` int(11) NOT NULL,
@@ -788,12 +801,69 @@ CREATE TABLE `netkiller_trash` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 				]]>
-					</programlisting>
-				</section>
+				</programlisting>
 			</section>
-			<section id="set">
-				<title>SET 数据结构</title>
+			<section>
+				<title>自定义枚举value属性</title>
 				<programlisting>
+				<![CDATA[
+public enum Gender {
+    MALE("男士"),
+    FEMALE("女士");
+
+    private final String value;
+
+    private Gender(String value) {
+        this.value = value;
+    }
+    
+    // value 转枚举
+    public static Gender fromValue(String value) {
+        for (Gender gender : values()) {
+            if (gender.toValue().equals(value)) {
+                return gender;
+            }
+        }
+        return null;
+    }
+
+    // 枚举转 value
+    public String toValue() {
+        return value;
+    }
+}				
+				]]>
+				</programlisting>
+				<para>创建 Gender 的自定义转换器</para>
+				<programlisting>
+				<![CDATA[
+// 实现 AttributeConverter 接口
+java复制代码public class GenderConverter implements AttributeConverter<Gender, String> {
+    @Override
+    public String convertToDatabaseColumn(Gender gender) {
+        return gender.toValue();
+    }
+
+    @Override
+    public Gender convertToEntityAttribute(String value) {
+        return Gender.fromValue(value);
+    }
+}				
+				]]>
+				</programlisting>
+				<para>在实体中，枚举字段加 @Convert 注解</para>
+				<programlisting>
+				<![CDATA[
+@Convert(converter = GenderConverter.class)
+@Column(name = "gender")
+private Gender gender;				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="set">
+			<title>SET 数据结构</title>
+			<programlisting>
 			<![CDATA[
 package common.domain;
 
@@ -850,15 +920,17 @@ public class ItemPool {
 	public Date mtime;
 }
 			]]>
-				</programlisting>
-				<para>定义 SET 如下，在JAVA中 SET被映射为逗号分隔的字符串（String），所以操作起来并无不同。使用字符串"A,B,C"存储即可，取出也同样是字符串。</para>
-				<programlisting>
+			</programlisting>
+			<para>定义 SET 如下，在JAVA中
+				SET被映射为逗号分隔的字符串（String），所以操作起来并无不同。使用字符串"A,B,C"存储即可，取出也同样是字符串。
+			</para>
+			<programlisting>
 			<![CDATA[
-@Column(columnDefinition = "SET('A','B','C','D','E','F','G') DEFAULT NULL COMMENT '答案'")			
+@Column(columnDefinition = "SET('A','B','C','D','E','F','G') DEFAULT NULL COMMENT '答案'")
 			]]>
-				</programlisting>
-				<para>接入后查看</para>
-				<programlisting>
+			</programlisting>
+			<para>接入后查看</para>
+			<programlisting>
 			<![CDATA[
 mysql> select answer from item_pool;
 +--------+
@@ -868,13 +940,13 @@ mysql> select answer from item_pool;
 +--------+
 1 row in set (0.00 sec)			
 			]]>
-				</programlisting>
-				<para>完美实现</para>
-			</section>
-			<section id="json">
-				<title>JSON 数据类型</title>
-				<para>MySQL 5.7 中增加了 json 数据类型，下面是一个例子：</para>
-				<programlisting>
+			</programlisting>
+			<para>完美实现</para>
+		</section>
+		<section id="json">
+			<title>JSON 数据类型</title>
+			<para>MySQL 5.7 中增加了 json 数据类型，下面是一个例子：</para>
+			<programlisting>
 			<![CDATA[
 CREATE TABLE `test` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -882,9 +954,12 @@ CREATE TABLE `test` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8
 			]]>
-				</programlisting>
-				<para>我们需要在 Java 实体中定义 json 数据库结构，我搜索遍了整个互联网（Google,Bing,Baidu......），没有找到解决方案，功夫不负有心人，反复尝试后终于成功。记住我是第一个这样用的 ：） 。</para>
-				<programlisting>
+			</programlisting>
+			<para>我们需要在 Java 实体中定义 json
+				数据库结构，我搜索遍了整个互联网（Google,Bing,Baidu......），没有找到解决方案，功夫不负有心人，反复尝试后终于成功。记住我是第一个这样用的
+				：） 。
+			</para>
+			<programlisting>
 			<![CDATA[
 package common.domain;
 
@@ -939,9 +1014,9 @@ public class ItemPool {
 }
 
 			]]>
-				</programlisting>
-				<para>类型转换 Class</para>
-				<programlisting>
+			</programlisting>
+			<para>类型转换 Class</para>
+			<programlisting>
 			<![CDATA[
 package common.type;
 
@@ -968,15 +1043,18 @@ public class OptionConverter implements AttributeConverter<Map<String, String>, 
 	}
 }			
 			]]>
-				</programlisting>
-				<para>通过 @Column(columnDefinition = "json DEFAULT NULL") 定义数据库为 JSON 数据类型</para>
-				<para>数据存储与取出通过 @Convert(converter = OptionConverter.class) 做转换 </para>
-				<para>这里我需要使用
-					Map 数据结构 <![CDATA[public Map<String, String> options;]]>，
-					你可以根据你的实际需要定义数据类型 Class
-				</para>
-				<para>启动 Spring 项目后创建 Schema 如下：</para>
-				<programlisting>
+			</programlisting>
+			<para>通过 @Column(columnDefinition = "json DEFAULT NULL") 定义数据库为 JSON
+				数据类型
+			</para>
+			<para>数据存储与取出通过 @Convert(converter = OptionConverter.class) 做转换
+			</para>
+			<para>这里我需要使用
+				Map 数据结构 <![CDATA[public Map<String, String> options;]]>，
+				你可以根据你的实际需要定义数据类型 Class
+			</para>
+			<para>启动 Spring 项目后创建 Schema 如下：</para>
+			<programlisting>
 			<![CDATA[
 CREATE TABLE `item_pool` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -992,9 +1070,9 @@ CREATE TABLE `item_pool` (
   CONSTRAINT `FKiujumwssofow95st51ukklpgv` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8
 			]]>
-				</programlisting>
-				<para>我们做个简单的测试, 创建仓库。</para>
-				<programlisting>
+			</programlisting>
+			<para>我们做个简单的测试, 创建仓库。</para>
+			<programlisting>
 			<![CDATA[
 package common.repository;
 
@@ -1008,8 +1086,8 @@ public interface ItemPoolRepository extends CrudRepository<ItemPool, Integer> {
 
 }
 			]]>
-				</programlisting>
-				<programlisting>
+			</programlisting>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.api.restful;
 
@@ -1057,9 +1135,9 @@ public class TestRestController {
 }
 
 			]]>
-				</programlisting>
-				<para>只能用完美来形容</para>
-				<programlisting>
+			</programlisting>
+			<para>只能用完美来形容</para>
+			<programlisting>
 			<![CDATA[
 mysql> select options from item_pool;
 +-----------------------------+
@@ -1069,9 +1147,9 @@ mysql> select options from item_pool;
 +-----------------------------+
 1 row in set (0.00 sec)			
 			]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
+
 
 		<section id="index">
 			<title>索引</title>
@@ -1488,12 +1566,13 @@ public interface UserTokenRepository extends JpaRepository<UserToken, UserTokenP
 			</programlisting>
 		</section>
 
+		<section>
+			<title>外键</title>
 
-
-		<section id="JoinColumn">
-			<title>@JoinColumn</title>
-			<para>@JoinColumn与@Column注释类似，它的定义如下代码所示。 </para>
-			<screen>
+			<section id="JoinColumn">
+				<title>@JoinColumn</title>
+				<para>@JoinColumn与@Column注释类似，它的定义如下代码所示。 </para>
+				<screen>
 			<![CDATA[
 @Target({METHOD, FIELD}) @Retention(RUNTIME) 
 
@@ -1517,12 +1596,14 @@ String table() default "";
 
 }
 			]]>
-			</screen>
-		</section>
-		<section id="OneToOne">
-			<title>@OneToOne</title>
-			<para>一对一表结构，如下面ER图所示，users表是用户表里面有登陆信息，profile 保存的时死人信息，这样的目的是我们尽量减少users表的字段，在频繁操作该表的时候性能比较好，另外一个目的是为了横向水平扩展。</para>
-			<programlisting>
+				</screen>
+			</section>
+			<section id="OneToOne">
+				<title>@OneToOne</title>
+				<para>一对一表结构，如下面ER图所示，users表是用户表里面有登陆信息，profile
+					保存的时死人信息，这样的目的是我们尽量减少users表的字段，在频繁操作该表的时候性能比较好，另外一个目的是为了横向水平扩展。
+				</para>
+				<programlisting>
 			<![CDATA[
     +----------+             +------------+
     | users    |             | profile    |
@@ -1532,8 +1613,8 @@ String table() default "";
     | password |             | email      |    
     +----------+             +------------+ 
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain.test;
 
@@ -1585,8 +1666,8 @@ public class Users implements Serializable {
 }
 
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain.test;
 
@@ -1654,8 +1735,8 @@ public class Profile implements Serializable {
 }
 
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 CREATE TABLE `users` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1677,18 +1758,18 @@ CREATE TABLE `profile` (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB;
 			]]>
-			</programlisting>
-			<para>如果第二张表关联的并非主表的PK（主键）需要使用 referencedColumnName 指定。</para>
-			<programlisting>
+				</programlisting>
+				<para>如果第二张表关联的并非主表的PK（主键）需要使用 referencedColumnName 指定。</para>
+				<programlisting>
 			<![CDATA[
 @JoinColumn(name = "member_id",referencedColumnName="member_id") 			
 			]]>
-			</programlisting>
-		</section>
-		<section id="OneToMany">
-			<title>OneToMany 一对多</title>
-			<para>我们要实现一个一对多实体关系，ER 图如下</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="OneToMany">
+				<title>OneToMany 一对多</title>
+				<para>我们要实现一个一对多实体关系，ER 图如下</para>
+				<programlisting>
 			<![CDATA[
     +----------+          +------------+
     | Classes  |          | Student    |
@@ -1699,9 +1780,11 @@ ENGINE=InnoDB;
                           +------------+ 
     
 			]]>
-			</programlisting>
-			<para>classes 表需要 OneToMany 注解，Student 表需要 ManyToOne 注解，这样就建立起了表与表之间的关系</para>
-			<programlisting>
+				</programlisting>
+				<para>classes 表需要 OneToMany 注解，Student 表需要 ManyToOne
+					注解，这样就建立起了表与表之间的关系
+				</para>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain.test;
 
@@ -1761,8 +1844,8 @@ public class Classes implements Serializable{
 	} 
 }
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain.test;
 
@@ -1826,9 +1909,9 @@ public class Student implements Serializable{
 }
 
 			]]>
-			</programlisting>
-			<para>最终 SQL 表如下</para>
-			<programlisting>
+				</programlisting>
+				<para>最终 SQL 表如下</para>
+				<programlisting>
 			<![CDATA[
 CREATE TABLE `classes` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1849,8 +1932,8 @@ CREATE TABLE `student` (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB;
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
       Classes classes=new Classes(); 
       classes.setName("One"); 
@@ -1865,12 +1948,12 @@ ENGINE=InnoDB;
       st2.setClasses(classes); 
       studentRepostitory.save(st2); 
 			]]>
-			</programlisting>
-		</section>
-		<section id="ManyToMany">
-			<title>ManyToMany 多对多</title>
-			<para>用户与角色就是一个多对多的关系，多对多是需要中间表做关联的。所以我方需要一个 user_has_role 表。</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="ManyToMany">
+				<title>ManyToMany 多对多</title>
+				<para>用户与角色就是一个多对多的关系，多对多是需要中间表做关联的。所以我方需要一个 user_has_role 表。</para>
+				<programlisting>
 			<![CDATA[
     +----------+          +---------------+            +--------+
     | users    |          | user_has_role |            | role   |
@@ -1880,9 +1963,9 @@ ENGINE=InnoDB;
     | password |          |               |            |        |
     +----------+          +---------------+            +--------+
 			]]>
-			</programlisting>
-			<para>创建 User 表</para>
-			<programlisting>
+				</programlisting>
+				<para>创建 User 表</para>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain.test;
 
@@ -1955,9 +2038,9 @@ public class Users implements Serializable {
 
 }
 			]]>
-			</programlisting>
-			<para>创建 Role 表</para>
-			<programlisting>
+				</programlisting>
+				<para>创建 Role 表</para>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain.test;
 
@@ -2014,9 +2097,9 @@ public class Roles implements Serializable {
 }
 
 			]]>
-			</programlisting>
-			<para>最终产生数据库表如下</para>
-			<programlisting>
+				</programlisting>
+				<para>最终产生数据库表如下</para>
+				<programlisting>
 			<![CDATA[
 CREATE TABLE `users` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -2046,16 +2129,16 @@ CREATE TABLE `user_has_role` (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB;
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 			]]>
-			</programlisting>
-		</section>
-		<section id="orphanRemoval">
-			<title>外键级联删除</title>
-			<para>orphanRemoval = true 可以实现数据级联删除</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="orphanRemoval">
+				<title>外键级联删除</title>
+				<para>orphanRemoval = true 可以实现数据级联删除</para>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain;
 
@@ -2182,35 +2265,141 @@ public class Member implements Serializable {
 }
 			
 			]]>
-			</programlisting>
-		</section>
-
-		<section>
-			<title>其他</title>
+				</programlisting>
+			</section>
 			<section id="Cascade">
 				<title>Cascade</title>
 				<screen>
-					CascadeType.PERSIST （级联新建）
-					CascadeType.REMOVE （级联删除）
-					CascadeType.REFRESH （级联刷新）
-					CascadeType.MERGE （级联更新）中选择一个或多个。
-					CascadeType.ALL
+				<![CDATA[
+CascadeType.PERSIST （级联新建）
+CascadeType.REMOVE （级联删除）
+CascadeType.REFRESH （级联刷新）
+CascadeType.MERGE （级联更新）中选择一个或多个。
+CascadeType.ALL
+				]]>
 				</screen>
 			</section>
+
+		</section>
+		<section id="@ElementCollection">
+			<title>@ElementCollection</title>
+			<programlisting>
+			<![CDATA[
+import javax.persistence.*;
+import java.util.*;
+import javax.persistence.*;
+
+@Entity
+public class Employee {
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
+     private int id;
+     private String name;
+     
+     @ElementCollection
+     private Set<Address> address = new HashSet<Address>();
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+import javax.persistence.*;
+
+@Embeddable
+public class Address {
+     private String province;
+     private String city;
+     private String state;
+}
+			]]>
+			</programlisting>
+			<para>Set 集合</para>
+			<programlisting>
+			<![CDATA[
+	@ElementCollection
+    private final Set<String> address = new HashSet<String>();			
+			]]>
+			</programlisting>
+			<para>List 集合</para>
+			<programlisting>
+			<![CDATA[
+	@ElementCollection(targetClass = String.class) //指定集合中元素的类型
+	@CollectionTable(name = "school_inf", joinColumns = @JoinColumn(name="pid",nullable = false)) //表示外键不能为空
+	@Column(name = "school_name") 		//指定表中保存集合元素的列名
+	@OrderColumn(name = "list_order") 	//索引列
+	private List<String> schools = new ArrayList<String>();		
+			]]>
+			</programlisting>
+			<para>数组集合</para>
+			<programlisting>
+			<![CDATA[
+@Entity
+@Table
+public class Student {
+
+	@Id @Column
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer sid;
+	private String name;
+	private Integer age;
+	@ElementCollection(targetClass=String.class) //集合中元素的类型
+	@CollectionTable(name = "school", joinColumns = @JoinColumn(name="sid",nullable = false))//指定外键的名称为sid,并且不能为空
+	@Column(name = "school_name") //指定schools属性，在表中的列名
+	@OrderColumn(name = "array_order")
+	private String[] schools = new String[3];
+	
+}
+		
+			]]>
+			</programlisting>
+			<para>Map 集合</para>
+			<programlisting>
+			<![CDATA[
+@Entity
+@Table(name = "student")
+public class Student {
+
+	@Id @Column
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer sid;
+	private String name;
+	private Integer age;
+	@ElementCollection(targetClass = Float.class) //对于Map类型的属性：指定的是Value的类型
+	@CollectionTable(name = "score_info", joinColumns = @JoinColumn(name="sid", nullable = false))
+	@MapKeyClass(String.class) 		// 指定Map中key的类型
+	@MapKeyColumn(name="suject") 	//指定索引列，也就是key的列名
+	@Column(name = "score") //映射保存Map, Value的列名
+	private Map<String, Float> scores = new HashMap<String, Float>(); //科目和成绩
+
+}			
+			]]>
+			</programlisting>
 			<section>
-				<title>@JsonIgnore</title>
-				<para>当尸体返回 Json 数据结构是，将不包含 @JsonIgnore 定义变量。</para>
+				<title>外键名称</title>
+				
 				<programlisting>
+				<![CDATA[
+    @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "pid", nullable = false))
+    private Set<Status> address = new HashSet<Status>();			
+				]]>	
+				</programlisting>
+			</section>
+		</section>
+		<section>
+			<title>@JsonIgnore</title>
+			<para>当尸体返回 Json 数据结构是，将不包含 @JsonIgnore 定义变量。</para>
+			<programlisting>
 				<![CDATA[
 	@JsonIgnore  
     @OneToMany(mappedBy = "owner")  
     private List<Pet> pets;  
 				]]>
-				</programlisting>
-			</section>
-			<section id="@EnableJpaAuditing">
-				<title>@EnableJpaAuditing 开启 JPA 审计功能</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section id="@EnableJpaAuditing">
+			<title>@EnableJpaAuditing 开启 JPA 审计功能</title>
+			<programlisting>
 		<![CDATA[
 @SpringBootApplication
 @EnableJpaAuditing
@@ -2221,9 +2410,10 @@ public class Application {
     }
 }		
 		]]>
-				</programlisting>
-				<para>在需要审计实体中加入 @EntityListeners(AuditingEntityListener.class)</para>
-				<programlisting>
+			</programlisting>
+			<para>在需要审计实体中加入 @EntityListeners(AuditingEntityListener.class)
+			</para>
+			<programlisting>
 		<![CDATA[
 @EntityListeners(AuditingEntityListener.class)
 public class Member  implements Serializable {
@@ -2255,9 +2445,9 @@ public class Member  implements Serializable {
      #省略getter setter
 }		
 		]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
+
 		<section id="@Comment">
 			<title>注释 @Comment</title>
 			<programlisting>
@@ -2300,6 +2490,11 @@ public class Member  implements Serializable {
     private String department;			
 			]]>
 			</programlisting>
+		</section>
+		<section id="@DynamicInsert">
+			<title>@DynamicInsert 与 @DynamicUpdate</title>
+			<para>@DynamicUpdate 只更新修改的字段</para>
+
 		</section>
 	</section>
 
@@ -2411,13 +2606,12 @@ void deleteAll();								//删除所有实体,不用或慎用!
 		]]>
 			</screen>
 		</section>
-		<section id="PagingAndSortingRepository">
-			<title>PagingAndSortingRepository</title>
-		</section>
+
 		<section id="JpaRepository">
 			<title>JpaRepository</title>
 			<para>
-				<ulink url="https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html" />
+				<ulink
+					url="https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html" />
 			</para>
 			<screen>
 		<![CDATA[
@@ -2444,6 +2638,9 @@ S	saveAndFlush(S entity)
 Saves an entity and flushes changes instantly.		
 		]]>
 			</screen>
+		</section>
+		<section id="PagingAndSortingRepository">
+			<title>PagingAndSortingRepository</title>
 		</section>
 		<section id="jpa.find">
 			<title>findByXXX</title>
@@ -2546,7 +2743,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="jpa.delete">
 			<title>delete 删除操作</title>
 			<programlisting>
 			<![CDATA[
@@ -2637,7 +2834,9 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Long> 
 	}
 				]]>
 				</programlisting>
-				<para>注意 PageRequest(int page, int size) 在新版 Spring boot 2.x 中已经废弃请使用 PageRequest.of(page, size) 替代</para>
+				<para>注意 PageRequest(int page, int size) 在新版 Spring boot 2.x
+					中已经废弃请使用 PageRequest.of(page, size) 替代
+				</para>
 				<programlisting>
 				<![CDATA[
 List<Fcoin> fcoins = fcoinRepository.findByAirdrop(false, PageRequest.of(0, size));
@@ -2774,7 +2973,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			<section>
 				<title>@Query 与 Pageagble</title>
 				<para>
-					<ulink url="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#_native_queries" />
+					<ulink
+						url="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#_native_queries" />
 				</para>
 				<programlisting>
 				<![CDATA[
@@ -2992,7 +3192,8 @@ public List<MyModel> getAllRecord();
 			</section>
 			<section>
 				<title>原生SQL查询</title>
-				<para>这里的nativeQuery=true代表在执行这个方法的时候使用原生sql语句，直接写数据库中的实际表名和表中的字段名，而不是实体表名。</para>
+				<para>这里的nativeQuery=true代表在执行这个方法的时候使用原生sql语句，直接写数据库中的实际表名和表中的字段名，而不是实体表名。
+				</para>
 				<programlisting>
 				<![CDATA[
     @Modifying
@@ -3000,7 +3201,8 @@ public List<MyModel> getAllRecord();
     public void updateStartAndFinishById(@Param("id") Long id);				
 				]]>
 				</programlisting>
-				<para>在什么情况下使用呢？例如上面，同时操作两张表，做更新，如果不使用 nativeQuery = true 无法实现。</para>
+				<para>在什么情况下使用呢？例如上面，同时操作两张表，做更新，如果不使用 nativeQuery = true 无法实现。
+				</para>
 			</section>
 		</section>
 	</section>
@@ -3132,7 +3334,8 @@ public class UserService {
 		</section>
 		<section>
 			<title>private、default、protected 和 final 不支持事物 </title>
-			<para>@Transactional 必须与 public 一起使用，不能定义为 private、default、protected</para>
+			<para>@Transactional 必须与 public 一起使用，不能定义为 private、default、protected
+			</para>
 			<programlisting>
 				<![CDATA[
 @Service
@@ -3196,7 +3399,9 @@ public class UserService {
 		</section>
 		<section>
 			<title>需要 @Service 注解配合使用</title>
-			<para>@Transactional 需要在 @Controller、@Service、@Component、@Repository 等注解下才能使用</para>
+			<para>@Transactional 需要在 @Controller、@Service、@Component、@Repository
+				等注解下才能使用
+			</para>
 			<programlisting>
 				<![CDATA[
 // @Servcie

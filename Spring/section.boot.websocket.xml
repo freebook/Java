@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="WebSocket">
+	<title>WebSocket</title>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		<!-- WebSocket服务端依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
+</section>

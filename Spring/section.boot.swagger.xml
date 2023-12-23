@@ -353,3 +353,77 @@ public class TestController {
 		</programlisting>
 	</section>
 </section>
+<section id="springboot.knife4j">
+	<title>Spring boot with knife4j</title>
+	<section>
+		<title>maven</title>
+		<programlisting>
+		<![CDATA[
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <version>4.4.0</version>
+        </dependency>		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Knife4jConfiguration</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class Knife4jConfiguration {
+    @Bean
+    public GroupedOpenApi adminApi() {      // 创建了一个api接口的分组
+        return GroupedOpenApi.builder()
+                .group("default")         // 分组名称
+                .pathsToMatch("/**")  // 接口请求路径规则
+                .build();
+    }
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("netkiller")
+                        .description("接口描述")
+                        .version("v1.0.0")
+                        .contact(new Contact().name("neo").email("netkiller@msn.com"))
+                        .license(new License().name("Apache 2.0").url("https://www.netkiller.cn/docs"))
+                ).externalDocs(new ExternalDocumentation()
+                        .description("外部文档")
+                        .url("https://www.netkiller.cn/docs"));
+
+    }
+
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>application.properties</title>
+		<programlisting>
+		<![CDATA[
+# springdoc-openapi项目配置
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.tags-sorter=alpha
+springdoc.swagger-ui.operations-sorter=alpha
+springdoc.api-docs.path=/v3/api-docs
+# knife4j的增强配置，不需要增强可以不配
+knife4j.enable=true
+knife4j.setting.language=zh_cn		
+		]]>
+		</programlisting>
+	</section>
+</section>
