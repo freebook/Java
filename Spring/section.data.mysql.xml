@@ -330,7 +330,7 @@ Blob（Binary Large Objects）类型是字节类型，具体的java.sql.Blob, By
 			<![CDATA[
 @Lob 
 @Basic(fetch = FetchType.LAZY) 
-@Column(name=" content", columnDefinition="CLOB", nullable=true) 
+@Column(name="content", columnDefinition="CLOB", nullable=true) 
 public String getContent() {
     return content;
 }			

@@ -1,21 +1,63 @@
 
 <section id="cache">
-    <title>Spring boot with Caching</title>
-    <section>
-        <title>maven</title>
-        <programlisting>
+	<title>Spring boot with Caching</title>
+	<para>
+		<ulink
+			url="https://docs.spring.io/spring-boot/docs/current/reference/html/io.html#io.caching.provider.redis" />
+	</para>
+	<section>
+		<title>maven</title>
+		<programlisting>
             <![CDATA[
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-cache</artifactId>
     </dependency>			
             ]]>
-        </programlisting>
-    </section>
-    <section id="">
-        <title>启用 Cache</title>
-        <para>添加 @EnableCaching </para>
-        <screen>
+		</programlisting>
+		<section>
+			<title>Redis</title>
+			<para>使用 Redis</para>
+			<programlisting>
+        <![CDATA[
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>        
+        ]]>
+			</programlisting>
+			<programlisting>
+    	<![CDATA[
+# Redis数据库索引（默认为0）
+spring.redis.database=1
+# Redis服务器地址
+spring.redis.host=127.0.0.1
+# Redis服务器连接端口
+spring.redis.port=6379
+# Redis服务器连接密码（默认为空）
+spring.redis.password=
+# 连接池最大连接数（使用负值表示没有限制）
+spring.redis.pool.max-active=1000
+# 连接池最大阻塞等待时间（使用负值表示没有限制）
+spring.redis.pool.max-wait=-1
+# 连接池中的最大空闲连接
+spring.redis.pool.max-idle=10
+# 连接池中的最小空闲连接
+spring.redis.pool.min-idle=2
+# 连接超时时间（毫秒）
+spring.redis.timeout=0
+    	]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="@EnableCaching">
+		<title>启用 Cache</title>
+		<para>添加 @EnableCaching </para>
+		<screen>
         <![CDATA[
 package hello;
 
@@ -27,68 +69,41 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 public class Application {
 
-public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-}
+	public static void main(String[] args) {
+	    SpringApplication.run(Application.class, args);
+	}
 
 }			
         ]]>
-        </screen>
-    </section>
+		</screen>
+	</section>
 
-    <section>
-        <title>测试 Controller</title>
-        <para>缓存返回结果</para>
-        <programlisting>
-            <![CDATA[
-@Cacheable("cacheable")
-@RequestMapping("/test/cacheable")
-@ResponseBody
-public String cacheable() {
-    Date date = new Date();
-    String message = date.toString();
-    return message;
-}
-            ]]>
-        </programlisting>
-        <para>5秒钟清楚一次缓存</para>
-        <programlisting>
-            <![CDATA[
-@Scheduled(fixedDelay = 5000)
-@CacheEvict(allEntries = true, value = "cacheable")	
-public void expire() {
-    Date date = new Date();
-    String message = date.toString();
-    System.out.println(message);
-}
-            ]]>
-        </programlisting>
-    </section>
-    <section>
-        <title>@Cacheable 的用法</title>
-        <programlisting>
+
+	<section id="@Cacheable">
+		<title>@Cacheable 的用法</title>
+		<programlisting>
         <![CDATA[
 @Cacheable(value="users", key="#id")
 public User find(Integer id) {
+
+	return null;
+
+}			
+        ]]>
+		</programlisting>
+		<para>引用对象</para>
+		<programlisting>
+        <![CDATA[
+@Cacheable(value="users", key="#user.id")
+public User find(User user) {
 
 return null;
 
 }			
         ]]>
-        </programlisting>
-        <para>引用对象</para>
-        <programlisting>
-        <![CDATA[
-@Cacheable(value="users", key="#user.id")
-public User find(User user) {
-
-returnnull;
-
-}			
-        ]]>
-        </programlisting>
-        <para>条件判断</para>
-        <programlisting>
+		</programlisting>
+		<para>条件判断</para>
+		<programlisting>
         <![CDATA[
 @Cacheable(value="messagecache", key="#id", condition="id < 10")
 public String getMessage(int id){
@@ -100,9 +115,9 @@ return "hello"+id;
 @Cacheable(value="test",condition="#userName.length()>2")
 @Cacheable(value={"users"}, key="#user.id", condition="#user.id%2==0")
         ]]>
-        </programlisting>
-        <para>#p0 参数索引，p0表示第一个参数</para>
-        <programlisting>
+		</programlisting>
+		<para>#p0 参数索引，p0表示第一个参数</para>
+		<programlisting>
         <![CDATA[
 @Cacheable(value="users", key="#p0")
 public User find(Integer id) {
@@ -118,9 +133,11 @@ return null;
 
 }
         ]]>
-        </programlisting>
-        <para>@Cacheable 如果没有任何参数将会自动生成 key ，前提是必须设置 @CacheConfig(cacheNames = "test")</para>
-        <programlisting>
+		</programlisting>
+		<para>@Cacheable 如果没有任何参数将会自动生成 key ，前提是必须设置 @CacheConfig(cacheNames =
+			"test")
+		</para>
+		<programlisting>
         <![CDATA[
 @GetMapping("/cache/auto")
 @Cacheable()
@@ -130,18 +147,40 @@ public Attribute auto() {
     return attribute;
 }			
         ]]>
-        </programlisting>
-        <screen>
+		</programlisting>
+		<screen>
         <![CDATA[
 127.0.0.1:6379> keys *
 1) "test::SimpleKey []"			
         ]]>
-        </screen>
-    </section>
-    <section id="">
-        <title>@CachePut 用法</title>
-        <para>@CachePut 每次都会执行方法，都会将结果存入指定key的缓存中，@CachePut 不会判断是否 key 已经存在，二是始终覆盖。</para>
-        <programlisting>
+		</screen>
+
+		<section>
+			<title>SpEL表达式</title>
+			<programlisting>
+        <![CDATA[
+@GetMapping("/cache/expire")
+@Cacheable("test1#${select.cache.timeout:1000}")
+public String expire() {
+    return "Test";
+}
+
+@GetMapping("/cache/expire")
+@Cacheable("test1#${select.cache.timeout:1000}#${select.cache.refresh:600}")
+public String expire() {
+    return "Test";
+}
+        ]]>
+			</programlisting>
+		</section>
+
+	</section>
+	<section id="@CachePut">
+		<title>@CachePut 用法</title>
+		<para>@CachePut 每次都会执行方法，都会将结果存入指定key的缓存中，@CachePut 不会判断是否 key
+			已经存在，二是始终覆盖。
+		</para>
+		<programlisting>
         <![CDATA[
 @CachePut("users")
 public User find(Integer id) {
@@ -150,12 +189,65 @@ return null;
 
 }
         ]]>
-        </programlisting>
-    </section>
-    <section id="">
-        <title>解决Expire 和 TTL 过期时间</title>
-        <para>Springboot 1.x</para>
-        <programlisting>
+		</programlisting>
+	</section>
+	<section id="@CacheEvict">
+		<title>清空缓存</title>
+		<para>缓存返回结果</para>
+		<programlisting>
+            <![CDATA[
+@Cacheable("cacheable")
+@RequestMapping("/test/cacheable")
+@ResponseBody
+public String cacheable() {
+    Date date = new Date();
+    String message = date.toString();
+    return message;
+}
+            ]]>
+		</programlisting>
+		<para>5秒钟清楚一次缓存</para>
+		<programlisting>
+            <![CDATA[
+@Scheduled(fixedDelay = 5000)
+@CacheEvict(allEntries = true, value = "cacheable")	
+public void expire() {
+    Date date = new Date();
+    String message = date.toString();
+    System.out.println(message);
+}
+            ]]>
+		</programlisting>
+	</section>
+	<section id="@Caching">
+		<title>@Caching</title>
+		<programlisting>
+    	<![CDATA[
+    @Caching(
+	    cacheable = {
+	            @Cacheable(value = "emp",key = "#p0"),
+	            ...
+	    },
+	    put = {
+	            @CachePut(value = "emp",key = "#p0"),
+	            ...
+	    },
+	    evict = {
+	            @CacheEvict(value = "emp",key = "#p0"),
+	            ....
+	    }
+    )
+    public User save(User user) {
+        ....
+    }
+    	
+    	]]>
+		</programlisting>
+	</section>
+	<section id="解决Expire 和 TTL 过期时间">
+		<title>解决Expire 和 TTL 过期时间</title>
+		<para>Springboot 1.x</para>
+		<programlisting>
         <![CDATA[
 @Bean
 public CacheManager cacheManager(RedisTemplate redisTemplate) {
@@ -167,9 +259,9 @@ public CacheManager cacheManager(RedisTemplate redisTemplate) {
     return cacheManager;
 }			
         ]]>
-        </programlisting>
-        <para>Springboot 2.x</para>
-        <programlisting>
+		</programlisting>
+		<para>Springboot 2.x</para>
+		<programlisting>
         <![CDATA[
 package api.config;
 
@@ -247,17 +339,17 @@ private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
 }
 
         ]]>
-        </programlisting>
-        <para></para>
-        <programlisting>
+		</programlisting>
+		<para></para>
+		<programlisting>
         <![CDATA[
 @Cacheable(value = "DefaultKey", keyGenerator = "simpleKeyGenerator") // 600秒，使用默认策略
 @Cacheable(value = "UserInfoList", keyGenerator = "simpleKeyGenerator") // 3000秒
 @Cacheable(value = "UserInfoListAnother", keyGenerator = "simpleKeyGenerator") // 18000秒
 
         ]]>
-        </programlisting>
-        <screen>
+		</programlisting>
+		<screen>
         <![CDATA[
 127.0.0.1:6379> keys *
 1) "test2::SimpleKey []"
@@ -266,24 +358,8 @@ private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
 (integer) 584
         
         ]]>
-        </screen>
-    </section>
-    <section>
-        <title>SpEL表达式</title>
-        <programlisting>
-        <![CDATA[
-@GetMapping("/cache/expire")
-@Cacheable("test1#${select.cache.timeout:1000}")
-public String expire() {
-    return "Test";
-}
+		</screen>
+	</section>
 
-@GetMapping("/cache/expire")
-@Cacheable("test1#${select.cache.timeout:1000}#${select.cache.refresh:600}")
-public String expire() {
-    return "Test";
-}
-        ]]>
-        </programlisting>
-    </section>
+
 </section>

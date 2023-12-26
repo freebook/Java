@@ -594,6 +594,28 @@ arrayList.stream()
 		]]>
 			</programlisting>
 		</section>
+		<section>
+			<title><![CDATA[合并 List<byte[]> ArrayList<byte[]>]]></title>
+			<programlisting>
+			<![CDATA[
+        List<byte[]> audios = new ArrayList<byte[]>();
+
+        public static byte[] concatenateByteArrays(List<byte[]> byteArrays) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            for (byte[] byteArray : byteArrays) {
+                try {
+                    outputStream.write(byteArray);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return outputStream.toByteArray();
+        }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="set">
 		<title>Set 转为 List</title>

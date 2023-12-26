@@ -1654,7 +1654,38 @@ public class UploadRestController {
 	}
 		]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+获取文件名及后缀信息
 
+MultipartFile file = new MultipartFile();
+String file = file.getOriginalFilename()
+
+获取文件名
+
+MultipartFile file = new MultipartFile();
+String fileName = file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."))
+
+
+获取文件后缀
+
+MultipartFile file = new MultipartFile();
+String fileSuffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."))
+
+
+获取文件类型
+
+MultipartFile file = new MultipartFile();
+String fileType = file.getContentType()
+
+
+获取文件大小
+
+MultipartFile file = new MultipartFile();
+String fileSize = file.getSize()
+		
+		]]>
+		</programlisting>
 	</section>
 	<section id="export.csv">
 		<title>Spring boot with csv</title>
