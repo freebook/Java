@@ -295,7 +295,7 @@ JsonNode jsonNode = mapper.convertValue(picture, JsonNode.class);
 		</section>
 
 	</section>
-	<section>
+	<section id="gson">
 		<title>Google Json</title>
 		<section>
 			<title>json 转 map</title>
@@ -306,6 +306,21 @@ JsonNode jsonNode = mapper.convertValue(picture, JsonNode.class);
         data = gson.fromJson(jsonString, data.getClass());		
 			]]>
 			</programlisting>
+		</section>
+		<section>
+			<title>LinkedHashMap 转 Json</title>
+			<programlisting>
+			<![CDATA[
+Gson gson = new Gson();
+Map<String, String> data = new LinkedHashMap<String, String>() {{
+    put("text", text);
+    put("scene", "talk");
+}};
+
+String json = gson.toJson(data, LinkedHashMap.class);
+			]]>
+			</programlisting>
+			<para>注意：String json = gson.toJson(data); 这样转换不成功，返回 null，必须指定 class 才能成功 String json = gson.toJson(data, LinkedHashMap.class); </para>
 		</section>
 	</section>
 </chapter>
