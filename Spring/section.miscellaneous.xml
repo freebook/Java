@@ -1,6 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="miscellaneous" ?>
-	<title>Miscellaneous</title>
+	<title>杂项 Miscellaneous</title>
+	<section>
+		<title>URL 拼装/解析</title>
+		<programlisting>
+		<![CDATA[
+        UriComponents https = UriComponentsBuilder.newInstance()
+                .scheme("https")
+                .host("www.netkiller.cn")
+                .port("8080")
+                .path("/article")
+                .queryParam("id", "9527")
+                .encode(StandardCharsets.UTF_8)
+                .build();
+
+        log.info(https.toUriString());		
+		]]>
+		</programlisting>
+		<para>URL 解析</para>
+		<programlisting>
+		<![CDATA[
+String httpUrl = "https://www.netkiller.cn:8080/article?id=9527";		
+UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(httpUrl).build();
+
+提取协议头
+String scheme = uriComponents.getScheme();
+// scheme = https
+System.out.println("scheme = " + scheme);
+
+获取host操作。
+String host = uriComponents.getHost();
+// host = felord.cn
+System.out.println("host = " + host);
+
+提取 Port 端口。
+
+int port = uriComponents.getPort();
+// port = -1
+System.out.println("port = " + port);
+但是很奇怪的是上面的是 -1,很多人误以为会是80。其实 Http 协议确实是80，但是java.net.URL#getPort()规定，若 URL 的实例未申明（省略）端口号，则返回值为-1。所以当返回了-1就等同于80，但是 URL 中不直接体现它们。
+
+提取 Path 路径
+String path = uriComponents.getPath();
+// path = /spring-security/{article}
+System.out.println("path = " + path);
+
+提取 Query 参数
+
+String query = uriComponents.getQuery();
+// query = version=1&timestamp=123123325
+System.out.println("query = " + query);
+更加合理的提取方式：
+
+MultiValueMap<String, String> queryParams = uriComponents.getQueryParams();
+// queryParams = {version=[1], timestamp=[123123325]}
+System.out.println("queryParams = " + queryParams);
+		]]>
+		</programlisting>
+		<para>替换变量</para>
+		<programlisting>
+		<![CDATA[
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .scheme("https")
+                .host("www.netkiller.cn")
+                .port("8080")
+                .path("/article/{category}")
+                .queryParam("id", "9527")
+                .encode(StandardCharsets.UTF_8)
+                .build();
+
+        UriComponents expand = uriComponents.expand("story");
+
+        log.info(expand.toUriString());
+        # https://www.netkiller.cn:8080/article/story?id=9527
+        
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .scheme("https")
+                .host("www.netkiller.cn")
+                .port("8080")
+                .path("/book/{chapter}/{section}")
+                .queryParam("id", "9527")
+                .encode(StandardCharsets.UTF_8)
+                .build();
+        UriComponents expand = uriComponents.expand(Map.of("chapter", "chapter1", "section", "section2"));
+
+        log.info(expand.toUriString());
+        # https://www.netkiller.cn:8080/book/chapter1/section2?id=9527        
+		]]>
+		</programlisting>
+	</section>
 	<section>
 		<title>阿里云 OSS - STS进行临时授权访问获取 HTTPS 地址</title>
 		<para>默认获取URL是 HTTP，我们的需求是需要获取HTTPS地址，当然你可以使用字符串替换操作，将 http 替换成 https，但这并不是最有解决方案。</para>

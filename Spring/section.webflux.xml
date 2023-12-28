@@ -95,7 +95,7 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>Webflux 控制器</title>
 			<programlisting>
 			<![CDATA[
 	@GetMapping("/welcome")
@@ -483,11 +483,12 @@ public class UserMongoController {
 			<para>produces 如果不是application/stream+json则调用端无法滚动得到结果，将一直阻塞等待数据流结束或超时。</para>
 		</section>
 	</section>
-	<section>
+	<section id="webflux.mono">
 		<title>Mono/Flux</title>
 		<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
+		
 	</section>
-	<section>
+	<section id="webflux.sse">
 		<title>SSE</title>
 		<programlisting>
 		<![CDATA[

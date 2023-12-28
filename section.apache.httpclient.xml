@@ -534,7 +534,7 @@ Email Address []:netkiller@msn.com
 		</screen>
 		<para>解决方案二：是用CN上的域名链接</para>
 	</section>
-	<section>
+	<section id="httpclient.HttpStatus">
 		<title>HttpStatus</title>
 		<programlisting>
 		<![CDATA[
@@ -557,7 +557,44 @@ public class TestController {
 		return HttpStatus.SC_OK;
 	}
 }
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+	String url = "https://www.netkiller.cn:8080/book/chapter1/section2?id=9527";
+    URIBuilder uriBuilder = new URIBuilder(url);
+    System.out.println(uriBuilder.getScheme());
+    System.out.println(uriBuilder.getUserInfo());
+    System.out.println(uriBuilder.getHost());
+    System.out.println(uriBuilder.getPort());
+    System.out.println(uriBuilder.getPath());
+    System.out.println(uriBuilder.getQueryParams());
+    System.out.println(uriBuilder.getFragment());
+    System.out.println(uriBuilder.getCharset());
 		
+		]]>
+		</programlisting>
+		<para>添加参数</para>
+		<programlisting>
+		<![CDATA[
+	String url = "https://www.netkiller.cn/test?id=1";
+    URIBuilder uriBuilder = new URIBuilder(url);
+    uriBuilder.setParameter("id", "2"); // set 会覆盖原来的参数
+    uriBuilder.addParameter("cat" ,"5"); // add 添加参数
+    System.out.println(uriBuilder.build());		
+		]]>
+		</programlisting>
+		<para>去除参数</para>
+		<programlisting>
+		<![CDATA[
+	String url = "https://www.netkiller.cn:8080/book/chapter1/section2?id=9527";
+    URIBuilder uriBuilder = new URIBuilder(url);
+    uriBuilder.clearParameters();
+    System.out.println(uriBuilder.build());
+    # https://www.netkiller.cn:8080/book/chapter1/section2
 		]]>
 		</programlisting>
 	</section>
