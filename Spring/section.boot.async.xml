@@ -1,7 +1,120 @@
 
 <section id="enableasync">
 	<title>Spring boot with Async</title>
+	<section id="Callable">
+		<title>Callable 实现异步</title>
+		<programlisting>
+		<![CDATA[
+@GetMapping("/email")
+public Callable<String> order() {
+    System.out.println("主线程开始：" + Thread.currentThread().getName());
+    Callable<String> result = () -> {
+        System.out.println("副线程开始：" + Thread.currentThread().getName());
+        Thread.sleep(1000);
+        System.out.println("副线程返回：" + Thread.currentThread().getName());
+        return "success";
+    };
 
+    System.out.println("主线程返回：" + Thread.currentThread().getName());
+    return result;
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="WebAsyncTask">
+		<title>WebAsyncTask 实现异步</title>
+		<programlisting>
+		<![CDATA[
+@GetMapping("/webAsyncTask")
+public WebAsyncTask<String> webAsyncTask() {
+    log.info("外部线程：" + Thread.currentThread().getName());
+    WebAsyncTask<String> result = new WebAsyncTask<>(60 * 1000L, new Callable<String>() {
+        @Override
+        public String call() {
+            log.info("内部线程：" + Thread.currentThread().getName());
+            return "success";
+        }
+    });
+    result.onTimeout(new Callable<String>() {
+        @Override
+        public String call() {
+            log.info("timeout callback");
+            return "timeout callback";
+        }
+    });
+    result.onCompletion(new Runnable() {
+        @Override
+        public void run() {
+            log.info("finish callback");
+        }
+    });
+    return result;
+}
+		]]>
+		</programlisting>
+	</section>
+	<section id="DeferredResult">
+		<title>DeferredResult 实现异步访问</title>
+		<programlisting>
+		<![CDATA[
+	private DeferredResult<String> deferredResult = new DeferredResult<String>();
+		
+	@ResponseBody
+    @GetMapping("/receive")
+    public DeferredResult<String> receive() throws Exception {
+        return deferredResult;
+    }
+
+    @ResponseBody
+    @GetMapping("/send")
+    public void send() throws Exception {
+        deferredResult.setResult("Helloworld!!!");
+    }
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	private final List<DeferredResult<String>> deferredResultList = new ArrayList<DeferredResult<String>>();
+	
+    @ResponseBody
+    @GetMapping("/receive")
+    public DeferredResult<String> receive() throws Exception {
+        DeferredResult<String> deferredResult = new DeferredResult<>();
+
+        //先存起来，等待触发
+        deferredResultList.add(deferredResult);
+        return deferredResult;
+    }
+
+    @ResponseBody
+    @GetMapping("/send")
+    public void send() throws Exception {
+        // 让所有hold住的请求给与响应
+        deferredResultList.forEach(d -> d.setResult("say hello to all"));
+    }		
+		]]>
+		</programlisting>
+		<para>DeferredResult 与 Callback 配合使用，用来获取 Callback 返回值</para>
+		<programlisting>
+		<![CDATA[
+    @GetMapping("/tts")
+    @Operation(summary = "音频合成")
+    @ResponseBody
+    public DeferredResult<ResponseJson> test(@RequestParam("text") String text, @RequestParam("filename") String filename) {
+        DeferredResult<ResponseJson> deferredResult = new DeferredResult<ResponseJson>();
+        speechSynthesizerService.tts(text, new XfyunCallback() {
+            @Override
+            public void onCallback(String sid, String text) {
+                String audio = aliyunService.uploadMp3FromBase64(text, filename.concat(".mp3"));
+                ResponseJson response = new ResponseJson(true, ResponseJson.Code.SUCCESS, "", audio);
+                deferredResult.setResult(response);
+            }
+        });
+        return deferredResult;
+    }		
+		]]>
+		</programlisting>
+	</section>
 	<section>
 		<title>启用线程池</title>
 		<para>启用异步执行 @EnableAsync</para>
@@ -32,11 +145,11 @@ public class AsyncTask {
 }		
 		]]>
 		</programlisting>
-	</section>
-	<section>
-		<title>配置线程池</title>
-		<para>默认线程池的配置很简单，配置参数如下：</para>
-		<screen>
+
+		<section>
+			<title>配置线程池</title>
+			<para>默认线程池的配置很简单，配置参数如下：</para>
+			<screen>
 		<![CDATA[
 spring.task.execution.pool.core-size：线程池创建时的初始化线程数，默认为8
 spring.task.execution.pool.max-size：线程池的最大线程数，默认为int最大值
@@ -47,9 +160,9 @@ spring.task.execution.shutdown.await-termination：是否等待剩余任务完�
 spring.task.execution.shutdown.await-termination-period：等待剩余任务完成的最大时间
 spring.task.execution.thread-name-prefix：线程名的前缀，设置好了之后可以方便我们在日志中查看处理任务所在的线程池		
 		]]>
-		</screen>
-		<para>具体配置含义如下：</para>
-		<screen>
+			</screen>
+			<para>具体配置含义如下：</para>
+			<screen>
 		<![CDATA[
 spring.task.execution.pool.core-size=8
 spring.task.execution.pool.max-size=20
@@ -60,8 +173,8 @@ spring.task.execution.shutdown.await-termination=true
 spring.task.execution.shutdown.await-termination-period=60
 spring.task.execution.thread-name-prefix=task-
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 spring:
   task:
@@ -77,7 +190,8 @@ spring:
         await-termination: true # 应用关闭时，是否等待定时任务执行完成。默认为 false ，建议设置为 true
         await-termination-period: 60 # 等待任务完成的最大时长，单位为秒。默认为 0 ，根据自己应用来设置		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>Bean 注入配置线程池</title>
@@ -363,6 +477,7 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 			</programlisting>
 		</section>
 	</section>
+
 	<section>
 		<title>设置线程名称</title>
 		<programlisting>
