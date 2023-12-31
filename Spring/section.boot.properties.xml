@@ -2062,13 +2062,9 @@ server.host=192.168.0.1,172.16.0.1
 		</section>
 
 
-
-
-
-
 		<section id="ConfigurationProperties">
 			<title>@EnableConfigurationProperties 引用自定义 *.properties 配置文件</title>
-			<para>Application.java 涮锅配置NetkillerProperties.java是 @ComponentScan 扫描范围，可以不用声明下面注解。</para>
+			<para>Application.java 配置NetkillerProperties.java是 @ComponentScan 扫描范围，可以不用声明下面注解。</para>
 			<screen>
 			<![CDATA[
 @EnableConfigurationProperties(NetkillerProperties.class)	
