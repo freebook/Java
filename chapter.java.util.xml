@@ -1009,4 +1009,5 @@ public class Test {
 		
 	</section>
 	&section.java.util.concurrent.xml;
+	&section.java.util.stream.xml;
 </section>

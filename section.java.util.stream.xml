@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>java.util.stream</title>
+	<section>
+		<title>IntStream</title>
+		<programlisting>
+		<![CDATA[
+		List<Picture> list = new ArrayList<Picture>();
+		
+		IntStream.range(1, 10).forEach(i -> {
+            Picture picture = new Picture();
+            picture.setId(Long.valueOf(i));
+            picture.setImage("https://www.netkiller.cn/images/" + i + ".png");
+            list.add(picture);
+        });		
+		]]>
+		</programlisting>
+	</section>
+</section>
