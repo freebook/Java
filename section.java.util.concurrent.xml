@@ -56,4 +56,439 @@ public class Future {
 	]]>
 		</programlisting>
 	</section>
+	<section id="CompletableFuture">
+		<title>CompletableFuture</title>
+		<section id="runAsync">
+			<title>runAsync 创建没有返回值的异步任务</title>
+			<para>runAsync 创建没有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是自定义线程池的重载方法</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        CompletableFuture.runAsync(() -> {
+            System.out.println("do something...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        CompletableFuture.runAsync(() -> {
+            System.out.println("do something...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, executorService);
+
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            System.out.println("do something....");
+//            Thread.currentThread().setName("测试有返回值的异步执行");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Result ->" + completableFuture.isDone());
+
+
+    }
+}
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+			<![CDATA[
+do something...
+do something...
+do something....
+
+=======================================================================================
+|   ID |                             Name | Group | Daemon |         State | Priority |
+---------------------------------------------------------------------------------------
+|    1 |                             main |  main |  false |      RUNNABLE |        5 |
+|   21 | ForkJoinPool.commonPool-worker-1 |  main |   true | TIMED_WAITING |        5 |
+|   22 |                  pool-1-thread-1 |  main |  false | TIMED_WAITING |        5 |
+|   23 | ForkJoinPool.commonPool-worker-2 |  main |   true | TIMED_WAITING |        5 |
+=======================================================================================
+
+Result ->true
+			]]>
+			</screen>
+		</section>
+		<section id="supplyAsync">
+			<title>supplyAsync 创建带有返回值的异步任务。</title>
+			<para>supplyAsync 创建带有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是带有自定义线程池的重载方法</para>
+			<screen>
+			<![CDATA[
+// 带返回值异步请求，默认线程池
+public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier)
+ 
+// 带返回值的异步请求，可以自定义线程池
+public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier, Executor executor)			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println("do something....");
+            return "done";
+        });
+
+        System.out.println("Result ->" + completableFuture.get());
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+    }
+}			
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+do something....
+Result ->done
+=======================================================================================
+|   ID |                             Name | Group | Daemon |         State | Priority |
+---------------------------------------------------------------------------------------
+|    1 |                             main |  main |  false |      RUNNABLE |        5 |
+|   21 | ForkJoinPool.commonPool-worker-1 |  main |   true | TIMED_WAITING |        5 |
+=======================================================================================		
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println("do something....");
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "done";
+        }, executorService);
+
+        System.out.println("Result ->" + completableFuture.get());
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+    }
+}
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+do something....
+Result ->done
+======================================================================
+|   ID |            Name | Group | Daemon |         State | Priority |
+----------------------------------------------------------------------
+|    1 |            main |  main |  false |      RUNNABLE |        5 |
+|   21 | pool-1-thread-1 |  main |  false |       WAITING |        5 |
+======================================================================			
+			]]>
+			</screen>
+			<para>设置线程名称</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+
+import cn.netkiller.thread.ThreadManager;
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println("do something....");
+            Thread.currentThread().setName("测试有返回值的异步执行");
+            return "done";
+        });
+
+        System.out.println("Result ->" + completableFuture.get());
+
+        ThreadManager tm = new ThreadManager();
+        System.out.println(tm.show());
+    }
+}			
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+do something....
+Result ->done
+==================================================================
+|   ID |        Name | Group | Daemon |         State | Priority |
+------------------------------------------------------------------
+|    1 |        main |  main |  false |      RUNNABLE |        5 |
+|   21 | 测试有返回值的异步执行 |  main |   true | TIMED_WAITING | 5 |
+==================================================================	
+			]]>
+			</screen>
+		</section>
+		
+		<section id="Run">
+			<title>thenRun / thenRunAsync</title>
+			<para>thenRun/thenRunAsync 功能是什么？完成前置任务之后，自己在执行。</para>
+			<para>thenRun/thenRunAsync 区别是什么？thenRun 使用同一个线程执行任务，thenRunAsync 会再开一个新线程执行任务。</para>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/completableFutureRun")
+    public String completableFutureRun() {
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + " - CompletableFuture 前置任务");
+            try {
+                Thread.sleep(5 * 1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        CompletableFuture thenRun = completableFuture.thenRun(() -> {
+            System.out.println(Thread.currentThread().getName() + " - 接着执行第二个 thenRun 任务");
+        });
+        CompletableFuture thenRunAsync = completableFuture.thenRunAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + " - 接着执行第二个 thenRunAsync 任务");
+        });
+        return "Done";
+    }			
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+ForkJoinPool.commonPool-worker-1 - CompletableFuture 前置任务
+ForkJoinPool.commonPool-worker-1 - 接着执行第二个 thenRun 任务
+ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
+			]]>
+			</screen>
+			<para>这里可以看到 thenRunAsync 的线程变化，开启新线程 ForkJoinPool.commonPool-worker-2 处理任务</para>
+		</section>
+		<section id="Accept">
+			<title>thenAccept / thenAcceptAsync</title>
+			<para>thenAccept/thenAcceptAsync 的功能是，前置任务执行完毕之后，将返回值给到 thenAccept/thenAcceptAsync，再执行接下来的任务。</para>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/completableFutureAccept")
+    public String completableFutureAccept() {
+        CompletableFuture<String> supplyAsync = CompletableFuture.supplyAsync(() -> {
+            log.info(Thread.currentThread().getName() + " - CompletableFuture 前置任务");
+            try {
+                Thread.sleep(5 * 1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "前置任务执行完成";
+        });
+        CompletableFuture<Void> thenAccept = supplyAsync.thenAccept((rev) -> {
+            log.info(Thread.currentThread().getName() + " - 接着执行第二个 thenAccept 任务");
+            log.info("前置任务返回值：" + rev);
+        });
+        CompletableFuture<Void> thenAcceptAsync = supplyAsync.thenAcceptAsync((rev) -> {
+            log.info(Thread.currentThread().getName() + " - 接着执行第二个 thenAcceptAsync 任务");
+            log.info("前置任务返回值：" + rev);
+        });
+        return "Done";
+    }			
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+2023-05-10T10:38:48.008+08:00  INFO 96282 --- [onPool-worker-1] c.n.c.test.TestThreadController          : ForkJoinPool.commonPool-worker-1 - CompletableFuture 前置任务
+2023-05-10T10:38:53.015+08:00  INFO 96282 --- [onPool-worker-2] c.n.c.test.TestThreadController          : ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenAcceptAsync 任务
+2023-05-10T10:38:53.015+08:00  INFO 96282 --- [onPool-worker-1] c.n.c.test.TestThreadController          : ForkJoinPool.commonPool-worker-1 - 接着执行第二个 thenAccept 任务
+2023-05-10T10:38:53.016+08:00  INFO 96282 --- [onPool-worker-2] c.n.c.test.TestThreadController          : 前置任务返回值：前置任务执行完成
+2023-05-10T10:38:53.016+08:00  INFO 96282 --- [onPool-worker-1] c.n.c.test.TestThreadController          : 前置任务返回值：前置任务执行完成			
+			]]>
+			</screen>
+		</section>
+		<section id="Apply">
+			<title>thenApply / thenApplyAsync</title>
+			<para>thenApply/thenApplyAsync 前置任务执行完毕之后，结果作为入参，thenApply/thenApplyAsync 执行完毕之后再返回执行结果</para>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/completableFutureApply")
+    public String completableFutureApply() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> supplyAsync = CompletableFuture.supplyAsync(() -> {
+            log.info(Thread.currentThread().getName() + " - CompletableFuture 前置任务");
+            try {
+                Thread.sleep(5 * 1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "第一步";
+        });
+
+        CompletableFuture<String> thenApply = supplyAsync.thenApply((rev) -> {
+            log.info(Thread.currentThread().getName() + " - 接着执行第二个 thenApply 任务");
+            log.info("前置任务返回值：" + rev);
+            return "第二步";
+        });
+
+        CompletableFuture<String> thenApplyAsync = supplyAsync.thenApplyAsync((rev) -> {
+            log.info(Thread.currentThread().getName() + " - 接着执行第二个 thenApplyAsync 任务");
+            log.info("前置任务返回值：" + rev);
+            return "第二步";
+        });
+        log.info("supplyAsync：{}", supplyAsync.get());
+        log.info("thenApply：{}", thenApply.get());
+        log.info("thenApplyAsync：{}", thenApplyAsync.get());
+        return "Done";
+    }			
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+			<![CDATA[
+2023-05-10T10:39:57.913+08:00  INFO 96282 --- [onPool-worker-2] c.n.c.test.TestThreadController          : ForkJoinPool.commonPool-worker-2 - CompletableFuture 前置任务
+2023-05-10T10:40:02.917+08:00  INFO 96282 --- [  XNIO-1 task-2] c.n.c.test.TestThreadController          : XNIO-1 task-2 - 接着执行第二个 thenApply 任务
+2023-05-10T10:40:02.917+08:00  INFO 96282 --- [onPool-worker-2] c.n.c.test.TestThreadController          : ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenApplyAsync 任务
+2023-05-10T10:40:02.918+08:00  INFO 96282 --- [  XNIO-1 task-2] c.n.c.test.TestThreadController          : 前置任务返回值：第一步
+2023-05-10T10:40:02.918+08:00  INFO 96282 --- [onPool-worker-2] c.n.c.test.TestThreadController          : 前置任务返回值：第一步
+2023-05-10T10:40:02.918+08:00  INFO 96282 --- [  XNIO-1 task-2] c.n.c.test.TestThreadController          : supplyAsync：第一步
+2023-05-10T10:40:02.918+08:00  INFO 96282 --- [  XNIO-1 task-2] c.n.c.test.TestThreadController          : thenApply：第二步
+2023-05-10T10:40:02.919+08:00  INFO 96282 --- [  XNIO-1 task-2] c.n.c.test.TestThreadController          : thenApplyAsync：第二步
+			]]>
+			</screen>
+		</section>
+		<section id="runAsync">
+			<title>runAsync / thenAccept / thenApply 区别</title>
+			<para>runAsync 配合 thenRun/thenRunAsync 使用</para>
+			<para>supplyAsync 配合 thenAccept/thenAcceptAsync 使用</para>
+			<screen>
+			<![CDATA[
+supplyAsync -- 返回值 --> thenAccept/thenAcceptAsync --> 无返回值
+			]]>
+			</screen>
+			<para>supplyAsync 配合 thenApply/thenApplyAsync 使用</para>
+			<screen>
+			<![CDATA[
+supplyAsync -- 返回值 --> thenApply/thenApplyAsync -- 返回值 -->			
+			]]>
+			</screen>
+		</section>
+		<section id="whenComplete">
+			<title>whenComplete</title>
+			<para>whenComplete 与 runAsync / thenAccept / thenApply 区别是能处理 Throwable</para>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/completableFutureWhenComplete")
+    public String completableFutureWhenComplete() throws ExecutionException, InterruptedException {
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println("当前线程名称：" + Thread.currentThread().getName());
+            return "前置任务完成";
+        }).whenComplete((result, throwable) -> {
+            System.out.println("前置任务返回值：" + result);
+        });
+        System.out.println(completableFuture.get());
+        return "Done";
+    }			
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+当前线程名称：ForkJoinPool.commonPool-worker-1
+前置任务返回值：前置任务完成
+前置任务完成			
+			]]>
+			</screen>
+		</section>
+		
+		<section>
+			<title>异常处理</title>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/completableFutureExceptionally")
+    public String completableFutureExceptionally() throws ExecutionException, InterruptedException {
+
+        CompletableFuture.supplyAsync(() -> {
+            System.out.println("当前线程名称：" + Thread.currentThread().getName());
+            throw new RuntimeException();
+        }).exceptionally((e) -> {
+            System.out.println(e.getMessage());
+            return "程序出现异常";
+        });
+
+//        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+////            throw new RuntimeException();
+//            return "程序出现异常";
+//        }).exceptionally((e) -> {
+//            System.out.println("程序出现异常");
+//            return "程序出现异常";
+//        });
+//        System.out.println(completableFuture.get());
+
+        return "Done";
+    }			
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+当前线程名称：ForkJoinPool.commonPool-worker-1
+java.lang.RuntimeException			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>

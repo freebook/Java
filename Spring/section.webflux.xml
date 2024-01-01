@@ -503,7 +503,7 @@ public class UserMongoController {
     }
 		]]>
 		</programlisting>
-		<para></para>
+		<para>从 Supplier 创建 Mono</para>
 		<programlisting>
 		<![CDATA[
     @GetMapping("/get")
@@ -552,6 +552,16 @@ public class UserMongoController {
 
         return Flux.fromIterable(map.entrySet());
     }
+		]]>
+		</programlisting>
+		<para>从 Stream 返回 Flux</para>
+		<programlisting>
+		<![CDATA[
+    @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    private Flux<String> getWords() {
+        Stream<String> items = Arrays.asList("alpha", "bravo", "charlie").stream();
+        return Flux.fromStream(items);
+    }		
 		]]>
 		</programlisting>
 	</section>
