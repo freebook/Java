@@ -89,6 +89,18 @@ System.out.println("queryParams = " + queryParams);
 		]]>
 		</programlisting>
 	</section>
+	<section id="ServletUriComponentsBuilder">
+		<title>ServletUriComponentsBuilder</title>
+		<programlisting>
+		<![CDATA[
+String locationUri = ServletUriComponentsBuilder
+                  .fromCurrentRequest()
+                  .path("/{id}")
+                  .buildAndExpand(employeeId)
+                  .toUriString();		
+		]]>
+		</programlisting>
+	</section>
 	<section id="RestClient">
 		<title>RestClient</title>
 		<programlisting>

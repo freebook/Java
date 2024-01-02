@@ -466,7 +466,7 @@ picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg
 	</section>
 
 
-	
+
 
 	<section id="@RequestHeader">
 		<title>@RequestHeader - 获取 HTTP Header 信息</title>
@@ -1085,11 +1085,19 @@ public ResponseEntity<String> handlePostRequest() {
 }
 			]]>
 		</programlisting>
+		<section>
+			<title>status</title>
+			<programlisting>
+			<![CDATA[
+return ResponseEntity
+                  .status(HttpStatus.CREATED)
+                  .header("Location", locationUri)
+                  .body("Employee created successfully. Location: " + locationUri);		
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	<section>
-		<title></title>
 
-	</section>
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>
 		<section>
