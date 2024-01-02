@@ -168,6 +168,68 @@ import org.springframework.web.bind.annotation.PostMapping;
 			]]>
 			</programlisting>
 		</section>
+		<section id="@RequestBody">
+			<title>@RequestBody</title>
+			<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
+			<programlisting>
+		<![CDATA[
+@RequestMapping(value = "/something", method = RequestMethod.PUT)  
+public void handle(@RequestBody String body, Writer writer) throws IOException {  
+	writer.write(body);  
+} 
+		]]>
+			</programlisting>
+			<section id="@RequestBody.List">
+				<title>@RequestBody 传递 List</title>
+				<programlisting>
+			<![CDATA[
+package cn.netkiller.api.restful;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestRestController {
+
+	@RequestMapping(value = "/test/list/{siteId}", method = RequestMethod.POST)
+	public List<String> ping(@PathVariable("siteId") int siteId, @RequestBody List<String> tags) {
+		System.out.println(String.format("%d, %s", siteId, tags));
+		return (tags);
+	}
+
+}
+			]]>
+				</programlisting>
+				<programlisting>
+			<![CDATA[
+$ curl -H "Content-Type: application/json" -X POST -d '["Neo","Netkiller"]' http://localhost:8440/test/list/22.json 
+
+["Neo","Netkiller"]	
+			]]>
+				</programlisting>
+			</section>
+			<section id="RequestBody.Map">
+				<title>传递 Map 数据</title>
+				<programlisting>
+			<![CDATA[
+	@PostMapping("/finance/list")
+	public String financeList(@RequestBody Map<String,String> map) {
+		return financeService.financeList(map);
+	}
+			]]>
+				</programlisting>
+				<programlisting>
+			<![CDATA[
+% curl -H "Content-Type: application/json" -X POST -d '{"date":"2017-11-08"}' http://localhost:8440/finance/list.json			
+			]]>
+				</programlisting>
+			</section>
+		</section>
 		<section id="@RequestParam">
 			<title>RequestMapping with Request Parameters - @RequestParam</title>
 			<para>@RequestParam 用来处理 HTTP GET/POST 请求的变量</para>
@@ -403,69 +465,8 @@ picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg
 		</section>
 	</section>
 
+
 	
-	<section id="@RequestBody">
-		<title>@RequestBody</title>
-		<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
-		<programlisting>
-		<![CDATA[
-@RequestMapping(value = "/something", method = RequestMethod.PUT)  
-public void handle(@RequestBody String body, Writer writer) throws IOException {  
-	writer.write(body);  
-} 
-		]]>
-		</programlisting>
-		<section id="@RequestBody.List">
-			<title>@RequestBody 传递 List</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.api.restful;
-
-import java.util.List;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class TestRestController {
-
-	@RequestMapping(value = "/test/list/{siteId}", method = RequestMethod.POST)
-	public List<String> ping(@PathVariable("siteId") int siteId, @RequestBody List<String> tags) {
-		System.out.println(String.format("%d, %s", siteId, tags));
-		return (tags);
-	}
-
-}
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-$ curl -H "Content-Type: application/json" -X POST -d '["Neo","Netkiller"]' http://localhost:8440/test/list/22.json 
-
-["Neo","Netkiller"]	
-			]]>
-			</programlisting>
-		</section>
-		<section id="RequestBody.Map">
-			<title>传递 Map 数据</title>
-			<programlisting>
-			<![CDATA[
-	@PostMapping("/finance/list")
-	public String financeList(@RequestBody Map<String,String> map) {
-		return financeService.financeList(map);
-	}
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-% curl -H "Content-Type: application/json" -X POST -d '{"date":"2017-11-08"}' http://localhost:8440/finance/list.json			
-			]]>
-			</programlisting>
-		</section>
-	</section>
 
 	<section id="@RequestHeader">
 		<title>@RequestHeader - 获取 HTTP Header 信息</title>
@@ -689,10 +690,10 @@ public class Deploy {
 		]]>
 		</programlisting>
 	</section>
-	
-	
 
-	
+
+
+
 
 	<section id="@ResponseBody">
 		<title>@ResponseBody</title>
@@ -815,7 +816,8 @@ public void sessionInfo(@CookieValue("JSESSIONID") String cookie)  {
 }
 		]]>
 		</programlisting>
-	</section><section id="@SessionAttributes">
+	</section>
+	<section id="@SessionAttributes">
 		<title>@SessionAttributes</title>
 		<para>@SessionAttributes:
 			该注解用来绑定HttpSession中的attribute对象的值，便于在方法中的参数里使用。
@@ -831,7 +833,7 @@ public class ProfileForm {
 }  
 		]]>
 		</programlisting>
-	
+
 		<programlisting>
 		<![CDATA[
 @Controller
@@ -843,7 +845,7 @@ public class MyController {
 		</programlisting>
 
 	</section>
-	
+
 	<section id="ModelAndView">
 		<title>ModelAndView</title>
 		<section>
@@ -1070,13 +1072,23 @@ Password: ${user.password}<br>
 			]]>
 			</programlisting>
 		</section>
-		<section>
-			<title></title>
-			<programlisting>
+
+	</section>
+	<section id="ResponseEntity">
+		<title>ResponseEntity</title>
+		<programlisting>
 			<![CDATA[
+@PostMapping(path = "/foo", params = {"id", "name=John"})
+public ResponseEntity<String> handlePostRequest() {
+    // 处理请求
+    return ResponseEntity.ok("Success");
+}
 			]]>
-			</programlisting>
-		</section>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+
 	</section>
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>

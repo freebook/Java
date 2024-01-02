@@ -7219,7 +7219,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/loggers | t
 		<title>threaddump 线程信息</title>
 		<screen>
 		<![CDATA[
-neo@MacBook-Pro-M2 ~ % curl -s http://telpo.aigcsst.com:8081/actuator/threaddump | jq | grep threadName
+neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/threaddump | jq | grep threadName
       "threadName": "Reference Handler",
       "threadName": "Finalizer",
       "threadName": "Signal Dispatcher",
@@ -7393,7 +7393,7 @@ neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/act
 		<title>控制器映射 URL</title>
 		<screen>
 		<![CDATA[
-neo@MacBook-Pro-M2 ~ % curl -s http://telpo.aigcsst.com:8081/actuator/mappings |jq 		
+neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/mappings |jq 		
 		]]>
 		</screen>
 	</section>

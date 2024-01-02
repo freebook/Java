@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="miscellaneous" ?>
 	<title>杂项 Miscellaneous</title>
-	<section>
+	<section id="UriComponents">
 		<title>URL 拼装/解析</title>
 		<programlisting>
 		<![CDATA[
@@ -89,10 +89,28 @@ System.out.println("queryParams = " + queryParams);
 		]]>
 		</programlisting>
 	</section>
+	<section id="RestClient">
+		<title>RestClient</title>
+		<programlisting>
+		<![CDATA[
+RestClient defaultClient = RestClient.create();
 
+RestClient customClient = RestClient.builder()
+  .requestFactory(new HttpComponentsClientHttpRequestFactory())
+  .messageConverters(converters -> converters.add(new MyCustomMessageConverter()))
+  .baseUrl("https://example.com")
+  .defaultUriVariables(Map.of("variable", "foo"))
+  .defaultHeader("My-Header", "Foo")
+  .requestInterceptor(myCustomInterceptor)
+  .requestInitializer(myCustomInitializer)
+  .build();		
+		]]>
+		</programlisting>
+	</section>
 	<section>
 		<title>阿里云 OSS - STS进行临时授权访问获取 HTTPS 地址</title>
-		<para>默认获取URL是 HTTP，我们的需求是需要获取HTTPS地址，当然你可以使用字符串替换操作，将 http 替换成 https，但这并不是最有解决方案。</para>
+		<para>默认获取URL是 HTTP，我们的需求是需要获取HTTPS地址，当然你可以使用字符串替换操作，将 http 替换成
+			https，但这并不是最有解决方案。</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.aliyun;
@@ -135,9 +153,8 @@ public class App {
 		ossClient.shutdown();
 	}
 }
-		
 		]]>
 		</programlisting>
 	</section>
-	
+
 </chapter>

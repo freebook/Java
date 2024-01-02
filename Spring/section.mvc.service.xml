@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="service">
 	<title>Service</title>
-	<section>
+	<section id="service.ComponentScan">
 		<title>Application</title>
-		<para>@ComponentScan({ "web", "rest","service" }) 一定要包含 Service 目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。</para>
+		<para>@ComponentScan({ "web", "rest","service" }) 一定要包含 Service
+			目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。</para>
 		<programlisting>
 			<![CDATA[
 import org.springframework.boot.SpringApplication;
@@ -50,7 +51,7 @@ public class Application {
 			]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="service.interface">
 		<title>定义接口</title>
 		<para>TestService 接口</para>
 		<programlisting>
@@ -67,7 +68,7 @@ public interface TestService {
 			]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="service.implements">
 		<title>实现接口</title>
 		<para>实现 TestService 接口</para>
 		<programlisting>
@@ -106,7 +107,7 @@ public class TestServiceImpl implements TestService {
 			]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="service.autowired">
 		<title>调用 Service</title>
 		<para>控制器中调用 Service</para>
 		<programlisting>
@@ -139,7 +140,7 @@ public class IndexController {
 			]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="service.context.getBean">
 		<title>context.getBean 调用 Service</title>
 		<programlisting>
 		<![CDATA[
@@ -177,5 +178,76 @@ public class UserService {
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="service.variable">
+		<title>变量共享</title>
+		<para>Service 的变量是共享的，这是与 new Object 的区别。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.service;
+
+import cn.aigcsst.domain.Chat;
+import cn.aigcsst.repository.ChatRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+public class ChatService {
+
+    private String test;
+
+    @Async
+    public void test1() {
+        this.test = "Test 1";
+    }
+
+    @Async
+    public void test2() {
+        this.test = "Test 2";
+    }
+
+    @Async
+    public void test() {
+        log.info(this.test);
+    }
+}
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    @Autowired
+    private ChatService chatService;
+    		
+    @GetMapping("test")
+    private Mono<String> test() {
+        chatService.test();
+        return Mono.just("OK");
+    }
+    		
+    @GetMapping("/test1")
+    public Mono<String> test1() {
+        String test = "测试";
+        chatService.test1();
+        return Mono.just(test);
+    }
+
+    @GetMapping("/test2")
+    public Mono<String> test2() {
+        chatService.test2();
+        return Mono.just("OK");
+    }
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+2024-01-01T14:09:10.022+08:00  INFO 59782 --- [watch-development] [         task-1] cn.aigcsst.service.ChatService           : null
+2024-01-01T14:09:24.694+08:00  INFO 59782 --- [watch-development] [         task-3] cn.aigcsst.service.ChatService           : Test 1
+2024-01-01T14:10:04.394+08:00  INFO 59782 --- [watch-development] [         task-8] cn.aigcsst.service.ChatService           : Test 2
+		]]>
+		</programlisting>
+	</section>
 </section>

@@ -453,9 +453,99 @@ supplyAsync -- 返回值 --> thenApply/thenApplyAsync -- 返回值 -->
 			]]>
 			</screen>
 		</section>
-		
-		<section>
+		<section id="completeOnTimeout">
+			<title>超时处理</title>
+			<programlisting>
+			<![CDATA[
+		CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(5 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "hello";
+        });
+
+        future.completeOnTimeout("default timeout result", 3 * 1000, TimeUnit.MILLISECONDS);			
+			]]>
+			</programlisting>
+		</section>
+		<section id="thenCompose">
+			<title>按顺序执行</title>
+			<programlisting>
+			<![CDATA[
+@Service
+public class MyService {
+
+    @Async("threadPoolTaskExecutor")
+    public CompletableFuture<String> asyncMethod1() {
+        // 异步方法1逻辑...
+        return CompletableFuture.completedFuture("Result1");
+    }
+
+    @Async("threadPoolTaskExecutor")
+    public CompletableFuture<String> asyncMethod2() {
+        // 异步方法2逻辑...
+        return CompletableFuture.completedFuture("Result2");
+    }
+}
+
+// 调用异步方法并处理结果顺序 
+CompletableFuture<String> future1 = myService.asyncMethod1(); 
+CompletableFuture<String> future2 = future1.thenCompose(result1 -> myService.asyncMethod2());
+
+String finalResult = future2.get(); // 阻塞等待最终结果	
+			]]>
+			</programlisting>
+		</section>
+		<section id="get">
+			<title>获取结果</title>
+			<programlisting>
+			<![CDATA[
+@Service
+public class MyService {
+
+    @Async
+    public CompletableFuture<String> asyncMethod() {
+        // 异步方法逻辑...
+        return CompletableFuture.completedFuture("Result");
+    }
+}
+
+// 调用异步方法并获取结果
+CompletableFuture<String> future = myService.asyncMethod();
+String result = future.get(); // 阻塞等待结果			
+			]]>
+			</programlisting>
+		</section>
+		<section id="exceptionally">
 			<title>异常处理</title>
+			<programlisting>
+			<![CDATA[
+@Service
+public class MyService {
+
+    @Async
+    public CompletableFuture<String> asyncMethod() {
+        try {
+            // 异步方法逻辑...
+            return CompletableFuture.completedFuture("Success");
+        } catch (Exception e) {
+            // 处理异常...
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+}
+
+// 调用异步方法并处理异常
+CompletableFuture<String> future = myService.asyncMethod();
+future.exceptionally(e -> {
+    // 异常处理逻辑...
+    return "Error";
+});
+
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
     @GetMapping("/completableFutureExceptionally")

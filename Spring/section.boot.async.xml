@@ -115,8 +115,8 @@ public WebAsyncTask<String> webAsyncTask() {
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>启用线程池</title>
+	<section id="SimpleAsyncTaskExecutor">
+		<title>SimpleAsyncTaskExecutor</title>
 		<para>启用异步执行 @EnableAsync</para>
 		<programlisting>
 		<![CDATA[
@@ -193,9 +193,10 @@ spring:
 			</screen>
 		</section>
 	</section>
-	<section>
-		<title>Bean 注入配置线程池</title>
-		<para>设置线程池参数</para>
+	<section id="ThreadPoolTaskExecutor">
+		<title>ThreadPoolTaskExecutor 自定义线程池</title>
+		<para>Bean 注入配置线程池</para>
+		
 		<programlisting>
         <![CDATA[
 import org.springframework.boot.SpringApplication;
@@ -250,6 +251,7 @@ public class Application {
 }			
         ]]>
 		</programlisting>
+		<para>设置线程池参数</para>
 		<section id="简单异步执行">
 			<title>最简单的配置</title>
 			<para></para>

@@ -481,7 +481,8 @@ public class UserMongoController {
 			]]>
 			</programlisting>
 			<para>produces
-				如果不是application/stream+json则调用端无法滚动得到结果，将一直阻塞等待数据流结束或超时。</para>
+				如果不是application/stream+json则调用端无法滚动得到结果，将一直阻塞等待数据流结束或超时。
+			</para>
 		</section>
 	</section>
 	<section id="webflux.mono">
@@ -783,5 +784,106 @@ data:发射
     }
 		]]>
 		</programlisting>
+		<section>
+			<title></title>
+			<programlisting>
+		<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri("/students")
+    .retrieve()
+    .bodyToFlux(Student.class);		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>URI 参数</title>
+			<programlisting>
+			<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri("/students/" + studentId)
+    .retrieve()
+    .bodyToMono(Student.class);
+			]]>
+			</programlisting>
+			<para>通过 uriBuilder 组装 Uri 参数</para>
+			<programlisting>
+			<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder
+        .path("/student/{studentId}")
+        .build(studentId))
+    .retrieve()
+    .bodyToMono(Student.class);		
+    
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder
+        .path("/student/{studentId}/assignments/{assignmentId}")
+        .build(studentId, assignmentId))
+    .retrieve()
+    .bodyToMono(Student.class);
+			]]>
+			</programlisting>
+			<para>uriTemplate 组装 Uri 参数</para>
+			<programlisting>
+			<![CDATA[
+UriTemplate uriTemplate = new UriTemplate(
+    "/student/{studentId}/assignments/{assignmentId}");
+
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriTemplate.expand(studentId, assignmentId))
+    .retrieve()
+    .bodyToMono(Student.class);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>查询参数</title>
+			<para>http://localhost:8080/students?firstName=Jon&year=1996</para>
+			<programlisting>
+			<![CDATA[
+String firstName = "Jon";
+String year = "1996";
+
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder.path("/students")
+        .queryParam("firstName", firstName)
+        .queryParam("year", year)
+        .build())
+    .retrieve()
+    .bodyToMono(Student.class);			
+			]]>
+			</programlisting>
+			<para>http://localhost:8080/students?year=1995,1996,1997</para>
+			<programlisting>
+			<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder.path("/students")
+        .queryParam("year", String.join(",", "1995", "1996", "1997"))
+        .build())
+    .retrieve()
+    .bodyToMono(Student.class);			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>
