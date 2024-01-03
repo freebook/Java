@@ -2641,14 +2641,7 @@ Saves an entity and flushes changes instantly.
 		</section>
 		<section id="PagingAndSortingRepository">
 			<title>PagingAndSortingRepository</title>
-			<para>Page 返回数据和页码等数据</para>
 
-			<screen>
-			<![CDATA[
-PageRequest(int page, int size, Sort sort)  Deprecated. 
-use PageRequest.of(int, int, Sort) instead.			
-			]]>
-			</screen>
 			<section>
 				<title>Pageable</title>
 				<para>接口实现 PagingAndSortingRepository</para>
@@ -2688,107 +2681,49 @@ public interface GatherRepository extends PagingAndSortingRepository<User, Integ
 
 			</section>
 			<section>
-				<title>PageRequest.of</title>
-				<programlisting>
-				<![CDATA[
-package cn.netkiller.api.repository;
-
-import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
-
-import cn.netkiller.api.domain.RecentRead;
-
-public interface RecentReadRepostitory extends CrudRepository<RecentRead, Long> {
-
-	List<RecentRead> findByMemberId(long id, Pageable pageable);
-
-}
-				]]>
-				</programlisting>
-				<para>Top 10 实例</para>
-				<programlisting>
-				<![CDATA[
-	@RequestMapping("/recent/read/list/{id}")
-	public List<RecentRead> recentList(@PathVariable long id) {
-		int page = 0;
-		int limit = 10;
-		List<RecentRead> recentRead = recentReadRepostitory.findByMemberId(id, new PageRequest(page, limit));
-		return recentRead;
-	}
-				]]>
-				</programlisting>
-				<para>翻页返回数据可以选择 Iterable/List 或者 Page。 </para>
-				<para>Iterable/List 只返回数据，不含页码等数据</para>
-				<para>注意 PageRequest(int page, int size) 在新版 Spring boot 2.x
-					中已经废弃请使用 PageRequest.of(page, size) 替代
-				</para>
-				<programlisting>
-				<![CDATA[
-List<Fcoin> fcoins = fcoinRepository.findByAirdrop(false, PageRequest.of(0, size));
-				]]>
-				</programlisting>
-
-			</section>
-			<section id="pageable">
-				<title>Pageable 翻页操作</title>
+				<title>解决 PagingAndSortingRepository 没有 save 等方法的问题</title>
+				<para>如果 Repository 继承了 PagingAndSortingRepository 你会发 CrudRepository 中的 save 等方法不能使用了，我的解决方法是写两个 Repository</para>
+				<para>一个 CURD 的 ChatRepository 放在 cn.netkiller.repository</para>
 				<programlisting>
 				<![CDATA[
 package cn.netkiller.repository;
 
 
-import cn.netkiller.domain.Picture;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import cn.netkiller.domain.Chat;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface PictureRepository extends JpaRepository<Picture, Long> {
-    Picture findAllBySession(String session);
+public interface ChatRepository extends CrudRepository<Chat, String> {
+    List<Chat> findAllBySession(String session);
 
-    Optional<Picture> findOneBySession(String session);
+    Chat findOneBySession(String session);
 
-    Page<Picture> findAll(Pageable pageable);
 }				
 				]]>
 				</programlisting>
+				<para>另一个分页的 PagingAndSortingRepository 放在 cn.netkiller.repository.pageable</para>
 				<programlisting>
 				<![CDATA[
-    public Page<Picture> page(Pageable pageable) {
-        return pictureRepository.findAll(pageable);
-    }				
+package cn.netkiller.repository.pageable;
+
+
+import cn.netkiller.domain.Chat;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ChatPageableRepository extends PagingAndSortingRepository<Chat, String> {
+    Page<Chat> findAllByDevice(String device, Pageable pageable);
+}
 				]]>
 				</programlisting>
-				<programlisting>
-				<![CDATA[
-    @GetMapping("/{device}/page")
-    public Mono<Page<Picture>> page(@PathVariable String device, Pageable pageable) {
-
-        return Mono.just(pictureService.page(pageable));
-    }				
-				]]>
-				</programlisting>
-				<screen>
-				<![CDATA[
-排序 /picture/test/page?sort=id,desc
-每页返回数量 /picture/test/page?size=10
-返回第二页5条数据 /picture/test/page?size=5&page=1
-返回第二页5条数据，ID倒序排序 /picture/test/page?size=5&page=1&sort=id,desc
-				]]>
-				</screen>
-				<screen>
-				<![CDATA[
-curl -X 'GET' \
-  'http://localhost:8080/picture/test/page?page=0&size=1&sort=id' \
-  -H 'accept: */*'
-				]]>
-				</screen>
-
 			</section>
+			
 		</section>
 		<section id="jpa.find">
 			<title>findByXXX</title>
@@ -3254,7 +3189,115 @@ public List<MyModel> getAllRecord();
 				<para>在什么情况下使用呢？例如上面，同时操作两张表，做更新，如果不使用 nativeQuery = true 无法实现。
 				</para>
 			</section>
-		</section>
+		</section><section id="pageable">
+				<title>Pageable 翻页操作</title>
+							<para>Page 返回数据和页码等数据</para>
+
+			<screen>
+			<![CDATA[
+PageRequest(int page, int size, Sort sort)  Deprecated. 
+use PageRequest.of(int, int, Sort) instead.			
+			]]>
+			</screen>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.repository;
+
+
+import cn.netkiller.domain.Picture;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface PictureRepository extends JpaRepository<Picture, Long> {
+    Picture findAllBySession(String session);
+
+    Optional<Picture> findOneBySession(String session);
+
+    Page<Picture> findAll(Pageable pageable);
+}				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+    public Page<Picture> page(Pageable pageable) {
+        return pictureRepository.findAll(pageable);
+    }				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+    @GetMapping("/{device}/page")
+    public Mono<Page<Picture>> page(@PathVariable String device, Pageable pageable) {
+
+        return Mono.just(pictureService.page(pageable));
+    }				
+				]]>
+				</programlisting>
+				<screen>
+				<![CDATA[
+排序 /picture/test/page?sort=id,desc
+每页返回数量 /picture/test/page?size=10
+返回第二页5条数据 /picture/test/page?size=5&page=1
+返回第二页5条数据，ID倒序排序 /picture/test/page?size=5&page=1&sort=id,desc
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+curl -X 'GET' \
+  'http://localhost:8080/picture/test/page?page=0&size=1&sort=id' \
+  -H 'accept: */*'
+				]]>
+				</screen>
+
+			<section>
+				<title>PageRequest.of</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.api.repository;
+
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
+
+import cn.netkiller.api.domain.RecentRead;
+
+public interface RecentReadRepostitory extends CrudRepository<RecentRead, Long> {
+
+	List<RecentRead> findByMemberId(long id, Pageable pageable);
+
+}
+				]]>
+				</programlisting>
+				<para>Top 10 实例</para>
+				<programlisting>
+				<![CDATA[
+	@RequestMapping("/recent/read/list/{id}")
+	public List<RecentRead> recentList(@PathVariable long id) {
+		int page = 0;
+		int limit = 10;
+		List<RecentRead> recentRead = recentReadRepostitory.findByMemberId(id, new PageRequest(page, limit));
+		return recentRead;
+	}
+				]]>
+				</programlisting>
+				<para>翻页返回数据可以选择 Iterable/List 或者 Page。 </para>
+				<para>Iterable/List 只返回数据，不含页码等数据</para>
+				<para>注意 PageRequest(int page, int size) 在新版 Spring boot 2.x
+					中已经废弃请使用 PageRequest.of(page, size) 替代
+				</para>
+				<programlisting>
+				<![CDATA[
+List<Fcoin> fcoins = fcoinRepository.findByAirdrop(false, PageRequest.of(0, size));
+				]]>
+				</programlisting>
+
+			</section></section>
 	</section>
 	<section id="Transactional">
 		<title>事务 @Transactional</title>

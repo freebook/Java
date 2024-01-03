@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="interceptor">
 	<title>Interceptor</title>
-	<section id="controller">
-		<title>WebMvcConfigurerAdapter</title>
+	<section id="interceptor.session">
+		<title>Session 拦截</title>
+		
+		<para>WebMvcConfigurerAdapter</para>
 		<programlisting>
+		<![CDATA[
 package mis.config;
 
 import mis.interceptor.SpringMVCInterceptor;
@@ -22,11 +25,11 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new SpringMVCInterceptor()).addPathPatterns("/**");
     }
 }		
+		]]>
 		</programlisting>
-	</section>
-	<section id="controller">
-		<title>HandlerInterceptor</title>
+		<para>HandlerInterceptor</para>
 		<programlisting>
+		<![CDATA[
 package mis.interceptor;
 
 import org.springframework.util.StringUtils;
@@ -62,7 +65,215 @@ public class SpringMVCInterceptor implements HandlerInterceptor {
 
     }
 }
-		
+		]]>
 		</programlisting>
+	</section>
+	<section id="interceptor.token">
+		<title>Token 拦截</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TokenPass {
+    boolean required() default true;
+}
+
+package cn.netkiller.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TokenVerification {
+    boolean required() default true;
+}
+		
+		]]>
+		</programlisting>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.component;
+
+import cn.netkiller.annotation.TokenPass;
+import cn.netkiller.annotation.TokenVerification;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.lang.reflect.Method;
+
+@Slf4j
+@Component
+public class TokenHandlerInterceptor implements HandlerInterceptor {
+
+    // 返回 true 表示继续向下执行，返回 false 表示中断后续操作
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String token = request.getHeader("token");// 从 http 请求头中取出 token
+        // 如果不是映射到方法直接通过
+        if (!(handler instanceof HandlerMethod handlerMethod)) {
+            return true;
+        }
+        Method method = handlerMethod.getMethod();
+
+        //检查方法是否有TokenPass注解，有则跳过认证，直接通过
+        if (method.isAnnotationPresent(TokenPass.class)) {
+            TokenPass tokenPass = method.getAnnotation(TokenPass.class);
+            if (tokenPass.required()) {
+                return true;
+            }
+        }
+        //检查 TokenVerification 需要用户权限的注解
+        if (method.isAnnotationPresent(TokenVerification.class)) {
+            TokenVerification tokenVerification = method.getAnnotation(TokenVerification.class);
+            if (tokenVerification.required()) {
+                // 执行认证
+                if (token == null) {
+                    throw new RuntimeException("无 token，请重新登录");
+                }
+
+                // token 校验逻辑写在这里 
+
+            }
+        }
+        throw new RuntimeException("没有权限");
+    }
+
+
+    // 目标方法执行后, 该方法在控制器处理请求方法调用之后、解析视图之前执行, 可以通过此方法对请求域中的模型和视图做进一步修改
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        log.debug("postHandle");
+
+    }
+
+    // 页面渲染后, 该方法在视图渲染结束后执行, 可以通过此方法实现资源清理、记录日志信息等工作
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        log.debug("afterCompletion");
+
+    }
+
+}
+		
+		]]>
+		</programlisting>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import cn.netkiller.component.TokenHandlerInterceptor;
+import jakarta.annotation.Resource;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+
+@Configuration
+public class TokenWebMvcConfigurer implements WebMvcConfigurer {
+    @Resource
+    private TokenHandlerInterceptor tokenHandlerInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //注册拦截器,并设置拦截的请求路径
+        //addPathPatterns为拦截此请求路径的请求
+        //excludePathPatterns为不拦截此路径的请求
+        registry.addInterceptor(tokenHandlerInterceptor)
+                .addPathPatterns("/mock/*")
+                .excludePathPatterns("/device/*")
+                .excludePathPatterns("/callback/*");
+    }
+}
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
+
+
+@ControllerAdvice
+public class GloablExceptionHandler {
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    public Object handleException(Exception e) {
+        String msg = e.getMessage();
+        if (msg == null || msg.equals("")) {
+            msg = "服务器出错";
+        }
+
+        return Map.of("message", msg, "status", 500);
+    }
+}
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+
+@RestController
+@RequestMapping("/mock")
+@Slf4j
+public class HomeController {
+
+	//无需 token 可以访问
+    @TokenPass		
+    @GetMapping("/neo")
+    public String neo() {
+        return "https://www.netkiller.cn";
+    }
+    
+    // 需要 Token 才能访问
+    @TokenVerification    
+    @GetMapping("/netkiller")
+    public String netkiller() {
+        return "https://www.netkiller.cn";
+    }    		
+}
+		]]>
+		</programlisting>
+		<para></para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> curl -X 'GET' 'http://localhost:8080/mock/neo'
+https://www.netkiller.cn⏎
+
+neo@MacBook-Pro-M2 ~> curl -X 'GET' 'http://localhost:8080/mock/netkiller'
+{"message":"无 token，请重新登录","status":500}⏎
+                                                                                                                                                                                                                                                                                                          
+neo@MacBook-Pro-M2 ~> curl -X 'GET' 'http://localhost:8080/mock/flux' -H 'token: 8A8691CF-DC81-4477-84D8-DC5CDDF98568'
+https://www.netkiller.cn⏎		
+		]]>
+		</screen>
 	</section>
 </section>
