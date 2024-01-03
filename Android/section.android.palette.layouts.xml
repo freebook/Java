@@ -201,7 +201,7 @@
 		<title>声音波形图</title>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.album.view;
+package cn.netkiller.album.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

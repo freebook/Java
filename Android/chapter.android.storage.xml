@@ -10,7 +10,7 @@ Log.d(TAG, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString());
             		
 /storage/emulated/0/Pictures
 
-/storage/emulated/0/Android/data/cn.aigcsst.album.education/files/Pictures		
+/storage/emulated/0/Android/data/cn.netkiller.album.education/files/Pictures		
 		]]>
 		</screen>
 	</section>

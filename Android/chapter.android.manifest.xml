@@ -114,7 +114,7 @@
     android:id="@+id/title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context="cn.aigcsst.demo.MainActivity">
+    tools:context="cn.netkiller.demo.MainActivity">
 
     <ImageView
         android:id="@+id/imageView"
@@ -143,7 +143,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
-        android:name="cn.aigcsst.demo.ContextHolder"
+        android:name="cn.netkiller.demo.ContextHolder"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Demo"
@@ -152,7 +152,7 @@
         android:theme="@style/Theme.Main.Fullscreen"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="cn.aigcsst.demo.MainActivity"
+            android:name="cn.netkiller.demo.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -179,7 +179,7 @@
 		<programlisting>
 		<![CDATA[
         <activity
-            android:name="cn.aigcsst.album.MainActivity"
+            android:name="cn.netkiller.album.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -281,7 +281,7 @@
 		</screen>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.album;
+package cn.netkiller.album;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

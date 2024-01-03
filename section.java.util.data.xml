@@ -1801,8 +1801,11 @@ Optional.of("javastack").stream().count();
 		</section>
 		<section id="Optional.example">
 			<title>example</title>
-			<programlisting>
-		<![CDATA[
+			<section>
+				<title>Optional 与 Map</title>
+			
+				<programlisting>
+				<![CDATA[
 		Optional<Map<String, Object>> name = Optional.of(new HashMap<String, Object>() {
 			{
 				put("id", 1);
@@ -1819,8 +1822,66 @@ Optional.of("javastack").stream().count();
 		System.out.println(name.get());
 		Optional<Map<String, Object>> tmp = name.filter((m) -> ((Integer) m.get("age")) == 30);
 		System.out.println("filter: " + tmp.get());		
-		]]>
-			</programlisting>
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>判断 Object 是否为 null</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.utils;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Optional;
+
+@Data
+@Slf4j
+public class ResponseJson implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private final boolean status; // 状态代码
+    private final Code code; // 业务响应码
+    private final Object data; // 返回业务参数
+    private String reason = ""; // 返回信息描述
+
+    public ResponseJson(boolean status, Code code, String reason, Object data) {
+        this.status = status;
+        this.code = code;
+        this.reason = reason;
+        this.data = data;
+    }
+
+    public ResponseJson(Object data) {
+        Optional<Object> optional = Optional.ofNullable(data);
+//        log.info(String.valueOf(optional.isEmpty()));
+//        log.info(String.valueOf(optional.isPresent()));
+//        log.info(String.valueOf(optional.get()));
+        if (optional.isEmpty()) {
+            this.status = false;
+            this.code = Code.FAIL;
+            this.reason = "失败";
+            this.data = null;
+        } else {
+            this.status = true;
+            this.code = Code.SUCCESS;
+            this.reason = "成功";
+            this.data = data;
+        }
+    }
+
+    public enum Code {
+        SUCCESS, // 业务处理成功
+        COMPLIANCE, NONCOMPLIANT, ILLEGAL, FAIL // 业务处理失败
+
+    }
+}				
+				]]>
+				</programlisting>
+			</section>
 		</section>
 	</section>
 </section>

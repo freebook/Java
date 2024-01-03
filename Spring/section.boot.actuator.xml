@@ -614,7 +614,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.controller.ToolsController",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/controller/ToolsController.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/controller/ToolsController.class]",
           "dependencies": [
             "aliyunService",
             "psychoanalysisService",
@@ -923,7 +923,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.config.Config",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/config/Config.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/config/Config.class]",
           "dependencies": []
         },
         "jdbcClient": {
@@ -1127,14 +1127,14 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.controller.MockController",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/controller/MockController.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/controller/MockController.class]",
           "dependencies": []
         },
         "pictureService": {
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.PictureService",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/PictureService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/PictureService.class]",
           "dependencies": [
             "pictureRepository",
             "mqttService",
@@ -1249,7 +1249,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.SessionStatusService",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/SessionStatusService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/SessionStatusService.class]",
           "dependencies": [
             "sessionStatusRepository"
           ]
@@ -1516,7 +1516,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.BaiduService$$SpringCGLIB$$0",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/BaiduService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/BaiduService.class]",
           "dependencies": [
             "sessionStatusService",
             "psychoanalysisService"
@@ -1584,7 +1584,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.PsychoanalysisService$$SpringCGLIB$$0",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/PsychoanalysisService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/PsychoanalysisService.class]",
           "dependencies": [
             "psychoanalysisRepository",
             "chatGPT"
@@ -1759,7 +1759,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.controller.StatusController",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/controller/StatusController.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/controller/StatusController.class]",
           "dependencies": [
             "sessionStatusRepository"
           ]
@@ -2141,7 +2141,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.MemberService",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/MemberService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/MemberService.class]",
           "dependencies": []
         },
         "spring.codec-org.springframework.boot.autoconfigure.codec.CodecProperties": {
@@ -2182,7 +2182,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.StoryService$$SpringCGLIB$$0",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/StoryService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/StoryService.class]",
           "dependencies": [
             "pictureRepository",
             "mqttService",
@@ -2764,7 +2764,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.component.ChatGPT$$SpringCGLIB$$0",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/component/ChatGPT.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/component/ChatGPT.class]",
           "dependencies": []
         },
         "jsonComponentModule": {
@@ -2808,7 +2808,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.component.AudioService",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/component/AudioService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/component/AudioService.class]",
           "dependencies": []
         },
         "mappingJackson2HttpMessageConverter": {
@@ -2845,7 +2845,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.StableDiffusionService$$SpringCGLIB$$0",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/StableDiffusionService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/StableDiffusionService.class]",
           "dependencies": [
             "aliyunService",
             "pictureService",
@@ -3004,7 +3004,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "org.springdoc.core.models.GroupedOpenApi",
-          "resource": "class path resource [cn/aigcsst/config/Knife4jConfiguration.class]",
+          "resource": "class path resource [cn/netkiller/config/Knife4jConfiguration.class]",
           "dependencies": [
             "knife4jConfiguration"
           ]
@@ -3230,7 +3230,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.utils.MqttService",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/utils/MqttService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/utils/MqttService.class]",
           "dependencies": []
         },
         "operationBuilder": {
@@ -3329,7 +3329,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.controller.PictureController",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/controller/PictureController.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/controller/PictureController.class]",
           "dependencies": [
             "pictureService",
             "jdbcTemplate"
@@ -3382,7 +3382,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.WarningService$$SpringCGLIB$$0",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/WarningService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/WarningService.class]",
           "dependencies": [
             "mqttService"
           ]
@@ -3733,7 +3733,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.controller.BadgesController",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/controller/BadgesController.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/controller/BadgesController.class]",
           "dependencies": [
             "baiduService",
             "sessionStatusService",
@@ -3884,7 +3884,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.AliyunService",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/AliyunService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/AliyunService.class]",
           "dependencies": []
         },
         "diskSpaceMetrics": {
@@ -3917,7 +3917,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.controller.HomeController",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/controller/HomeController.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/controller/HomeController.class]",
           "dependencies": []
         },
         "org.springdoc.core.properties.SpringDocConfigProperties": {
@@ -4232,7 +4232,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.service.ChatService",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/service/ChatService.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/service/ChatService.class]",
           "dependencies": [
             "chatRepository"
           ]
@@ -4253,7 +4253,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.controller.PsychoanalysisController",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/controller/PsychoanalysisController.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/controller/PsychoanalysisController.class]",
           "dependencies": [
             "psychoanalysisService"
           ]
@@ -4484,14 +4484,14 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
           "aliases": [],
           "scope": "singleton",
           "type": "cn.netkiller.config.Knife4jConfiguration$$SpringCGLIB$$0",
-          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/aigcsst/config/Knife4jConfiguration.class]",
+          "resource": "URL [jar:nested:/app/watch-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/cn/netkiller/config/Knife4jConfiguration.class]",
           "dependencies": []
         },
         "openAPI": {
           "aliases": [],
           "scope": "prototype",
           "type": "io.swagger.v3.oas.models.OpenAPI",
-          "resource": "class path resource [cn/aigcsst/config/Knife4jConfiguration.class]",
+          "resource": "class path resource [cn/netkiller/config/Knife4jConfiguration.class]",
           "dependencies": [
             "knife4jConfiguration"
           ]
@@ -7197,11 +7197,11 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/env |jq
 		<screen>
 		<![CDATA[
 neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/logfile | tail -n 5
-2024-01-01T10:26:57.967+08:00  INFO 1 --- [watch-production] [http-nio-8080-exec-3] c.aigcsst.service.SessionStatusService   : SessionStatus(id=15476, session=06c27cc8-dbc6-4386-bd69-e555fa3715cf, progress=5.创建会话, description=画一张猫, ctime=null)
+2024-01-01T10:26:57.967+08:00  INFO 1 --- [watch-production] [http-nio-8080-exec-3] c.netkiller.service.SessionStatusService   : SessionStatus(id=15476, session=06c27cc8-dbc6-4386-bd69-e555fa3715cf, progress=5.创建会话, description=画一张猫, ctime=null)
 2024-01-01T10:26:58.091+08:00  INFO 1 --- [watch-production] [http-nio-8080-exec-3] cn.netkiller.service.BaiduService          : {"refresh_token":"25.3fe5248bc2006526a59a10973eaa4320.315360000.2019436018.282335-45847061","expires_in":2592000,"session_key":"9mzdA5O3tx06PF7hFuzwL5FsbQDWq0LxF4mpdWWl5josf1ZE0IvZOXsrDS471dAz8F6aq7YbivAAZ7WsrliSyZ2Fwtr2iA==","access_token":"24.89b1691bb1d8e1437671365521b43a2d.2592000.1706668018.282335-45847061","scope":"public brain_all_scope brain_nlp_sentiment_classify brain_nlp_emotion solution_face brain_mt_texttrans wise_adapt lebo_resource_base lightservice_public hetu_basic lightcms_map_poi kaidian_kaidian ApsMisTest_Test\u6743\u9650 vis-classify_flower lpq_\u5f00\u653e cop_helloScope ApsMis_fangdi_permission smartapp_snsapi_base smartapp_mapp_dev_manage iop_autocar oauth_tp_app smartapp_smart_game_openapi oauth_sessionkey smartapp_swanid_verify smartapp_opensource_openapi smartapp_opensource_recapi fake_face_detect_\u5f00\u653eScope vis-ocr_\u865a\u62df\u4eba\u7269\u52a9\u7406 idl-video_\u865a\u62df\u4eba\u7269\u52a9\u7406 smartapp_component smartapp_search_plugin avatar_video_test b2b_tp_openapi b2b_tp_openapi_online smartapp_gov_aladin_to_xcx","session_secret":"0bca5fb59addf566eb2e9038afb09883"}
 
 2024-01-01T10:26:58.468+08:00  INFO 1 --- [watch-production] [http-nio-8080-exec-3] cn.netkiller.service.BaiduService          : Translate: {"result":{"from":"zh","trans_result":[{"dst":"Draw a cat","src":"画一张猫"}],"to":"en"},"log_id":1741647171642597969}
-2024-01-01T10:26:58.499+08:00  INFO 1 --- [watch-production] [http-nio-8080-exec-3] c.aigcsst.service.SessionStatusService   : SessionStatus(id=15477, session=06c27cc8-dbc6-4386-bd69-e555fa3715cf, progress=6.翻译成功, description=Draw a cat, ctime=null)	
+2024-01-01T10:26:58.499+08:00  INFO 1 --- [watch-production] [http-nio-8080-exec-3] c.netkiller.service.SessionStatusService   : SessionStatus(id=15477, session=06c27cc8-dbc6-4386-bd69-e555fa3715cf, progress=6.翻译成功, description=Draw a cat, ctime=null)	
 			]]>
 		</screen>
 		<screen>
@@ -7258,10 +7258,10 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/threaddump 
       "threadName": "task-18",
       "threadName": "task-19",
       "threadName": "task-20",
-      "threadName": "MQTT Rec: aigcsst-1704016635545",
-      "threadName": "MQTT Snd: aigcsst-1704016635545",
-      "threadName": "MQTT Call: aigcsst-1704016635545",
-      "threadName": "MQTT Ping: aigcsst-1704016635545",
+      "threadName": "MQTT Rec: netkiller-1704016635545",
+      "threadName": "MQTT Snd: netkiller-1704016635545",
+      "threadName": "MQTT Call: netkiller-1704016635545",
+      "threadName": "MQTT Ping: netkiller-1704016635545",
       "threadName": "http-nio-8080-exec-14",
       "threadName": "http-nio-8080-exec-16",
       "threadName": "boundedElastic-evictor-1",

@@ -6,7 +6,7 @@
 
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.album.religion.ai;
+package cn.netkiller.album.religion.ai;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -24,7 +24,7 @@ import com.iflytek.cloud.util.ResourceUtil;
 
 import java.nio.charset.StandardCharsets;
 
-import cn.aigcsst.album.religion.ContextHolder;
+import cn.netkiller.album.religion.ContextHolder;
 import cn.assets.album.religion.R;
 
 public class Wakeup {

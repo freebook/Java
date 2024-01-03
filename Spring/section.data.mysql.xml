@@ -2738,7 +2738,7 @@ List<Fcoin> fcoins = fcoinRepository.findByAirdrop(false, PageRequest.of(0, size
 package cn.netkiller.repository;
 
 
-import cn.aigcsst.domain.Picture;
+import cn.netkiller.domain.Picture;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

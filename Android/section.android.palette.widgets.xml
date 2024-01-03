@@ -154,7 +154,7 @@ android:scaleType="matrix"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context="cn.aigcsst.album.MainActivity">
+    tools:context="cn.netkiller.album.MainActivity">
 
     <ImageView
         android:id="@+id/imageView"
@@ -165,7 +165,7 @@ android:scaleType="matrix"
         app:srcCompat="@drawable/fo2"
         tools:ignore="MissingConstraints" />
 
-    <cn.aigcsst.album.view.SoundWaveView
+    <cn.netkiller.album.view.SoundWaveView
         android:id="@+id/sound_wave_view"
         android:layout_width="match_parent"
         android:layout_height="50dp"

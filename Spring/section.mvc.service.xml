@@ -185,8 +185,8 @@ public class UserService {
 		<![CDATA[
 package cn.netkiller.service;
 
-import cn.aigcsst.domain.Chat;
-import cn.aigcsst.repository.ChatRepository;
+import cn.netkiller.domain.Chat;
+import cn.netkiller.repository.ChatRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -244,9 +244,9 @@ public class ChatService {
 		</programlisting>
 		<programlisting>
 		<![CDATA[
-2024-01-01T14:09:10.022+08:00  INFO 59782 --- [watch-development] [         task-1] cn.aigcsst.service.ChatService           : null
-2024-01-01T14:09:24.694+08:00  INFO 59782 --- [watch-development] [         task-3] cn.aigcsst.service.ChatService           : Test 1
-2024-01-01T14:10:04.394+08:00  INFO 59782 --- [watch-development] [         task-8] cn.aigcsst.service.ChatService           : Test 2
+2024-01-01T14:09:10.022+08:00  INFO 59782 --- [watch-development] [         task-1] cn.netkiller.service.ChatService           : null
+2024-01-01T14:09:24.694+08:00  INFO 59782 --- [watch-development] [         task-3] cn.netkiller.service.ChatService           : Test 1
+2024-01-01T14:10:04.394+08:00  INFO 59782 --- [watch-development] [         task-8] cn.netkiller.service.ChatService           : Test 2
 		]]>
 		</programlisting>
 	</section>

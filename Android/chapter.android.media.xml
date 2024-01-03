@@ -103,7 +103,7 @@ mediaPlayer.prepareAsync();
 			<title>播放互联网音乐</title>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.demo.skill;
+package cn.netkiller.demo.skill;
 
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -156,7 +156,7 @@ public class Bible {
 			<title>使用单例模式</title>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.demo.skill;
+package cn.netkiller.demo.skill;
 
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -770,7 +770,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
 
-import cn.aigcsst.demo.ContextHolder;
+import cn.netkiller.demo.ContextHolder;
 
 import java.io.IOException;
 import java.util.HashMap;
