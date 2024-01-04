@@ -74,6 +74,8 @@
 
 <!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">
 <!ENTITY section.webflux.xml			SYSTEM "section.webflux.xml">
+<!ENTITY section.webflux.faq.xml		SYSTEM "section.webflux.faq.xml">
+<!ENTITY section.webflux.security.xml	SYSTEM "section.webflux.security.xml">
 
 <!ENTITY chapter.faq.xml				SYSTEM "chapter.faq.xml">
 <!ENTITY section.miscellaneous.xml		SYSTEM "section.miscellaneous.xml">

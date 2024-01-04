@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>常见问题</title>
+	<section>
+		<title>The Java/XML config for Spring MVC and Spring WebFlux cannot
+			both be enabled, e.g. via @EnableWebMvc and @EnableWebFlux, in the
+			same application.
+		</title>
+		<para>是用 @EnableWebFlux 注解是，出现错误。这是因为 Mvc 与 Webflux
+			不能同时启用，通过下面配置可以解决。
+		</para>
+		<screen>
+			<![CDATA[
+spring.main.web-application-type=reactive
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>@EnableWebFluxSecurity 与 @EnableReactiveMethodSecurity 不生效
+		</title>
+		<para>Mvc 不能与 Webflux 同时存在，默认系统是 Mvc 导致 Security 在 Webflux 下工作不正常。
+		</para>
+		<para>去掉 Mvc 依赖 </para>
+		<screen>
+			<![CDATA[
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>			
+			]]>
+		</screen>
+		<para>删除 @EnableWebSecurity 注解</para>
+		<programlisting>
+			<![CDATA[
+@EnableWebMvc			
+@EnableWebSecurity
+			]]>
+		</programlisting>
+		<para>增加配置</para>
+		<screen>
+			<![CDATA[
+spring.main.web-application-type=reactive
+			]]>
+		</screen>
+		<programlisting>
+			<![CDATA[
+package cn.aigcsst.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
+@Configuration
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+public class SecurityConfig {
+
+    @Bean
+    public MapReactiveUserDetailsService userDetailsService() {
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("user")
+                .roles("USER")
+                .build();
+        return new MapReactiveUserDetailsService(user);
+    }
+
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Bean
+    SecurityWebFilterChain filterChain(ServerHttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .authorizeExchange(exchanges -> exchanges
+                        .anyExchange().authenticated()
+                )
+                .httpBasic(withDefaults())
+                .formLogin(withDefaults());
+        return httpSecurity.build();
+    }
+
+}
+			]]>
+		</programlisting>
+	</section>
+</section>

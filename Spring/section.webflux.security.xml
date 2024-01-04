@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Webflux 安全</title>
+	<section>
+		<title>Token 拦截器</title>
+		<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
+
+
+@Component
+@Order
+@Slf4j
+public class TokenWebFilter implements WebFilter {
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        log.info(exchange.getRequest().getURI().toString());
+        if (!exchange.getRequest().getHeaders().containsKey("token")) {
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.FORBIDDEN);
+            response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+            return response.writeWith(Mono.just(response.bufferFactory().wrap("{\"msg\":\"no token\"}".getBytes())));
+        } else {
+            exchange.getAttributes().put("auth", "true");
+            return chain.filter(exchange).doFinally(s -> {
+                log.info("request after, url:{}, statusCode:{}", exchange.getRequest().getURI(), exchange.getResponse().getStatusCode());
+            });
+        }
+    }
+}
+			
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>spring-boot-starter-security</title>
+
+		<programlisting>
+		<![CDATA[
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>		
+		]]>
+		</programlisting>
+		<para>默认用户名是 user，密码会打印到终端</para>
+		<screen>
+		<![CDATA[
+2024-01-03T18:52:01.027+08:00  WARN 33537 --- [watch-development] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 823fcdcc-e2dd-4967-84b4-546db9175357
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-01-03T18:52:01.081+08:00  INFO 33537 --- [watch-development] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoint(s) beneath base path '/actuator'		
+		]]>
+		</screen>
+		<para>访问方式</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> curl -X 'GET' 'http://user:823fcdcc-e2dd-4967-84b4-546db9175357@localhost:8080/mock/mono'
+hello webflux⏎ 
+		]]>
+		</screen>
+		<para>修改密码，在配置文件中增加</para>
+		<screen>
+		<![CDATA[
+#
+spring.security.user.name=user
+spring.security.user.password=123456
+#		
+		]]>
+		</screen>
+	</section>
+</section>

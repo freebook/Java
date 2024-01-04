@@ -229,5 +229,7 @@ Executed in    5.02 secs      fish           external
 		</section>
 	</section>
 	&section.webflux.xml;
+	&section.webflux.security.xml;
+	&section.webflux.faq.xml;
 	
 </chapter>
