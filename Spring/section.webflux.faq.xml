@@ -91,4 +91,13 @@ public class SecurityConfig {
 			]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>webflux netty 不支持 Content-Type: application/x-www-form-urlencoded</title>
+		<para>Post 数据无法使用 @RequestParam 读取，只能用于读取 URL 上的 GET 数据</para>
+		<screen>
+		<![CDATA[
+[UnsupportedMediaTypeStatusException: 415 UNSUPPORTED_MEDIA_TYPE "Content type 'application/x-www-form-urlencoded' not supported"]		
+		]]>
+		</screen>
+	</section>
 </section>

@@ -32,5 +32,5 @@
 	&section.boot.web3j.xml;
 	&section.boot.record.xml;
 	&section.boot.redisson.xml;
-	
+	&section.boot.aliyun.xml;
 </chapter>

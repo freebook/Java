@@ -2682,7 +2682,8 @@ public interface GatherRepository extends PagingAndSortingRepository<User, Integ
 			</section>
 			<section>
 				<title>解决 PagingAndSortingRepository 没有 save 等方法的问题</title>
-				<para>如果 Repository 继承了 PagingAndSortingRepository 你会发 CrudRepository 中的 save 等方法不能使用了，我的解决方法是写两个 Repository</para>
+				<para>如果 Repository 继承了 PagingAndSortingRepository 你会发
+					CrudRepository 中的 save 等方法不能使用了，我的解决方法是写两个 Repository</para>
 				<para>一个 CURD 的 ChatRepository 放在 cn.netkiller.repository</para>
 				<programlisting>
 				<![CDATA[
@@ -2704,7 +2705,8 @@ public interface ChatRepository extends CrudRepository<Chat, String> {
 }				
 				]]>
 				</programlisting>
-				<para>另一个分页的 PagingAndSortingRepository 放在 cn.netkiller.repository.pageable</para>
+				<para>另一个分页的 PagingAndSortingRepository 放在
+					cn.netkiller.repository.pageable</para>
 				<programlisting>
 				<![CDATA[
 package cn.netkiller.repository.pageable;
@@ -2723,7 +2725,49 @@ public interface ChatPageableRepository extends PagingAndSortingRepository<Chat,
 				]]>
 				</programlisting>
 			</section>
-			
+			<section id="PageableDefault">
+				<title>@PageableDefault 分页</title>
+				<programlisting>
+		<![CDATA[
+@RequestMapping(value = "/list", method=RequestMethod.GET)
+public Page<Blog> getEntryByPageable1(@PageableDefault( sort = { "id" }, direction = Sort.Direction.DESC) 
+    Pageable pageable) {
+    return blogRepository.findAll(pageable);
+}
+
+@RequestMapping(value = "/blog", method=RequestMethod.GET)
+public Page<Blog> getEntryByPageable(@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) 
+    Pageable pageable) {
+    return blogRepository.findAll(pageable);
+}
+
+@RequestMapping(value = "/list", method=RequestMethod.GET)
+public Page<Blog> getEntryByPageable2(@PageableDefault Pageable pageable) {
+    return blogRepository.findAll(pageable);
+}
+
+@ModelAttribute("users")
+public Page<User> users(@PageableDefault(size = 5) Pageable pageable) {
+	return userManagement.findAll(pageable);
+}
+		]]>
+				</programlisting>
+				<screen>
+		<![CDATA[
+我们只需要在方法的参数中直接定义一个pageable类型的参数，当Spring发现这个参数时，Spring会自动的根据request的参数来组装该pageable对象，Spring支持的request参数如下：
+
+page，第几页，从0开始，默认为第0页
+size，每一页的大小，默认为20
+sort，排序相关的信息，以property,property(,ASC|DESC)的方式组织，例如sort=firstname&sort=lastname,desc表示在按firstname正序排列基础上按lastname倒序排列
+这样，我们就可以通过url的参数来进行多样化、个性化的查询，而不需要为每一种情况来写不同的方法了。
+
+通过url来定制pageable很方便，但唯一的缺点是不太美观，因此我们需要为pageable设置一个默认配置，这样很多情况下我们都能够通过一个简洁的url来获取信息了。
+
+Spring提供了@PageableDefault帮助我们个性化的设置pageable的默认配置。例如@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC)表示默认情况下我们按照id倒序排列，每一页的大小为15。		
+		]]>
+
+				</screen>
+			</section>
 		</section>
 		<section id="jpa.find">
 			<title>findByXXX</title>
@@ -3189,9 +3233,10 @@ public List<MyModel> getAllRecord();
 				<para>在什么情况下使用呢？例如上面，同时操作两张表，做更新，如果不使用 nativeQuery = true 无法实现。
 				</para>
 			</section>
-		</section><section id="pageable">
-				<title>Pageable 翻页操作</title>
-							<para>Page 返回数据和页码等数据</para>
+		</section>
+		<section id="pageable">
+			<title>Pageable 翻页操作</title>
+			<para>Page 返回数据和页码等数据</para>
 
 			<screen>
 			<![CDATA[
@@ -3199,7 +3244,7 @@ PageRequest(int page, int size, Sort sort)  Deprecated.
 use PageRequest.of(int, int, Sort) instead.			
 			]]>
 			</screen>
-				<programlisting>
+			<programlisting>
 				<![CDATA[
 package cn.netkiller.repository;
 
@@ -3221,15 +3266,15 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
     Page<Picture> findAll(Pageable pageable);
 }				
 				]]>
-				</programlisting>
-				<programlisting>
+			</programlisting>
+			<programlisting>
 				<![CDATA[
     public Page<Picture> page(Pageable pageable) {
         return pictureRepository.findAll(pageable);
     }				
 				]]>
-				</programlisting>
-				<programlisting>
+			</programlisting>
+			<programlisting>
 				<![CDATA[
     @GetMapping("/{device}/page")
     public Mono<Page<Picture>> page(@PathVariable String device, Pageable pageable) {
@@ -3237,22 +3282,22 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
         return Mono.just(pictureService.page(pageable));
     }				
 				]]>
-				</programlisting>
-				<screen>
+			</programlisting>
+			<screen>
 				<![CDATA[
 排序 /picture/test/page?sort=id,desc
 每页返回数量 /picture/test/page?size=10
 返回第二页5条数据 /picture/test/page?size=5&page=1
 返回第二页5条数据，ID倒序排序 /picture/test/page?size=5&page=1&sort=id,desc
 				]]>
-				</screen>
-				<screen>
+			</screen>
+			<screen>
 				<![CDATA[
 curl -X 'GET' \
   'http://localhost:8080/picture/test/page?page=0&size=1&sort=id' \
   -H 'accept: */*'
 				]]>
-				</screen>
+			</screen>
 
 			<section>
 				<title>PageRequest.of</title>
@@ -3297,7 +3342,8 @@ List<Fcoin> fcoins = fcoinRepository.findByAirdrop(false, PageRequest.of(0, size
 				]]>
 				</programlisting>
 
-			</section></section>
+			</section>
+		</section>
 	</section>
 	<section id="Transactional">
 		<title>事务 @Transactional</title>

@@ -170,15 +170,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 		</section>
 		<section id="@RequestBody">
 			<title>@RequestBody</title>
-			<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
-			<programlisting>
+			<section>
+				<title>原始数据</title>
+
+				<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
+				<programlisting>
 		<![CDATA[
 @RequestMapping(value = "/something", method = RequestMethod.PUT)  
 public void handle(@RequestBody String body, Writer writer) throws IOException {  
 	writer.write(body);  
 } 
 		]]>
-			</programlisting>
+				</programlisting>
+			</section>
 			<section id="@RequestBody.List">
 				<title>@RequestBody 传递 List</title>
 				<programlisting>
@@ -227,6 +231,18 @@ $ curl -H "Content-Type: application/json" -X POST -d '["Neo","Netkiller"]' http
 			<![CDATA[
 % curl -H "Content-Type: application/json" -X POST -d '{"date":"2017-11-08"}' http://localhost:8440/finance/list.json			
 			]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>获取 JSONObject 数据</title>
+				<programlisting>
+				<![CDATA[
+    @PostMapping(value = "/{device}/post")
+    public Mono<String> post(@PathVariable String device, @RequestBody JSONObject jsonObject) {
+        log.info(jsonObject.toString());
+        return Mono.just(jsonObject.toString());
+    }				
+				]]>
 				</programlisting>
 			</section>
 		</section>
@@ -690,10 +706,6 @@ public class Deploy {
 		]]>
 		</programlisting>
 	</section>
-
-
-
-
 
 	<section id="@ResponseBody">
 		<title>@ResponseBody</title>
@@ -1518,49 +1530,7 @@ public class RestfulResponse implements Serializable {
 		]]>
 		</programlisting>
 	</section>
-	<section id="PageableDefault">
-		<title>@PageableDefault 分页</title>
-		<programlisting>
-		<![CDATA[
-@RequestMapping(value = "/list", method=RequestMethod.GET)
-public Page<Blog> getEntryByPageable1(@PageableDefault( sort = { "id" }, direction = Sort.Direction.DESC) 
-    Pageable pageable) {
-    return blogRepository.findAll(pageable);
-}
 
-@RequestMapping(value = "/blog", method=RequestMethod.GET)
-public Page<Blog> getEntryByPageable(@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) 
-    Pageable pageable) {
-    return blogRepository.findAll(pageable);
-}
-
-@RequestMapping(value = "/list", method=RequestMethod.GET)
-public Page<Blog> getEntryByPageable2(@PageableDefault Pageable pageable) {
-    return blogRepository.findAll(pageable);
-}
-
-@ModelAttribute("users")
-public Page<User> users(@PageableDefault(size = 5) Pageable pageable) {
-	return userManagement.findAll(pageable);
-}
-		]]>
-		</programlisting>
-		<screen>
-		<![CDATA[
-我们只需要在方法的参数中直接定义一个pageable类型的参数，当Spring发现这个参数时，Spring会自动的根据request的参数来组装该pageable对象，Spring支持的request参数如下：
-
-page，第几页，从0开始，默认为第0页
-size，每一页的大小，默认为20
-sort，排序相关的信息，以property,property(,ASC|DESC)的方式组织，例如sort=firstname&sort=lastname,desc表示在按firstname正序排列基础上按lastname倒序排列
-这样，我们就可以通过url的参数来进行多样化、个性化的查询，而不需要为每一种情况来写不同的方法了。
-
-通过url来定制pageable很方便，但唯一的缺点是不太美观，因此我们需要为pageable设置一个默认配置，这样很多情况下我们都能够通过一个简洁的url来获取信息了。
-
-Spring提供了@PageableDefault帮助我们个性化的设置pageable的默认配置。例如@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC)表示默认情况下我们按照id倒序排列，每一页的大小为15。		
-		]]>
-
-		</screen>
-	</section>
 	<section id="restful.upload">
 		<title>上传文件</title>
 		<para></para>
