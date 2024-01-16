@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="sdk">
 	<title>Software Development Kit</title>
+	<section>
+		<title>JAVE(Java Audio Video Encoder)</title>
+		<para>http://www.sauronsoftware.it/projects/jave/manual.php#10</para>
+	</section>
 	&chapter.google.xml;
 	&section.apache.mahout.xml;
 	<section id="hessian">

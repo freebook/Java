@@ -276,4 +276,13 @@ https://www.netkiller.cn⏎
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>拦截器获取PathVariable变量</title>
+		<programlisting>
+		<![CDATA[
+    Map<String, String> pathVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+    log.info(pathVars.toString());		
+		]]>
+		</programlisting>
+	</section>
 </section>
