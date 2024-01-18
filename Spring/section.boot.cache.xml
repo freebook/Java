@@ -178,6 +178,12 @@ public String expire() {
     }			
 			]]>
 			</programlisting>
+			<para>通过配置文件设置spring.cache.redis.cache-null-values</para>
+			<screen>
+			<![CDATA[
+spring.cache.redis.cache-null-values=false			
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="@CachePut">
