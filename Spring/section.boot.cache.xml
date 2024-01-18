@@ -168,7 +168,17 @@ public String expire() {
         ]]>
 			</programlisting>
 		</section>
-
+		<section>
+			<title>排除 null 结果</title>
+			<para>使用 unless 排除 null 结果</para>
+			<programlisting>
+			<![CDATA[
+    @Cacheable(value = "translate", key = "#chinese", unless="#result == null")
+    public String translate(String chinese) {
+    }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="@CachePut">
 		<title>@CachePut 用法</title>

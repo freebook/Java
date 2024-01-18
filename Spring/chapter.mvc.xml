@@ -521,5 +521,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			</programlisting>
 		</section>
 	</section>
-	&section.mvc.ProblemDetails.xml;
+	&section.mvc.restclient.xml;
 </chapter>

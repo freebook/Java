@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="RestClient">
+	<title>RestClient</title>
+	<programlisting>
+		<![CDATA[
+RestClient defaultClient = RestClient.create();
+
+RestClient customClient = RestClient.builder()
+  .requestFactory(new HttpComponentsClientHttpRequestFactory())
+  .messageConverters(converters -> converters.add(new MyCustomMessageConverter()))
+  .baseUrl("https://example.com")
+  .defaultUriVariables(Map.of("variable", "foo"))
+  .defaultHeader("My-Header", "Foo")
+  .requestInterceptor(myCustomInterceptor)
+  .requestInitializer(myCustomInitializer)
+  .build();		
+		]]>
+	</programlisting>
+	<section>
+		<title>Post Json</title>
+		<programlisting>
+		<![CDATA[
+    @Cacheable(value = "translate", key = "#chinese", unless = "#result == null")
+    public String translate(String chinese) {
+        String english = null;
+        RestClient restClient = RestClient.builder().baseUrl(url).build();
+        String accessToken = this.getAccessToken();
+        HashMap<String, String> data = new LinkedHashMap<String, String>() {{
+            put("q", chinese);
+            put("from", "zh");
+            put("to", "en");
+        }};
+        ResponseEntity<Translate> response = restClient.post()
+                .uri("/rpc/2.0/mt/texttrans/v1-?access_token={access_token}", Map.of("access_token", accessToken))
+                .contentType(APPLICATION_JSON)
+                .body(data)
+                .retrieve()
+                .toEntity(Translate.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            Translate translate = response.getBody();
+            if (translate.getResult() != null) {
+                english = translate.getResult().getTrans_result().get(0).get("dst");
+            }
+            log.info("Translate english: {}", english);
+        } else {
+            log.info("Translate: " + response);
+        }
+        return english;
+    }		
+		]]>
+		</programlisting>
+	</section>
+</section>

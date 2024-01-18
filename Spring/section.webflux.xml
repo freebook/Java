@@ -1029,6 +1029,23 @@ public class EmployeeService {
 }			
 			]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+        WebClient client = WebClient.create("https://www.netkiller.cn");
+        FormInserter formInserter = fromMultipartData("name","neo")
+                .with("age",19)
+                .with("map",ImmutableMap.of("sex","F"))
+                .with("file",new File("/tmp/netkiler.doc"));
+        Mono<String> result = client.post()
+                .uri("/article/index/{id}.html", 256)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(formInserter)
+                //.bodyValue(ImmutableMap.of("name","neo"))
+                .retrieve()
+                .bodyToMono(String.class);
+        result.subscribe(System.err::println);			
+			]]>
+			</programlisting>
 		</section>
 		<section>
 			<title>上传文件</title>
@@ -1073,7 +1090,54 @@ webClient.get()
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>websocket</title>
+			<programlisting>
+			<![CDATA[
+WebSocketClient client = new ReactorNettyWebSocketClient();
+URI url = new URI("ws://localhost:8080/path");
+client.execute(url, session ->
+        session.receive()
+                .doOnNext(System.out::println)
+                .then());			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>同步阻塞等待结果</title>
+			<programlisting>
+			<![CDATA[
+ WebClient client =  WebClient.create("http://www.kailing.pub");
+      String result = client .get()
+                .uri("/article/index/arcid/{id}.html", 256)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        System.err.println(result);			
+			]]>
+			</programlisting>
+			<para>避免单独阻塞每个同步响应</para>
+			<programlisting>
+			<![CDATA[
+      WebClient client =  WebClient.create("http://www.kailing.pub");
+        Mono<String> result1Mono = client .get()
+                .uri("/article/index/arcid/{id}.html", 255)
+                .retrieve()
+                .bodyToMono(String.class);
+        Mono<String> result2Mono = client .get()
+                .uri("/article/index/arcid/{id}.html", 254)
+                .retrieve()
+                .bodyToMono(String.class);
+        Map<String,String>  map = Mono.zip(result1Mono, result2Mono, (result1, result2) -> {
+            Map<String, String> arrayList = new HashMap<>();
+            arrayList.put("result1", result1);
+            arrayList.put("result2", result2);
+            return arrayList;
+        }).block();
+        System.err.println(map.toString());			
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	
 	
 </section>

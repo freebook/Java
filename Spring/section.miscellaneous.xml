@@ -101,24 +101,7 @@ String locationUri = ServletUriComponentsBuilder
 		]]>
 		</programlisting>
 	</section>
-	<section id="RestClient">
-		<title>RestClient</title>
-		<programlisting>
-		<![CDATA[
-RestClient defaultClient = RestClient.create();
 
-RestClient customClient = RestClient.builder()
-  .requestFactory(new HttpComponentsClientHttpRequestFactory())
-  .messageConverters(converters -> converters.add(new MyCustomMessageConverter()))
-  .baseUrl("https://example.com")
-  .defaultUriVariables(Map.of("variable", "foo"))
-  .defaultHeader("My-Header", "Foo")
-  .requestInterceptor(myCustomInterceptor)
-  .requestInitializer(myCustomInitializer)
-  .build();		
-		]]>
-		</programlisting>
-	</section>
 	<section>
 		<title>URL 路径相关</title>
 		<para>过滤路径</para>

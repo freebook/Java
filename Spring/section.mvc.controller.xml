@@ -1086,29 +1086,7 @@ Password: ${user.password}<br>
 		</section>
 
 	</section>
-	<section id="ResponseEntity">
-		<title>ResponseEntity</title>
-		<programlisting>
-			<![CDATA[
-@PostMapping(path = "/foo", params = {"id", "name=John"})
-public ResponseEntity<String> handlePostRequest() {
-    // 处理请求
-    return ResponseEntity.ok("Success");
-}
-			]]>
-		</programlisting>
-		<section>
-			<title>status</title>
-			<programlisting>
-			<![CDATA[
-return ResponseEntity
-                  .status(HttpStatus.CREATED)
-                  .header("Location", locationUri)
-                  .body("Employee created successfully. Location: " + locationUri);		
-			]]>
-			</programlisting>
-		</section>
-	</section>
+
 
 	<section id="http">
 		<title>HttpServletRequest / HttpServletResponse </title>
