@@ -37,7 +37,7 @@
 <!ENTITY section.boot.async.xml 	    SYSTEM "section.boot.async.xml">
 <!ENTITY section.boot.web3j.xml 	    SYSTEM "section.boot.web3j.xml">
 <!ENTITY section.boot.record.xml 	    SYSTEM "section.boot.record.xml">
-<!ENTITY section.boot.redisson.xml 	    SYSTEM "section.boot.redisson.xml">
+<!ENTITY section.boot.redis.xml 	    SYSTEM "section.boot.redis.xml">
 <!ENTITY section.boot.aliyun.xml 	    SYSTEM "section.boot.aliyun.xml">
 
 <!ENTITY chapter.mvc.xml				SYSTEM "chapter.mvc.xml">

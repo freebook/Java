@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="redis">
+	<title>Spring boot with Redis</title>
+	<section id="redis">
+		<title>Spring boot with Redis</title>
+		<section>
+			<title>maven</title>
+			<programlisting>
+				<![CDATA[
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>			
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+				<![CDATA[
+spring.redis.database=10
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.password=
+spring.redis.pool.max-active=8
+spring.redis.pool.max-wait=-1
+spring.redis.pool.max-idle=8
+spring.redis.pool.min-idle=0
+spring.redis.timeout=0
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JUnit</title>
+			<programlisting>
+				<![CDATA[
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(Application.class)
+public class ApplicationTests {
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	@Test
+	public void test() throws Exception {
+		// 保存字符串
+		stringRedisTemplate.opsForValue().set("neo", "chen");
+		Assert.assertEquals("chen", stringRedisTemplate.opsForValue().get("neo"));
+    }
+}				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Controller</title>
+			<para>stringRedisTemplate模板用于存储key,value为字符串的数据</para>
+			<programlisting>
+				<![CDATA[
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	
+	@RequestMapping("/test")
+	@ResponseBody
+	public String test() {
+		String message = "";
+		stringRedisTemplate.opsForValue().set("hello", "world");
+		message = stringRedisTemplate.opsForValue().get("hello");
+		return message;
+	}
+				]]>
+			</programlisting>
+			<para>等同于</para>
+			<programlisting>
+				<![CDATA[
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+				]]>
+			</programlisting>
+			<para>ListOperations</para>
+			<programlisting>
+				<![CDATA[
+public class Example {
+
+    // inject the actual template
+    @Autowired
+    private RedisTemplate<String, String> template;
+
+    // inject the template as ListOperations
+    // can also inject as Value, Set, ZSet, and HashOperations
+    @Resource(name="redisTemplate")
+    private ListOperations<String, String> listOps;
+
+    public void addLink(String userId, URL url) {
+        listOps.leftPush(userId, url.toExternalForm());
+        // or use template directly
+        redisTemplate.boundListOps(userId).leftPush(url.toExternalForm());
+    }
+}
+				]]>
+			</programlisting>
+			<example>
+				<title>RedisTemplate</title>
+				<programlisting>
+					<![CDATA[
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+	
+	public List<Protocol> getProtocol() {
+		List<Protocol> protocols = new ArrayList<Protocol>();
+		Gson gson = new Gson();
+		Type type = new TypeToken<List<Protocol>>(){}.getType();
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
+		
+		String cacheKey = String.format("%s:%s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName());
+		long expireTime = 5;
+		
+		if(redisTemplate.hasKey(cacheKey)){
+			String cacheValue = redisTemplate.opsForValue().get(cacheKey);
+			System.out.println(cacheValue);
+			protocols = gson.fromJson(cacheValue, type);
+		}else{
+			Protocol protocol = new Protocol();
+			protocol.setRequest(new Date().toString());
+			protocols.add(protocol);
+			
+			String jsonString = gson.toJson(protocols, type);
+	        System.out.println( jsonString );
+			
+			redisTemplate.opsForValue().set(cacheKey, jsonString);
+			redisTemplate.expire(cacheKey, expireTime, TimeUnit.SECONDS);
+		}
+		return protocols;
+	}
+					]]>
+				</programlisting>
+			</example>
+		</section>
+	</section>
+	<section id="redis.pubsub">
+		<title>Redis Pub/Sub</title>
+		<section>
+			<title>Redis配置类</title>
+			<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+
+import cn.netkiller.wallet.redis.RedisMessageSubscriber;
+
+@Configuration
+public class RedisConfig {
+
+	public RedisConfig() {
+	}
+
+	@Bean
+	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
+		StringRedisTemplate redisTemplate = new StringRedisTemplate();
+		redisTemplate.setConnectionFactory(connectionFactory);
+		return redisTemplate;
+	}
+
+	@Bean
+	public MessageListenerAdapter messageListener() {
+		return new MessageListenerAdapter(new RedisMessageSubscriber());
+	}
+
+	@Bean
+	public ChannelTopic topic() {
+		return new ChannelTopic("demo");
+	}
+
+	@Bean
+	public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter messageListener) {
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+
+		container.setConnectionFactory(connectionFactory);
+		container.addMessageListener(messageListener(), topic());
+		container.addMessageListener(messageListener(), new ChannelTopic("test"));
+		return container;
+	}
+
+}
+
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>订阅和发布类</title>
+			<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.redis;
+
+import java.nio.charset.StandardCharsets;
+
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
+
+public class RedisMessageSubscriber implements MessageListener {
+	public void onMessage(final Message message, final byte[] pattern) {
+		System.out.println("Topic : " + new String(message.getChannel(), StandardCharsets.UTF_8));
+		System.out.println("Message : " + message.toString());
+	}
+}
+
+				]]>
+			</programlisting>
+			<programlisting>
+				<![CDATA[
+package cn.netkiller.wallet.redis;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+
+public class RedisMessagePublisher {
+
+	private final StringRedisTemplate redisTemplate;
+
+	private final ChannelTopic topic;
+
+	public RedisMessagePublisher(StringRedisTemplate redisTemplate, ChannelTopic topic) {
+		this.redisTemplate = redisTemplate;
+		this.topic = topic;
+	}
+
+	public void publish(String message) {
+		redisTemplate.convertAndSend(topic.getTopic(), message);
+	}
+}
+								
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>消息发布演示</title>
+			<programlisting>
+				<![CDATA[
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+	
+	@GetMapping("/pub/demo")
+	public String pub() {
+
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("demo"));
+		String message = "Message " + UUID.randomUUID();
+		publisher.publish(message);
+		return message;
+	}
+
+	@GetMapping("/pub/test")
+	public String pub(@RequestParam String message) {
+
+		RedisMessagePublisher publisher = new RedisMessagePublisher(stringRedisTemplate, new ChannelTopic("test"));
+		publisher.publish(message);
+		return message;
+	}				
+				]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>Spring Redis Lock</title>
+		<section>
+			<title>Maven 依赖</title>
+			<programlisting>
+			<![CDATA[
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-integration</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-redis</artifactId>
+        </dependency>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>配置锁</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.integration.redis.util.RedisLockRegistry;
+
+@Configuration
+public class RedisLockRegistryConfiguration {
+    @Bean(destroyMethod = "destroy")
+    public RedisLockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
+        return new RedisLockRegistry(redisConnectionFactory, "netkiller-lock");
+    }
+}
+			
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+  @Bean
+  public RedisLockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
+    return new RedisLockRegistry(redisConnectionFactory, "neo-lock",
+        TimeUnit.MINUTES.toMillis(10));
+  }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>使用方法</title>
+			<programlisting>
+			<![CDATA[
+@Autowired
+private RedisLockRegistry lockRegistry;
+
+Lock lock = lockRegistry.obtain(key);
+boolean locked = false;
+try {
+  locked = lock.tryLock();
+  if (!locked) {
+    // 没有获取到锁的逻辑    
+  }
+
+  // 获取锁的逻辑
+} finally {
+  if (locked) {
+    lock.unlock();
+  }
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="redisson">
+	<title>Sprint boot with Redisson</title>
+	<section>
+		<title>Springboot 3.x</title>
+		<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Springboot 2.1</title>
+		<para>注意：排除 redisson-spring-data-23，引用 redisson-spring-data-21</para>
+		<screen>
+		<![CDATA[
+ 		<dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.14.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.redisson</groupId>
+                    <artifactId>redisson-spring-data-23</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-data-21</artifactId>
+            <version>3.14.0</version>
+        </dependency>
+		
+		]]>
+		</screen>
+	</section>
+
+</section>
+</section>
