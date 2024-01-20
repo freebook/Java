@@ -842,7 +842,7 @@ public Mono<ResponseEntity<?>> createEmployee(@RequestBody Employee newEmployee)
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="webclient.get">
 			<title>Get 请求实例</title>
 			<programlisting>
 		<![CDATA[
@@ -854,7 +854,7 @@ WebClient.create("http://localhost:8080")
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="webclient.uri">
 			<title>URI 参数</title>
 			<para>字符串拼接方式</para>
 			<programlisting>
@@ -915,7 +915,7 @@ WebClient.create("http://localhost:8080")
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="webclient.query">
 			<title>查询参数</title>
 			<para>http://localhost:8080/students?firstName=Jon&amp;year=1996
 			</para>
@@ -961,7 +961,7 @@ webClient.get()
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="webclient.post">
 			<title>Post 操作演示</title>
 			<programlisting>
 			<![CDATA[
@@ -996,7 +996,7 @@ webClient.post()
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="webclient.post.form">
 			<title>Post 表单数据</title>
 			<programlisting>
 			<![CDATA[
@@ -1047,7 +1047,7 @@ public class EmployeeService {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="webclient.post.multipart">
 			<title>上传文件</title>
 			<programlisting>
 			<![CDATA[
@@ -1077,7 +1077,7 @@ webClient.post()
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="webclient.header">
 			<title>设置 HTTP 头</title>
 			<programlisting>
 			<![CDATA[
@@ -1087,6 +1087,24 @@ webClient.get()
     .header("Authorization", "Bearer auth-token")
     .header("User-Agent", "Mobile App 1.0")
     .retrieve()			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	WebClient.builder()
+        .defaultCookie("session","f1d83210-0fc9-4689-82ab-05df70da3367")
+        .defaultUriVariables(ImmutableMap.of("name","kl"))
+        .defaultHeader("header","neo")
+        .defaultHeaders(httpHeaders -> {
+            httpHeaders.add("header1","neo");
+            httpHeaders.add("header2","chen");
+        })
+        .defaultCookies(cookie ->{
+            cookie.add("cookie1","neo");
+            cookie.add("cookie2","netkiller");
+        })
+        .baseUrl("https://www.netkiller.cn")
+        .build();			
 			]]>
 			</programlisting>
 		</section>

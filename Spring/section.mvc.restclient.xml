@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="RestClient">
 	<title>RestClient</title>
-	<programlisting>
+	<section>
+		<title>创建 RestClient</title>
+		<para>Bean 注入方式</para>
+		<programlisting>
+		<![CDATA[
+@Value("${REMOTE_BASE_URI:http://localhost:3000}")
+String baseURI;
+
+@Bean
+RestClient restClient() {
+  return RestClient.create(baseURI);
+}		
+		]]>
+		</programlisting>
+		
+		<programlisting>
 		<![CDATA[
 RestClient defaultClient = RestClient.create();
 
@@ -15,7 +30,39 @@ RestClient customClient = RestClient.builder()
   .requestInitializer(myCustomInitializer)
   .build();		
 		]]>
-	</programlisting>
+		</programlisting>
+
+	</section>
+	<section>
+		<title>Get 操作</title>
+		<programlisting>
+		<![CDATA[
+restClient.get()
+	.uri("/employees")
+	//...
+
+restClient.get()
+	.uri("/employees/{id}", id)
+	//...		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+List<Employee> employeeList = restClient.get()
+    .uri("/employees")
+    .accept(MediaType.APPLICATION_JSON)
+    .retrieve()
+    .body(List.class);
+    
+ResponseEntity<List> responseEntity = restClient.get()
+    .uri("/employees")
+    .accept(MediaType.APPLICATION_JSON)
+    .retrieve()
+    .toEntity(List.class);    		
+		]]>
+		</programlisting>
+	</section>
 	<section>
 		<title>Post Json</title>
 		<programlisting>
@@ -48,6 +95,51 @@ RestClient customClient = RestClient.builder()
         }
         return english;
     }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>HTTP Authorization Basic</title>
+		<programlisting>
+		<![CDATA[
+	@GetMapping("/{device}/test")
+    public String get(@PathVariable String device) throws InterruptedException {
+
+        String username = System.getProperty("username", "admin");
+        String password = System.getProperty("password", "uPQKFe98IwZCzgVGjbWIQRyRyyecb2Ha");
+
+        Base64.Encoder encoder = Base64.getEncoder();
+        String authorization = encoder.encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+        RestClient restClient = RestClient.builder()
+                .baseUrl("http://gpt.netkiller.cn:8080")
+                .defaultHeader("Authorization", "Basic " + authorization)
+                .build();
+
+        String question = "test";
+
+        String result = restClient.get().uri(uriBuilder -> uriBuilder
+                .path("/ask/cache_chatgpt")
+                .queryParam("question", question)
+                .build()).retrieve().body(String.class);
+
+        return result;
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		ResponseEntity<JsonObject> responseEntity = restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/articles/1.html")
+                        .queryParam("question", URLEncoder.encode(question, StandardCharsets.UTF_8))
+                        .build())
+                .retrieve()
+                .onStatus(status -> status.value() == 404, (request, response) -> {
+                	throw new ArticleNotFoundException(response)
+                }).toEntity(JsonObject.class);
 		]]>
 		</programlisting>
 	</section>
