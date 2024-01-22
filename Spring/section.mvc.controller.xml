@@ -117,16 +117,17 @@ http://localhost:8080/spring/news/json.html
 			]]>
 			</screen>
 		</section>
-		<section id="@GetMapping">
-			<title>@GetMapping</title>
-			<para>@GetMapping 等效与 @RequestMapping</para>
-			<programlisting>
+	</section>
+	<section id="@GetMapping">
+		<title>@GetMapping</title>
+		<para>@GetMapping 等效与 @RequestMapping</para>
+		<programlisting>
 			<![CDATA[
 @RequestMapping(value = "/news/list", method = GET)			
 			]]>
-			</programlisting>
-			<para>范例</para>
-			<programlisting>
+		</programlisting>
+		<para>范例</para>
+		<programlisting>
 			<![CDATA[
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -135,23 +136,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 		return financeService.financeList();
 	}
 			]]>
-			</programlisting>
-			<programlisting>
+		</programlisting>
+		<programlisting>
 			<![CDATA[
 @GetMapping(value = "/user",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)			
 			]]>
-			</programlisting>
-		</section>
-		<section id="@PostMapping">
-			<title>@PostMapping</title>
-			<para>@GetMapping 等效与 @RequestMapping</para>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section id="@PostMapping">
+		<title>@PostMapping</title>
+		<para>@GetMapping 等效与 @RequestMapping</para>
+		<programlisting>
 			<![CDATA[
 @RequestMapping(value = "/news/list", method = RequestMethod.POST)			
 			]]>
-			</programlisting>
-			<para>范例</para>
-			<programlisting>
+		</programlisting>
+		<para>范例</para>
+		<programlisting>
 			<![CDATA[
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -160,32 +161,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 		return financeService.financeList();
 	}			
 			]]>
-			</programlisting>
-			<para>Content-Type: multipart/form-data</para>
-			<programlisting>
+		</programlisting>
+		<para>Content-Type: multipart/form-data</para>
+		<programlisting>
 			<![CDATA[
 @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)			
 			]]>
-			</programlisting>
-		</section>
-		<section id="@RequestBody">
-			<title>@RequestBody</title>
-			<section>
-				<title>原始数据</title>
+		</programlisting>
+	</section>
+	<section id="@RequestBody">
+		<title>@RequestBody</title>
+		<section>
+			<title>原始数据</title>
 
-				<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
-				<programlisting>
+			<para>处理 raw 原始数据，例如提交的时 application/json, application/xml等</para>
+			<programlisting>
 		<![CDATA[
 @RequestMapping(value = "/something", method = RequestMethod.PUT)  
 public void handle(@RequestBody String body, Writer writer) throws IOException {  
 	writer.write(body);  
 } 
 		]]>
-				</programlisting>
-			</section>
-			<section id="@RequestBody.List">
-				<title>@RequestBody 传递 List</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section id="@RequestBody.List">
+			<title>@RequestBody 传递 List</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.api.restful;
 
@@ -208,34 +209,34 @@ public class TestRestController {
 
 }
 			]]>
-				</programlisting>
-				<programlisting>
+			</programlisting>
+			<programlisting>
 			<![CDATA[
 $ curl -H "Content-Type: application/json" -X POST -d '["Neo","Netkiller"]' http://localhost:8440/test/list/22.json 
 
 ["Neo","Netkiller"]	
 			]]>
-				</programlisting>
-			</section>
-			<section id="RequestBody.Map">
-				<title>传递 Map 数据</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section id="RequestBody.Map">
+			<title>传递 Map 数据</title>
+			<programlisting>
 			<![CDATA[
 	@PostMapping("/finance/list")
 	public String financeList(@RequestBody Map<String,String> map) {
 		return financeService.financeList(map);
 	}
 			]]>
-				</programlisting>
-				<programlisting>
+			</programlisting>
+			<programlisting>
 			<![CDATA[
 % curl -H "Content-Type: application/json" -X POST -d '{"date":"2017-11-08"}' http://localhost:8440/finance/list.json			
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>获取 JSONObject 数据</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>获取 JSONObject 数据</title>
+			<programlisting>
 				<![CDATA[
     @PostMapping(value = "/{device}/post")
     public Mono<String> post(@PathVariable String device, @RequestBody JSONObject jsonObject) {
@@ -243,19 +244,19 @@ $ curl -H "Content-Type: application/json" -X POST -d '["Neo","Netkiller"]' http
         return Mono.just(jsonObject.toString());
     }				
 				]]>
-				</programlisting>
-			</section>
-		</section>
-		<section id="@RequestParam">
-			<title>RequestMapping with Request Parameters - @RequestParam</title>
-			<para>@RequestParam 用来处理 HTTP GET/POST 请求的变量</para>
-			<programlisting>
-				import
-				org.springframework.web.bind.annotation.RequestParam;
 			</programlisting>
-			<section>
-				<title>HTTP GET</title>
-				<programlisting>
+		</section>
+	</section>
+	<section id="@RequestParam">
+		<title>RequestMapping with Request Parameters - @RequestParam</title>
+		<para>@RequestParam 用来处理 HTTP GET/POST 请求的变量</para>
+		<programlisting>
+			import
+			org.springframework.web.bind.annotation.RequestParam;
+		</programlisting>
+		<section>
+			<title>HTTP GET</title>
+			<programlisting>
 			<![CDATA[
 	@RequestMapping("/request/param")
 	@ResponseBody
@@ -263,18 +264,18 @@ $ curl -H "Content-Type: application/json" -X POST -d '["Neo","Netkiller"]' http
 	    return "Get a specific Bar with id=" + id;
 	}
 			]]>
-				</programlisting>
-				<para></para>
-				<screen>
+			</programlisting>
+			<para></para>
+			<screen>
 				<![CDATA[
 http://localhost:8080/Spring/request/param.html?id=100				
 				]]>
-				</screen>
-			</section>
+			</screen>
+		</section>
 
-			<section>
-				<title>HTTP POST</title>
-				<programlisting>
+		<section>
+			<title>HTTP POST</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.controller;
 
@@ -319,9 +320,9 @@ public class Http {
 
 }
 			]]>
-				</programlisting>
-				<para>http/form.jsp</para>
-				<programlisting>
+			</programlisting>
+			<para>http/form.jsp</para>
+			<programlisting>
 			<![CDATA[
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -345,9 +346,9 @@ public class Http {
 </body>
 </html>
 			]]>
-				</programlisting>
-				<para>http/post.jsp</para>
-				<programlisting>
+			</programlisting>
+			<para>http/post.jsp</para>
+			<programlisting>
 			<![CDATA[
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -364,13 +365,13 @@ public class Http {
 </body>
 </html>
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>@RequestParam 传递特殊字符串</title>
-				<para>URL 中 “+” 有特殊意义，表示空格。</para>
-				<para>如果 @RequestParam 传递参数含有空格可以这样处理。</para>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>@RequestParam 传递特殊字符串</title>
+			<para>URL 中 “+” 有特殊意义，表示空格。</para>
+			<para>如果 @RequestParam 传递参数含有空格可以这样处理。</para>
+			<programlisting>
 			<![CDATA[
 	@RequestMapping("/RequestParam")
 	@ResponseBody
@@ -380,11 +381,11 @@ public class Http {
 
 	}
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>传递日期参数</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>传递日期参数</title>
+			<programlisting>
 			<![CDATA[
 	@RequestMapping("/range")
 	public ModelAndView range(@RequestParam("beginDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date beginDate, @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
@@ -396,11 +397,11 @@ public class Http {
 		return new ModelAndView("activity/index", "message", "操作成功");
 	}
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>上传文件</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>上传文件</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.restful;
 
@@ -440,15 +441,15 @@ public class UploadRestController {
 
 }
 			]]>
-				</programlisting>
-				<para>操作演示，首先创建一个文件</para>
-				<screen>
+			</programlisting>
+			<para>操作演示，首先创建一个文件</para>
+			<screen>
 			<![CDATA[
 echo "Helloworld!!!" > hello.txt
 			]]>
-				</screen>
-				<para>上传该文件</para>
-				<screen>
+			</screen>
+			<para>上传该文件</para>
+			<screen>
 			<![CDATA[
 neo@MacBook-Pro /tmp % curl "http://localhost:8080/upload/add" \                           
     -X POST \
@@ -457,32 +458,61 @@ neo@MacBook-Pro /tmp % curl "http://localhost:8080/upload/add" \
 
 file uploaded
 			]]>
-				</screen>
-			</section>
+			</screen>
+		</section>
 
-			<section>
-				<title>@RequestParam - POST 数组</title>
-				<para>HTTP 头</para>
-				<screen>
+		<section>
+			<title>@RequestParam - POST 数组</title>
+			<para>HTTP 头</para>
+			<screen>
 			<![CDATA[
 picture[]: gather/293a93baa02cb18a840631bac1f9eeb20b7d436f.jpeg
 picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg			
 			]]>
-				</screen>
-				<programlisting>
+			</screen>
+			<programlisting>
 			<![CDATA[
 	@PostMapping("/save")
 	public String save(@RequestParam(value = "picture[]", required = true) String[] picture) {
 		return String.join(",", picture);
 	}			
 			]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
+		<section>
+			<title>默认值</title>
+			<programlisting>
+			<![CDATA[
+@RequestParam(name = "name", defaultValue = "xxx") String name			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>是否非必须</title>
+			<para>使用 required = false 标注参数是非必须的</para>
+			<programlisting>
+			<![CDATA[
+@RequestParam(name = "age", required = false) Integer age			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>用 Map 接收 From 数据</title>
+			<programlisting>
+			<![CDATA[
+    @PostMapping("/token")
+    @ResponseBody
+    public String token(@RequestParam Map<String, String> params) {
+        log.debug(params.toString());
+        String token = jwtTokeComponent.getTestToken(params.get("appId"), params.get("appKey"), params.get("subject"), params.get("audience"));
+        return token;
+    }			
+			]]>
+			</programlisting>
+		</section>
+		
+		
 	</section>
-
-
-
 
 	<section id="@RequestHeader">
 		<title>@RequestHeader - 获取 HTTP Header 信息</title>
