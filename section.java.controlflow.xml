@@ -58,3 +58,18 @@ public class DemoSwitch {
 		</section>
 	</section>
 </section>
+<section>
+	<title>异常处理</title>
+	<section>
+		<title>抛出异常</title>
+		<programlisting>
+		<![CDATA[
+throw new NullPointerException();
+throw new IOException();
+throw new FileNotFoundException("文件不存在");
+throw new ArrayIndexOutOfBoundsException("数字范围越界");
+
+		]]>
+		</programlisting>
+	</section>
+</section>
