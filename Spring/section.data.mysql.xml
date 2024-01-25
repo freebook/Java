@@ -1421,7 +1421,59 @@ CREATE TABLE `comment` (
 			</section>
 		</section>
 		<section id="@Embeddable">
-			<title>创建复合主键</title>
+			<title>嵌入</title>
+			<section>
+				<title>@Embeddable / @Embedded</title>
+				<programlisting>
+				<![CDATA[
+package cn.aigcsst.domain.demo;
+
+import jakarta.persistence.Embeddable;
+
+@Embeddable
+public class Address {
+
+    private String city;
+    private String district;
+    private String street;
+    private String community;
+}
+				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.aigcsst.domain.demo;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String name;
+
+    @Embedded
+    private Address address;
+}
+
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+CREATE TABLE `company` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `city` varchar(255) DEFAULT NULL,
+  `community` varchar(255) DEFAULT NULL,
+  `district` varchar(255) DEFAULT NULL,
+  `street` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+				]]>
+				</programlisting>
+			</section>
 			<section>
 				<title>@AttributeOverrides 定义字段名称</title>
 				<programlisting>
@@ -1464,7 +1516,7 @@ public class Company {
 				</programlisting>
 			</section>
 			<section>
-				<title></title>
+				<title>创建复合主键</title>
 
 				<para>定义实体</para>
 				<programlisting>
@@ -2236,6 +2288,88 @@ CREATE TABLE `profile` (
   PRIMARY KEY (`id`),
   CONSTRAINT `FK6x079ilawxjrfsljwyyi5ujjq` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表'					
+					]]>
+					</programlisting>
+				</section>
+				<section>
+					<title>null identifier</title>
+					<para>@OneToOne 保存提示 null identifier，经过排查需要配置</para>
+					<programlisting>
+					<![CDATA[
+package cn.aigcsst.domain;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.*;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table
+@DynamicUpdate
+@DynamicInsert
+@Data
+@Comment("文生图心里分析")
+
+public class PicturePsychoanalysis implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+    
+    @Comment("Robert Plutchik 情感轮盘")
+    @Column(columnDefinition = "json")
+    public String plutchik;
+    
+    @Id
+    @Column(name = "id")
+    @Comment("Picture Id 一对一关系")
+    private Long id;
+    @MapsId
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id", insertable = true, updatable = false, columnDefinition = "bigint unsigned", foreignKey = @ForeignKey(name = "picture_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Picture picture;
+    @Comment("负向情绪|中性情绪|正向情绪")
+    private String sentiment;
+    @Comment("感谢|愉快|抱怨|愤怒|喜爱|厌恶|恐惧|悲伤")
+    private String emotion;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = true, columnDefinition = "text")
+    @Comment("建议回复话术")
+    private String replies;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = true, columnDefinition = "text")
+    @Comment("心里分析")
+    private String analysis;
+    //    public JSONObject plutchik;
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Comment("创建时间")
+    private Date ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    @Comment("修改时间")
+    private Date mtime;
+}
+					]]>
+					</programlisting>
+					<para>讲 @OneToOne 增加 @OneToOne(cascade = CascadeType.MERGE) 参数，如果 CascadeType.ALL 需要改为 CascadeType.MERGE</para>
+					<programlisting>
+					<![CDATA[
+	@Id
+    @Column(name = "id")
+    @Comment("Picture Id 一对一关系")
+    private Long id;
+    @MapsId
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id", insertable = true, updatable = false, columnDefinition = "bigint unsigned", foreignKey = @ForeignKey(name = "picture_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Picture picture;					
 					]]>
 					</programlisting>
 				</section>
@@ -3923,7 +4057,7 @@ void updateStateByMoney(Long money, Byte state);
 			]]>
 			</programlisting>
 		</section>
-		<section id="Transactional">
+		<section id="@Transactional">
 			<title>事务 @Transactional</title>
 			<literallayout>
 			<![CDATA[
@@ -4169,7 +4303,7 @@ public class RoleService {
 				</programlisting>
 			</section>
 		</section>
-		<section>
+		<section id="@Param">
 			<title>参数传递</title>
 			<programlisting>
 				<![CDATA[
@@ -4475,7 +4609,7 @@ List<User> findUserByNameList(@Param("names") Collection<String> names);
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="nativeQuery">
 			<title>原生SQL查询</title>
 			<para>这里的nativeQuery=true代表在执行这个方法的时候使用原生sql语句，直接写数据库中的实际表名和表中的字段名，而不是实体表名。
 			</para>
