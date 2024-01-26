@@ -700,7 +700,25 @@ public void download(HttpSession
 			</programlisting>
 		</section>
 	</section>
-
+	<section>
+		<title>@MatrixVariable注解，RFC3986定义URI的路径(Path)中可包含name-value片段</title>
+		<programlisting>
+		<![CDATA[
+/*                                                                                                                                                                                                                                                                  
+ 请求为/netkiller/color=123,321                                                                                                                                                                                                                                         
+ 那么color值为123,321                                                                                                                                                                                                                                               
+*/                                                                                                                                                                                                                                                                  
+@RequestMapping(path="/netkiller/{id}", method=RequestMethod.GET)                                                                                                                                                                                                       
+public String test1(@MatrixVariable Integer[] color){}                                                                                                                                                                                                              
+/*                                                                                                                                                                                                                                                                  
+ 请求为/netkiller/color=123;color=321                                                                                                                                                                                                                                   
+ 那么color值为123,321                                                                                                                                                                                                                                               
+*/                                                                                                                                                                                                                                                                  
+@RequestMapping(path="/netkiller/{id}", method=RequestMethod.GET)                                                                                                                                                                                                       
+public String test1(@MatrixVariable Integer[] color){}         
+		]]>
+		</programlisting>
+	</section>
 	<section id="@ModelAttribute">
 		<title>@ModelAttribute</title>
 		<para>@ModelAttribute 处理 HTML FORM POST 提交</para>

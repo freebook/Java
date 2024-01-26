@@ -557,4 +557,9 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics/exec
 		]]>
 		</programlisting>
 	</section>
+		<section>
+		<title>注意事项</title>
+		<para>再 Service 中 通过 this 访问另一个 @Async 方法，异步会失效，必须使用 @@Autowired 入住。</para>
+	</section>
+
 </chapter>

@@ -633,6 +633,176 @@ CREATE TABLE `elasticsearch_trash` (
     private Date date;			
 			]]>
 			</programlisting>
+			<para>下面我们实际演示一下，例如默认返回 "ctime": "2024-01-25T08:07:39.000+00:00" 这样的格式</para>
+			<screen>
+			<![CDATA[
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Thu, 25 Jan 2024 08:10:32 GMT
+Connection: close
+
+{
+  "status": true,
+  "code": "SUCCESS",
+  "data": [
+    {
+      "id": 3918,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "1.音频上传",
+      "description": "test.amr",
+      "ctime": "2024-01-25T08:07:16.000+00:00"
+    },
+    {
+      "id": 3919,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "2.音频转换",
+      "description": "AMR 转 PCM",
+      "ctime": "2024-01-25T08:07:16.000+00:00"
+    },
+    {
+      "id": 3920,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "3.语音识别",
+      "description": "小明是个调皮的小男孩，他觉得地板上有很多污垢，于是他拿起了牙刷用它来刷地板，虽然效果不佳，但是小明却觉得是一种有趣的尝试。",
+      "ctime": "2024-01-25T08:07:36.000+00:00"
+    },
+    {
+      "id": 3921,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "4.内容合规",
+      "description": "合规：小明是个调皮的小男孩，他觉得地板上有很多污垢，于是他拿起了牙刷用它来刷地板，虽然效果不佳，但是小明却觉得是一种有趣的尝试。",
+      "ctime": "2024-01-25T08:07:36.000+00:00"
+    },
+    {
+      "id": 3922,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "5.故事创作",
+      "description": "小明，一个满腔调皮的小男孩，发现家里仿佛被污秽覆盖。他拿起牙刷，一面一面地在地板上划过，结果却不尽人意。然而，这个看似毫无预期的尝试，他自己却获得了无比的乐趣。\n\n问题：小明的行为可能使他的生活环境变得更糟糕，你会如何帮助他改变这种状况？",
+      "ctime": "2024-01-25T08:07:36.000+00:00"
+    },
+    {
+      "id": 3923,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "6.语音合成",
+      "description": "http://oss.test.netkiller.cn/2024/01/25/27310934-4159-4bc9-8142-67a3780faf35.mp3",
+      "ctime": "2024-01-25T08:07:39.000+00:00"
+    }
+  ],
+  "reason": "操作成功"
+}
+
+			]]>
+			</screen>
+			<para>加入 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") 注解</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.domain;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table
+@DynamicUpdate
+@Data
+public class SessionStatus implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Long id;
+
+    @Comment("会话主键")
+    private String session;
+
+    @Comment("进度")
+    private String progress;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = true, columnDefinition = "text")
+    @Comment("描述")
+    private String description;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("创建时间")
+    private Date ctime;
+}
+			
+			]]>
+			</programlisting>
+			<para>日期被格式化为 "ctime": "2024-01-25 08:07:16"</para>
+			<screen>
+			<![CDATA[
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Thu, 25 Jan 2024 08:12:10 GMT
+Connection: close
+
+{
+  "status": true,
+  "code": "SUCCESS",
+  "data": [
+    {
+      "id": 3918,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "1.音频上传",
+      "description": "test.amr",
+      "ctime": "2024-01-25 08:07:16"
+    },
+    {
+      "id": 3919,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "2.音频转换",
+      "description": "AMR 转 PCM",
+      "ctime": "2024-01-25 08:07:16"
+    },
+    {
+      "id": 3920,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "3.语音识别",
+      "description": "小明是个调皮的小男孩，他觉得地板上有很多污垢，于是他拿起了牙刷用它来刷地板，虽然效果不佳，但是小明却觉得是一种有趣的尝试。",
+      "ctime": "2024-01-25 08:07:36"
+    },
+    {
+      "id": 3921,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "4.内容合规",
+      "description": "合规：小明是个调皮的小男孩，他觉得地板上有很多污垢，于是他拿起了牙刷用它来刷地板，虽然效果不佳，但是小明却觉得是一种有趣的尝试。",
+      "ctime": "2024-01-25 08:07:36"
+    },
+    {
+      "id": 3922,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "5.故事创作",
+      "description": "小明，一个满腔调皮的小男孩，发现家里仿佛被污秽覆盖。他拿起牙刷，一面一面地在地板上划过，结果却不尽人意。然而，这个看似毫无预期的尝试，他自己却获得了无比的乐趣。\n\n问题：小明的行为可能使他的生活环境变得更糟糕，你会如何帮助他改变这种状况？",
+      "ctime": "2024-01-25 08:07:36"
+    },
+    {
+      "id": 3923,
+      "session": "27310934-4159-4bc9-8142-67a3780faf35",
+      "progress": "6.语音合成",
+      "description": "http://oss.test.netkiller.cn/2024/01/25/27310934-4159-4bc9-8142-67a3780faf35.mp3",
+      "ctime": "2024-01-25 08:07:39"
+    }
+  ],
+  "reason": "操作成功"
+}
+			
+			]]>
+			</screen>
 		</section>
 		<section id="enum">
 			<title>Enum 枚举数据类型</title>
@@ -1426,7 +1596,7 @@ CREATE TABLE `comment` (
 				<title>@Embeddable / @Embedded</title>
 				<programlisting>
 				<![CDATA[
-package cn.aigcsst.domain.demo;
+package cn.netkiller.domain.demo;
 
 import jakarta.persistence.Embeddable;
 
@@ -1443,7 +1613,7 @@ public class Address {
 				</programlisting>
 				<programlisting>
 				<![CDATA[
-package cn.aigcsst.domain.demo;
+package cn.netkiller.domain.demo;
 
 import jakarta.persistence.*;
 
@@ -2296,7 +2466,7 @@ CREATE TABLE `profile` (
 					<para>@OneToOne 保存提示 null identifier，经过排查需要配置</para>
 					<programlisting>
 					<![CDATA[
-package cn.aigcsst.domain;
+package cn.netkiller.domain;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ForeignKey;
@@ -3221,7 +3391,8 @@ private List<Student> studentList;
 			</section>
 		</section>
 		<section id="@ElementCollection">
-			<title>@ElementCollection</title>
+			<title>映射集合属性</title>
+			<para>@ElementCollection 很像 @OneToMany，甚至有些场景可以相互替代，@ElementCollection 更适合 List/Set/Map/Array 等数据类型，而 @OneToMany 是对应一个实体。</para>
 			<programlisting>
 			<![CDATA[
 import javax.persistence.*;
@@ -3320,7 +3491,7 @@ public class Student {
 				<![CDATA[
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "pid", nullable = false))
-    private Set<Status> address = new HashSet<Status>();			
+    private Set<Status> address = new HashSet<Status>();
 				]]>
 				</programlisting>
 			</section>

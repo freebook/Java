@@ -1496,7 +1496,7 @@ Optional<String> someNull = Optional.of(null);
 			</programlisting>
 		</section>
 		<section id="Optional.isPresent()">
-			<title>isPresent 如果值存在返回true，否则返回false。</title>
+			<title>isPresent 如果值存在返回true，否则返回false。ifEmpty() null 返回 true 否则返回 false</title>
 			<programlisting>
 		<![CDATA[
 	//isPresent方法用来检查Optional实例中是否包含值
@@ -1505,9 +1505,10 @@ Optional<String> someNull = Optional.of(null);
 	}
 		]]>
 			</programlisting>
-
+			
+			<para>ifEmpty() 与 ifPresent() 刚好相反</para>
 		</section>
-		<section id="Optional.ifPresent()">
+		<section id="Optional.ifEmpty()">
 			<title>ifPresent() 如果Optional实例有值执行 lambda 表达式</title>
 			<para>如果Optional实例有值，调用ifPresent()可以接受接口段或lambda表达式。类似下面的代码：</para>
 			<programlisting>
@@ -1803,7 +1804,7 @@ Optional.of("javastack").stream().count();
 			<title>example</title>
 			<section>
 				<title>Optional 与 Map</title>
-			
+
 				<programlisting>
 				<![CDATA[
 		Optional<Map<String, Object>> name = Optional.of(new HashMap<String, Object>() {

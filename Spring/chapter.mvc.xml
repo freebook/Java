@@ -232,6 +232,7 @@ String welcome = messageSource.getMessage("welcome.message", new Object[]{"Neo c
 	</section>
 	&section.mvc.validation.xml;
 	&section.mvc.interceptor.xml;
+	&section.mvc.restclient.xml;
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
@@ -521,5 +522,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			</programlisting>
 		</section>
 	</section>
-	&section.mvc.restclient.xml;
 </chapter>

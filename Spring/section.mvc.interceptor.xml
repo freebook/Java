@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="interceptor">
-	<title>Interceptor</title>
+	<title>Interceptor/Filter 拦截器/过滤</title>
 	<section id="interceptor.session">
 		<title>Session 拦截</title>
 		
@@ -275,6 +275,77 @@ neo@MacBook-Pro-M2 ~> curl -X 'GET' 'http://localhost:8080/mock/flux' -H 'token:
 https://www.netkiller.cn⏎		
 		]]>
 		</screen>
+	</section>
+	<section id="Filter">
+		<title>过滤器</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import jakarta.servlet.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+@Component
+@Slf4j
+public class MyFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        log.info(" myfilter init");
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        log.info("myfilter execute");
+    }
+
+    @Override
+    public void destroy() {
+        log.info("myfilter destroy");
+    }
+}
+		
+		]]>
+		</programlisting>
+		<section id="OncePerRequestFilter">
+			<title></title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config.filter;
+ 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+ 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+ 
+@Component
+public class CustomExceptionFilter extends OncePerRequestFilter {
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver resolver;
+ 
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        try {
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            resolver.resolveException(request, response, null, e);
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section>
 		<title>拦截器获取PathVariable变量</title>

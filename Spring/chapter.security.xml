@@ -1,64 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="security" ?>
 	<title>Spring Security</title>
-	<section id="spring.security.user.name">
-		<title>Spring Security with HTTP Auth</title>
-		<section>
-			<title>默认配置</title>
-			<para>如果在 maven 中引入了 spring security当你启动 springboot 的时候会提示</para>
-			<screen>
-			<![CDATA[
-Using generated security password: 1cd27b90-1208-4be2-ae8e-0f564ee427b8			
-			]]>
-			</screen>
-			<para>默认用户名是 user 可以这样访问</para>
-			<screen>
-			<![CDATA[
-neo@MacBook-Pro ~ % curl -s http://user:1cd27b90-1208-4be2-ae8e-0f564ee427b8@localhost:8080/member/json
-{"status":false,"reason":"","code":0,"data":{}} 			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>设置用户名和密码</title>
-			<programlisting>
-			<![CDATA[
-spring.security.user.name=test
-spring.security.user.password=test
-spring.security.user.role=USER		
-			]]>
-			</programlisting>
-			<para>注意 Springboot 1.x</para>
-			<programlisting>
-			<![CDATA[
-security.user.name=test
-security.user.password=passw0rdf
-security.user.role=USER
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>禁用 Security</title>
-			<para>方法一</para>
-			<screen>
-			<![CDATA[
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-public class Application {
-	public static void main(String[] args) {
-		System.out.println("Web Starting...");
-		SpringApplication.run(Application.class, args);
-	}
-}
-			]]>
-			</screen>
-			<para>Springboot 1.x 可以在 appliction.properties 中加入</para>
-			<programlisting>
-			<![CDATA[
-security.basic.enabled=false			
-			]]>
-			</programlisting>
-		</section>
-	</section>
+	
 
 	<section id="spring-boot-starter-security">
 		<title>Spring boot with Spring security</title>
@@ -424,6 +367,30 @@ public interface AdministratorRepository extends MongoRepository<Administrator, 
 				<title>WebSecurityConfiguration</title>
 				<programlisting>
 				<![CDATA[
+
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                // 配置授权请求规则
+                .authorizeRequests()
+                // 任何请求都需要认证
+                .anyRequest()
+                .authenticated()
+                // 使用and()方法连接多个配置
+                .and()
+                // 开启HTTP基本认证功能
+                .httpBasic();
+        return http.build();
+    }
+}
+				
+				]]>
+				</programlisting>
+				<para>Springboot 2.x</para>
+				<programlisting>
+				<![CDATA[
 package mis.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -498,8 +465,142 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 			</section>
 		</section>
 	</section>
+	<section id="spring.security.user.name">
+		<title>Spring Security with HTTP Auth</title>
+		<section>
+			<title>默认配置</title>
+			<para>如果在 maven 中引入了 spring security当你启动 springboot 的时候会提示</para>
+			<screen>
+			<![CDATA[
+Using generated security password: 1cd27b90-1208-4be2-ae8e-0f564ee427b8			
+			]]>
+			</screen>
+			<para>默认用户名是 user 可以这样访问</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % curl -s http://user:1cd27b90-1208-4be2-ae8e-0f564ee427b8@localhost:8080/member/json
+{"status":false,"reason":"","code":0,"data":{}} 			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>设置用户名和密码</title>
+			<programlisting>
+			<![CDATA[
+spring.security.user.name=test
+spring.security.user.password=test
+spring.security.user.role=USER		
+			]]>
+			</programlisting>
+			<para>注意 Springboot 1.x</para>
+			<programlisting>
+			<![CDATA[
+# security.basic.enabled=false
+security.user.name=test
+security.user.password=passw0rdf
+security.user.role=USER
+			]]>
+			</programlisting>
+		</section>
+		<section id="禁用 Security">
+			<title>禁用 Security</title>
+			<para>方法一</para>
+			<programlisting>
+			<![CDATA[
+@EnableAutoConfiguration(exclude = {
+		org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
+})
+			
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+public class Application {
+	public static void main(String[] args) {
+		System.out.println("Web Starting...");
+		SpringApplication.run(Application.class, args);
+	}
+}
+			]]>
+			</screen>
+			<para>Springboot 1.x 可以在 appliction.properties 中加入</para>
+			<programlisting>
+			<![CDATA[
+security.basic.enabled=false
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>设置角色</title>
+			<screen>
+			<![CDATA[
+spring:
+  security:
+    user:
+      name: kaven
+      password: itkaven
+      roles:
+        - USER
+        - ADMIN			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Spring Boot with Web Security(2.x)</title>
+		<section>
+			<title>SecurityFilterChain</title>
+			<programlisting>
+			<![CDATA[
+       return http.authorizeHttpRequests(authorize -> {
+                    try {
+                        authorize
+                                // 放行登录接口
+                                .requestMatchers("/", "/ping").permitAll()
+                                .requestMatchers("/token").permitAll()
+                                // 放行资源目录
+                                .requestMatchers("/static/**", "/resources/**").permitAll()
+                                // 其余的都需要权限校验
+                                .anyRequest().authenticated()
+                                // 防跨站请求伪造
+                                .and().csrf(csrf -> csrf.disable());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        ).build();			
+			]]>
+			</programlisting>
+			<para>开启 httpBasic 认证</para>
+			<programlisting>
+			<![CDATA[
+// 使用@EnableWebSecurity注解开启Spring Security功能
+@EnableWebSecurity
+public class SecurityConfig {
+
+    // 定义一个SecurityFilterChain bean，用于配置安全过滤器链
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                // 配置授权请求规则
+                .authorizeRequests()
+                // 任何请求都需要认证
+                .anyRequest()
+                .authenticated()
+                // 使用and()方法连接多个配置
+                .and()
+                // 开启HTTP基本认证功能
+                .httpBasic();
+        return http.build();
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="WebSecurity">
-		<title>Spring Boot with Web Security</title>
+		<title>Spring Boot with Web Security(2.x)</title>
 		<section id="EnableWebSecurity">
 			<title>EnableWebSecurity</title>
 			<programlisting>
@@ -883,5 +984,295 @@ String currentPrincipalName = authentication.getName();
 
 	</section>
 	
+	<section>
+		<title>@PreAuthorize</title>
+		<section>
+			<title>hasRole</title>
+			<programlisting>
+			<![CDATA[
+@PreAuthorize("hasRole('ROLE_ADMIN')")
+@GetMapping("/user/{id}")
+public String getUser(@PathVariable("id") String id) {
+    ...
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>hasAnyRole</title>
+			<programlisting>
+			<![CDATA[
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MANAGER')")
+@GetMapping("/users")
+public String getUsers() {
+    ...
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>从 HttpServletRequest 返回的 request 变量中判断角色</title>
+			<programlisting>
+			<![CDATA[
+@GetMapping("/users")
+public String getUsers(HttpServletRequest request) {
+    if (request.isUserInRole("ROLE_ADMIN")) {
+        ...
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>getAuthentication() 获得角色</title>
+			<programlisting>
+			<![CDATA[
+Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+    ...
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>UserDetailsService</title>
+			<programlisting>
+			<![CDATA[
+@GetMapping("/users")
+public String getUsers() {
+    UserDetails details = userDetailsService.loadUserByUsername("mike");
+    if (details != null && details.getAuthorities().stream()
+      .anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+        // ...
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>Springboot 3 Security + OncePerRequestFilter</title>
+		<section>
+			<title>OncePerRequestFilter</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import cn.netkiller.annotation.TokenPass;
+import cn.netkiller.component.JwtTokeComponent;
+import cn.netkiller.utils.ResponseJson;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+
+@Component
+@Slf4j
+public class SecurityTokenAuthenticationFilter extends OncePerRequestFilter {
+    @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    private JwtTokeComponent jwtTokeComponent;
+
+    @Autowired
+//    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver handlerExceptionResolver;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String url = request.getRequestURL().toString();
+        log.info(request.getRequestURL().toString());
+//        return super.shouldNotFilter(request);
+        return url.contains("/exclude");
+    }
+
+    /**
+     * token过滤器配置
+     *
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        final String token = request.getHeader("token");
+        if (token == null || token.isEmpty()) {
+            // 没有携带 token 则 放行
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
+        log.info("doFilterInternal: " + request.getRequestURI());
+        log.info("doFilterInternal: " + request.getHttpServletMapping().getPattern());
+
+        try {
+//            if (token == null) {
+//                throw new RuntimeException("无 token");
+//            }
+            
+            RequestMappingHandlerMapping requestMappingHandlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean("requestMappingHandlerMapping");
+            // Map<RequestMappingInfo, HandlerMethod> handlerMethods = req2HandlerMapping.getHandlerMethods();
+            HandlerExecutionChain handlerExecutionChain = requestMappingHandlerMapping.getHandler(request);
+            if (Objects.nonNull(handlerExecutionChain)) {
+                HandlerMethod handlerMethod = (HandlerMethod) handlerExecutionChain.getHandler();
+//                if (handlerMethod.getBeanType().getName().startsWith(MY_CONTROLLER_PACKAGE_NAME)) {
+//                    log.info(handlerMethod.getBeanType().getSimpleName());
+//                }
+
+                Method method = handlerMethod.getMethod();
+
+                //检查方法是否有TokenPass注解，有则跳过认证，直接通过
+                if (method.isAnnotationPresent(TokenPass.class)) {
+                    TokenPass tokenPass = method.getAnnotation(TokenPass.class);
+                    if (tokenPass.required()) {
+                        filterChain.doFilter(request, response);
+                        return;
+                    }
+                }
+                //检查 TokenVerification 需要用户权限的注解
+//        if (method.isAnnotationPresent(TokenVerification.class)) {
+//            TokenVerification tokenVerification = method.getAnnotation(TokenVerification.class);
+//            if (tokenVerification.required()) {
+//                //
+//            }
+//        }
+                // token 校验逻辑写在这里
+//        log.info("token: " + token);
+                ResponseJson jwt = jwtTokeComponent.verifier(token);
+//        log.info("jwt: " + jwt.isStatus());
+                if (!jwt.isStatus()) {
+                    throw new RuntimeException(jwt.getReason());
+                }
+
+                // 执行认证
+                Set<GrantedAuthority> authorities = new HashSet<>();
+                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_WATCH"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_PICTURE"));
+
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken("netkiller", null, authorities);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                log.info(authenticationToken.toString());
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            handlerExceptionResolver.resolveException(request, response, null, e);
+            return;
+        }
+
+        /**
+         * 将请求转发给过滤器链下一个filter
+         */
+        filterChain.doFilter(request, response);
+    }
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>SecurityConfiguration</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/**
+ * @author Neo
+ * @description Security 配置类
+ * @date 2023-01-26 21:18
+ */
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfiguration {
+
+    @Autowired
+    private SecurityTokenAuthenticationFilter securityTokenAuthenticationFilter;
+
+//    @Value("${spring.profiles.active}")
+//    private String env;
+
+    @Bean
+    public WebSecurityCustomizer ignoringCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/token", "/version");
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.authorizeRequests().anyRequest().permitAll();
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> {
+                            authorize
+                                    .requestMatchers("/", "/ping", "/exclude", "/mock/**", "/test/**").permitAll()
+                                    .requestMatchers("/token").permitAll()
+                                    .requestMatchers("/picture/**", "/chat/**", "/badges/**", "/album/**", "/book/**").permitAll()
+                                    .requestMatchers("/static/**", "/resources/**").permitAll()
+                                    .anyRequest().authenticated();
+                        }
+                )
+                .addFilterBefore(securityTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	&section.security.oauth.xml;
 </chapter>	
