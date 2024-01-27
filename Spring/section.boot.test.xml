@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="spring.boot.test">
+<chapter id="spring.boot.test">
 	<title>SpringBootTest</title>
 	<section id="springboot.test.maven">
 		<title>Maven 依赖</title>
@@ -288,4 +288,4 @@ public class WebfluxApplicationTests {
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

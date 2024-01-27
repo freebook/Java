@@ -139,5 +139,5 @@ String locationUri = ServletUriComponentsBuilder
 		]]>
 		</programlisting>
 	</section>
-
+	&chapter.tomcat.xml;
 </chapter>

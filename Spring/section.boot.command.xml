@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="spring.command.argv">
+<chapter id="spring.command.argv">
 	<title>Spring boot with command line</title>
 
 	<section>
@@ -123,4 +123,4 @@ public class Command implements ApplicationRunner {
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

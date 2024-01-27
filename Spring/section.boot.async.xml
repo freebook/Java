@@ -1,5 +1,5 @@
 
-<section id="enableasync">
+<chapter id="enableasync">
 	<title>Spring boot with Async</title>
 	<section id="Callable">
 		<title>Callable 实现异步</title>
@@ -557,4 +557,4 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics/exec
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

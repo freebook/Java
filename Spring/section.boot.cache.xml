@@ -1,5 +1,5 @@
-
-<section id="cache">
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="cache">
 	<title>Spring boot with Caching</title>
 	<para>
 		<ulink
@@ -373,4 +373,4 @@ private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
 	</section>
 
 
-</section>
+</chapter>

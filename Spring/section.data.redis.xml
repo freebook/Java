@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="spring-data-redis"><!-- <?dbhtml dir="redis" ?> -->
+<chapter id="index"><?dbhtml dir="redis" ?>
 	<title>Spring Data with Redis</title>
 	<section id="springdata.redis.exmaple">
 		<title>集成 Redis XML 方式</title>
@@ -1314,4 +1314,4 @@ public class TestRestController {
 		</section>
 	</section>
 
-</section>
+</chapter>

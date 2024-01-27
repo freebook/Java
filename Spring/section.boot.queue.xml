@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="rabbitmq">
-	<title>Spring boot with RabbitMQ(AMQP)</title>
-	<section>
-		<title>maven</title>
-		<programlisting>
+<chapter id="index"><?dbhtml dir="queue" ?>
+	<title>Spring boot with Queue</title>
+	<para></para>
+	<section id="rabbitmq">
+		<title>Spring boot with RabbitMQ(AMQP)</title>
+		<section>
+			<title>maven</title>
+			<programlisting>
 			<![CDATA[
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-amqp</artifactId>
 </dependency>
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>RabbitMQConfig</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>RabbitMQConfig</title>
+			<programlisting>
 			<![CDATA[
 @Configuration
 public class RabbitMQConfig {
@@ -56,11 +59,11 @@ public class RabbitMQConfig {
 
 }
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>生产者</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>生产者</title>
+			<programlisting>
 			<![CDATA[
 @RestController
 public class ProducerController {
@@ -82,11 +85,11 @@ public class ProducerController {
 
 }
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>消费者</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>消费者</title>
+			<programlisting>
 			<![CDATA[
 @Component
 public class Consumer {
@@ -97,16 +100,16 @@ public class Consumer {
     }
 }
 			]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
-</section>
-<section id="kafka">
-	<title>Spring boot with Apache Kafka</title>
-	<para>Spring boot 1.5.1</para>
-	<section>
-		<title>安装 kafka</title>
-		<para>一下安装仅仅适合开发环境，生产环境请使用这个脚本安装 https://github.com/oscm/shell/tree/master/mq/kafka</para>
-		<screen>
+	<section id="kafka">
+		<title>Spring boot with Apache Kafka</title>
+		<para>Spring boot 1.5.1</para>
+		<section>
+			<title>安装 kafka</title>
+			<para>一下安装仅仅适合开发环境，生产环境请使用这个脚本安装 https://github.com/oscm/shell/tree/master/mq/kafka</para>
+			<screen>
 		<![CDATA[
 cd /usr/local/src
 wget http://apache.communilink.net/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz
@@ -116,42 +119,42 @@ cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
 echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
 ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka		
 		]]>
-		</screen>
-		<para>启动 Kafka 服务</para>
-		<screen>
+			</screen>
+			<para>启动 Kafka 服务</para>
+			<screen>
 		<![CDATA[
 /srv/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties
 /srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties		
 		]]>
 
-		</screen>
-		<para>-daemon 表示守护进程方式在后台启动</para>
-		<screen>
+			</screen>
+			<para>-daemon 表示守护进程方式在后台启动</para>
+			<screen>
 		<![CDATA[
 /srv/kafka/bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
 /srv/kafka/bin/kafka-server-start.sh -daemon /srv/kafka/config/server.properties
 		]]>
 
-		</screen>
-		<para>停止 Kafka 服务</para>
-		<screen>
+			</screen>
+			<para>停止 Kafka 服务</para>
+			<screen>
 		<![CDATA[
 /srv/kafka/bin/kafka-server-stop.sh
 /srv/kafka/bin/zookeeper-server-stop.sh
 		]]>
-		</screen>
-	</section>
-	<section id="maven">
-		<title>maven</title>
-		<programlisting>
+			</screen>
+		</section>
+		<section id="maven">
+			<title>maven</title>
+			<programlisting>
 		<![CDATA[
 		<dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>			
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -337,11 +340,11 @@ ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka
 </project>
 			
 			]]>
-		</programlisting>
-	</section>
-	<section id="application">
-		<title>Spring boot Application</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="application">
+			<title>Spring boot Application</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller;
 
@@ -363,11 +366,11 @@ public class Application {
 	}
 }
 			]]>
-		</programlisting>
-	</section>
-	<section id="EnableKafka">
-		<title>EnableKafka</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="EnableKafka">
+			<title>EnableKafka</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.kafka;
 
@@ -429,11 +432,11 @@ public class KafkaConsumerConfig {
 
 }
 			]]>
-		</programlisting>
-	</section>
-	<section id="KafkaListener">
-		<title>KafkaListener</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="KafkaListener">
+			<title>KafkaListener</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.kafka;
 
@@ -464,28 +467,28 @@ public class Listener {
 	}
 }			
 			]]>
-		</programlisting>
-	</section>
-	<section id="spring.boot.kafka.test">
-		<title>测试</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="spring.boot.kafka.test">
+			<title>测试</title>
+			<programlisting>
 			<![CDATA[
 $ cd /srv/kafka
 $ bin/kafka-console-producer.sh --broker-list 47.89.35.55:9092 --topic test
 This is test message.
 			]]>
-		</programlisting>
-		<para>每输入一行回车后发送到你的Spring boot kafka 程序</para>
-	</section>
-	<section id="spring.boot.kafka.example">
-		<title>完整的发布订阅实例</title>
-		<para>上面的例子仅仅是做了一个热身，现在我们将实现 一个完整的例子。</para>
-		<section id="Consumer">
-			<title>Consumer</title>
-			<example>
-				<title>Spring boot with Apache kafka.</title>
-				<para>SpringApplication</para>
-				<programlisting>
+			</programlisting>
+			<para>每输入一行回车后发送到你的Spring boot kafka 程序</para>
+		</section>
+		<section id="spring.boot.kafka.example">
+			<title>完整的发布订阅实例</title>
+			<para>上面的例子仅仅是做了一个热身，现在我们将实现 一个完整的例子。</para>
+			<section id="Consumer">
+				<title>Consumer</title>
+				<example>
+					<title>Spring boot with Apache kafka.</title>
+					<para>SpringApplication</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller;
 
@@ -511,9 +514,9 @@ public class Application {
 	}
 }				
 				]]>
-				</programlisting>
-				<para>Consumer configuration</para>
-				<programlisting>
+					</programlisting>
+					<para>Consumer configuration</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.kafka.config;
 
@@ -575,10 +578,10 @@ public class ConsumerConfiguration {
 }
 				
 				]]>
-				</programlisting>
+					</programlisting>
 
-				<para>Consumer</para>
-				<programlisting>
+					<para>Consumer</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.kafka.consumer;
 import java.util.concurrent.CountDownLatch;
@@ -609,17 +612,17 @@ public class Consumer {
 }
 				
 				]]>
-				</programlisting>
+					</programlisting>
 
-			</example>
-		</section>
-		<section id="Producer">
-			<title>Producer</title>
-			<example>
-				<title>Spring boot with Apache kafka.</title>
+				</example>
+			</section>
+			<section id="Producer">
+				<title>Producer</title>
+				<example>
+					<title>Spring boot with Apache kafka.</title>
 
-				<para>Producer configuration</para>
-				<programlisting>
+					<para>Producer configuration</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.kafka.config;
 
@@ -676,10 +679,10 @@ public class ProducerConfiguration {
 }
 				
 				]]>
-				</programlisting>
+					</programlisting>
 
-				<para>Producer</para>
-				<programlisting>
+					<para>Producer</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.kafka.producer;
 
@@ -727,9 +730,9 @@ public class Producer {
 	}
 }				
 				]]>
-				</programlisting>
-				<para>Controller</para>
-				<programlisting>
+					</programlisting>
+					<para>Controller</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.web;
 
@@ -780,15 +783,15 @@ public class KafkaTestController {
 
 }				
 				]]>
-				</programlisting>
-			</example>
-		</section>
-		<section id="test">
-			<title>Test</title>
-			<example>
-				<title>Test Spring Kafka</title>
-				<para>SpringBootTest</para>
-				<programlisting>
+					</programlisting>
+				</example>
+			</section>
+			<section id="test">
+				<title>Test</title>
+				<example>
+					<title>Test Spring Kafka</title>
+					<para>SpringBootTest</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -827,21 +830,21 @@ public class SpringKafkaApplicationTests {
     }
 }
 				]]>
-				</programlisting>
-			</example>
+					</programlisting>
+				</example>
 
-			<para></para>
-			<programlisting>
+				<para></para>
+				<programlisting>
 				<![CDATA[]]>
-			</programlisting>
-		</section>
+				</programlisting>
+			</section>
 
-	</section>
-	<section id="spring.cloud.kafka">
-		<title>Spring cloud with Kafka</title>
-		<section id="Application">
-			<title>Application 主文件</title>
-			<programlisting>
+		</section>
+		<section id="spring.cloud.kafka">
+			<title>Spring cloud with Kafka</title>
+			<section id="Application">
+				<title>Application 主文件</title>
+				<programlisting>
 			<![CDATA[
 package schedule;
 
@@ -863,26 +866,26 @@ public class Application {
 	}
 }			
 			]]>
-			</programlisting>
-		</section>
-		<section id="resources">
-			<title>资源配置文件</title>
-			<section id="application.properties">
-				<title>application.properties</title>
-				<para>只需要两行，其余所有配置均放在配置中心。</para>
-				<programlisting>
+				</programlisting>
+			</section>
+			<section id="resources">
+				<title>资源配置文件</title>
+				<section id="application.properties">
+					<title>application.properties</title>
+					<para>只需要两行，其余所有配置均放在配置中心。</para>
+					<programlisting>
 				<![CDATA[
 # ==============================
 spring.application.name=schedule
 eureka.client.serviceUrl.defaultZone=http://eureka:s3cr3t@172.16.0.10:8761/eureka/
 # ==============================
 				]]>
-				</programlisting>
-			</section>
-			<section id="bootstrap.properties">
-				<title>bootstrap.properties</title>
-				<para>配置中心服务器相关配置</para>
-				<programlisting>
+					</programlisting>
+				</section>
+				<section id="bootstrap.properties">
+					<title>bootstrap.properties</title>
+					<para>配置中心服务器相关配置</para>
+					<programlisting>
 				<![CDATA[
 #spring.application.name=schedule
 spring.cloud.config.profile=development
@@ -892,22 +895,22 @@ management.security.enabled=false
 spring.cloud.config.username=cfg
 spring.cloud.config.password=s3cr3t
 				]]>
-				</programlisting>
-			</section>
-			<section id="spring.kafka.bootstrap_servers">
-				<title>Git 仓库</title>
-				<para>在 git 仓库中加入 spring.kafka.bootstrap_servers 配置项</para>
-				<programlisting>
+					</programlisting>
+				</section>
+				<section id="spring.kafka.bootstrap_servers">
+					<title>Git 仓库</title>
+					<para>在 git 仓库中加入 spring.kafka.bootstrap_servers 配置项</para>
+					<programlisting>
 				<![CDATA[
 spring.kafka.bootstrap_servers=172.16.0.10:9092
 				]]>
-				</programlisting>
+					</programlisting>
+				</section>
 			</section>
-		</section>
-		<section id="kafka.enable">
-			<title>启用 kafka</title>
-			<para>使用 @EnableKafka 启用 Kafka 不需要其他@Bean等。这个配置文件可以省略，可以将 @EnableKafka 放到 Application.java 中。我还是喜欢独立配置。</para>
-			<programlisting>
+			<section id="kafka.enable">
+				<title>启用 kafka</title>
+				<para>使用 @EnableKafka 启用 Kafka 不需要其他@Bean等。这个配置文件可以省略，可以将 @EnableKafka 放到 Application.java 中。我还是喜欢独立配置。</para>
+				<programlisting>
 			<![CDATA[
 package schedule.config;
 @Configuration
@@ -916,11 +919,11 @@ public class KafkaConfiguration {
 }
 			
 			]]>
-			</programlisting>
-		</section>
-		<section id="schedule.task">
-			<title>消息发布主程序</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="schedule.task">
+				<title>消息发布主程序</title>
+				<programlisting>
 			<![CDATA[
 package schedule.task;
 
@@ -1135,7 +1138,8 @@ public class CFPushTasks {
 }
 
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
 	</section>
-</section>
+</chapter> 

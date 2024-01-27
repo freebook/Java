@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="index"><?dbhtml dir="spring" ?>
-	<title>Spring Framework</title>
+
 	&chapter.spring.xml;
+<part id="index"><?dbhtml dir="boot" ?>
+	<title>Spring Boot</title>
+	&chapter.boot.xml;
 </part>
+<part id="index"><?dbhtml dir="framework" ?>
+	<title>Spring Framework</title>
+	&chapter.mvc.xml;
+	&chapter.webflux.xml;
+</part>
+<part id="index"><?dbhtml dir="data" ?>
+	<title>Spring Data</title>
+	&chapter.data.xml;
+</part>
+<part id="index"><?dbhtml dir="security" ?>
+	<title>Spring Security</title>
+	&chapter.security.xml;
+</part>
+<part id="index"><?dbhtml dir="cloud" ?>
+	<title>Spring Cloud</title>
+	&chapter.cloud.xml;
+</part>
+
+	&chapter.tomcat.xml;
+	&section.miscellaneous.xml;
+	&chapter.faq.xml;

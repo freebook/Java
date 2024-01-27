@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<chapter>
 	<title>SpringBoot Admin</title>
 	<section>
 		<title>依赖</title>
@@ -73,4 +73,4 @@ server {
 		</screen>
 	</section>
 	
-</section>
+</chapter>

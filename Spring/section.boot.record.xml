@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<chapter id="spring.boot.record">
 	<title>Java Record 新特性</title>
 	<section>
 		<title>Record 替代 POJO 类</title>
@@ -102,4 +102,4 @@ public record PersonController(PersonService personService) {
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

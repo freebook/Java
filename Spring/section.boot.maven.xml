@@ -1,0 +1,182 @@
+<chapter id="spring.boot.quickstart">
+	<title>Spring Boot Quick start</title>
+	<section>
+		<title>创建项目</title>
+		<screen>
+		<![CDATA[
+curl https://start.spring.io/starter.tgz  \
+  -d artifactId=creds-example-server \
+  -d dependencies=security,web \
+  -d language=java \
+  -d type=maven-project \
+  -d baseDir=example-server \
+| tar -xzvf -		
+		]]>
+		</screen>
+	</section>
+	<section id="pom">
+		<title>pom.xml</title>
+		<screen>
+		<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>api.netkiller.cn</groupId>
+	<artifactId>api.netkiller.cn</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Skyline</name>
+	<description>skylinechencf@gmail.com</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.0.RELEASE</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source />
+					<target />
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>		
+		]]>
+		</screen>
+	</section>
+	<section id="controller">
+		<title>Controller</title>
+		<programlisting>
+		<![CDATA[
+package hello;
+
+import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.stereotype.*;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@EnableAutoConfiguration
+public class SampleController {
+
+    @RequestMapping("/")
+    @ResponseBody
+    String home() {
+        return "Hello World!";
+    }
+
+    public static void main(String[] args) throws Exception {
+        SpringApplication.run(SampleController.class, args);
+    }
+}
+		]]>
+		</programlisting>
+		<para>测试</para>
+		<screen>
+			curl http://127.0.0.1:8080/
+		</screen>
+	</section>
+	<section id="spring-boot-maven-plugin">
+		<title>Springboot with Maven</title>
+		<para>spring-boot-maven-plugin 插件</para>
+		<section>
+			<title>resource</title>
+			<para>将 resource 添加应用程序</para>
+			<screen>
+			<![CDATA[
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/java/resources</directory>
+            <filtering>true</filtering>
+            <excludes>
+                <exclude>*.jks</exclude>
+            </excludes>
+        </resource>
+    </resources>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <addResources>true</addResources>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Maven run</title>
+			<programlisting>
+			<![CDATA[
+$ mvn spring-boot:run
+$ mvn -P prod spring-boot:run
+			]]>
+			</programlisting>
+			<para>-P 指定 Maven 的 profile，如果指定 Springboot 的 profiles 请使用 -Drun.profiles=prod</para>
+			<screen>
+			<![CDATA[
+$ mvn spring-boot:run -Drun.profiles=prod			
+			]]>
+			</screen>
+			<para>打包后，使用jar包运行</para>
+			<programlisting>
+			<![CDATA[
+$ mvn verify
+$ mvn package
+$ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Spring Boot maven 插件 build-image</title>
+			<para>Spring Boot 构建 Docker 镜像，你不需要写 Dockerfile，plugin 帮你完成。</para>
+			<para>只需要简单的执行：</para>
+			<screen>
+			<![CDATA[
+mvn spring-boot:build-image			
+			]]>
+			</screen>
+			<para>执行完成后会看到成功提示信息：</para>
+			<screen>
+			<![CDATA[
+[INFO] Successfully buit image 'docker.io/library/demo:0.0.1-SNAPSHOT'			
+			]]>
+			</screen>
+			<para>运行容器测试：</para>
+			<screen>
+			<![CDATA[
+docker run -p 8000:8080 -t demo:0.0.1-SNAPSHOT			
+			]]>
+			</screen>
+			<para>注意：这里映射的本机端口是8000。</para>
+			<screen>
+			<![CDATA[
+curl http://localhost:8000/
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>生成项目信息</title>
+			<para>mvn spring-boot:build-info</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/microservice/config % mvn spring-boot:build-info			
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

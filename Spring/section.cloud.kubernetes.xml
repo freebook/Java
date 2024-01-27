@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<chapter id="kubernetes">
 	<title>Spring Cloud with Kubernetes</title>
 	<section>
 		<title>Config</title>
@@ -1235,4 +1235,4 @@ spring.cloud.kubernetes.discovery.enabled=false
 		</section>
 	</section>
 	
-</section>
+</chapter>

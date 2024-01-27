@@ -1,4 +1,4 @@
-<section id="cloud.faq">
+<chapter id="cloud.faq">
 	<title>FAQ</title>
 	<section>
 		<title>Cannot execute request on any known server</title>
@@ -668,4 +668,4 @@ ribbon:
 		</screen>
 	</section>
 	
-</section>
+</chapter>

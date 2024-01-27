@@ -1,5 +1,5 @@
-
-<section id="hessian">
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="hessian">
     <title>Spring boot with Hessian</title>
     <section>
         <title>Maven</title>
@@ -138,4 +138,4 @@ public String test() {
         ]]>
         </programlisting>
     </section>
-</section>
+</chapter>

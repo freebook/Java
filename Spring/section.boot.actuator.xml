@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="springboot.actuator">
+<chapter id="springboot.actuator">
 	<title>Spring Boot Actuator</title>
 	<subtitle>健康检查、审计、统计和监控</subtitle>
 	<section>
@@ -7443,4 +7443,4 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/netkiller | 
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>

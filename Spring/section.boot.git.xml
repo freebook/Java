@@ -1,6 +1,5 @@
-
-
-<section id="git">
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="git" ?>
     <title>Spring boot with Git version</title>
     <para>Spring boot 每次升级打包发给运维操作，常常运维操作不当致使升级失败，开发怎样确认线上的jar/war包与升级包一致呢？</para>
     <para>请看下面的解决方案</para>
@@ -81,4 +80,4 @@ $Id: 929bc9e4c90b4d68c25dc693618f23b33fd6ba0f $
         ]]>
         </programlisting>
     </section>
-</section>
+</chapter>

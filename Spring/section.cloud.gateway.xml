@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="gateway">
+<chapter id="gateway">
 	<title>Spring Cloud Gateway</title>
 	<!-- https://github.com/spring-cloud/spring-cloud-gateway -->
 	<!-- https://github.com/spring-cloud-samples/spring-cloud-gateway-sample -->
@@ -207,4 +207,4 @@ http://localhost:8080/search?q=netkiller
 			</screen>
 		</section>
 	</section>
-</section>
+</chapter>

@@ -58,7 +58,7 @@
 		]]>
 		</screen>
 	</section>
-	&section.boot.quickstart.xml;
+
 	<section id="spring.xml">
 		<title>Spring MVC configuration</title>
 		<programlisting>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="springboot.starter">
+<chapter id="springboot.starter">
 	<title>Spring boot with starter</title>
 	<para>spring-boot-starter-xxxxx 是 Spring boot 子模块，开发中我们可以根据自己的需求开引用所需的功能，这样不必引用所有的 Spring boot 依赖包。</para>
 	<para>我们也可以开发自己的 starter 模块和自定义注解，将我们的项目化整为零，模块化，随时根据项目的需要引用，并且可以使用自定义注解启用它们。</para>
@@ -279,4 +279,4 @@ SmsProperties [url=https://sms.netkiller.cn/v1, username=netkiller, password=pas
 			</screen>
 		</section>
 	</section>
-</section>
+</chapter>

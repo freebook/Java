@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="elasticsearch">
+<chapter id="elasticsearch">
 	<title>Spring Data with Elasticsearch</title>
 	<section>
 		<title>内嵌 Elasticsearch</title>
@@ -408,4 +408,4 @@ public class ScheduledTasks {
 		</section>
 	</section>
 
-</section>
+</chapter>

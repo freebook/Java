@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="shardingsphere">
+<chapter id="shardingsphere">
 	<title>Apache ShardingSphere</title>
 	<section>
 		<title>微服务集群环境，雪花算法出现重复ID</title>
@@ -100,4 +100,4 @@ public class SnowFlakeWordIdConfiguration {
 			</screen>
 		</section>
 	</section>
-</section>
+</chapter>

@@ -16,8 +16,8 @@
 ]>
 <book xml:base="http://www.netkiller.cn/spring/" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
-		<title>Netkiller Spring Cloud 手札（<?dbtimestamp format="Y"?>版）</title>
-		<subtitle>Spring Cloud Cookbook</subtitle>
+		<title>Netkiller Spring Cloud 手札</title>
+		<subtitle>Spring Cloud Cookbook（<?dbtimestamp format="Y"?>版）</subtitle>
 		
 		&book.info.author.xml;
 
@@ -27,7 +27,7 @@
 		<pubdate>2017-11</pubdate>
 
 		<copyright>
-			<year>2015-2022</year>
+			<year>2015-<?dbtimestamp format="Y"?></year>
 			<holder>Neo Chan</holder>
 		</copyright>
 		<cover>
@@ -53,7 +53,7 @@
 	&book.dedication.xml;
 	&book.preface.xml;
 
-	&chapter.spring.xml;
+	&part.spring.xml;
 	
 	&book.appendix.xml;
 

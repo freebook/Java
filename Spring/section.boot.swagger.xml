@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="springboot.swagger2">
+<chapter id="springboot.swagger2">
 	<title>Spring boot with Swagger</title>
 	<section>
 		<title>Swagger3</title>
@@ -352,8 +352,8 @@ public class TestController {
 		]]>
 		</programlisting>
 	</section>
-</section>
-<section id="springboot.knife4j">
+</chapter>
+<chapter id="springboot.knife4j">
 	<title>Spring boot with knife4j</title>
 	<section>
 		<title>maven</title>
@@ -426,4 +426,4 @@ knife4j.setting.language=zh_cn
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

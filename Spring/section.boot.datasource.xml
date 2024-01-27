@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="mongodb">
+<chapter id="mongodb">
 	<title>Spring boot with MongoDB</title>
 	<section>
 		<title>Maven</title>
@@ -395,8 +395,8 @@ public class IndexController {
 		</programlisting>
 	</section>
 
-</section>
-<section id="mysql">
+</chapter>
+<chapter id="mysql">
 	<title>Spring boot with MySQL</title>
 	<section>
 		<title>Maven</title>
@@ -773,8 +773,8 @@ public class IndexController {
 
 
 	</section>
-</section>
-<section id="oracle">
+</chapter>
+<chapter id="oracle">
 	<title>Spring boot with Oracle</title>
 	<section>
 		<title>Maven</title>
@@ -967,28 +967,32 @@ spring.jpa.hibernate.ddl-auto=create-drop
 		</programlisting>
 		<para>其他配置</para>
 		<screen>
-			spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
-			spring.datasource.test-while-idle=true
-			spring.datasource.test-on-borrow=true
+		<![CDATA[
+spring.datasource.connection-test-query="SELECT 1 FROM DUAL"
+spring.datasource.test-while-idle=true
+spring.datasource.test-on-borrow=true
+		]]>
 		</screen>
 		<para>Oracle RAC</para>
 		<screen>
-			jdbc:oracle:thin@(DESCRIPTION=
-			(LOAD_BALANCE=on)
-			(ADDRESS=(PROTOCOL=TCP)(HOST=racnode1) (PORT=1521))
-			(ADDRESS=(PROTOCOL=TCP)(HOST=racnode2) (PORT=1521))
-			(CONNECT_DATA=(SERVICE_NAME=service_name)))
+		<![CDATA[
+jdbc:oracle:thin@(DESCRIPTION=
+(LOAD_BALANCE=on)
+(ADDRESS=(PROTOCOL=TCP)(HOST=racnode1) (PORT=1521))
+(ADDRESS=(PROTOCOL=TCP)(HOST=racnode2) (PORT=1521))
+(CONNECT_DATA=(SERVICE_NAME=service_name)))
 
-			jdbc:oracle:thin:@(DESCRIPTION=
-			(ADDRESS=(PROTOCOL=TCP)(HOST=125.22.42.68)(PORT=1521))
-			(LOAD_BALANCE=on)
-			(FAILOVER=ON)
-			(CONNECT_DATA=
-			(SERVER=DEDICATED)
-			(SERVICE_NAME=service_name)
-			(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))
-			)
-			)
+jdbc:oracle:thin:@(DESCRIPTION=
+(ADDRESS=(PROTOCOL=TCP)(HOST=125.22.42.68)(PORT=1521))
+(LOAD_BALANCE=on)
+(FAILOVER=ON)
+(CONNECT_DATA=
+(SERVER=DEDICATED)
+(SERVICE_NAME=service_name)
+(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))
+)
+)
+		]]>	
 		</screen>
 	</section>
 	<section>
@@ -1235,8 +1239,8 @@ public class IndexController {
 	<!-- <programlisting> <![CDATA[ @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } ]]> </programlisting> <programlisting> <![CDATA[ import oracle.jdbc.pool.OracleDataSource; import org.springframework.boot.context.properties.ConfigurationProperties; import 
 		org.springframework.context.annotation.Bean; import org.springframework.context.annotation.Configuration; import org.springframework.context.annotation.Profile; import javax.sql.DataSource; import javax.validation.constraints.NotNull; import java.sql.SQLException; @Configuration @ConfigurationProperties("oracle") public class OracleConfiguration { @NotNull private String username; @NotNull private String password; @NotNull private String url; public void setUsername(String username) { this.username = username; 
 		} public void setPassword(String password) { this.password = password; } public void setUrl(String url) { this.url = url; } @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } } ]]> </programlisting> -->
-</section>
-<section id="postgresql">
+</chapter>
+<chapter id="postgresql">
 	<title>Spring boot with PostgreSQL</title>
 	<section>
 		<title>pom.xml</title>
@@ -1475,8 +1479,8 @@ public class TestPostgreSQLController {
 			curl http://127.0.0.1:7000/test/pgsql/jdbc?id=1
 		</screen>
 	</section>
-</section>
-<section id="elasticsearch">
+</chapter>
+<chapter id="elasticsearch">
 	<title>Spring boot with Elasticsearch</title>
 	<section>
 		<title>Maven</title>
@@ -1602,8 +1606,8 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
 	        ]]>
 		</programlisting>
 	</section>
-</section>
-<section id="elasticsearch5">
+</chapter>
+<chapter id="elasticsearch5">
 	<title>Spring boot with Elasticsearch TransportClient</title>
 	<para>Spring data 目前还不支持 Elasticsearch 5.5.x 所以需要通过注入 TransportClient 这就意味着使用 5.5.x 版本你无法使用 ElasticsearchRepository 这种特性，只能通过官方的 TransportClient 操作 Elasticsearch。</para>
 	<section>
@@ -1915,8 +1919,8 @@ MacBook-Pro:~ neo$ curl -k https://test:test@localhost:8443/restful/search/clien
 	        ]]>
 		</screen>
 	</section>
-</section>
-<section id="hive">
+</chapter>
+<chapter id="hive">
 	<title>Spring boot with Apache Hive</title>
 	<section>
 		<title>Maven</title>
@@ -2125,8 +2129,8 @@ public class HiveController {
 			]]>
 		</programlisting>
 	</section>
-</section>
-<section id="phoenix">
+</chapter>
+<chapter id="phoenix">
 	<title>Spring boot with Phoenix</title>
 	<section>
 		<title>Maven</title>
@@ -2209,8 +2213,8 @@ public class PhoenixDataSource {
 			]]>
 		</programlisting>
 	</section>
-</section>
-<section id="datasource">
+</chapter>
+<chapter id="datasource">
 	<title>Spring boot with Datasource</title>
 	<subtitle>数据源配置</subtitle>
 	<section>
@@ -2600,8 +2604,8 @@ public class SecondaryConfig {
 		</programlisting>
 	</section>
 	
-</section>
-<section id="pool">
+</chapter>
+<chapter id="pool">
 	<title>连接池配置</title>
 	<subtitle>Connection and Statement Pooling</subtitle>
 	<para>注意：下面的实例仅限 Spring boot 2.0.2.RELEASE</para>
@@ -2813,6 +2817,4 @@ spring.datasource.hikari.connection-test-query=SELECT 1
 			]]>
 		</programlisting>
 	</section>
-</section>
-
-
+</chapter>

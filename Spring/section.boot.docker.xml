@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="springboot.docker">
-	<title>Spring boot with Docker</title>
-	<section>
-		<title>通过 Docker 命令构建镜像</title>
+<chapter id="index"><?dbhtml dir="docker" ?>
+	<title>Spring boot with Container</title>
 
+	<section id="springboot.docker">
+		<title>Spring boot with Docker</title>
 		<section>
-			<title>手工编译镜像</title>
-			<para>在项目根目录创建 Dockerfile 文件</para>
-			<screen>
+			<title>通过 Docker 命令构建镜像</title>
+
+			<section>
+				<title>手工编译镜像</title>
+				<para>在项目根目录创建 Dockerfile 文件</para>
+				<screen>
 		<![CDATA[
 % cat Dockerfile 
 FROM openjdk
@@ -15,9 +18,9 @@ VOLUME /tmp
 COPY target/*.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]		
 		]]>
-			</screen>
-			<para>编译镜像</para>
-			<screen>
+				</screen>
+				<para>编译镜像</para>
+				<screen>
 		<![CDATA[
 mvn package
 docker build -t netkiller/docker .
@@ -30,20 +33,20 @@ sh-4.2# ls
 app.jar  bin  boot  dev  etc  home  lib  lib64	media  mnt  opt  proc  root  run  sbin	srv  sys  tmp  usr  var
 sh-4.2# 
 		]]>
-			</screen>
-			<para>启动镜像测试</para>
-			<screen>
+				</screen>
+				<para>启动镜像测试</para>
+				<screen>
 		<![CDATA[
 docker run -p 8080:8080 netkiller/docker
 
 neo@MacBook-Pro ~ % curl http://localhost:8080
 Hello Docker World
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>Dockerfile 放在 src/main/docker/Dockerfile 下</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>Dockerfile 放在 src/main/docker/Dockerfile 下</title>
+				<screen>
 		<![CDATA[
 % cat src/main/docker/Dockerfile 
 FROM openjdk
@@ -51,25 +54,25 @@ VOLUME /tmp
 COPY target/*.jar app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 		]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 		<![CDATA[
 mvn package
 docker rmi netkiller/docker -f
 docker build -t netkiller/docker -f src/main/docker/Dockerfile .
 docker run -p 8080:8080 netkiller/docker
 		]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % curl http://localhost:8080
 Hello Docker World
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>通过参数指定 Springboot 文件</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>通过参数指定 Springboot 文件</title>
+				<screen>
 		<![CDATA[
 % cat src/main/docker/Dockerfile 
 FROM openjdk:8-jdk-alpine
@@ -78,28 +81,28 @@ ARG JAR_FILE
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 		]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 		<![CDATA[
 mvn package
 docker rmi netkiller/docker -f
 docker build --build-arg JAR_FILE=target/*.jar -t netkiller/docker -f src/main/docker/Dockerfile .
 docker run -p 8080:8080 netkiller/docker
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>SPRING_PROFILES_ACTIVE 指定配置文件</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>SPRING_PROFILES_ACTIVE 指定配置文件</title>
+				<screen>
 		<![CDATA[
 % docker run -e "SPRING_PROFILES_ACTIVE=prod" -p 8080:8080 netkiller/docker
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>推送镜像到仓库</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>推送镜像到仓库</title>
+				<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % docker push netkiller/docker
 The push refers to repository [docker.io/netkiller/docker]
@@ -110,15 +113,15 @@ c4a7cf6a6169: Mounted from library/openjdk
 
 latest: digest: sha256:3078fea95c633f007be33b829efae0ff8e9d78ad463925af7d07752c95eb43a3 size: 1165
 		]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section>
-		<title>通过 Maven 构建 Docker 镜像</title>
 		<section>
-			<title>Maven + Dockerfile 方案一</title>
-			<para>项目地址 https://github.com/spotify/dockerfile-maven</para>
-			<screen>
+			<title>通过 Maven 构建 Docker 镜像</title>
+			<section>
+				<title>Maven + Dockerfile 方案一</title>
+				<para>项目地址 https://github.com/spotify/dockerfile-maven</para>
+				<screen>
 		<![CDATA[
 	<build>
 		<plugins>
@@ -164,8 +167,8 @@ latest: digest: sha256:3078fea95c633f007be33b829efae0ff8e9d78ad463925af7d07752c9
 	</build>
 	
 		]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 		<![CDATA[
 neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 [INFO] Scanning for projects...
@@ -227,12 +230,12 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 [INFO] ------------------------------------------------------------------------
 
 		]]>
-			</screen>
+				</screen>
 
-		</section>
-		<section>
-			<title>Maven + Dockerfile 方案二</title>
-			<screen>
+			</section>
+			<section>
+				<title>Maven + Dockerfile 方案二</title>
+				<screen>
 			<![CDATA[
 <build>
   <plugins>
@@ -257,13 +260,13 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
   </plugins>
 </build>			
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-		<section>
-			<title>Maven 不使用 Dockerfile 文件</title>
-			<para>项目地址 https://github.com/spotify/docker-maven-plugin</para>
-			<screen>
+			<section>
+				<title>Maven 不使用 Dockerfile 文件</title>
+				<para>项目地址 https://github.com/spotify/docker-maven-plugin</para>
+				<screen>
 		<![CDATA[
 			<plugin>
 				<groupId>com.spotify</groupId>
@@ -289,9 +292,9 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 				</configuration>
 			</plugin>
 		]]>
-			</screen>
-			<para>构建镜像 mvn clean package docker:build	</para>
-			<screen>
+				</screen>
+				<para>构建镜像 mvn clean package docker:build	</para>
+				<screen>
 		<![CDATA[
 neo@MacBook-Pro ~/git/springcloud/webflux % mvn docker:build         
 [INFO] Scanning for projects...
@@ -342,11 +345,11 @@ Successfully tagged netkiller/webflux:latest
 [INFO] Finished at: 2019-04-13T05:41:41+08:00
 [INFO] ------------------------------------------------------------------------
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>推送镜像</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>推送镜像</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
 			
@@ -386,17 +389,17 @@ neo@MacBook-Pro ~ % vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
     </server>
   </servers>			
 			]]>
-			</screen>
-			<para>****** 修改为你的密码</para>
-			<para>查看 Docker Registry 地址</para>
-			<screen>
+				</screen>
+				<para>****** 修改为你的密码</para>
+				<para>查看 Docker Registry 地址</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker info | grep Registry
 Registry: https://index.docker.io/v1/			
 			]]>
-			</screen>
-			<para>maven docker 插件配置</para>
-			<screen>
+				</screen>
+				<para>maven docker 插件配置</para>
+				<screen>
 			<![CDATA[
 			<plugin>
 				<groupId>com.spotify</groupId>
@@ -426,21 +429,21 @@ Registry: https://index.docker.io/v1/
 				</configuration>
 			</plugin>			
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 docker:build -DpushImage or docker:push			
 			]]>
-			</screen>
-			<para>使用加密的密码</para>
-			<screen>
+				</screen>
+				<para>使用加密的密码</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % mvn --encrypt-master-password 
 Master password: 
 {r7kkN/XCOXYHqwRqE30k6Bz+pNGsB7/UogGTqqo+G2A=}
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
 			
@@ -452,9 +455,9 @@ vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
   </server>
 </servers>			
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 vim ~/.m2/settings-security.xml
 
@@ -462,14 +465,14 @@ vim ~/.m2/settings-security.xml
   <master>{r7kkN/XCOXYHqwRqE30k6Bz+pNGsB7/UogGTqqo+G2A=}</master>
 </settingsSecurity>			
 			]]>
-			</screen>
+				</screen>
+			</section>
+
 		</section>
 
-	</section>
-
-	<section>
-		<title>[ERROR] No plugin found for prefix 'dockerfile' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (/Users/neo/.m2/repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]</title>
-		<screen>
+		<section>
+			<title>[ERROR] No plugin found for prefix 'dockerfile' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (/Users/neo/.m2/repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]</title>
+			<screen>
 		<![CDATA[
 在maven的conf/setting.xml中要加入:
 
@@ -487,18 +490,18 @@ vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
     <pluginGroup>com.spotify</pluginGroup>  
 </pluginGroups>
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>curl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to localhost:8888</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>curl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to localhost:8888</title>
+			<screen>
 		<![CDATA[
 iMac:config neo$ curl -k -i -H HOST:sss https://config:s3cr3t@localhost:8888/netkiller-dev.json
 curl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to localhost:8888		
 		]]>
-		</screen>
-		<para>检查发现 8888 端口已经启动，SSL证书读不到</para>
-		<screen>
+			</screen>
+			<para>检查发现 8888 端口已经启动，SSL证书读不到</para>
+			<screen>
 		<![CDATA[
 iMac:config neo$ openssl s_client -connect localhost:8888 
 CONNECTED(00000005)
@@ -517,17 +520,17 @@ Expansion: NONE
 No ALPN negotiated
 ---		
 		]]>
-		</screen>
-		<para>我开始怀疑是泛域名问题</para>
-		<screen>
+			</screen>
+			<para>我开始怀疑是泛域名问题</para>
+			<screen>
 		<![CDATA[
 keytool -genkey -alias *.netkiller.cn -storetype PKCS12 -keyalg RSA -keysize 2048 -storepass passw0rd -keystore allhost.p12 -dname "CN=*.netkiller.cn, OU=netkiller, O=netkiller.cn, L=Guangdong, ST=Shenzhen, C=CN"
 keytool -selfcert -alias *.netkiller.cn -storepass passw0rd -keystore allhost.p12		
 		]]>
-		</screen>
-		<para>测试后发现跟证书无关。</para>
-		<para>经过曲折的排查发现绑定了地址，在本地启动是正常的，一旦放入 Docker 容器就无法工作。</para>
-		<screen>
+			</screen>
+			<para>测试后发现跟证书无关。</para>
+			<para>经过曲折的排查发现绑定了地址，在本地启动是正常的，一旦放入 Docker 容器就无法工作。</para>
+			<screen>
 		<![CDATA[
 #server.address=localhost
 server.port=8888
@@ -550,9 +553,9 @@ spring.security.user.password=s3cr3t
 #spring.cloud.config.server.git.uri=/opt/config
 spring.cloud.config.server.native.search-locations=classpath:/shared		
 		]]>
-		</screen>
-		<para>去掉 server.address=localhost 即可，在 build docker 镜像，然后启动容器。可以正常获取证书</para>
-		<screen>
+			</screen>
+			<para>去掉 server.address=localhost 即可，在 build docker 镜像，然后启动容器。可以正常获取证书</para>
+			<screen>
 		<![CDATA[
 iMac:config neo$ openssl s_client -connect localhost:8888 
 CONNECTED(00000005)
@@ -688,9 +691,9 @@ SSL-Session:
 ---
 closed
 		]]>
-		</screen>
-		<para>工作正常</para>
-		<screen>
+			</screen>
+			<para>工作正常</para>
+			<screen>
 		<![CDATA[
 iMac:config neo$ curl -k -i https://config:s3cr3t@192.168.3.85:8888/netkiller-dev.json
 HTTP/2 200 
@@ -708,14 +711,14 @@ date: Mon, 21 Sep 2020 02:51:11 GMT
 
 {"sms":{"gateway":{"url":"https://sms.netkiller.cn/v1","username":"netkiller","password":"123456"}}}		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
-<section id="spring-boot.docker-stack">
-	<title>Spring boot with Docker stack</title>
-	<section>
-		<title>编译 Docker 镜像</title>
-		<screen>
+	<section id="spring-boot.docker-stack">
+		<title>Spring boot with Docker stack</title>
+		<section>
+			<title>编译 Docker 镜像</title>
+			<screen>
 		<![CDATA[
 iMac:config neo$ mvn docker:build
 [INFO] Scanning for projects...
@@ -772,12 +775,12 @@ Successfully tagged netkiller/config:latest
 [INFO] Finished at: 2020-09-20T21:49:28+08:00
 [INFO] ------------------------------------------------------------------------		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title></title>
-		<para>初始化 Swarm</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<para>初始化 Swarm</para>
+			<screen>
 		<![CDATA[
 iMac:springboot neo$ docker swarm init
 Swarm initialized: current node (qvqez97c8ja014ktmroy9sw47) is now a manager.
@@ -788,9 +791,9 @@ To add a worker to this swarm, run the following command:
 
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.		
 		]]>
-		</screen>
-		<para>创建 docker-compose.yml 文件</para>
-		<screen>
+			</screen>
+			<para>创建 docker-compose.yml 文件</para>
+			<screen>
 		<![CDATA[
 version: '3.8'
 
@@ -810,17 +813,17 @@ services:
           cpus: "0.1"
           memory: 50M		
 		]]>
-		</screen>
-		<para>部署服务</para>
-		<screen>
+			</screen>
+			<para>部署服务</para>
+			<screen>
 		<![CDATA[
 iMac:springboot neo$ docker stack deploy -c docker-compose.yml springboot
 Creating network springboot_default
 Creating service springboot_config		
 		]]>
-		</screen>
-		<para>查看部署情况</para>
-		<screen>
+			</screen>
+			<para>查看部署情况</para>
+			<screen>
 		<![CDATA[
 iMac:springboot neo$ docker stack ls
 NAME                SERVICES            ORCHESTRATOR
@@ -830,27 +833,27 @@ ID                  NAME                MODE                REPLICAS            
 viavpkzk6lvo        springboot_config   replicated          0/1                 netkiller/config:latest   *:30001->8888/tcp
 		
 		]]>
-		</screen>
-		<para>查看服务运行状态</para>
-		<screen>
+			</screen>
+			<para>查看服务运行状态</para>
+			<screen>
 		<![CDATA[
 iMac:springboot neo$ docker stack ps springboot
 ID                  NAME                  IMAGE                     NODE                DESIRED STATE       CURRENT STATE             ERROR               PORTS
 mr30ujsdbti4        springboot_config.1   netkiller/config:latest   docker-desktop      Running             Preparing 4 minutes ago                       		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
-<section id="springboot.kubernetes">
-	<title>Spring boot with Kubernetes</title>
-	<para>
-		首先你需要构建 docker 镜像，并且 push 到 registry
-		<link linkend="springboot.docker">参考这里</link>
-	</para>
-	<section>
-		<title>Kubernetes 编排脚本</title>
-		<para>创建密钥</para>
-		<screen>
+	<section id="springboot.kubernetes">
+		<title>Spring boot with Kubernetes</title>
+		<para>
+			首先你需要构建 docker 镜像，并且 push 到 registry
+			<link linkend="springboot.docker">参考这里</link>
+		</para>
+		<section>
+			<title>Kubernetes 编排脚本</title>
+			<para>创建密钥</para>
+			<screen>
 		<![CDATA[
 kubectl create secret docker-registry docker-hub \
 --docker-server=https://index.docker.io/v1/ \
@@ -858,18 +861,18 @@ kubectl create secret docker-registry docker-hub \
 --docker-password=passw0rd \
 --docker-email=netkiller@msn.com
 		]]>
-		</screen>
-		<para>查看是否创建成功</para>
-		<screen>
+			</screen>
+			<para>查看是否创建成功</para>
+			<screen>
 		<![CDATA[
 iMac:spring neo$ kubectl get secret
 NAME                  TYPE                                  DATA   AGE
 default-token-fhfn8   kubernetes.io/service-account-token   3      2d23h
 docker-hub            kubernetes.io/dockerconfigjson        1      15s		
 		]]>
-		</screen>
-		<para>springboot.yml 编排脚本</para>
-		<screen>
+			</screen>
+			<para>springboot.yml 编排脚本</para>
+			<screen>
 		<![CDATA[
 apiVersion: v1
 kind: Service
@@ -909,11 +912,11 @@ spec:
       imagePullSecrets:
         - name: docker-hub
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>部署镜像</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>部署镜像</title>
+			<screen>
 		<![CDATA[
 iMac:spring neo$ kubectl create -f springboot.yml 
 deployment.apps/springboot created
@@ -936,21 +939,22 @@ iMac:spring neo$ minikube service list
 iMac:spring neo$ minikube service springboot --url
 http://192.168.64.2:30000
 		]]>
-		</screen>
-		<para>http://192.168.64.2:30000 是访问地址，Kubernetes 会负载均衡到后面的三个 pod 上。</para>
-		<screen>
+			</screen>
+			<para>http://192.168.64.2:30000 是访问地址，Kubernetes 会负载均衡到后面的三个 pod 上。</para>
+			<screen>
 		<![CDATA[
 iMac:config neo$ curl -k https://config:s3cr3t@192.168.64.2:30000/netkiller-dev.json
 {"sms":{"gateway":{"url":"https://sms.netkiller.cn/v1","username":"netkiller","password":"123456"}}}		
 		]]>
-		</screen>
-		<para>删除服务</para>
-		<screen>
+			</screen>
+			<para>删除服务</para>
+			<screen>
 		<![CDATA[
 iMac:spring neo$ kubectl delete -f springboot.yml 
 service "springboot" deleted
 deployment.apps "springboot" deleted		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
+</chapter>

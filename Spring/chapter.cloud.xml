@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="cloud" ?>
+<chapter id="cloud">
 	<title>Spring Cloud</title>
 	<section id="spring.cloud.properties">
 		<title>Spring Cloud 相关的 application.properties 配置</title>
@@ -22,6 +22,7 @@ spring.cloud.bootstrap.location=classpath:bootstrap.properties
 			<para>spring.cloud.config.overrideSystemProperties=false 仅仅系统属性和环境变量 </para>
 		</section>
 	</section>
+</chapter>
 	&section.cloud.config.xml;
 	&section.cloud.consol.xml;
 	&section.cloud.netflix.xml;
@@ -32,4 +33,3 @@ spring.cloud.bootstrap.location=classpath:bootstrap.properties
 	&section.cloud.kubernetes.xml;
 	&section.cloud.alibaba.xml;
 	&section.cloud.faq.xml;
-</chapter>

@@ -1,4 +1,4 @@
-<section id="spring-data-mongodb"><!-- <?dbhtml dir="mongodb" ?> -->
+<chapter id="spring-data-mongodb"><!-- <?dbhtml dir="mongodb" ?> -->
 	<title>Spring Data with MongoDB</title>
 	<para>
 		<ulink url="https://docs.spring.io/spring-data/mongodb/docs/current/reference/html/" />
@@ -2017,4 +2017,4 @@ public class Address {
 			<para>GeoJsonPoint 可能设置了索引，且有些数据部正确。</para>
 		</section>
 	</section>
-</section>
+</chapter>

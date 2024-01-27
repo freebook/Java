@@ -1,12 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 	&chapter.suite.xml;
-	&chapter.boot.xml;
-	&chapter.mvc.xml;
-	&chapter.webflux.xml;
-	&chapter.data.xml;
-	&chapter.security.xml;
-	&chapter.cloud.xml;
-	&chapter.tomcat.xml;
-	&section.miscellaneous.xml;
-	&chapter.faq.xml;

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="monitor" ?>
+	<title>Spring boot with Monitor</title>
+
 &section.boot.admin.xml;
-<section id="springboot.grafana">
-	<title>Spring boot with Grafana</title>
-	<section>
-		<title>Springboot 集成 InfluxDB</title>
-		<para>Springboot 集成 InfluxDB 非常简单，先引入依赖即可，记得需要同时引入 actuator</para>
-		<screen>
+	<section id="springboot.grafana">
+		<title>Spring boot with Grafana</title>
+		<section>
+			<title>Springboot 集成 InfluxDB</title>
+			<para>Springboot 集成 InfluxDB 非常简单，先引入依赖即可，记得需要同时引入 actuator</para>
+			<screen>
 		<![CDATA[
 <dependency>
   <groupId>org.springframework.boot</groupId>
@@ -17,9 +20,9 @@
   <artifactId>micrometer-registry-influx</artifactId>
 </dependency>		
 		]]>
-		</screen>
-		<para>配置文件 application.yaml 如下</para>
-		<screen>
+			</screen>
+			<para>配置文件 application.yaml 如下</para>
+			<screen>
 		<![CDATA[
 spring:
   application:
@@ -44,12 +47,12 @@ management:
         compressed: true
         batch-size: 1000		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>InfluxDB</title>
-		<para>配置好 Springboot 后，启动应用，稍后Springboot 就会将数据源源不断地写入到 InfluxDB 中。</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>InfluxDB</title>
+			<para>配置好 Springboot 后，启动应用，稍后Springboot 就会将数据源源不断地写入到 InfluxDB 中。</para>
+			<screen>
 		<![CDATA[
 > show measurements
 name: measurements
@@ -89,20 +92,20 @@ tomcat_sessions_expired
 tomcat_sessions_rejected
 visits		
 		]]>
-		</screen>
-		<para>查看数据</para>
-		<screen>
+			</screen>
+			<para>查看数据</para>
+			<screen>
 		<![CDATA[
 select * from process_cpu_usage
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
-<section id="springboot.prometheus">
-	<title>Spring Boot with Prometheus</title>
-	<section>
-		<title>Maven 依赖</title>
-		<screen>
+	<section id="springboot.prometheus">
+		<title>Spring Boot with Prometheus</title>
+		<section>
+			<title>Maven 依赖</title>
+			<screen>
 		<![CDATA[
 	<dependencies>
 		<dependency>
@@ -115,24 +118,24 @@ select * from process_cpu_usage
 		</dependency>
 	</dependencies>		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>application.properties 配置文件</title>
-		<para>开启 metrics</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>application.properties 配置文件</title>
+			<para>开启 metrics</para>
+			<screen>
 		<![CDATA[
 spring.application.name=springboot-with-prometheus
 #management.endpoints.web.exposure.include=*
 management.endpoints.web.exposure.include=prometheus
 management.metrics.tags.application=${spring.application.name}
 		]]>
-		</screen>
-	</section>
+			</screen>
+		</section>
 
-	<section>
-		<title>启动类</title>
-		<programlisting>
+		<section>
+			<title>启动类</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.welcome;
 
@@ -180,12 +183,12 @@ public class Application {
 	}
 }		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>测试</title>
-		<para>启动 Springboot</para>
-		<screen>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<para>启动 Springboot</para>
+			<screen>
 		<![CDATA[
 Welcome!
 
@@ -203,9 +206,9 @@ Welcome!
 2020-10-28 21:57:56.364  INFO 64079 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8080
 2020-10-28 21:57:56.380  INFO 64079 --- [           main] cn.netkiller.welcome.Application         : Started Application in 2.773 seconds (JVM running for 3.439)
 		]]>
-		</screen>
-		<para>获取监控数据</para>
-		<screen>
+			</screen>
+			<para>获取监控数据</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro-Neo ~ % curl http://localhost:8080/actuator/prometheus
 # HELP jvm_threads_states_threads The current number of threads having NEW state
@@ -327,11 +330,11 @@ jvm_memory_max_bytes{application="springboot-with-prometheus",area="nonheap",id=
 # TYPE system_cpu_count gauge
 system_cpu_count{application="springboot-with-prometheus",} 8.0
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>控制器监控</title>
-		<programlisting>
+			</screen>
+		</section>
+		<section>
+			<title>控制器监控</title>
+			<programlisting>
 		<![CDATA[
 @RestController
 @RequestMapping("/app")
@@ -349,22 +352,25 @@ public class AppController {
   }
 }		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>自定义埋点监控</title>
-						<para></para>
-		<itemizedlist>
-			<title>prometheus 监控指标有如下几种类型</title>
-			<listitem>Counter	类型代表数据递增的指标，即只增不减，除非监控系统重置</listitem>
-			<listitem>Guage		类型代表数据可以任意变化的指标，即可增可减</listitem>
-			<listitem>Histogram 由bucket{le=""}，bucket{le="+Inf"},sum，count 组成，用于一段时间范围内对数据进行采样，并能够对其指定区间以及总数进行统计，通常它采集的数据展示为直方图。</listitem>
-			<listitem>Summary 	由{quantile="<![CDATA[<φ>]]>"}，sum，count 组成，用于一段时间内数据采样结果（通常是请求持续时间或响应大小），它直接存储了 quantile 数据，而不是根据统计区间计算出来的。</listitem>
-		</itemizedlist>
-		
+			</programlisting>
+		</section>
 		<section>
-			<title>拦截器</title>
-			<programlisting>
+			<title>自定义埋点监控</title>
+			<para></para>
+			<itemizedlist>
+				<title>prometheus 监控指标有如下几种类型</title>
+				<listitem>Counter 类型代表数据递增的指标，即只增不减，除非监控系统重置</listitem>
+				<listitem>Guage 类型代表数据可以任意变化的指标，即可增可减</listitem>
+				<listitem>Histogram 由bucket{le=""}，bucket{le="+Inf"},sum，count 组成，用于一段时间范围内对数据进行采样，并能够对其指定区间以及总数进行统计，通常它采集的数据展示为直方图。</listitem>
+				<listitem>Summary
+					由{quantile="<![CDATA[<φ>]]>"}，sum，count
+					组成，用于一段时间内数据采样结果（通常是请求持续时间或响应大小），它直接存储了 quantile 数据，而不是根据统计区间计算出来的。
+				</listitem>
+			</itemizedlist>
+
+			<section>
+				<title>拦截器</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.welcome.config;
 
@@ -393,11 +399,11 @@ public class PrometheusInterceptor implements HandlerInterceptor {
 
 }			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>计数器元件</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>计数器元件</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.welcome.component;
 
@@ -420,11 +426,11 @@ public class RestfulApiCounter {
 }
 			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>配置类</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>配置类</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.welcome.config;
 
@@ -450,11 +456,11 @@ public class IntercepterConfiguration implements WebMvcConfigurer {
 }
 			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>测试埋点效果</title>
-			<screen>
+				</programlisting>
+			</section>
+			<section>
+				<title>测试埋点效果</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro-Neo ~ % curl -s http://localhost:8080/actuator/prometheus | grep restful
 # HELP restful_api_requests_total  
@@ -472,7 +478,8 @@ neo@MacBook-Pro-Neo ~ % curl -s http://localhost:8080/actuator/prometheus | grep
 # TYPE restful_api_requests_total counter
 restful_api_requests_total{application="springboot-with-prometheus",} 2.0			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
 	</section>
-</section>
+</chapter>	 

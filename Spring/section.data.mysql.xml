@@ -1,4 +1,4 @@
-<section id="spring-data-jpa"><!-- <?dbhtml dir="jpa" ?> -->
+<chapter id="index"> <?dbhtml dir="mysql" ?>
 	<title>Spring Data with MySQL</title>
 	<section id="engine">
 		<title>选择数据库表引擎</title>
@@ -4645,4 +4645,4 @@ interface UserRepository extends Repository<User, Long> {
 			</programlisting>
 		</section>
 	</section>
-</section>
+</chapter>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<chapter id="spring.boot.shutdown">
 	<title>如何优雅停止 Springboot 运行</title>
 	<section>
 		<title>准备工作</title>
@@ -312,4 +312,4 @@ spring.pid.file=/tmp/spring.pid
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>

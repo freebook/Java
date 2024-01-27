@@ -1,98 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="spring-boot-maven-plugin">
-	<title>Springboot with Maven</title>
-	<para>spring-boot-maven-plugin 插件</para>
-	<section>
-		<title>resource</title>
-		<para>将 resource 添加应用程序</para>
-		<screen>
-			<![CDATA[
-<build>
-    <resources>
-        <resource>
-            <directory>src/main/java/resources</directory>
-            <filtering>true</filtering>
-            <excludes>
-                <exclude>*.jks</exclude>
-            </excludes>
-        </resource>
-    </resources>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-                <addResources>true</addResources>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>		
-			]]>
-		</screen>
-	</section>
-	<section>
-		<title>Maven run</title>
-		<programlisting>
-			<![CDATA[
-$ mvn spring-boot:run
-$ mvn -P prod spring-boot:run
-			]]>
-		</programlisting>
-		<para>-P 指定 Maven 的 profile，如果指定 Springboot 的 profiles 请使用 -Drun.profiles=prod</para>
-		<screen>
-			<![CDATA[
-$ mvn spring-boot:run -Drun.profiles=prod			
-			]]>
-		</screen>
-		<para>打包后，使用jar包运行</para>
-		<programlisting>
-			<![CDATA[
-$ mvn verify
-$ mvn package
-$ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
-			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Spring Boot maven 插件 build-image</title>
-		<para>Spring Boot 构建 Docker 镜像，你不需要写 Dockerfile，plugin 帮你完成。</para>
-		<para>只需要简单的执行：</para>
-		<screen>
-			<![CDATA[
-mvn spring-boot:build-image			
-			]]>
-		</screen>
-		<para>执行完成后会看到成功提示信息：</para>
-		<screen>
-			<![CDATA[
-[INFO] Successfully buit image 'docker.io/library/demo:0.0.1-SNAPSHOT'			
-			]]>
-		</screen>
-		<para>运行容器测试：</para>
-		<screen>
-			<![CDATA[
-docker run -p 8000:8080 -t demo:0.0.1-SNAPSHOT			
-			]]>
-		</screen>
-		<para>注意：这里映射的本机端口是8000。</para>
-		<screen>
-			<![CDATA[
-curl http://localhost:8000/
-			]]>
-		</screen>
-	</section>
-	<section>
-		<title>生成项目信息</title>
-		<para>mvn spring-boot:build-info</para>
-		<screen>
-			<![CDATA[
-neo@MacBook-Pro-Neo ~/workspace/microservice/config % mvn spring-boot:build-info			
-			]]>
-		</screen>
-	</section>
-</section>
-
-<section id="SpringApplication">
+<chapter id="SpringApplication">
 	<title>SpringApplication</title>
 	<programlisting>
 		<![CDATA[
@@ -652,5 +559,38 @@ public class DataSourceConfig {
 		]]>
 		</programlisting>
 	</section>
-	&section.boot.timezone.xml;
-</section>
+	<section id="spring.boot.timezone">
+		<title>设置默认时区</title>
+		<programlisting>
+    <![CDATA[ 
+package cn.netkiller;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableTransactionManagement
+@EnableFeignClients(basePackages = {"cn.netkiller.feign.*","cn.netkiller.openfeign.*"})
+@MapperScan("cn.netkiller.dao")
+public class Application {
+    @PostConstruct
+    void setDefaultTimezone() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+    ]]>
+		</programlisting>
+	</section>
+</chapter>

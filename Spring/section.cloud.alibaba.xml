@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="SpringCloudAlibaba">
+<chapter id="SpringCloudAlibaba"><?dbhtml dir="alibaba" ?>
 	<title>Spring Cloud Alibaba</title>
 	<section>
 		<title>安装 Nacos</title>
@@ -1201,4 +1201,4 @@ ribbon:
 			<para>最终 Openfeign 获得注册服务的时间是 Nacos + Gateway = 6ms</para>
 		</section>
 	</section>
-</section>
+</chapter>

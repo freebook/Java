@@ -1,5 +1,5 @@
-
-<section id="email">
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="email">
     <title>Spring boot with Email</title>
     <section>
         <title>Maven</title>
@@ -346,4 +346,4 @@ Date: Wed, 10 Aug 2016 06:38:00 GMT
         ]]>
         </screen>
     </section>
-</section>
+</chapter>

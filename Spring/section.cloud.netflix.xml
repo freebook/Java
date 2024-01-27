@@ -1,4 +1,4 @@
-<section id="netflix">
+<chapter id="netflix">
 	<title>Spring Cloud Netflix</title>
 	<section id="eureka.server">
 		<title>Eureka Server</title>
@@ -1737,4 +1737,4 @@ httpslb:
 			</programlisting>
 		</section>
 	</section>
-</section>
+</chapter>

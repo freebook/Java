@@ -1,5 +1,5 @@
-
-<section id="web3j">
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="web3j">
     <title>Springboot with Ethereum (web3j)</title>
     <section>
         <title>Maven</title>
@@ -71,4 +71,4 @@ Geth/v1.8.3-stable/linux-amd64/go1.10
         ]]>
         </screen>
     </section>
-</section>
+</chapter>

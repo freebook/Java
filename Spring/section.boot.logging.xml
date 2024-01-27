@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="logging">
+<chapter id="spring.boot.logging">
 	<title>Spring boot with Logging</title>
 	<para>通过命令行改变日志的输出级别</para>
 	<screen>
@@ -1725,4 +1725,4 @@ output {
 			</programlisting>
 		</section>
 	</section>
-</section>
+</chapter>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="https">
+<chapter id="https">
 	<title>Spring boot with HTTP2 SSL</title>
 	<section>
 		<title>生成自签名证书</title>
@@ -188,4 +188,4 @@ Pong%
 			]]>
 		</screen>
 	</section>
-</section>
+</chapter>

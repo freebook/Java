@@ -1,4 +1,4 @@
-<section id="config">
+<chapter id="config">
 	<title>Spring Cloud Config</title>
 	<section>
 		<title>Maven 项目 pom.xml 文件</title>
@@ -910,4 +910,4 @@ spring.datasource.password=xxxxxx
 			</programlisting>
 		</section>
 	</section>
-</section>
+</chapter>

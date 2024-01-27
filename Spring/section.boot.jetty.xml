@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="jetty">
+	<title>Spring boot with Jetty</title>
+	<para>使用 Jetty 替代 Tomcat</para>
+	<screen>
+	<![CDATA[
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-web</artifactId>
+<exclusions>
+	<!-- Exclude the Tomcat dependency -->
+	<exclusion>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-tomcat</artifactId>
+	</exclusion>
+</exclusions>
+</dependency>
+<!-- Use Jetty instead -->
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>		
+	]]>
+	</screen>
+</chapter>

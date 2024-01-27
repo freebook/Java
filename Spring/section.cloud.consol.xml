@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="consol" ?>
+<chapter id="index"><?dbhtml dir="consol" ?>
 	<title>Spring Cloud Consol</title>
 	<section>
 		<title>Spring Cloud Consul 配置</title>
@@ -644,4 +644,4 @@ public class TestController {
 		</section>
 	</section>
 
-</section>
+</chapter>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="boot" ?>
-	<title>Spring Boot</title>
-	<para>注意以下使用 Spring boot 2</para>
-	&section.boot.quickstart.xml;
+	&section.boot.maven.xml;
 	&section.boot.xml;
 	&section.boot.shutdown.xml;
 	&section.boot.properties.xml;
 	&section.boot.logging.xml;
 	&section.boot.undertow.xml;
+	&section.boot.jetty.xml;
 	&section.boot.http2.xml;
 	&section.boot.template.xml;	
 	&section.boot.datasource.xml;
@@ -33,4 +31,3 @@
 	&section.boot.web3j.xml;
 	&section.boot.record.xml;
 	&section.boot.aliyun.xml;
-</chapter>

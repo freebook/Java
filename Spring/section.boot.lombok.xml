@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="lombok">
+<chapter id="lombok">
 	<title>Spring boot with lombok</title>
 	<screen>
 		<![CDATA[
@@ -93,4 +93,4 @@ public class HelloController {
 		</screen>
 		<para></para>
 	</section>
-</section>
+</chapter>
