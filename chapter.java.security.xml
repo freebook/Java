@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="java.security">
+<section id="index"><?dbhtml dir="security" ?>
 	<title>java.security</title>
 	<section id="Security.getAlgorithms">
 		<title>列出 Java 支持的数字摘要算法</title>

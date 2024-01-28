@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="java/util" ?>
+<section id="index"><?dbhtml dir="util" ?>
 	<title>Util</title>
 	<section id="java.util.Properties">
 		<title>Properties 处理 *.properties 文件</title>

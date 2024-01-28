@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="java/lang/reflect" ?>
+<section id="index"><?dbhtml dir="reflect" ?>
 	<title>Reflection 反射</title>
 	<screen>
 this.getClass().getName() //当前Class名字
