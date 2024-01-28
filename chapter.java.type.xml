@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="type">
+<chapter id="type">
 	<title>数据类型</title>
 	<para>数据类型的最大值和最小值。</para>
 	<screen>
@@ -1930,4 +1930,4 @@ byte[] sum2 = list1.ToArray();
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

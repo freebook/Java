@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="SpringAuthorizationServer">
+<chapter id="SpringAuthorizationServer">
 	<title>Spring Authorization Server</title>
 	<para>Spring Authorization Server 是 Spring Security OAuth 替代品。</para>
 	<section id="oauth2.doc">
@@ -2339,4 +2339,4 @@ public class OAuth2LoginConfig {
 			</section>
 		</section>
 	</section>
-</section>
+</chapter>

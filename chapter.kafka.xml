@@ -269,3 +269,25 @@ public class KafkaConsumerThread implements Runnable {
 		</programlisting>
 	</section>
 </chapter>
+<chapter id="sdk">
+	<title>Software Development Kit</title>
+	<section>
+		<title>JAVE(Java Audio Video Encoder)</title>
+		<para>http://www.sauronsoftware.it/projects/jave/manual.php#10</para>
+	</section>
+	&chapter.google.xml;
+	&section.apache.mahout.xml;
+	<section id="hessian">
+		<title>Hessian</title>
+		<para> 基于Binary-RPC协议实现</para>
+	</section>
+	<section id="quartz-scheduler">
+		<title>quartz-scheduler</title>
+		<para>http://quartz-scheduler.org/</para>
+	</section>
+	<section id="Redisson">
+		<title>Redisson</title>
+		<para>http://redisson.org/</para>
+	</section>
+</chapter>
+	

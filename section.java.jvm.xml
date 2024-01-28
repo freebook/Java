@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="jvm" ?>
+<chapter id="index"><?dbhtml dir="jvm" ?>
 	<title>JVM</title>
 
 	<section>
@@ -854,10 +854,63 @@ oracle.net.jmod
 			</screen>
 		</section>
 	</section>
-	<section id="jar">
-		<title>jar</title>
-		<para>查看包中的文件列表 jar -tf package.war/package.jar</para>
-		<programlisting>
+	<section>
+		<title>Java 相关命令</title>
+		<section>
+			<title>jps</title>
+			<screen>
+		<![CDATA[
+参数	说明
+-l	输出主类全名或jar路径
+-q	只输出LVMID
+-m	输出JVM启动时传递给main()的参数
+-v	输出JVM启动时显示指定的JVM参数		
+		]]>
+			</screen>
+			<para></para>
+			<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> jps
+6560 Jps
+6273 Launcher
+6274 TestThread
+88034 Eclipse
+6404 XMLServerLauncher
+97828 org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar
+1176
+2891
+98015 BootLanguageServerBootApp
+
+neo@MacBook-Pro-M2 ~> jps -m
+6273 Launcher /Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/jps-builders.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/jps-builders-6.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/jps-javac-extension.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/util.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/util-8.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/util_rt.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/annotations.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/3rd-party-rt.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/protobuf.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/jps-model.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/javac2.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/forms_rt.jar:/Applications/IntelliJ IDEA CE.app/Contents/plugins/java/lib/aether-dependency-resolver.jar:/Applications/IntelliJ IDEA CE.app/Contents/lib/idea_rt.jar:/Applications/IntelliJ IDEA CE.ap
+6274 TestThread
+6562 Jps -m
+88034 Eclipse
+6404 XMLServerLauncher
+97828 org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar -configuration /Users/neo/Library/Application Support/Code/User/globalStorage/redhat.java/1.17.0/config_mac -data /Users/neo/Library/Application Support/Code/User/workspaceStorage/c0c3760503bc4a3db6b66b0155e50c5b/redhat.java/jdt_ws
+1176
+2891
+98015 BootLanguageServerBootApp
+
+neo@MacBook-Pro-M2 ~> jps -l
+6273 org.jetbrains.jps.cmdline.Launcher
+6274 cn.netkiller.TestThread
+88034 Eclipse
+6564 jdk.jcmd/sun.tools.jps.Jps
+6404 org.eclipse.lemminx.XMLServerLauncher
+97828 /Users/neo/.vscode/extensions/redhat.java-1.17.0-darwin-arm64/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar
+1176
+2891
+98015 org.springframework.ide.vscode.boot.app.BootLanguageServerBootApp		
+		]]>
+			</screen>
+		</section>
+
+
+		<section id="jar">
+			<title>jar</title>
+			<para>查看包中的文件列表 jar -tf package.war/package.jar</para>
+			<programlisting>
 		<![CDATA[
 $ /srv/java/bin/jar -tf mis.netkiller.cn-0.0.1.war |more
 META-INF/
@@ -868,12 +921,12 @@ WEB-INF/jsp/include/
 WEB-INF/jsp/system/
 WEB-INF/jsp/banner/
 		]]>
-		</programlisting>
-	</section>
-	<section id="jdeps">
-		<title>jdeps - Java class dependency analyzer.</title>
-		<para>包类依赖分析器</para>
-		<screen><![CDATA[
+			</programlisting>
+		</section>
+		<section id="jdeps">
+			<title>jdeps - Java class dependency analyzer.</title>
+			<para>包类依赖分析器</para>
+			<screen><![CDATA[
 [net@netkiller lib]$ jdeps jersey-client-1.18.1.jar
 jersey-client-1.18.1.jar -> not found
 jersey-client-1.18.1.jar -> /usr/java/jdk1.8.0_73/jre/lib/rt.jar
@@ -965,11 +1018,11 @@ jersey-client-1.18.1.jar -> /usr/java/jdk1.8.0_73/jre/lib/rt.jar
       -> javax.ws.rs.core                                   not found
 		
 		]]></screen>
-	</section>
-	<section id="jshell">
-		<title>JShell</title>
-		<para>JShell，即 Java Shell。从java9开始，java开始引入了 REPL（Read-Eval-Print Loop，读取-求值-输出 循环）工具</para>
-		<screen>
+		</section>
+		<section id="jshell">
+			<title>JShell</title>
+			<para>JShell，即 Java Shell。从java9开始，java开始引入了 REPL（Read-Eval-Print Loop，读取-求值-输出 循环）工具</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % jshell
 |  Welcome to JShell -- Version 12
@@ -977,10 +1030,10 @@ neo@MacBook-Pro ~ % jshell
 
 jshell> 		
 		]]>
-		</screen>
-		<section>
-			<title>/help 显示帮助信息</title>
-			<screen>
+			</screen>
+			<section>
+				<title>/help 显示帮助信息</title>
+				<screen>
 			<![CDATA[
 jshell> /help
 |  Type a Java language expression, statement, or declaration.
@@ -1047,9 +1100,9 @@ jshell> /help
 |  	a description of ways to re-evaluate previously entered snippets
 			
 			]]>
-			</screen>
-			<para>介绍信息</para>
-			<screen>
+				</screen>
+				<para>介绍信息</para>
+				<screen>
 			<![CDATA[
 jshell> /help intro
 |  
@@ -1067,29 +1120,29 @@ jshell> /help intro
 |  
 |  For a list of commands: /help			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>退出命令</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>退出命令</title>
+				<screen>
 			<![CDATA[
 jshell> /exit
 |  Goodbye
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-	</section>
-	<section id="jlink">
-		<title>jlink</title>
-		<para>使用 jlink 定自己的 jre</para>
-		<screen>
+		</section>
+		<section id="jlink">
+			<title>jlink</title>
+			<para>使用 jlink 定自己的 jre</para>
+			<screen>
 		<![CDATA[
 jlink --module-path jmods --add-modules java.desktop --output /tmp/jre-16.0.2	
 		]]>
-		</screen>
-		<para>查看输出结果</para>
-		<screen>
+			</screen>
+			<para>查看输出结果</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro-Neo ~ % ll /tmp/jre-16.0.2
 total 8
@@ -1101,14 +1154,15 @@ drwxr-xr-x  38 neo  wheel   1.2K  8 31 15:08 lib
 drwxr-xr-x   3 neo  wheel    96B  8 31 15:08 man
 -rw-r--r--   1 neo  wheel    93B  8 31 15:08 release		
 		]]>
-		</screen>
-		<para>查看 release 文件</para>
-		<screen>
+			</screen>
+			<para>查看 release 文件</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro-Neo ~ % cat /tmp/jre-16.0.2/release 
 JAVA_VERSION="16.0.2"
 MODULES="java.base java.datatransfer java.xml java.prefs java.desktop"		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
+</chapter>

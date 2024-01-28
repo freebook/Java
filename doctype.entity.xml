@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY book.appendix.xml		 		SYSTEM "book.appendix.xml">
 
+<!ENTITY part.java.xml			 		SYSTEM "part.java.xml">
 <!ENTITY chapter.java.xml		 		SYSTEM "chapter.java.xml">
-<!ENTITY section.java.install.xml 		SYSTEM "section.java.install.xml">
+<!ENTITY section.java.exception.xml 	SYSTEM "section.java.exception.xml">
+<!ENTITY section.java.runtime.xml	 	SYSTEM "section.java.runtime.xml">
 <!ENTITY section.java.jvm.xml		 	SYSTEM "section.java.jvm.xml">
 <!ENTITY chapter.java.type.xml		 	SYSTEM "chapter.java.type.xml">
 <!ENTITY section.java.controlflow.xml 	SYSTEM "section.java.controlflow.xml">
@@ -17,7 +19,6 @@
 <!ENTITY chapter.javax.crypto.xml		SYSTEM "chapter.javax.crypto.xml">
 <!ENTITY chapter.java.security.xml 		SYSTEM "chapter.java.security.xml">
 <!ENTITY chapter.java.reflect.xml 		SYSTEM "chapter.java.reflect.xml">
-<!ENTITY section.java.cmd.xml	 		SYSTEM "section.java.cmd.xml">
 
 <!ENTITY chapter.build.xml				SYSTEM "chapter.build.xml">
 <!ENTITY section.ant.xml				SYSTEM "build/section.ant.xml">

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="java" ?>
+	<title>Java 21</title>
+	&chapter.java.xml;
+	&chapter.build.xml;
+	&chapter.sdk.xml;
+</part>

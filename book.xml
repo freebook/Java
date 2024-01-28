@@ -35,7 +35,7 @@
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2015-2022</year>
+			<year>2015-<?dbtimestamp format="Y"?></year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 		<cover>
@@ -71,10 +71,9 @@
 	&book.preface.xml;
 	&book.dedication.xml;
 	<!-- =========================================================================== -->
-	&chapter.java.xml;
-	&chapter.build.xml;
-	&chapter.servlet.xml;
+	&part.java.xml;
 	&chapter.framework.xml;
+	&chapter.servlet.xml;	
 	&chapter.log.xml;
 	&chapter.json.xml;
 	&chapter.ampq.xml;
@@ -84,7 +83,6 @@
 	&chapter.apache.xml;
 	&chapter.cache.xml;
 	&chapter.kafka.xml;
-	&chapter.sdk.xml;
 	<!-- =========================================================================== -->
 	&part.android.xml;
 	<!-- &part.search.xml; -->
