@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="email">
+<chapter id="index"><?dbhtml dir="email" ?>
     <title>Spring boot with Email</title>
     <section>
         <title>Maven</title>

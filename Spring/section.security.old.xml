@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="2.x" ?>
+	<title>Spring boot with Spring security(2.x)</title>
+	<para>注意 Springboot 1.x</para>
+	<programlisting>
+			<![CDATA[
+# security.basic.enabled=false
+security.user.name=test
+security.user.password=passw0rdf
+security.user.role=USER
+			]]>
+	</programlisting>
+	<para>Springboot 1.x 可以在 appliction.properties 中加入</para>
+	<programlisting>
+			<![CDATA[
+security.basic.enabled=false
+			]]>
+	</programlisting>
+
+	<section id="spring-boot-starter-security">
+		<title>Spring security 静态配置例子</title>
+		<section>
+			<title>Maven</title>
+			<programlisting>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>netkiller.cn</groupId>
+	<artifactId>api.netkiller.cn</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>api.netkiller.cn</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.2.RELEASE</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-oracle</artifactId>
+			<version>1.0.0.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<!-- <version>12.1.0.1</version> -->
+			<version>11.2.0.3</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-velocity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source />
+					<target />
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Reource</title>
+			<para>src/main/resources/application.properties</para>
+			<para>添加默认用户，角色user,用户名neo,密码password</para>
+			<programlisting>
+			<![CDATA[
+security.user.name=neo
+security.user.password=password			
+security.user.role=USER
+			]]>
+			</programlisting>
+			<para>现在启动Application，然后尝试访问url，这时会弹出对话框，提示用户用户输入用户名与密码。使用上面的密码便可登陆。
+			</para>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+			<![CDATA[
+package api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan({ "api.config", "api.web", "api.rest", "api.service" })
+@EnableMongoRepositories
+@EnableJpaRepositories
+public class Application {
+
+	public @Bean WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurerAdapter() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**");
+			}
+		};
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>WebSecurityConfigurer</title>
+			<para>注意WebSecurityConfigurer必须在 ComponentScan 的扫描范围</para>
+			<programlisting>
+			<![CDATA[
+package api.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.inMemoryAuthentication().
+		withUser("user1").password("secret1").roles("USER")
+		.and().
+		withUser("user2").password("secret2").roles("USER")
+		.and().
+		withUser("admin").password("secret").roles("ADMIN");
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().anyRequest().fullyAuthenticated();
+		http.httpBasic();
+		http.csrf().disable();
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>RestController</title>
+			<programlisting>
+			<![CDATA[
+@RestController
+@RequestMapping("/service")
+public class UserService {
+    @RequestMapping(value = "/echo/{in}", method = RequestMethod.GET)
+    public String echo(@PathVariable(value = "in") final String in, @AuthenticationPrincipal final UserDetails user) {
+        return "Hello " + user.getUsername() + ", you said: " + in;
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<programlisting>
+			<![CDATA[
+curl -u user:password http://172.16.0.20:8080/index.html
+curl http://user:password@172.16.0.20:8080/index.html
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="spring.security.mongodb">
+		<title>Spring + Security + MongoDB</title>
+		<para>MongoDB 为 Security 用户认证提供数据存储。</para>
+		<section>
+			<title>Account</title>
+			<programlisting>
+				<![CDATA[
+package mis.domain;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+
+public class Administrator {
+	@Id
+	private String id;
+
+	@Indexed(unique = true)
+	private String username;
+	private String password;
+	private String authority;
+
+	public Administrator() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Administrator(String username, String password) {
+	    this.username = username;
+	    this.password = password;
+	  }
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", authority=" + authority + "]";
+	}
+}
+			
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>AccountRepository</title>
+			<programlisting>
+				<![CDATA[
+package mis.repository;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import mis.domain.Administrator;
+
+public interface AdministratorRepository extends MongoRepository<Administrator, String> {
+
+	public Administrator findByUsername(String username);
+
+}
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>WebSecurityConfiguration</title>
+			<programlisting>
+				<![CDATA[
+
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                // 配置授权请求规则
+                .authorizeRequests()
+                // 任何请求都需要认证
+                .anyRequest()
+                .authenticated()
+                // 使用and()方法连接多个配置
+                .and()
+                // 开启HTTP基本认证功能
+                .httpBasic();
+        return http.build();
+    }
+}
+				
+				]]>
+			</programlisting>
+			<para>Springboot 2.x</para>
+			<programlisting>
+				<![CDATA[
+package mis.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import mis.domain.Administrator;
+import mis.repository.AdministratorRepository;
+
+@Configuration
+class GlobalAuthenticationConfigurer extends GlobalAuthenticationConfigurerAdapter {
+
+	@Autowired
+	AdministratorRepository administratorRepository;
+
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService());
+	}
+
+	@Bean
+	UserDetailsService userDetailsService() {
+		return new UserDetailsService() {
+
+			@Override
+			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+				Administrator administrator = administratorRepository.findByUsername(username);
+				if (administrator != null) {
+					return new User(administrator.getUsername(), administrator.getPassword(), AuthorityUtils.createAuthorityList(administrator.getAuthority()));
+				} else {
+					throw new UsernameNotFoundException("could not find the administrator '" + username + "'");
+				}
+			}
+
+		};
+	}
+}
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	public WebSecurityConfigurer() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// http.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic().and().csrf().disable();
+		
+		// http.authorizeRequests().antMatchers("/", "/index.html", "/css/**",
+		// "/js/**","/static/**","/setup.html").permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login.html").permitAll().and().logout().permitAll().and().httpBasic();
+		// http.authorizeRequests().antMatchers("/**"
+		// ).permitAll().and().httpBasic();
+
+		http.authorizeRequests().antMatchers("/ping", "/v1/*/ping", "/v1/public/**").permitAll().anyRequest().authenticated().and().rememberMe().and().httpBasic().and().csrf().disable();
+
+	}
+}
+				]]>
+			</programlisting>
+		</section>
+	</section>
+
+
+	<section id="WebSecurity">
+		<title>Spring Boot with Web Security(2.x)</title>
+		<section id="EnableWebSecurity">
+			<title>EnableWebSecurity</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	public WebSecurityConfig() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http
+	        .authorizeRequests()
+	            .antMatchers("/", "/about.html", "/doc/**").permitAll()
+	            .anyRequest().authenticated()
+	            .and()
+	        .formLogin()
+	            .loginPage("/login.html")
+	            .permitAll()
+	            .and()
+	        .logout()
+	            .permitAll();
+           
+	}
+	
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER")
+                .and()
+                .withUser("admin").password("admin").roles("ADMIN");
+
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Web静态资源</title>
+
+			<para>用于Web静态资源的权限控制</para>
+			<programlisting>
+			<![CDATA[
+package com.example.api.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/static/**", "/**/*.jsp");
+	}
+
+	protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+		auth.inMemoryAuthentication().withUser("user1").password("secret1").roles("USER").and().withUser("user2").password("secret2").roles("USER").and().withUser("admin").password("secret").roles("ADMIN");
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().anyRequest().fullyAuthenticated();
+		http.httpBasic();
+		http.csrf().disable();
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>启动 Springboot 可以看到类似日志</para>
+			<screen>
+		<![CDATA[
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/**/json'], []
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/about'], []
+2018-10-12 18:01:40.692  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/test/hello'], []
+2018-10-12 18:01:40.693  INFO 4722 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/web/**'], []		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>正则匹配</title>
+			<programlisting>
+			<![CDATA[
+@Override
+public void configure(WebSecurity web) throws Exception {
+    web.ignoring().regexMatchers(XXXXX);
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>登陆页面，失败页面，登陆中页面</title>
+			<programlisting>
+			<![CDATA[
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/**").hasRole("USER").and().formLogin().usernameParameter("username") // default is username
+				.passwordParameter("password") // default is password
+				.loginPage("/authentication/login") // default is /login with an HTTP get
+				.failureUrl("/authentication/login?failed") // default is /login?error
+				.loginProcessingUrl("/authentication/login/process"); // default is /login
+
+	}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="corsConfigurationSource()">
+			<title>CORS</title>
+			<programlisting>
+		<![CDATA[
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+ 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and()
+            //other config
+    }
+ 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource()
+    {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://example.com"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+}		
+		]]>
+			</programlisting>
+		</section>
+		<section id="frameOptions">
+			<title>X-Frame-Options 安全</title>
+			<para>X-Frame-Options: SAMEORIGIN</para>
+			<programlisting>
+		<![CDATA[
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+			// ...
+			.headers()
+				.frameOptions().sameOrigin()
+				.httpStrictTransportSecurity().disable();
+	}
+}		
+		]]>
+			</programlisting>
+
+			<para>安全配置 X-FRAME-OPTIONS 指定允许iframe访问的域名</para>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.api.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http.headers().frameOptions().disable().addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM netkiller.cn")).and().
+			csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/","/ping","/v1/*/ping","/public/**","/your/**" ).permitAll()
+			.antMatchers("/v1/**").authenticated().
+			anyRequest().permitAll().and().
+			httpBasic();
+	}
+
+}
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="HttpSecurity">
+		<title>访问控制列表（Access Control List，ACL）</title>
+
+		<section id="antMatchers">
+			<title>antMatchers</title>
+			<para>/** 表示放行所有请求URL</para>
+			<programlisting>
+			<![CDATA[
+http.authorizeRequests().antMatchers("/**" ).permitAll();		
+			]]>
+			</programlisting>
+			<para>匹配精确的URL地址 "/","/products","/product/show/*","/css/**" </para>
+			<programlisting>
+			<![CDATA[
+	@Override
+	protected void configure(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity
+            .authorizeRequests().antMatchers("/","/products","/product/show/*","/css/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin().loginPage("/login").permitAll()
+            .and()
+            .logout().permitAll();
+ 
+   httpSecurity.csrf().disable();
+   httpSecurity.headers().frameOptions().disable();
+}			
+			]]>
+			</programlisting>
+		</section>
+
+
+		<section id="httpBasic">
+			<title>HTTP Auth</title>
+			<programlisting>
+			<![CDATA[
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/ping","/v1/*/ping","/v1/public/**" ).permitAll()
+		.anyRequest().authenticated()
+		.and().rememberMe().and().httpBasic()
+		.and().csrf().disable();
+	}
+			]]>
+			</programlisting>
+		</section>
+		<section id="HttpMethod">
+			<title>Rest</title>
+			<programlisting>
+			<![CDATA[
+protected void configure(HttpSecurity http) throws Exception {
+    http
+      .csrf().disable()
+      .authorizeRequests()
+        .antMatchers(HttpMethod.POST, "/api/**").authenticated()
+        .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
+        .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
+        .anyRequest().permitAll()
+        .and()
+      .httpBasic().and()
+      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+}
+			]]>
+			</programlisting>
+		</section>
+		<section id="hasRole">
+			<title>hasRole</title>
+			<programlisting>
+			<![CDATA[
+		
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+       
+      http.authorizeRequests()
+        .antMatchers("/", "/member").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
+        .and().formLogin().loginPage("/login")
+        .usernameParameter("sso").passwordParameter("password")
+        .and().exceptionHandling().accessDeniedPage("/403");
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section id="hasAnyRole">
+			<title>hasAnyRole()</title>
+			<programlisting>
+			<![CDATA[
+ 	@Autowired
+    private AccessDeniedHandler accessDeniedHandler;
+    			
+	@Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http.csrf().disable()
+                .authorizeRequests()
+					.antMatchers("/", "/home", "/about").permitAll()
+					.antMatchers("/admin/**").hasAnyRole("ADMIN")
+					.antMatchers("/user/**").hasAnyRole("USER")
+					.anyRequest().authenticated()
+                .and()
+                .formLogin()
+					.loginPage("/login")
+					.permitAll()
+					.and()
+                .logout()
+					.permitAll()
+					.and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="withUser">
+			<title>withUser</title>
+			<section>
+				<title>添加用户</title>
+				<programlisting>
+			<![CDATA[
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER");
+
+    }
+			]]>
+				</programlisting>
+
+			</section>
+
+			<section id="withUser">
+				<title>添加多个用户，并指定角色</title>
+
+				<para>添加多个用户</para>
+
+				<programlisting>
+			<![CDATA[
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+        auth.inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER")
+                .and()
+                .withUser("admin").password("password").roles("ADMIN");
+    }		
+			]]>
+				</programlisting>
+
+				<programlisting>
+			<![CDATA[
+	
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER")
+                .and()
+                .withUser("admin").password("admin").roles("ADMIN")
+                .and()
+                .withUser("admin").password("super").roles("ADMIN","SYS","DBA")
+                ;
+    }
+			]]>
+				</programlisting>
+			</section>
+			<section id="getAuthentication">
+				<title>获取当前用户</title>
+				<programlisting>
+				<![CDATA[
+Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+String currentPrincipalName = authentication.getName();
+				]]>
+				</programlisting>
+			</section>
+		</section>
+
+
+	</section>
+</chapter>

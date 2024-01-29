@@ -15,6 +15,8 @@
 <part id="index"><?dbhtml dir="security" ?>
 	<title>Spring Security</title>
 	&chapter.security.xml;
+	&section.security.oauth.xml;
+	&section.security.old.xml;
 </part>
 <part id="index"><?dbhtml dir="cloud" ?>
 	<title>Spring Cloud</title>

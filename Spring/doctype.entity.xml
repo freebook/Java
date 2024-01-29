@@ -60,6 +60,7 @@
 
 <!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 <!ENTITY section.security.oauth.xml		SYSTEM "section.security.oauth.xml">
+<!ENTITY section.security.old.xml		SYSTEM "section.security.old.xml">
 
 <!ENTITY chapter.data.xml				SYSTEM "chapter.data.xml">
 <!ENTITY section.data.mongodb.xml		SYSTEM "section.data.mongodb.xml">

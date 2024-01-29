@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="springboot.swagger2">
+<chapter id="index"><?dbhtml dir="swagger" ?>
 	<title>Spring boot with Swagger</title>
 	<section>
 		<title>Swagger3</title>
@@ -149,7 +149,8 @@ public class HelloController {
 	</section>
 	<section>
 		<title>@Api()</title>
-		<para>用于类；表示标识这个类是swagger的资源tags,value 是说明，可以使用tags替代, tags如果有多个值，生成多个list</para>
+		<para>用于类；表示标识这个类是swagger的资源tags,value 是说明，可以使用tags替代,
+			tags如果有多个值，生成多个list</para>
 		<programlisting>
 		<![CDATA[
 @Api(value="用户控制器",tags={"用户操作接口"})
@@ -352,12 +353,12 @@ public class TestController {
 		]]>
 		</programlisting>
 	</section>
-</chapter>
-<chapter id="springboot.knife4j">
-	<title>Spring boot with knife4j</title>
-	<section>
-		<title>maven</title>
-		<programlisting>
+
+	<section id="springboot.knife4j">
+		<title>Spring boot with knife4j</title>
+		<section>
+			<title>maven</title>
+			<programlisting>
 		<![CDATA[
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
@@ -365,11 +366,11 @@ public class TestController {
             <version>4.4.0</version>
         </dependency>		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Knife4jConfiguration</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Knife4jConfiguration</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.config;
 
@@ -409,11 +410,11 @@ public class Knife4jConfiguration {
 
 }		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>application.properties</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
 		<![CDATA[
 # springdoc-openapi项目配置
 springdoc.swagger-ui.path=/swagger-ui.html
@@ -424,6 +425,7 @@ springdoc.api-docs.path=/v3/api-docs
 knife4j.enable=true
 knife4j.setting.language=zh_cn		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
 </chapter>

@@ -31,7 +31,8 @@ oauth2.0提供了四种授权模式，开发者可以根据自己的业务情况
 			<title>grant_type</title>
 			<para>client_credentials</para>
 			<screen>
-				grant_type = 'client_credentials' 模式不需要用户去资源服务器登录并授权, 因为客户端(client)已经有了访问资源服务器的凭证(credentials).
+				grant_type = 'client_credentials' 模式不需要用户去资源服务器登录并授权,
+				因为客户端(client)已经有了访问资源服务器的凭证(credentials).
 				所以当用户访问时,由client直接向资源服务器获取access_token并访问资源即可.
 			</screen>
 		</section>
@@ -836,7 +837,9 @@ INSERT INTO users (user_id, username, password, enabled) VALUES
 	('1', 'netkiller@msn.com', '$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS', true);
 				]]>
 					</programlisting>
-					<para>此处密码 $2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS 请使用上面提供的工具生成。</para>
+					<para>此处密码
+						$2a$10$Cyj3hM39V34r5pMeQ.Y9peuUqYMBSvsJ7GTBgp4.stWaTtWMboYGS
+						请使用上面提供的工具生成。</para>
 				</section>
 				<section>
 					<title>Test</title>
@@ -1313,7 +1316,8 @@ curl -s  -X POST --user 'api:secret' -d 'grant_type=refresh_token&client_id=api&
 			<title>Spring boot with Oauth2 jwt 非对称证书</title>
 			<section>
 				<title>创建证书</title>
-				<para>创建证书 keytool -genkeypair -alias jwt -keyalg RSA -keypass passw0rd -keystore jwt.jks -storepass passw0rd	</para>
+				<para>创建证书 keytool -genkeypair -alias jwt -keyalg RSA -keypass
+					passw0rd -keystore jwt.jks -storepass passw0rd	</para>
 				<programlisting>
 		<![CDATA[
 neo@MacBook-Pro /tmp/oauth % keytool -genkeypair -alias jwt -keyalg RSA -keypass passw0rd -keystore jwt.jks -storepass passw0rd
@@ -1333,7 +1337,8 @@ Is CN=Neo Chen, OU=netkiller.cn, O=netkiller.cn, L=Shenzhen, ST=Guangdong, C=CN 
   [no]:  yes	
 		]]>
 				</programlisting>
-				<para>该命令将生成一个名为jwt.jks的文件，其中包含我们的密钥 - 公钥和私钥。 还要牢记keypass和storepass密码。</para>
+				<para>该命令将生成一个名为jwt.jks的文件，其中包含我们的密钥 - 公钥和私钥。
+					还要牢记keypass和storepass密码。</para>
 				<para>导出公钥，接下来，我们需要从刚刚生成的JKS中导出我们的公钥，我们可以使用下面的命令来实现：</para>
 				<screen>
 		<![CDATA[
@@ -2055,7 +2060,8 @@ MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=pas
 				</screen>
 				<para>将Token写入到 http 头</para>
 				<screen>
-					headers.set("Authorization","Bearer "+"6296057a-ed06-4899-9adc-1993ba7a4946");
+					headers.set("Authorization","Bearer
+					"+"6296057a-ed06-4899-9adc-1993ba7a4946");
 				</screen>
 				<para>启动 client 项目</para>
 				<screen>
@@ -2063,14 +2069,16 @@ MacBook-Pro:Application neo$ curl -X POST --user 'api:secret' -d 'grant_type=pas
 				</screen>
 				<para>curl 测试</para>
 				<screen>
-					MacBook-Pro:Application neo$ curl http://localhost:8080/client/token.json
+					MacBook-Pro:Application neo$ curl
+					http://localhost:8080/client/token.json
 					200 Hello world !
 				</screen>
 			</section>
 		</section>
 		<section id="oauth.self-sign">
 			<title>自签名证书信任问题</title>
-			<subtitle>unable to find valid certification path to requested target</subtitle>
+			<subtitle>unable to find valid certification path to requested target
+			</subtitle>
 			<programlisting>
 			<![CDATA[
 package example.controller;

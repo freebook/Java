@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="scheduling">
+<chapter id="index"><?dbhtml dir="scheduling" ?>
 	<title>Spring boot with Scheduling</title>
 	<para>项目中经常会用到计划任务，spring Boot 中通过@EnableScheduling启用计划任务，再通过@Scheduled注解配置计划任务如果运行。</para>
 	<section>
