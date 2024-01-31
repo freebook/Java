@@ -128,7 +128,7 @@ ResponseEntity<List> responseEntity = restClient.get()
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>onStatus</title>
 		<programlisting>
 		<![CDATA[
 		ResponseEntity<JsonObject> responseEntity = restClient.get()

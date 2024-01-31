@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="miscellaneous" ?>
-	<title>杂项 Miscellaneous</title>
+<chapter id="index"><?dbhtml dir="util" ?>
+	<title>Spring 工具集</title><!-- Miscellaneous -->
 	<section id="UriComponents">
 		<title>URL 拼装/解析</title>
 		<programlisting>
@@ -102,7 +102,7 @@ String locationUri = ServletUriComponentsBuilder
 		</programlisting>
 	</section>
 
-	<section>
+	<section id="PathPattern">
 		<title>URL 路径相关</title>
 		<para>过滤路径</para>
 		<programlisting>
@@ -138,6 +138,9 @@ String locationUri = ServletUriComponentsBuilder
         return chain.filter(exchange);		
 		]]>
 		</programlisting>
-	</section>
-	&chapter.tomcat.xml;
+	</section>	
+	&section.mvc.resttemplate.xml;
+	&section.mvc.restclient.xml;
+	&section.webflux.webclient.xml;
+
 </chapter>

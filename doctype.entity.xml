@@ -30,7 +30,7 @@
 
 <!ENTITY chapter.cache.xml			 	SYSTEM "chapter.cache.xml">
 
-<!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
+<!-- <!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml"> -->
 <!ENTITY section.struts.xml				SYSTEM "framework/section.struts.xml">
 <!ENTITY section.play.xml				SYSTEM "framework/section.play.xml">
 

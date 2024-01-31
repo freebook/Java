@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="webflux.webclient">
+	<title>WebClient</title>
+	<section>
+		<title>配置 WebClient</title>
+		<programlisting>
+			<![CDATA[
+@Configuration
+public class WebConfig {
+
+  @Bean
+  public WebClient webClient() {
+
+    WebClient webClient = WebClient.builder()
+      .baseUrl("http://localhost:8080")
+      .defaultCookie("cookie-name", "cookie-value")
+      .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+      .build();
+  }
+}			
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>@Controller/@RestController 实例</title>
+
+		<programlisting>
+		<![CDATA[
+    @GetMapping("webclient")
+    public Mono<String> webclient() {
+        WebClient webClient = WebClient.create("http://localhost:8080");
+        Mono<String> response = webClient
+                .get().uri("/mock/mono")
+                .retrieve()
+                .bodyToMono(String.class);
+        response.subscribe(System.out::println);
+        return response;
+    }
+		]]>
+		</programlisting>
+		<para>会返结果</para>
+		<programlisting>
+			<![CDATA[
+public Mono<ResponseEntity<Employee>> createEmployee(Employee newEmployee) {
+
+  return webClient.post()
+    .uri("/employees")
+    .contentType(MediaType.APPLICATION_JSON)
+    .bodyValue(newEmployee)
+    .retrieve()
+    .toEntity(Employee.class);
+}
+
+
+
+@PostMapping("/create")
+public Mono<ResponseEntity<?>> createEmployee(@RequestBody Employee newEmployee) {
+
+  return employeeService.createEmployee(newEmployee)
+    .map(responseEntity -> {
+      if (responseEntity.getStatusCode().is2xxSuccessful()) {
+        return ResponseEntity.ok(responseEntity.getBody());
+      } else {
+        return ResponseEntity.status(responseEntity.getStatusCode())
+          .body("Failed to create employee");
+      }
+    })
+    .onErrorResume(exception -> {
+      return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Internal Server Error: " + exception.getMessage()));
+    });
+}			
+			]]>
+		</programlisting>
+	</section>
+	<section id="webclient.get">
+		<title>Get 请求实例</title>
+		<programlisting>
+		<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri("/students")
+    .retrieve()
+    .bodyToFlux(Student.class);		
+			]]>
+		</programlisting>
+	</section>
+	<section id="webclient.uri">
+		<title>URI 参数</title>
+		<para>字符串拼接方式</para>
+		<programlisting>
+			<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri("/students/" + studentId)
+    .retrieve()
+    .bodyToMono(Student.class);
+			]]>
+		</programlisting>
+		<para>通过 uriBuilder 组装 Uri 参数</para>
+		<programlisting>
+			<![CDATA[
+String endpoint = "/employees";
+        
+UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(endpoint)
+    .queryParam("param1", "value1")
+    .queryParam("param2", "value2");
+
+webClient.post()
+        .uri(uriBuilder.build().toUri())
+        .bodyValue(new Employee(...))
+        .retrieve()
+        .bodyToMono(Employee.class);
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder
+        .path("/student/{studentId}")
+        .build(studentId))
+    .retrieve()
+    .bodyToMono(Student.class);		
+    
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder
+        .path("/student/{studentId}/assignments/{assignmentId}")
+        .build(studentId, assignmentId))
+    .retrieve()
+    .bodyToMono(Student.class);
+			]]>
+		</programlisting>
+		<para>uriTemplate 组装 Uri 参数</para>
+		<programlisting>
+			<![CDATA[
+UriTemplate uriTemplate = new UriTemplate(
+    "/student/{studentId}/assignments/{assignmentId}");
+
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriTemplate.expand(studentId, assignmentId))
+    .retrieve()
+    .bodyToMono(Student.class);			
+			]]>
+		</programlisting>
+	</section>
+	<section id="webclient.query">
+		<title>查询参数</title>
+		<para>http://localhost:8080/students?firstName=Jon&amp;year=1996
+		</para>
+		<programlisting>
+			<![CDATA[
+String firstName = "Jon";
+String year = "1996";
+
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder.path("/students")
+        .queryParam("firstName", firstName)
+        .queryParam("year", year)
+        .build())
+    .retrieve()
+    .bodyToMono(Student.class);			
+			]]>
+		</programlisting>
+		<para>http://localhost:8080/students?year=1995,1996,1997</para>
+		<programlisting>
+			<![CDATA[
+WebClient.create("http://localhost:8080")
+    .get()
+    .uri(uriBuilder -> uriBuilder.path("/students")
+        .queryParam("year", String.join(",", "1995", "1996", "1997"))
+        .build())
+    .retrieve()
+    .bodyToMono(Student.class);			
+			]]>
+		</programlisting>
+		<para><![CDATA["/products/?category=Phones&category=Tablets"]]></para>
+		<programlisting>
+			<![CDATA[
+webClient.get()
+  .uri(uriBuilder - > uriBuilder
+    .path("/products/")
+    .queryParam("category", "Phones", "Tablets")
+    .build())
+  .retrieve()
+  .bodyToMono(String.class)
+  .onErrorResume(e -> Mono.empty())
+  .block();			
+			]]>
+		</programlisting>
+	</section>
+	<section id="webclient.post">
+		<title>Post 操作演示</title>
+		<programlisting>
+			<![CDATA[
+Employee newEmployee = ...;  //Create a new employee object
+			
+webClient.post()
+  .uri("/employees")
+  .bodyValue(BodyInserters.fromValue(newEmployee))
+  .retrieve()
+  .toEntity(Employee.class)   //Change here
+  .subscribe(
+    responseEntity -> {
+      // Handle success response here
+      HttpStatusCode status = responseEntity.getStatusCode();
+      URI location = responseEntity.getHeaders().getLocation();
+      Employee createdEmployee = responseEntity.getBody();    // Response body
+      // handle response as necessary
+    },
+    error -> {
+      // Handle the error here
+      if (error instanceof WebClientResponseException) {
+        WebClientResponseException ex = (WebClientResponseException) error;
+        HttpStatusCode status = ex.getStatusCode();
+        System.out.println("Error Status Code: " + status.value());
+        //...
+      } else {
+        // Handle other types of errors
+        System.err.println("An unexpected error occurred: " + error.getMessage());
+      }
+    }
+  );			
+			]]>
+		</programlisting>
+	</section>
+	<section id="webclient.post.form">
+		<title>Post 表单数据</title>
+		<programlisting>
+			<![CDATA[
+@Service
+public class EmployeeService {
+
+  private final WebClient webClient;
+
+  @Autowired
+  public EmployeeService(WebClient webClient) {
+      this.webClient = webClient;
+  }
+
+  public Mono<Employee> createEmployee(Map<String, String> formParams) {
+    return webClient.post()
+      .uri("/employees")
+      .body(BodyInserters.fromFormData("id", formParams.get("id"))
+        .with("name", formParams.get("name"))
+        .with("status", formParams.get("status")))
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
+          // Handle 4xx client errors here
+      })
+      .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
+          // Handle 5xx server errors here
+      })
+      .toEntity(Employee.class)
+      .flatMap(responseEntity -> Mono.justOrEmpty(responseEntity.getBody()));
+  }
+}			
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+        WebClient client = WebClient.create("https://www.netkiller.cn");
+        FormInserter formInserter = fromMultipartData("name","neo")
+                .with("age",19)
+                .with("map",ImmutableMap.of("sex","F"))
+                .with("file",new File("/tmp/netkiler.doc"));
+        Mono<String> result = client.post()
+                .uri("/article/index/{id}.html", 256)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(formInserter)
+                //.bodyValue(ImmutableMap.of("name","neo"))
+                .retrieve()
+                .bodyToMono(String.class);
+        result.subscribe(System.err::println);			
+			]]>
+		</programlisting>
+	</section>
+	<section id="webclient.post.multipart">
+		<title>上传文件</title>
+		<programlisting>
+			<![CDATA[
+MultipartBodyBuilder builder = new MultipartBodyBuilder();
+
+builder.part("file", new FileSystemResource("/tmp/file.txt"));
+builder.part("id", "190001", MediaType.TEXT_PLAIN);
+builder.part("name", "Lokesh", MediaType.TEXT_PLAIN);
+builder.part("status", "active", MediaType.TEXT_PLAIN);
+
+Then we can submit the multipart form data by using the method BodyInserters.fromMultipartData(builder.build()) and send a normal request as in the previous examples.
+
+webClient.post()
+    .uri("/employees")
+    .contentType(MediaType.MULTIPART_FORM_DATA)
+    .body(BodyInserters.fromMultipartData(builder.build()))
+    .retrieve()
+    .toEntity(Employee.class)
+    .doOnError(WriteTimeoutException.class, ex -> {
+      System.err.println("WriteTimeout");
+    })
+    .subscribe(responseEntity -> {
+      System.out.println("Status: " + responseEntity.getStatusCode().value());
+      System.out.println("Location URI: " + responseEntity.getHeaders().getLocation().toString());
+      System.out.println("Created New Employee : " + responseEntity.getBody());
+    });			
+			]]>
+		</programlisting>
+	</section>
+	<section id="webclient.header">
+		<title>设置 HTTP 头</title>
+		<programlisting>
+			<![CDATA[
+webClient.get()
+    .uri("/employees")
+    .bodyValue(new Employee(...))
+    .header("Authorization", "Bearer auth-token")
+    .header("User-Agent", "Mobile App 1.0")
+    .retrieve()			
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+	WebClient.builder()
+        .defaultCookie("session","f1d83210-0fc9-4689-82ab-05df70da3367")
+        .defaultUriVariables(ImmutableMap.of("name","kl"))
+        .defaultHeader("header","neo")
+        .defaultHeaders(httpHeaders -> {
+            httpHeaders.add("header1","neo");
+            httpHeaders.add("header2","chen");
+        })
+        .defaultCookies(cookie ->{
+            cookie.add("cookie1","neo");
+            cookie.add("cookie2","netkiller");
+        })
+        .baseUrl("https://www.netkiller.cn")
+        .build();			
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>websocket</title>
+		<programlisting>
+			<![CDATA[
+WebSocketClient client = new ReactorNettyWebSocketClient();
+URI url = new URI("ws://localhost:8080/path");
+client.execute(url, session ->
+        session.receive()
+                .doOnNext(System.out::println)
+                .then());			
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>同步阻塞等待结果</title>
+		<programlisting>
+			<![CDATA[
+ WebClient client =  WebClient.create("http://www.kailing.pub");
+      String result = client .get()
+                .uri("/article/index/arcid/{id}.html", 256)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        System.err.println(result);			
+			]]>
+		</programlisting>
+		<para>避免单独阻塞每个同步响应</para>
+		<programlisting>
+			<![CDATA[
+      WebClient client =  WebClient.create("http://www.kailing.pub");
+        Mono<String> result1Mono = client .get()
+                .uri("/article/index/arcid/{id}.html", 255)
+                .retrieve()
+                .bodyToMono(String.class);
+        Mono<String> result2Mono = client .get()
+                .uri("/article/index/arcid/{id}.html", 254)
+                .retrieve()
+                .bodyToMono(String.class);
+        Map<String,String>  map = Mono.zip(result1Mono, result2Mono, (result1, result2) -> {
+            Map<String, String> arrayList = new HashMap<>();
+            arrayList.put("result1", result1);
+            arrayList.put("result2", result2);
+            return arrayList;
+        }).block();
+        System.err.println(map.toString());			
+			]]>
+		</programlisting>
+	</section>
+</section>

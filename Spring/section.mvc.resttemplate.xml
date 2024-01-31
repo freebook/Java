@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="RestTemplate" ?>
+<section id="index"><?dbhtml dir="RestTemplate" ?>
 	<title>String boot with RestTemplate</title>
 	<subtitle>RestTemplate - Spring Restful</subtitle>
 	<para>RestTemplate 是 Spring Restful Client 用于调用restful接口</para>
@@ -769,4 +769,4 @@ public class RestTemplateConfiguration {
 			</programlisting>
 		</section>
 	</section>
-</chapter>
+</section>

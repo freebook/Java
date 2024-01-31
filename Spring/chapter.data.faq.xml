@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="data.faq">
 	<title>Spring Data FAQ</title>
+	<section id="faq.Oracle10gDialect">
+		<title>org.hibernate.dialect.Oracle10gDialect does not support
+			identity key generation
+		</title>
+		<screen>
+			<![CDATA[
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+换成
+@GeneratedValue(strategy=GenerationType.AUTO)
+
+or
+
+@Id
+@Column(name = "ID")
+@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+@SequenceGenerator(name = "id_Sequence", sequenceName = "ID_SEQ")
+private int id;			
+			]]>
+		</screen>
+	</section>
+	<section id="No identifier specified for entity">
+		<title>No identifier specified for entity</title>
+		<para>在实体中使用</para>
+		<screen>
+		<![CDATA[
+import javax.persistence.Id;
+替换
+import org.springframework.data.annotation.Id;		
+		]]>
+		</screen>
+	</section>
 	<section>
 		<title>No identifier specified for entity</title>
 		<para></para>
@@ -90,6 +121,295 @@ CHANGE COLUMN `user_id` `user_id` INT NULL DEFAULT NULL ;
 		<programlisting>
 			<![CDATA[
 			
+			]]>
+		</programlisting>
+	</section>
+	<section id="java.sql.SQLRecoverableException: IO Error: The Network Adapter
+			could not establish the connection">
+		<title>java.sql.SQLRecoverableException: IO Error: The Network Adapter
+			could not establish the connection
+		</title>
+		<para>分析，Oracle 数据库无法连接，确认用户密码正确，日志提示 The Network Adapter could not
+			establish the connection 看上去更像网络故障，同事还有下面两条日志。
+		</para>
+		<screen>
+			Caused by: oracle.net.ns.NetException: The Network Adapter could not
+			establish the connection
+			Caused by: java.net.SocketTimeoutException: connect timed out
+		</screen>
+		<para>通过 ss 命令可以看到有tcp操作，可以排除不是网络故障。</para>
+		<screen>
+			[root@iZ62m7362hwZ ~]# ss -ant | grep 1521
+			TIME-WAIT 0 0 47.90.18.24:45780 15.84.21.59:1521
+		</screen>
+		<para>检查你的用户名与密码是否含有特殊字符，特殊字符需要使用转义字符"\".</para>
+		<screen>
+			spring.datasource.url=jdbc:oracle:thin:neo/\[y7\$ghM\~3b@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=215.184.211.50)(PORT=1521))(LOAD_BALANCE=YES)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))
+			#spring.datasource.username=neo
+			#spring.datasource.password=[y7$ghM~3b
+		</screen>
+		<para>将用户名写入spring.datasource.url中，格式jdbc:oracle:thin:用户名/密码@(......)，禁用spring.datasource.username和spring.datasource.password两个配置项。
+		</para>
+	</section>
+	<section>
+		<title>org.postgresql.util.PSQLException: FATAL: no pg_hba.conf entry
+			for host "172.16.0.3", user "test", database "test ", SSL off
+		</title>
+		<para>确认 pg_hba.conf 配置正确，并且 psql 可以正常链接，spring仍然报错</para>
+		<screen>
+			spring.datasource.url=jdbc:postgresql://47.90.18.244:5432/test
+			spring.datasource.username=test
+			spring.datasource.password=test
+			spring.jpa.show-sql=true
+			spring.jpa.hibernate.ddl-auto=create-drop
+			spring.jpa.generate-ddl=true
+		</screen>
+		<para>请检查 jdbc:postgresql://47.90.18.244:5432/test
+			后面test是否多了一个空格或者有特殊字符。删除test后面的空格可以解决
+		</para>
+	</section>
+	<section>
+		<title>Spring boot 怎样显示执行的SQL语句</title>
+		<programlisting>
+			<![CDATA[
+spring.jpa.show-sql=true
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Cannot determine embedded database driver class for database
+			type NONE
+		</title>
+		<para>错误如下</para>
+		<screen>
+			<![CDATA[
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Cannot determine embedded database driver class for database type NONE
+
+Action:
+
+If you want an embedded database please put a supported one on the classpath. If you have database settings to be loaded from a particular profile you may need to active it (no profiles are currently active).
+			
+			]]>
+		</screen>
+		<para>背景：Maven 项目中并不包含任何与数据库有关的依赖。问题出在另一个公共包中如： common-version.jar
+		</para>
+		<para>解决方案：排除不需要的包</para>
+		<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>cn.netkiller</groupId>
+			<artifactId>common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-data-jpa</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-jdbc</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+			]]>
+		</screen>
+
+	</section>
+	<section>
+		<title>Spring boot / Spring cloud 时区差8个小时</title>
+		<para>经过检查：操作系统时区 CST，数据库是 SYSTEM，Spring boot 获取时间相差8个小时。</para>
+		<para>分析：认为是 @JsonFormat 格式化造成的。</para>
+		<para>解决方案：在 @JsonFormat 中增加时区设置。</para>
+		<programlisting>
+			<![CDATA[
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+	public Date ctime;			
+			]]>
+		</programlisting>
+		<para>期间尝试多种方式无效:</para>
+		<literallayout>
+			<![CDATA[
+# 下面例子无效			
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.mvc.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=GMT+8			
+
+# 下面方法无效
+spring.datasource.url=jdbc:mysql://119.29.241.95:3306/5kwords?useSSL=false&serverTimezone=UTC
+
+# 下面配置仍然无效
+spring.jpa.properties.jadira.usertype.autoRegisterUserTypes = true
+spring.jpa.properties.jadira.usertype.javaZone=Asia/Shanghai
+spring.jpa.properties.jadira.usertype.databaseZone=Asia/Shanghai
+			]]>
+		</literallayout>
+		<para>根源在 Json 转化。</para>
+		<para>完成的例子</para>
+		<programlisting>
+			<![CDATA[
+package common.domain;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name = "article", catalog = "cms")
+public class Article implements Serializable {
+	private static final long serialVersionUID = 7603772682950271321L;
+
+	@Id
+	public int id;
+	public String title;
+	@Column(name = "short")
+	public String shortTitle;
+	public String description;
+	public String author;
+	public String star;
+	public String tags;
+	public boolean status;
+	public String content;
+	public int typeId;
+	public int siteId;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+	public Date ctime;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Phoenix")
+	public Date mtime;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getCtime() {
+		return ctime;
+	}
+
+	public void setCtime(Date ctime) {
+		this.ctime = ctime;
+	}
+
+	public String getShortTitle() {
+		return shortTitle;
+	}
+
+	public void setShortTitle(String shortTitle) {
+		this.shortTitle = shortTitle;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getStar() {
+		return star;
+	}
+
+	public void setStar(String star) {
+		this.star = star;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public int getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(int typeId) {
+		this.typeId = typeId;
+	}
+
+	public int getSiteId() {
+		return siteId;
+	}
+
+	public void setSiteId(int siteId) {
+		this.siteId = siteId;
+	}
+
+	public Date getMtime() {
+		return mtime;
+	}
+
+	public void setMtime(Date mtime) {
+		this.mtime = mtime;
+	}
+
+	@Override
+	public String toString() {
+		return "Article [id=" + id + ", title=" + title + ", shortTitle=" + shortTitle + ", description=" + description + ", author=" + author + ", star=" + star + ", tags=" + tags + ", status=" + status + ", content=" + content + ", typeId=" + typeId + ", siteId=" + siteId + ", ctime=" + ctime + ", mtime=" + mtime + "]";
+	}
+
+}
+
 			]]>
 		</programlisting>
 	</section>

@@ -2,7 +2,6 @@
 <!ENTITY part.spring.xml				SYSTEM "part.spring.xml">
 <!ENTITY chapter.spring.xml				SYSTEM "chapter.spring.xml">
 <!ENTITY chapter.suite.xml				SYSTEM "chapter.suite.xml">
-<!ENTITY chapter.tomcat.xml				SYSTEM "chapter.tomcat.xml">
 
 <!ENTITY chapter.boot.xml				SYSTEM "chapter.boot.xml">
 <!ENTITY section.boot.xml				SYSTEM "section.boot.xml">
@@ -23,7 +22,6 @@
 <!ENTITY section.boot.lombok.xml		SYSTEM "section.boot.lombok.xml">
 <!ENTITY section.boot.command.xml		SYSTEM "section.boot.command.xml">
 <!ENTITY section.boot.aop.xml			SYSTEM "section.boot.aop.xml">
-<!ENTITY section.boot.rest.xml			SYSTEM "section.boot.rest.xml">
 <!ENTITY section.boot.starter.xml		SYSTEM "section.boot.starter.xml">
 <!ENTITY section.boot.schedule.xml		SYSTEM "section.boot.schedule.xml">
 <!ENTITY section.boot.monitor.xml		SYSTEM "section.boot.monitor.xml">
@@ -40,6 +38,8 @@
 <!ENTITY section.boot.redis.xml 	    SYSTEM "section.boot.redis.xml">
 <!ENTITY section.boot.aliyun.xml 	    SYSTEM "section.boot.aliyun.xml">
 
+<!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
+<!ENTITY section.framework.xml		SYSTEM "section.framework.xml">
 <!ENTITY chapter.mvc.xml				SYSTEM "chapter.mvc.xml">
 <!ENTITY section.mvc.controller.xml		SYSTEM "section.mvc.controller.xml">
 <!ENTITY section.mvc.view.xml			SYSTEM "section.mvc.view.xml">
@@ -47,7 +47,16 @@
 <!ENTITY section.mvc.validation.xml		SYSTEM "section.mvc.validation.xml">
 <!ENTITY section.mvc.interceptor.xml	SYSTEM "section.mvc.interceptor.xml">
 <!ENTITY section.mvc.jackson.xml		SYSTEM "section.mvc.jackson.xml">
+<!ENTITY section.mvc.resttemplate.xml	SYSTEM "section.mvc.resttemplate.xml">
 <!ENTITY section.mvc.restclient.xml		SYSTEM "section.mvc.restclient.xml">
+<!ENTITY chapter.mvc.tomcat.xml			SYSTEM "chapter.mvc.tomcat.xml">
+<!ENTITY section.mvc.faq.xml			SYSTEM "section.mvc.faq.xml">
+
+<!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">
+<!ENTITY section.webflux.xml			SYSTEM "section.webflux.xml">
+<!ENTITY section.webflux.faq.xml		SYSTEM "section.webflux.faq.xml">
+<!ENTITY section.webflux.security.xml	SYSTEM "section.webflux.security.xml">
+<!ENTITY section.webflux.webclient.xml	SYSTEM "section.webflux.webclient.xml">
 
 <!ENTITY chapter.security.xml			SYSTEM "chapter.security.xml">
 <!ENTITY section.security.oauth.xml		SYSTEM "section.security.oauth.xml">
@@ -72,11 +81,3 @@
 <!ENTITY section.cloud.kubernetes.xml	SYSTEM "section.cloud.kubernetes.xml">
 <!ENTITY section.cloud.alibaba.xml		SYSTEM "section.cloud.alibaba.xml">
 <!ENTITY section.cloud.faq.xml			SYSTEM "section.cloud.faq.xml">
-
-<!ENTITY chapter.webflux.xml			SYSTEM "chapter.webflux.xml">
-<!ENTITY section.webflux.xml			SYSTEM "section.webflux.xml">
-<!ENTITY section.webflux.faq.xml		SYSTEM "section.webflux.faq.xml">
-<!ENTITY section.webflux.security.xml	SYSTEM "section.webflux.security.xml">
-
-<!ENTITY chapter.faq.xml				SYSTEM "chapter.faq.xml">
-<!ENTITY section.miscellaneous.xml		SYSTEM "section.miscellaneous.xml">

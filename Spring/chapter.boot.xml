@@ -17,7 +17,6 @@
 	&section.boot.docker.xml;
 	&section.boot.command.xml;
 	&section.boot.actuator.xml;
-	&section.boot.rest.xml;
 	&section.boot.test.xml;
 	&section.boot.aop.xml;	
 	&section.boot.starter.xml;

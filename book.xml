@@ -72,7 +72,14 @@
 	&book.dedication.xml;
 	<!-- =========================================================================== -->
 	&part.java.xml;
-	&chapter.framework.xml;
+	<!-- =========================================================================== -->	
+	&part.spring.xml;
+	&chapter.mybatis.xml;
+	&section.struts.xml;
+	&chapter.tiles.xml;
+	&section.play.xml;
+	<!-- =========================================================================== -->	
+	<!-- &chapter.framework.xml; -->
 	&chapter.servlet.xml;	
 	&chapter.log.xml;
 	&chapter.json.xml;

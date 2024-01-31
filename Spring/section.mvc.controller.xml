@@ -1780,8 +1780,8 @@ String fileSize = file.getSize()
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>SSE</title>
+	<section id="spring.mvc.sse">
+		<title>SSE Streaming in Spring MVC</title>
 		<programlisting>
 		<![CDATA[
 @GetMapping("/mvc/sse")

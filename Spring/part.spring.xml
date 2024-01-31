@@ -6,8 +6,7 @@
 </part>
 <part id="index"><?dbhtml dir="framework" ?>
 	<title>Spring Framework</title>
-	&chapter.mvc.xml;
-	&chapter.webflux.xml;
+	&chapter.framework.xml;
 </part>
 <part id="index"><?dbhtml dir="data" ?>
 	<title>Spring Data</title>
@@ -21,7 +20,3 @@
 	<title>Spring Cloud</title>
 	&chapter.cloud.xml;
 </part>
-
-	&chapter.tomcat.xml;
-	&section.miscellaneous.xml;
-	&chapter.faq.xml;
