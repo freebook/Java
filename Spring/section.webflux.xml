@@ -1,3 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="WebFlux.VS.SprintMVC">
+	<title>WebFlux 与 SprintMVC 有什么不同？</title>
+	<section>
+		<title>实验程序</title>
+		<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
+
+@RestController
+@Slf4j
+public class WebFluxController {
+	private static final Logger logger = LoggerFactory.getLogger(WebFluxController.class);
+
+	public WebFluxController() {
+	}
+
+	// 阻塞5秒钟
+	private String job() {
+		try {
+			TimeUnit.SECONDS.sleep(5);
+		} catch (InterruptedException e) {
+		}
+		return "Hellowoard!!!";
+	}
+
+	// SpringMVC 方式
+	@GetMapping("/SpringMVC")
+	private String springmvc() {
+		logger.info("start");
+		String result = job();
+		logger.info("done");
+		return result;
+	}
+
+	// WebFlux 方式
+	@GetMapping("/WebFlux")
+	private Mono<String> webflux() {
+		logger.info("start");
+		Mono<String> result = Mono.fromSupplier(() -> job());
+		logger.info("done");
+		return result;
+	}
+}
+
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>实验结果</title>
+		<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~> time curl http://localhost:8080/SpringMVC
+Hellowoard!!!
+________________________________________________________
+Executed in    5.02 secs      fish           external
+   usr time    4.98 millis  242.00 micros    4.74 millis
+   sys time    5.48 millis  993.00 micros    4.49 millis			
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+2023-02-24T14:13:07.063+08:00 TRACE 1552 --- [  XNIO-1 task-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#springmvc()
+2023-02-24T14:13:07.077+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : start
+2023-02-24T14:13:12.082+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done			
+			]]>
+		</screen>
+		<para>从省输出日志可以看到 start 2023-02-24T14:13:07, done 2023-02-24T14:13:12 程序运行被阻塞了 5秒钟</para>
+		<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~> time curl http://localhost:8080/WebFlux
+Hellowoard!!!
+________________________________________________________
+Executed in    5.02 secs      fish           external
+   usr time    5.19 millis  228.00 micros    4.96 millis
+   sys time    6.05 millis  854.00 micros    5.20 millis	
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+2023-02-24T14:14:54.720+08:00 TRACE 1583 --- [  XNIO-1 task-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()
+2023-02-24T14:14:54.729+08:00  INFO 1583 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : start
+2023-02-24T14:14:54.731+08:00  INFO 1583 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done
+2023-02-24T14:14:59.753+08:00 TRACE 1583 --- [  XNIO-1 task-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()	
+			]]>
+		</screen>
+		<para>再看 webflux 的表现，start 2023-02-24T14:14:54, done 2023-02-24T14:14:54 执行时间不到一秒钟。</para>
+	</section>
+</section>
 <section id="webflux.router">
 	<title>WebFlux Router</title>
 	<section id="router.component">
@@ -60,22 +159,24 @@ public class WebFluxRouter {
 		]]>
 		</programlisting>
 	</section>
-	<section id="webflux.Thymeleaf">
-		<title>Thymeleaf</title>
-		<section>
-			<title>模板引擎 Thymeleaf 依赖</title>
-			<screen>
+
+</section>
+<section id="webflux.Thymeleaf">
+	<title>Thymeleaf</title>
+	<section>
+		<title>模板引擎 Thymeleaf 依赖</title>
+		<screen>
 			<![CDATA[
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>application.properties 相关的配置</title>
-			<screen>
+		</screen>
+	</section>
+	<section>
+		<title>application.properties 相关的配置</title>
+		<screen>
 			<![CDATA[
 spring.thymeleaf.cache=true # Enable template caching.
 spring.thymeleaf.check-template=true # Check that the template exists before rendering it.
@@ -92,11 +193,11 @@ spring.thymeleaf.suffix=.html # Suffix that gets appended to view names when bui
 spring.thymeleaf.template-resolver-order= # Order of the template resolver in the chain.
 spring.thymeleaf.view-names= # Comma-separated list of view names that can be resolved.
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Webflux 控制器</title>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>Webflux 控制器</title>
+		<programlisting>
 			<![CDATA[
 	@GetMapping("/welcome")
     public Mono<String> hello(final Model model) {
@@ -114,12 +215,12 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
         return "cityList";
     }			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Tymeleaf 视图</title>
-			<para>welcome.html</para>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>Tymeleaf 视图</title>
+		<para>welcome.html</para>
+		<programlisting>
 			<![CDATA[
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -135,9 +236,9 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 </body>
 </html>			
 			]]>
-			</programlisting>
-			<para>cityList.html</para>
-			<programlisting>
+		</programlisting>
+		<para>cityList.html</para>
+		<programlisting>
 			<![CDATA[
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -178,26 +279,26 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 </body>
 </html>			
 			]]>
-			</programlisting>
-		</section>
-
+		</programlisting>
 	</section>
-	<section id="redis-reactive">
-		<title>Webflux Redis</title>
-		<section>
-			<title>Maven Redis 依赖</title>
-			<screen>
+
+</section>
+<section id="redis-reactive">
+	<title>Webflux Redis</title>
+	<section>
+		<title>Maven Redis 依赖</title>
+		<screen>
 			<![CDATA[
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Redis 配置</title>
-			<screen>
+		</screen>
+	</section>
+	<section>
+		<title>Redis 配置</title>
+		<screen>
 			<![CDATA[
 server:
   port: 8080
@@ -216,11 +317,11 @@ spring:
         min-idle: 5 
         max-wait: 1000 			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Config</title>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>Config</title>
+		<programlisting>
 			<![CDATA[
 	@Bean
 	public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
@@ -228,11 +329,11 @@ spring:
 		return reactiveRedisTemplate;
 	}			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Service</title>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>Service</title>
+		<programlisting>
 			<![CDATA[
 @Service
 public class RedisServiceImpl implements RedisService {
@@ -289,11 +390,11 @@ public class RedisServiceImpl implements RedisService {
 	}
 }			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title></title>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
 			<![CDATA[
 @RestController
 @RequestMapping("/user")
@@ -367,25 +468,25 @@ public class UserController {
 	}
 }			
 			]]>
-			</programlisting>
-		</section>
+		</programlisting>
 	</section>
-	<section id="mongodb-reactive">
-		<title>Webflux Mongdb</title>
-		<section>
-			<title>Maven 依赖</title>
-			<screen>
+</section>
+<section id="mongodb-reactive">
+	<title>Webflux Mongdb</title>
+	<section>
+		<title>Maven 依赖</title>
+		<screen>
 			<![CDATA[
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
 	</dependency>			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Repository</title>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>Repository</title>
+		<programlisting>
 			<![CDATA[
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
@@ -395,11 +496,11 @@ public interface UserRepository extends ReactiveMongoRepository<User, Long>{
 
 }
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Service</title>
-			<screen>
+		</programlisting>
+	</section>
+	<section>
+		<title>Service</title>
+		<screen>
 			<![CDATA[
 @Service
 public class MongoServiceImpl implements MongoService {
@@ -434,11 +535,11 @@ public class MongoServiceImpl implements MongoService {
 	}
 }			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>控制器</title>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>控制器</title>
+		<programlisting>
 			<![CDATA[
 @RestController
 @RequestMapping("/usermg")
@@ -479,16 +580,16 @@ public class UserMongoController {
 	}
 }
 			]]>
-			</programlisting>
-			<para>produces
-				如果不是application/stream+json则调用端无法滚动得到结果，将一直阻塞等待数据流结束或超时。
-			</para>
-		</section>
+		</programlisting>
+		<para>produces
+			如果不是application/stream+json则调用端无法滚动得到结果，将一直阻塞等待数据流结束或超时。
+		</para>
 	</section>
-	<section id="webflux.mono">
-		<title>Mono</title>
-		<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
-		<programlisting>
+</section>
+<section id="webflux.mono">
+	<title>Mono</title>
+	<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
+	<programlisting>
 		<![CDATA[
     @GetMapping("mono")
     public Mono<Object> mono() {
@@ -503,9 +604,9 @@ public class UserMongoController {
                 });
     }
 		]]>
-		</programlisting>
-		<para>从 Supplier 创建 Mono</para>
-		<programlisting>
+	</programlisting>
+	<para>从 Supplier 创建 Mono</para>
+	<programlisting>
 		<![CDATA[
     @GetMapping("/get")
     private Mono<String> get() {
@@ -521,12 +622,12 @@ public class UserMongoController {
         return result;
     }		
 		]]>
-		</programlisting>
-	</section>
-	<section id="webflux.flux">
-		<title>Flux 返回多条数据</title>
-		<para>返回 List</para>
-		<programlisting>
+	</programlisting>
+</section>
+<section id="webflux.flux">
+	<title>Flux 返回多条数据</title>
+	<para>返回 List</para>
+	<programlisting>
 		<![CDATA[
     @GetMapping("flux")
     public Flux<Picture> flux() {
@@ -540,9 +641,9 @@ public class UserMongoController {
         return Flux.fromIterable(list);
     }
 		]]>
-		</programlisting>
-		<para>返回 Map</para>
-		<programlisting>
+	</programlisting>
+	<para>返回 Map</para>
+	<programlisting>
 		<![CDATA[
     @GetMapping("map")
     public Flux<Map.Entry<String, String>> map() {
@@ -554,9 +655,9 @@ public class UserMongoController {
         return Flux.fromIterable(map.entrySet());
     }
 		]]>
-		</programlisting>
-		<para>从 Stream 返回 Flux</para>
-		<programlisting>
+	</programlisting>
+	<para>从 Stream 返回 Flux</para>
+	<programlisting>
 		<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     private Flux<String> getWords() {
@@ -564,37 +665,37 @@ public class UserMongoController {
         return Flux.fromStream(items);
     }		
 		]]>
-		</programlisting>
-	</section>
+	</programlisting>
+</section>
 
-	<section id="webflux.sse">
-		<title>SSE</title>
+<section id="webflux.sse">
+	<title>SSE</title>
 
-		<section>
-			<title>一次性事件</title>
-			<programlisting>
+	<section>
+		<title>一次性事件</title>
+		<programlisting>
 			<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> createConnectionAndSendEvents() {
         return Flux.just("Alpha", "Omega");
     }			
 			]]>
-			</programlisting>
-			<para>curl 访问 SSE 需要设置HTTP头 -H "Accept: text/event-stream" </para>
-			<screen>
+		</programlisting>
+		<para>curl 访问 SSE 需要设置HTTP头 -H "Accept: text/event-stream" </para>
+		<screen>
 			<![CDATA[
 neo@MacBook-Pro-M2 ~ % curl -H "Accept: text/event-stream" -X 'GET' 'http://localhost:8080/mock/sse'
 data:Alpha
 
 data:Omega			
 			]]>
-			</screen>
-			<tip>Safari 浏览器不支持 SSE推送，微软的 Egde 支持。</tip>
-		</section>
-		<section>
-			<title>周期性事件</title>
-			<para>每间隔一秒发送一次数据</para>
-			<programlisting>
+		</screen>
+		<tip>Safari 浏览器不支持 SSE推送，微软的 Egde 支持。</tip>
+	</section>
+	<section>
+		<title>周期性事件</title>
+		<para>每间隔一秒发送一次数据</para>
+		<programlisting>
 			<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     private Flux<String> getWords() {
@@ -615,11 +716,11 @@ data:Omega
 	      .map(sequence -> "Flux - " + LocalTime.now().toString());
 	}	
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>SSE 完整的例子</title>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>SSE 完整的例子</title>
+		<programlisting>
 		<![CDATA[
 package cn.netkiller.webflux.controller;
 
@@ -681,9 +782,9 @@ public class SseController {
 }
 		
 		]]>
-			</programlisting>
-			<para>运行结果</para>
-			<screen>
+		</programlisting>
+		<para>运行结果</para>
+		<screen>
 		<![CDATA[
 id:0
 event:launch
@@ -730,11 +831,11 @@ event:launch
 data:发射
 		
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>SSE Client 订阅实例</title>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>SSE Client 订阅实例</title>
+		<programlisting>
 			<![CDATA[
  	@GetMapping("/server")
     public Flux<ServerSentEvent<String>> streamEvents() {
@@ -765,9 +866,69 @@ data:发射
                 () -> log.info("Completed!!!"));
     }
 			]]>
-			</programlisting>
-		</section>
+		</programlisting>
 	</section>
-	
-	
+</section>
+<section>
+	<title>持续更新 Flux</title>
+	<programlisting>
+		<![CDATA[
+	Consumer<String> producer;
+
+    @Test
+    public void testFluxCreate() {
+        Flux.create(sink -> {
+            producer = nextData -> sink.next(nextData);
+        }).subscribe(e -> System.out.println(e));
+
+        //do something
+
+        //下发元素
+        producer.accept("我来了");
+
+        producer.accept("我来了2");
+
+    }
+
+	FluxSink<String> outSink;
+    @Test
+    public void testFluxCreate() {
+        Flux<String> f = Flux.create(sink -> {
+            outSink = sink;
+        });
+        f.subscribe(e -> System.out.println(e))
+        //do something
+
+        //下发元素
+        outSink.next("我来了");
+
+        outSink.next("我来了2");
+    }
+		
+		]]>
+	</programlisting>
+	<programlisting>
+	<![CDATA[
+interface MyEventListener<T> {
+    void onDataChunk(List<T> chunk);
+    void processComplete();
+}
+
+
+Flux<String> bridge = Flux.create(sink -> {
+    myEventProcessor.register( 
+      new MyEventListener<String>() { 
+
+        public void onDataChunk(List<String> chunk) {
+          for(String s : chunk) {
+            sink.next(s); 
+          }
+        }
+        public void processComplete() {
+            sink.complete(); 
+        }
+    });
+});	
+	]]>
+	</programlisting>
 </section>

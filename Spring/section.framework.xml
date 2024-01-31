@@ -141,6 +141,5 @@ String locationUri = ServletUriComponentsBuilder
 	</section>	
 	&section.mvc.resttemplate.xml;
 	&section.mvc.restclient.xml;
-	&section.webflux.webclient.xml;
 
 </chapter>

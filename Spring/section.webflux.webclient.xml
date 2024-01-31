@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="webflux.webclient">
 	<title>WebClient</title>
+	<screen>
+	<![CDATA[
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>	
+	]]>
+	</screen>
 	<section>
 		<title>配置 WebClient</title>
 		<programlisting>
@@ -277,6 +285,39 @@ public class EmployeeService {
         result.subscribe(System.err::println);			
 			]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+@RestController
+public class HelloController {
+ 
+    // 创建 WebClient 对象
+    private WebClient webClient = WebClient.builder()
+            .baseUrl("https://www.netkiller.cn/article")
+            .build();
+ 
+    @GetMapping("/test")
+    public void test() {
+        //提交参数设置
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("title", "linux 手札");
+        map.add("body", "测试");
+ 
+        // 发送请求
+        Mono<String> mono = webClient
+                .post() // POST 请求
+                .uri("/posts")  // 请求路径
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(map))
+                .retrieve() // 获取响应体
+                .bodyToMono(String.class); //响应数据类型转换
+ 
+        // 输出结果
+        System.out.println(mono.block());
+        return;
+    }
+}
+		]]>
+		</programlisting>
 	</section>
 	<section id="webclient.post.multipart">
 		<title>上传文件</title>
@@ -338,6 +379,38 @@ webClient.get()
         .build();			
 			]]>
 		</programlisting>
+		<para>If-None-Match、If-Modified-Since</para>
+		<programlisting>
+		<![CDATA[
+            Mono<String> mono = webClient
+                    .get() // GET 请求
+                    .uri("/")  // 请求路径
+                    .header("Authorization", "Basic ".concat(authorization))
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML)
+                    .acceptCharset(StandardCharsets.UTF_8)
+                    .ifNoneMatch("*")
+                    .ifModifiedSince(ZonedDateTime.now())
+                    .retrieve() // 获取响应体
+                    .bodyToMono(String.class); //响应数据类型转换		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>同步阻塞等待返回结果</title>
+		<programlisting>
+		<![CDATA[
+        WebClient webClient = WebClient.create("https://www.netkiller.cn");
+
+        Mono<String> mono = webClient
+                .get() // GET 请求
+                .uri("/spring/index.html")  // 请求路径
+                .retrieve() // 获取响应体
+                .bodyToMono(String.class); //响应数据类型转换
+
+        System.out.println(mono.block());		
+		]]>
+		</programlisting>
 	</section>
 	<section>
 		<title>websocket</title>
@@ -385,6 +458,111 @@ client.execute(url, session ->
         }).block();
         System.err.println(map.toString());			
 			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>获取 HTTP 链接状态</title>
+		<programlisting>
+		<![CDATA[
+			WebClient webClient = WebClient.create("https://www.netkiller.cn");
+            Mono<ClientResponse> mono = webClient
+                    .get() 
+                    .uri("/spring/index.html")
+                    .acceptCharset(StandardCharsets.UTF_8)
+                    .exchange();
+
+            // 获取完整的响应对象
+            ClientResponse response = mono.block();
+            
+            HttpStatus statusCode = (HttpStatus) response.statusCode(); // 获取响应码
+            MultiValueMap<String, ResponseCookie> cookies = response.cookies();
+            ClientResponse.Headers headers = response.headers(); // 获取响应头
+
+            // 获取响应体
+            Mono<String> resultMono = response.bodyToMono(String.class);
+            String body = resultMono.block();
+
+            // 输出结果
+            System.out.println("HttpStatus：" + statusCode);
+            System.out.println("Cookie：" + cookies.toString());
+            System.out.println("Headers：" + headers.asHttpHeaders());
+            System.out.println("body：" + body);		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Http Base Authentication - 401 Unauthorized</title>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+			WebClient client = WebClient.builder()
+                    .baseUrl("https://www.netkiller.cn")
+                    .defaultHeaders(httpHeaders -> httpHeaders.setBasicAuth("admin", "uPQKFe98bIwZCzgVGjbIQRyRyyecW2Ha"))
+//                    .defaultHeaders(httpHeaders -> httpHeaders.setBearerAuth("<bearer token>"))
+                    .build();
+
+            Mono<String> response = client.get().uri("/")
+                    .retrieve().bodyToMono(String.class);
+
+            log.info(response.block());		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+            WebClient webClient = WebClient.create("https://www.netkiller.cn");
+            final String flux = webClient.get()
+                    .uri("/")
+                    .headers(httpHeaders -> httpHeaders.setBasicAuth("admin", "uPQKFyRyyecbIwZCzgVGjbW2e98IQRHa"))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            System.out.println(flux);		
+		]]>
+		</programlisting>
+		
+		<para>ExchangeFilterFunctions 方案</para>
+		<programlisting>
+		<![CDATA[
+ 		WebClient client = WebClient.builder()
+                    .baseUrl("https://www.netkiller.cn")
+                    .filter(ExchangeFilterFunctions.basicAuthentication("admin", "uPQcbIwZKFe98IGjbW2QRyRyyeCzgVHa"))
+                    .build();
+
+            Mono<String> response = client.get().uri("/")
+                    .retrieve().bodyToMono(String.class);
+            log.info(response.block());		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>订阅 SSE</title>
+		<programlisting>
+		<![CDATA[
+public void consumeServerSentEvent() {
+    WebClient client = WebClient.create("https://www.netkiller.cn:8080/sse/server");
+    ParameterizedTypeReference<ServerSentEvent<String>> type
+     = new ParameterizedTypeReference<ServerSentEvent<String>>() {};
+
+    Flux<ServerSentEvent<String>> eventStream = client.get()
+      .uri("/stream")
+      .retrieve()
+      .bodyToFlux(type);
+
+    eventStream.subscribe(
+      content -> logger.info("Time: {} - event: name[{}], id [{}], content[{}] ",
+        LocalTime.now(), content.event(), content.id(), content.data()),
+      error -> logger.error("Error receiving SSE: {}", error),
+      () -> logger.info("Completed!!!"));
+}		
+		]]>
+		</programlisting>
+		<para>同步阻塞等待 SSE 执行完成</para>
+		<programlisting>
+		<![CDATA[
+        List<String> posts = eventStream.collectList().block();
+        log.info("结果数：{}, {}" , posts.size(),posts.toString());		
+		]]>
 		</programlisting>
 	</section>
 </section>
