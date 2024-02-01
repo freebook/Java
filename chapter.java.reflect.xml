@@ -258,4 +258,90 @@ staticMethod.invoke(cls,20); //这里不需要newInstance
 			</programlisting>
 		</section>
 	</section>
+	<section>
+		<title>完成的例子</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller;
+
+import java.lang.reflect.Field;
+
+
+public class Test {
+    static class MyClass {
+        public String var1 = "Hello";
+        public int var2 = 123;
+        public double var3;
+        public String var4;
+    }
+
+    public static void main(String[] args) throws IllegalAccessException, NoSuchFieldException {
+        MyClass obj = new MyClass();
+
+//        obj.var4 = "World";
+
+        Class<? extends MyClass> clazz = obj.getClass();
+        Field field1 = clazz.getDeclaredField("var4");
+        field1.setAccessible(true); // 设置可访问性
+        field1.set(obj, "Neo"); // 设置值
+
+
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true); // 设置为可访问
+            if (field.get(obj) != null) {
+                System.out.println(field.getName() + " = " + field.get(obj));
+            }
+        }
+    }
+}
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller;
+
+import lombok.Data;
+
+import java.lang.reflect.Field;
+
+
+public class Test {
+    @Data
+    static class MyClass {
+        public String var1;
+        public Integer var2;
+        public Double var3;
+        public String var4;
+    }
+
+    public static Object setValue(Object obj, Object target) throws IllegalAccessException, NoSuchFieldException {
+        Field[] fields = obj.getClass().getDeclaredFields();
+        Class<?> clazz = target.getClass();
+        for (Field field : fields) {
+            field.setAccessible(true); // 设置为可访问
+            System.out.println(field.getName() + " = " + field.get(obj));
+            if (field.get(obj) != null) {
+
+                Field field1 = clazz.getDeclaredField(field.getName());
+                field1.setAccessible(true); // 设置可访问性
+                field1.set(target, field.get(obj)); // 设置值
+            }
+        }
+        System.out.println(target);
+        return target;
+    }
+
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
+        MyClass obj = new MyClass();
+        obj.var1 = "Hello";
+        obj.var4 = "World";
+        MyClass target = new MyClass();
+        setValue(obj, target);
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
 </section>

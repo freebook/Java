@@ -185,6 +185,18 @@ spring.cache.redis.cache-null-values=false
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>排除 empty</title>
+			<para>List 不会返回 null，怎么不缓存空的 list 呢？使用 unless="#result.empty" 可以实现</para>
+			<programlisting>
+			<![CDATA[
+@Cacheable(unless="#result.empty")
+public List<Object> getList() {
+  // method implementation
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="@CachePut">
 		<title>@CachePut 用法</title>
