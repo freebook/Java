@@ -526,6 +526,18 @@ public class Test {
 			]]>
 			</screen>
 		</section>
+		<section id="stream().anyMatch()">
+			<title>通过 stream() 匹配一组字符串</title>
+			<programlisting>
+			<![CDATA[
+		String str1 = "Hello, World!";
+        List<String> str2 = Arrays.asList("World", "Hello");
+
+        boolean contains = str2.stream().anyMatch(str1::contains);
+        System.out.println("找到字符串：" + contains);			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="long">
 		<title>类型转换</title>

@@ -243,7 +243,35 @@ System.out.println(list.get(index));
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>getFirst() / getLast()</title>
+			<para>使用 idea 写代码，list 变量可以看到 getFirst() / getLast() 但实际上 list 并没有两个方法，这时 idea 模版造成的。</para>
+			<screen>
+			<![CDATA[
+java: 找不到符号
+  符号:   方法 getFirst()
+  位置: 类型为java.util.ArrayList<java.lang.String>的变量 list			
+			]]>
+			</screen>
+			
+			<programlisting>
+			<![CDATA[
+        // 创建一个ArrayList对象
+        ArrayList<String> list = new ArrayList<>();
 
+        // 添加元素到列表中
+        list.add("apple");
+        list.add("banana");
+        list.add("orange");
+
+        // 获取最后一个元素
+//        String firstElement = list.getFirst();
+//        String lastElement = list.getLast();
+        String lastElement = list.get(list.size() - 1);
+        System.out.println("最后一个元素是：" + lastElement);			
+			]]>
+			</programlisting>
+		</section>
 
 	</section>
 

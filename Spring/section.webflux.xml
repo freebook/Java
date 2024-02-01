@@ -75,7 +75,9 @@ Executed in    5.02 secs      fish           external
 2023-02-24T14:13:12.082+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done			
 			]]>
 		</screen>
-		<para>从省输出日志可以看到 start 2023-02-24T14:13:07, done 2023-02-24T14:13:12 程序运行被阻塞了 5秒钟</para>
+		<para>从省输出日志可以看到 start 2023-02-24T14:13:07, done 2023-02-24T14:13:12
+			程序运行被阻塞了 5秒钟
+		</para>
 		<screen>
 			<![CDATA[
 neo@MacBook-Pro-Neo ~> time curl http://localhost:8080/WebFlux
@@ -94,7 +96,9 @@ Executed in    5.02 secs      fish           external
 2023-02-24T14:14:59.753+08:00 TRACE 1583 --- [  XNIO-1 task-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()	
 			]]>
 		</screen>
-		<para>再看 webflux 的表现，start 2023-02-24T14:14:54, done 2023-02-24T14:14:54 执行时间不到一秒钟。</para>
+		<para>再看 webflux 的表现，start 2023-02-24T14:14:54, done
+			2023-02-24T14:14:54 执行时间不到一秒钟。
+		</para>
 	</section>
 </section>
 <section id="webflux.router">
@@ -589,7 +593,23 @@ public class UserMongoController {
 <section id="webflux.mono">
 	<title>Mono</title>
 	<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
-	<programlisting>
+	<section>
+		<title>Mono.just()/Mono.justOrEmpty()</title>
+		<programlisting>
+		<![CDATA[
+Mono.justOrEmpty(Optional.of("Netkiller")).subscribe(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
+
+	<section>
+		<title>MonoSink 创建 Mono</title>
+		<programlisting>
+		<![CDATA[
+Mono.create(sink -> sink.success("Netkiller")).subscribe(System.out::println);	
+		]]>
+		</programlisting>
+		<programlisting>
 		<![CDATA[
     @GetMapping("mono")
     public Mono<Object> mono() {
@@ -604,9 +624,12 @@ public class UserMongoController {
                 });
     }
 		]]>
-	</programlisting>
-	<para>从 Supplier 创建 Mono</para>
-	<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>Supplier 创建 Mono</title>
+		<para>从 Supplier 创建 Mono</para>
+		<programlisting>
 		<![CDATA[
     @GetMapping("/get")
     private Mono<String> get() {
@@ -622,12 +645,345 @@ public class UserMongoController {
         return result;
     }		
 		]]>
-	</programlisting>
+		</programlisting>
+	</section>
+
+
+	<section>
+		<title>then()</title>
+		<programlisting>
+		<![CDATA[
+Mono.empty()
+    .then()
+    .doOnSuccess(i -> System.out.println("On success: " + i))
+    .doOnError(i -> System.out.println("On error: " + i))
+    .block();
+
+Mono.empty()
+    .then(Mono.just("Good bye"))
+    .doOnSuccess(i -> System.out.println("On success: " + i))
+    .doOnError(i -> System.out.println("On error: " + i))
+    .block();
+
+Mono.just("Hello World")
+    .then(Mono.just("Good bye"))
+    .doOnSuccess(i -> System.out.println("On success: " + i))
+    .doOnError(i -> System.out.println("On error: " + i))
+    .block();
+
+Mono.error(new RuntimeException("Something wrong"))
+    .then(Mono.just("Good bye"))
+    .doOnSuccess(i -> System.out.println("On success: " + i))
+    .doOnError(i -> System.out.println("On error: " + i))
+    .block();
+
+Mono.error(new RuntimeException("Something wrong"))
+    .then(Mono.error(new RuntimeException("Something very wrong")))
+    .doOnSuccess(i -> System.out.println("On success: " + i))
+    .doOnError(i -> System.out.println("On error: " + i))
+    .block();
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>异常处理</title>
+		<programlisting>
+		<![CDATA[
+Mono.just("Netkiller")
+        .concatWith(Mono.error(new IllegalStateException()))
+        .subscribe(System.out::println, System.err::println);
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Mono.just("Netkiller")
+        .concatWith(Mono.error(new IllegalStateException()))
+        .onErrorReturn("defaultError")
+        .subscribe(System.out::println);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Mono.just("Netkiller")
+         .concatWith(Mono.error(new IllegalStateException()))
+         .switchOnError(Mono.just("defaultError"))
+         .subscribe(System.out::println);
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>同步阻塞等待结果</title>
+		<programlisting>
+		<![CDATA[
+        Mono.just("Hello World")
+                .doOnNext(i -> System.out.println("On next: " + i))
+                .doOnSuccess(i -> System.out.println("On success: " + i))
+                .doOnError(i -> System.out.println("On error: " + i))
+                .block();	
+                
+		Mono.empty()
+		    .doOnNext(i -> System.out.println("On next: " + i))
+		    .doOnSuccess(i -> System.out.println("On success: " + i))
+		    .doOnError(i -> System.out.println("On error: " + i))
+		    .block();
+
+		Mono.just("Hello World")
+		    .mapNotNull(s -> null)
+		    .doOnNext(i -> System.out.println("On next: " + i))
+		    .doOnSuccess(i -> System.out.println("On success: " + i))
+		    .doOnError(i -> System.out.println("On error: " + i))
+		    .block();       
+				    
+		Mono.error(new RuntimeException("Something wrong"))
+		    .doOnNext(i -> System.out.println("On next: " + i))
+		    .doOnSuccess(i -> System.out.println("On success: " + i))
+		    .doOnError(i -> System.out.println("On error: " + i))
+		    .block();
+    
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+        Mono.delay(Duration.ofMillis(10)).map(d -> {
+            System.out.println(d);
+            return d;
+        }).block();		
+        Mono.delay(Duration.ofMillis(10)).map(d -> {
+            System.out.println(d);
+            return d;
+        }).subscribe(System.out::println);        
+		]]>
+		</programlisting>
+
+	</section>
 </section>
 <section id="webflux.flux">
 	<title>Flux 返回多条数据</title>
-	<para>返回 List</para>
-	<programlisting>
+
+	<section>
+		<title>FluxSink 创建异步 Flux</title>
+		<programlisting>
+		<![CDATA[
+        Flux<String> flux = Flux.create(sink -> {
+            sink.next("Neo");
+            sink.next("netkiller");
+            sink.complete();
+        });
+        flux.subscribe(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>SynchronousSink 创建同步 Flux</title>
+		<programlisting>
+		<![CDATA[
+        Flux<String> generate = Flux.generate(synchronousSink -> {
+            synchronousSink.next("Neo");
+            synchronousSink.complete();
+        });
+        generate.subscribe(System.out::println);		
+		]]>
+		</programlisting>
+		<para>多个值</para>
+		<programlisting>
+		<![CDATA[
+final Random random = new Random();
+Flux.generate(ArrayList::new, (list, sink) -> {
+    int value = random.nextInt(100);
+    list.add(value);
+    sink.next(value);
+    if (list.size() == 10) {
+        sink.complete();
+    }
+    return list;
+}).subscribe(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>just()</title>
+		<programlisting>
+		<![CDATA[
+//单个元素
+Flux.just("just").subscribe(System.out::println);
+//多个元素
+Flux.just("just", "just1", "just2").subscribe(System.out::println);	
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>从 Flux/Mono 创建 Flux</title>
+		<programlisting>
+		<![CDATA[
+//Flux->Flux
+Flux.from(Flux.just("just", "just1", "just2")).subscribe(System.out::println);
+//Mono->Mono
+Flux.from(Mono.just("just")).subscribe(System.out::println);	
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>消息订阅</title>
+
+		<programlisting>
+		<![CDATA[
+Flux.just("Netkiller1", "Netkiller2", "Netkiller3")
+        .subscribe(data -> System.out.println("onNext:" + data), err -> {
+        }, () -> System.out.println("onComplete"));		
+		]]>
+		</programlisting>
+		<para>多个订阅者</para>
+		<programlisting>
+		<![CDATA[
+    List<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+        Flux<String> flux = Flux.fromIterable(list);
+        flux.subscribe(System.out::println);
+        flux.subscribe(System.out::println);
+        flux.subscribe(System.out::println);
+        
+  
+        
+        		
+		]]>
+		</programlisting>
+		<para>手动控制</para>
+		<programlisting>
+		<![CDATA[
+	Flux<String> flux = Flux.fromIterable(list);
+        ConnectableFlux<String> con = flux.publish();
+        con.subscribe(System.out::println);
+        con.subscribe(System.out::println);
+        con.subscribe(System.out::println);
+        // 手动的开启消费数据
+        con.connect();		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>从 Flux/Mono 创建 Flux</title>
+		<programlisting>
+		<![CDATA[
+Flux.fromArray(new String[] { "arr", "arr", "arr", "arr" }).subscribe(System.out::println);	
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>从 Iterable 创建 Flux</title>
+		<programlisting>
+		<![CDATA[
+Set<String> v = new HashSet<>();
+v.add("1");
+v.add("2");
+v.add("3");
+Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
+		]]>
+		</programlisting>
+		<para>autoConnect(5) 表示如果订阅者达到5个 就自动开启</para>
+		<programlisting>
+		<![CDATA[
+        Flux<String> auto = flux.publish().autoConnect(5);
+        auto.subscribe(System.out::println);
+        auto.subscribe(System.out::println);
+        auto.subscribe(System.out::println);		
+		]]>
+		</programlisting>
+		<para>停止消费策略</para>
+		<programlisting>
+		<![CDATA[
+		// 如果订阅者少于三个就会停止消费数据，直到订阅者达到三个为止
+        Flux<String> auto = flux.publish().refCount(3);
+        auto.subscribe(System.out::println);
+        auto.subscribe(System.out::println);
+        auto.subscribe(System.out::println);
+
+        Thread.sleep(1000L);
+
+      	// 如果订阅者少于三个且超过十秒没有新的订阅才会停止消费数据
+        Flux<String> auto = flux.publish().refCount(3,Duration.ofSeconds(10));
+        auto.subscribe(System.out::println);
+        auto.subscribe(System.out::println);
+        auto.subscribe(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
+
+
+	<section>
+		<title>从 Stream 创建 Flux</title>
+
+		<para>从 Stream 返回 Flux</para>
+		<programlisting>
+		<![CDATA[
+    @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    private Flux<String> getWords() {
+        Stream<String> items = Arrays.asList("alpha", "bravo", "charlie").stream();
+        return Flux.fromStream(items);
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>defer()</title>
+		<programlisting>
+		<![CDATA[
+Flux.defer(() -> Flux.just("just", "just1", "just2")).subscribe(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Flux.interval">
+		<title>Flux.interval()</title>
+		<programlisting>
+		<![CDATA[
+Flux.interval(Duration.of(500, ChronoUnit.MILLIS)).subscribe(System.out::println);	
+Flux.interval(Duration.ofSeconds(2), Duration.ofMillis(200)).subscribe(System.out::println);
+
+Flux.intervalMillis(1000).subscribe(System.out::println);
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Flux.empty()</title>
+		<programlisting>
+		<![CDATA[
+Flux.empty().subscribe(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Flux.error()</title>
+		<programlisting>
+		<![CDATA[
+Flux.error(new RuntimeException()).subscribe(System.out::println);
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Flux.never()</title>
+		<programlisting>
+		<![CDATA[
+Flux.never().subscribe(System.out::println);
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Flux.range()</title>
+		<programlisting>
+		<![CDATA[
+Flux.range(0, 100).subscribe(System.out::println);
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>返回数据</title>
+		<para>返回 List</para>
+		<programlisting>
 		<![CDATA[
     @GetMapping("flux")
     public Flux<Picture> flux() {
@@ -641,9 +997,9 @@ public class UserMongoController {
         return Flux.fromIterable(list);
     }
 		]]>
-	</programlisting>
-	<para>返回 Map</para>
-	<programlisting>
+		</programlisting>
+		<para>返回 Map</para>
+		<programlisting>
 		<![CDATA[
     @GetMapping("map")
     public Flux<Map.Entry<String, String>> map() {
@@ -655,17 +1011,123 @@ public class UserMongoController {
         return Flux.fromIterable(map.entrySet());
     }
 		]]>
-	</programlisting>
-	<para>从 Stream 返回 Flux</para>
-	<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>持续更新 Flux</title>
+
+		<programlisting>
+	<![CDATA[
+		AtomicReference<FluxSink<String>> fluxSink = new AtomicReference<FluxSink<String>>();
+
+        Flux<String> response = Flux.create(sink -> {
+            fluxSink.set(sink);
+        });
+        response.subscribe(System.out::println);
+        //下发元素
+        fluxSink.get().next("Neo");
+        fluxSink.get().next("Netkiller");
+	]]>
+		</programlisting>
+
+		<programlisting>
 		<![CDATA[
-    @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    private Flux<String> getWords() {
-        Stream<String> items = Arrays.asList("alpha", "bravo", "charlie").stream();
-        return Flux.fromStream(items);
-    }		
+	Consumer<String> producer;
+
+    @Test
+    public void testFluxCreate() {
+        Flux.create(sink -> {
+            producer = nextData -> sink.next(nextData);
+        }).subscribe(e -> System.out.println(e));
+
+        //do something
+
+        //下发元素
+        producer.accept("Neo");
+
+        producer.accept("Netkiller");
+
+    }
+
+	FluxSink<String> outSink;
+    @Test
+    public void testFluxCreate() {
+        Flux<String> f = Flux.create(sink -> {
+            outSink = sink;
+        });
+        f.subscribe(e -> System.out.println(e))
+        //do something
+
+        //下发元素
+        outSink.next("Neo");
+
+        outSink.next("Netkiller");
+    }
+		
 		]]>
-	</programlisting>
+		</programlisting>
+		<programlisting>
+	<![CDATA[
+interface MyEventListener<T> {
+    void onDataChunk(List<T> chunk);
+    void processComplete();
+}
+
+
+Flux<String> bridge = Flux.create(sink -> {
+    myEventProcessor.register( 
+      new MyEventListener<String>() { 
+
+        public void onDataChunk(List<String> chunk) {
+          for(String s : chunk) {
+            sink.next(s); 
+          }
+        }
+        public void processComplete() {
+            sink.complete(); 
+        }
+    });
+});	
+	]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>map(), flatMap()</title>
+		<programlisting>
+		<![CDATA[
+        Flux.just(1, 2, 3, 4)
+                .log()
+                .map(i -> {
+                    return i * 2;
+                })
+                .subscribe(System.out::println);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+        Flux.just(1, 2, 3, 4)
+                .log()
+                .flatMap(e -> {
+                    return Flux.just(e * 2).delayElements(Duration.ofSeconds(1));
+                })
+                .subscribe(System.out::println);		
+		]]>
+		</programlisting>
+		
+		
+	</section>
+	<section>
+		<title>过滤</title>
+		<programlisting>
+		<![CDATA[
+        Flux<Integer> flux = Flux.just(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        flux.map(num -> num * 2) // 将每个元素乘以2
+                .filter(num -> num % 2 == 0) // 过滤掉奇数
+                .subscribe(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
 </section>
 
 <section id="webflux.sse">
@@ -869,66 +1331,4 @@ data:发射
 		</programlisting>
 	</section>
 </section>
-<section>
-	<title>持续更新 Flux</title>
-	<programlisting>
-		<![CDATA[
-	Consumer<String> producer;
 
-    @Test
-    public void testFluxCreate() {
-        Flux.create(sink -> {
-            producer = nextData -> sink.next(nextData);
-        }).subscribe(e -> System.out.println(e));
-
-        //do something
-
-        //下发元素
-        producer.accept("我来了");
-
-        producer.accept("我来了2");
-
-    }
-
-	FluxSink<String> outSink;
-    @Test
-    public void testFluxCreate() {
-        Flux<String> f = Flux.create(sink -> {
-            outSink = sink;
-        });
-        f.subscribe(e -> System.out.println(e))
-        //do something
-
-        //下发元素
-        outSink.next("我来了");
-
-        outSink.next("我来了2");
-    }
-		
-		]]>
-	</programlisting>
-	<programlisting>
-	<![CDATA[
-interface MyEventListener<T> {
-    void onDataChunk(List<T> chunk);
-    void processComplete();
-}
-
-
-Flux<String> bridge = Flux.create(sink -> {
-    myEventProcessor.register( 
-      new MyEventListener<String>() { 
-
-        public void onDataChunk(List<String> chunk) {
-          for(String s : chunk) {
-            sink.next(s); 
-          }
-        }
-        public void processComplete() {
-            sink.complete(); 
-        }
-    });
-});	
-	]]>
-	</programlisting>
-</section>

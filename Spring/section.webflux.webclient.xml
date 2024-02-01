@@ -427,9 +427,10 @@ client.execute(url, session ->
 	</section>
 	<section>
 		<title>同步阻塞等待结果</title>
+		<para>在同步模式下使用WebClient</para>
 		<programlisting>
 			<![CDATA[
- WebClient client =  WebClient.create("http://www.kailing.pub");
+ WebClient client =  WebClient.create("http://www.netkiller.cn");
       String result = client .get()
                 .uri("/article/index/arcid/{id}.html", 256)
                 .retrieve()
@@ -438,10 +439,25 @@ client.execute(url, session ->
         System.err.println(result);			
 			]]>
 		</programlisting>
+		
+		<programlisting>
+		<![CDATA[
+
+Person person = client.get().uri("/person/{id}", i).retrieve()
+    .bodyToMono(Person.class)
+    .block();
+
+List<Person> persons = client.get().uri("/persons").retrieve()
+    .bodyToFlux(Person.class)
+    .collectList()
+    .block();
+		
+		]]>
+		</programlisting>
 		<para>避免单独阻塞每个同步响应</para>
 		<programlisting>
 			<![CDATA[
-      WebClient client =  WebClient.create("http://www.kailing.pub");
+      WebClient client =  WebClient.create("http://www.netkiller.cn");
         Mono<String> result1Mono = client .get()
                 .uri("/article/index/arcid/{id}.html", 255)
                 .retrieve()
@@ -451,12 +467,27 @@ client.execute(url, session ->
                 .retrieve()
                 .bodyToMono(String.class);
         Map<String,String>  map = Mono.zip(result1Mono, result2Mono, (result1, result2) -> {
-            Map<String, String> arrayList = new HashMap<>();
+            Map<String, String> map = new HashMap<>();
             arrayList.put("result1", result1);
             arrayList.put("result2", result2);
-            return arrayList;
+            return map;
         }).block();
-        System.err.println(map.toString());			
+        System.err.println(map.toString());		
+        
+		Mono<Person> personMono = client.get().uri("/person/{id}", personId)
+		        .retrieve().bodyToMono(Person.class);
+		
+		Mono<List<Hobby>> hobbiesMono = client.get().uri("/person/{id}/hobbies", personId)
+		        .retrieve().bodyToFlux(Hobby.class).collectList();
+		
+		Map<String, Object> data = Mono.zip(personMono, hobbiesMono, (person, hobbies) -> {
+		            Map<String, String> map = new LinkedHashMap<>();
+		            map.put("person", person);
+		            map.put("hobbies", hobbies);
+		            return map;
+		        })
+		        .block();
+
 			]]>
 		</programlisting>
 	</section>
@@ -562,6 +593,19 @@ public void consumeServerSentEvent() {
 		<![CDATA[
         List<String> posts = eventStream.collectList().block();
         log.info("结果数：{}, {}" , posts.size(),posts.toString());		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>打印调试日志</title>
+		<para>.log() 会打印运行期间的所有信息</para>
+		<programlisting>
+		<![CDATA[
+        Flux<String> flux = client.get()
+                .uri("/chatgpt/stream?content={content}", prompt)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
+                .retrieve()
+                .bodyToFlux(String.class).log();
 		]]>
 		</programlisting>
 	</section>
