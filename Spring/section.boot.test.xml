@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="spring.boot.test">
+<chapter id="index"><?dbhtml dir="test" ?>
 	<title>SpringBootTest</title>
 	<section id="springboot.test.maven">
 		<title>Maven 依赖</title>
@@ -38,7 +38,7 @@ public class WalletTest {
 }
 		]]>
 		</programlisting>
-		<section id="">
+		<section id="spring.boot.test">
 			<title>Junit基本注解介绍</title>
 			<screen>
 			<![CDATA[
