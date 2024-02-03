@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="springboot.properties">
+<chapter id="index"><?dbhtml dir="properties" ?>
 	<title>Properties 配置文件</title>
 	<section id="application.properties">
 		<title>application.properties 配置文件</title>
@@ -2034,15 +2034,8 @@ spring.kafka.template.default-topic= # Default topic to which messages are sent.
 	</section>
 	<section id="properties">
 		<title>Properties 文件</title>
-		<section>
-			<title>禁用命令行注入环境变量</title>
-			<screen>
-		<![CDATA[
-SpringApplication.setAddCommandLineProperties(false)	
-		]]>
-			</screen>
-		</section>
-		<section>
+
+		<section id="@Value">
 			<title>@Value 注解</title>
 			<para>application.properties</para>
 			<screen>
@@ -2212,12 +2205,150 @@ netkiller.home=http://www.netkiller.cn
 			</screen>
 			<para>@EnableConfigurationProperties 可以导入多个配置文件</para>
 			<screen>
-				@EnableConfigurationProperties({NetkillerProperties.class, NeoProperties.class})
+			<![CDATA[
+@EnableConfigurationProperties({NetkillerProperties.class, NeoProperties.class})
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+@PropertySource(value = "classpath:netkiller.properties", encoding = "UTF-8", ignoreResourceNotFound = true) 			
+			]]>
 			</screen>
 		</section>
-		<section>
-			<title>手工载入 *.properties 文件</title>
+
+		<section id="@PropertySource">
+			<title>@PropertySource 注解载入 properties 文件</title>
 			<programlisting>
+			<![CDATA[
+@PropertySource("classpath:/config.properties}")	
+
+忽略FileNotFoundException，当配置文件不存在系统抛出FileNotFoundException并终止程序运行，ignoreResourceNotFound=true 会跳过使程序能够正常运行
+@PropertySource(value="classpath:config.properties", ignoreResourceNotFound=true)		
+
+			]]>
+			</programlisting>
+			<para>载入多个配置文件</para>
+			<programlisting>
+			<![CDATA[
+@PropertySources({  
+        @PropertySource("classpath:config.properties"),  
+        @PropertySource("classpath:db.properties")  
+})
+			]]>
+			</programlisting>
+			<para>test.properties</para>
+			<programlisting>
+			<![CDATA[
+name=Neo
+age=30			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.web;
+
+import java.util.Date;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@PropertySource("classpath:test.properties")
+public class TestController {
+	
+	@Autowired
+	Environment environment;
+	
+	@Value("${age}")
+	private String age;
+
+	public TestController() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	// 环境变量方式
+	@RequestMapping("/test/env")
+	@ResponseBody
+	public String env() {
+		String message = environment.getProperty("name");
+		return message;
+	}
+	
+	@RequestMapping("/test/age")
+	@ResponseBody
+	public String age() {
+		String message = age;
+		return message;
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
+
+	<section id="Environment">
+		<title>Environment 读取配置文件</title>
+		<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/test")
+public class TestController {
+
+    @Autowired
+    private Environment environment;
+
+    @GetMapping("/")
+    public String index() {
+        return "OK";
+    }
+
+    @GetMapping("/env")
+    public String env() {
+        return environment.getProperty("app.id");
+    }
+}
+			
+			]]>
+		</programlisting>
+		<simplesect>
+			<title>getProperty</title>
+			<programlisting>
+				<![CDATA[
+environment.getProperty("app.id");
+				]]>
+			</programlisting>
+		</simplesect>
+		<simplesect>
+			<title>containsProperty</title>
+
+			<para>containsProperty 读取配置文件</para>
+			<screen>
+			<![CDATA[
+this.environment.containsProperty("spring.jpa.database-platform")		
+			]]>
+			</screen>
+		</simplesect>
+	</section>
+	<section>
+		<title>手工载入 *.properties 文件</title>
+		<programlisting>
 			<![CDATA[
 	@RequestMapping("/config")
 	@ResponseBody
@@ -2234,8 +2365,10 @@ netkiller.home=http://www.netkiller.cn
 		}
 	}	
 			]]>
-			</programlisting>
-		</section>
+		</programlisting>
+	</section>
+	<section>
+		<title>命令行注入配置项</title>
 		<section id="spring.profiles.active">
 			<title>spring.profiles.active 参数切换配置文件</title>
 			<para>首先我们准备三个配置文件</para>
@@ -2275,12 +2408,57 @@ mvn clean package -Pproduction
 			]]>
 			</programlisting>
 		</section>
-
-
-
+		<section id="setAddCommandLineProperties">
+			<title>禁用命令行注入环境变量</title>
+			<screen>
+		<![CDATA[
+SpringApplication.setAddCommandLineProperties(false)	
+		]]>
+			</screen>
+		</section>
 
 
 	</section>
+	<section>
+		<title></title>
+		<programlisting>
+			<![CDATA[
+    @GetMapping("/properties")
+    public String properties() {
+        Properties properties = new Properties();
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("application.properties")), StandardCharsets.UTF_8);
+            properties.load(inputStreamReader);
+            return properties.getProperty("app.id");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
+    }			
+			]]>
+		</programlisting>
+	</section>
+	<section id="PropertyResolver">
+		<title>PropertyResolver 获取配置</title>
+		<programlisting>
+			<![CDATA[
+@Slf4j
+@SpringBootTest
+public class EnvironmentTest {
+
+    @Resource
+    private PropertyResolver env;
+    
+    @Test
+    public void var1Test() {
+        String var1 = env.getProperty("env101.var1");
+        log.info("Environment 配置获取 {}", var1);
+    }
+}			
+			]]>
+		</programlisting>
+	</section>
+
 	<section>
 		<title>参数引用</title>
 		<screen>
@@ -2457,90 +2635,9 @@ my.lists=aa;bb;cc;dd
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>containsProperty 读取配置文件</title>
-		<screen>
-		<![CDATA[
-this.environment.containsProperty("spring.jpa.database-platform")		
-		]]>
-		</screen>
-	</section>
-	<section>
-		<title>@PropertySource 注解载入 properties 文件</title>
-		<programlisting>
-			<![CDATA[
-@PropertySource("classpath:/config.properties}")	
-
-忽略FileNotFoundException，当配置文件不存在系统抛出FileNotFoundException并终止程序运行，ignoreResourceNotFound=true 会跳过使程序能够正常运行
-@PropertySource(value="classpath:config.properties", ignoreResourceNotFound=true)		
-
-			]]>
-		</programlisting>
-		<para>载入多个配置文件</para>
-		<programlisting>
-			<![CDATA[
-@PropertySources({  
-        @PropertySource("classpath:config.properties"),  
-        @PropertySource("classpath:db.properties")  
-})
-			]]>
-		</programlisting>
-		<para>test.properties</para>
-		<programlisting>
-			<![CDATA[
-name=Neo
-age=30			
-			]]>
-		</programlisting>
-		<programlisting>
-			<![CDATA[
-package cn.netkiller.web;
-
-import java.util.Date;
-
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-@Controller
-@PropertySource("classpath:test.properties")
-public class TestController {
 	
-	@Autowired
-	Environment environment;
-	
-	@Value("${age}")
-	private String age;
 
-	public TestController() {
-		// TODO Auto-generated constructor stub
-	}
 	
-	// 环境变量方式
-	@RequestMapping("/test/env")
-	@ResponseBody
-	public String env() {
-		String message = environment.getProperty("name");
-		return message;
-	}
-	
-	@RequestMapping("/test/age")
-	@ResponseBody
-	public String age() {
-		String message = age;
-		return message;
-	}
-
-}
-			]]>
-		</programlisting>
-	</section>
 
 	<section>
 		<title>List 列表类型</title>
