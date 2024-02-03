@@ -193,4 +193,46 @@ neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/act
         },	
 	]]>
 	</screen>
+	<section>
+		<title>@Scope 定义类型</title>
+		<programlisting>
+		<![CDATA[
+    @Bean({"neo","netkiller"})
+    @Scope("prototype")
+    public MyBean myBean(){
+        return new MyBean();
+    }		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+Scope		详解
+singleton	默认单例的bean定义信息，对于每个IOC容器来说都是单例对象
+prototype	bean对象的定义为任意数量的对象实例
+request		bean对象的定义为一次HTTP请求的生命周期，也就是说，每个HTTP请求都有自己的bean实例，它是在单个bean定义的后面创建的。仅仅在web-aware的上下文中有效
+session		bean对象的定义为一次HTTP会话的生命周期。仅仅在web-aware的上下文中有效
+application	bean对象的定义范围在ServletContext生命周期内。仅仅在web-aware的上下文中有效
+websocket	bean对象的定义为WebSocket的生命周期内。仅仅在web-aware的上下文中有效
+		]]>
+		</screen>
+		<para>singleton和prototype 一般都用在普通的Java项目中，而request、session、application、websocket都用于web应用中。</para>
+		<programlisting>
+		<![CDATA[
+	@Bean
+    @Scope(value = "singleton")
+    public Person person(){
+        return new Person();
+    }		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+ConfigurableBeanFactory.SCOPE_PROTOTYPE，即“prototype”
+ConfigurableBeanFactory.SCOPE_SINGLETON，即“singleton”
+WebApplicationContext.SCOPE_REQUEST，即“request”
+WebApplicationContext.SCOPE_SESSION，即“session”
+		]]>
+		</screen>
+	</section>
+
 </section>

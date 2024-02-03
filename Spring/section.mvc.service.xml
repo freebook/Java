@@ -4,7 +4,8 @@
 	<section id="service.ComponentScan">
 		<title>Application</title>
 		<para>@ComponentScan({ "web", "rest","service" }) 一定要包含 Service
-			目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。</para>
+			目录。否则无法实现 @Autowired自动装配。你可以直接@ComponentScan扫描所有目录。
+		</para>
 		<programlisting>
 			<![CDATA[
 import org.springframework.boot.SpringApplication;
@@ -179,9 +180,72 @@ public class UserService {
 		</programlisting>
 	</section>
 	<section id="service.singleton">
-		<title>Service 是单例模式</title>
-		<para>Service 的变量是共享的，这是与 new Object 的区别。</para>
-		<programlisting>
+		<title>Service 单例/多例模式</title>
+		<section>
+			<title>Service 是单例模式</title>
+			<para>Service 的变量是共享的，这是与 new Object 的区别。</para>
+			<para>同步执行</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+@Data
+public class TestService {
+
+    private String share;
+
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("get")
+    public String get() {
+        return testService.getShare();
+    }
+
+    @GetMapping("set")
+    public String set(@RequestParam("value") String value) {
+        testService.setShare(value);
+        return testService.getShare();
+    }			
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/set?value=aaa'
+aaa⏎                                                                                                                                                                                                                                                
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+aaa⏎                                                                                                                                                                                                                                                
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/set?value=bbb'
+bbb⏎                                                                                                                                                                                                                                                
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+bbb⏎                			
+			]]>
+			</screen>
+			<para>我们可以看到 Service 是 singleton 单例模式</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq '.contexts.[].beans.testService'
+{
+  "aliases": [],
+  "scope": "singleton",
+  "type": "cn.netkiller.service.TestService$$SpringCGLIB$$0",
+  "resource": "file [/Users/neo/workspace/watch/target/classes/cn/netkiller/service/TestService.class]",
+  "dependencies": []
+}		
+			]]>
+			</screen>
+			<para>在多线程或者异步执行的情况会更糟</para>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.service;
 
@@ -215,8 +279,8 @@ public class TestService {
 }
 
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
     @Autowired
     private TestService testService;
@@ -241,26 +305,192 @@ public class TestService {
     }
 
 		]]>
-		</programlisting>
-		<para>我们可以看到 Service 是 singleton 单例模式</para>
-		<section>
-		<![CDATA[
-neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq '.contexts.[].beans.testService'
-{
-  "aliases": [],
-  "scope": "singleton",
-  "type": "cn.netkiller.service.TestService$$SpringCGLIB$$0",
-  "resource": "file [/Users/neo/workspace/watch/target/classes/cn/netkiller/service/TestService.class]",
-  "dependencies": []
-}		
-		]]>
-		</section>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 2024-01-01T14:09:10.022+08:00  INFO 59782 --- [watch-development] [         task-1] cn.netkiller.service.TestService           : null
 2024-01-01T14:09:24.694+08:00  INFO 59782 --- [watch-development] [         task-3] cn.netkiller.service.TestService           : Test 1
 2024-01-01T14:10:04.394+08:00  INFO 59782 --- [watch-development] [         task-8] cn.netkiller.service.TestService           : Test 2
 		]]>
-		</programlisting>
+			</programlisting>
+
+		</section>
+		<section>
+			<title>Service 多例实现</title>
+			<para>要实现 Service 多例模式很简单，只需要在 Service 根 Controller 中同时增加
+				@Scope("prototype") 即可</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+@Data
+@Scope("prototype")
+public class TestService {
+
+    private String share = "default";
+
+    public TestService() {
+        this.share = "init";
+    }
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import cn.netkiller.ai.AiChain;
+import cn.netkiller.annotation.TokenPass;
+import cn.netkiller.annotation.TokenVerification;
+import cn.netkiller.component.StreamService;
+import cn.netkiller.domain.Picture;
+import cn.netkiller.domain.PicturePsychoanalysis;
+import cn.netkiller.domain.embeddable.StreamTopic;
+import cn.netkiller.service.AiService;
+import cn.netkiller.service.PicturePsychoanalysisService;
+import cn.netkiller.service.TestService;
+import cn.netkiller.utils.ResponseJson;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.ParallelFlux;
+import reactor.core.scheduler.Schedulers;
+
+import java.io.IOException;
+import java.security.Principal;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+@RestController
+@Slf4j
+@RequestMapping("/test")
+@Scope(value = "prototype")
+public class TestController {
+  
+    @Autowired
+    private TestService testService;
+
+    @GetMapping("get")
+    public String get() {
+        return testService.getShare();
+    }
+
+    @GetMapping("set")
+    public String set(@RequestParam("value") String value) {
+        testService.setShare(value);
+        return testService.getShare();
+    }
+
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+init⏎                                                                                                                                                                                                                                               
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/set?value=bbb'
+bbb⏎                                                                                                                                                                                                                                                
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+init⏎                                                                                                                                                                                                                                               
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+init⏎                                                                                                                                                                                                                                               
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/set?value=aaa'
+aaa⏎                                                                                                                                                                                                                                                
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+init⏎ 
+			]]>
+			</programlisting>
+			<para>去掉构造方法</para>
+			<programlisting>
+			<![CDATA[
+	package cn.netkiller.service;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+@Data
+@Scope("prototype")
+public class TestService {
+
+    private String share = "default";
+
+    public TestService() {
+        this.share = "init";
+    }
+}			
+			]]>
+			</programlisting>
+			<para>测试结果</para>
+			<programlisting>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+default⏎                                                                                                                                                                                                                                            
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/set?value=aaa'
+aaa⏎                                                                                                                                                                                                                                                
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://localhost:8080/test/get'
+default⏎ 	
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq '.contexts.[].beans.testController'
+{
+  "aliases": [],
+  "scope": "prototype",
+  "type": "cn.netkiller.controller.TestController$$SpringCGLIB$$0",
+  "resource": "file [/Users/neo/workspace/watch/target/classes/cn/netkiller/controller/TestController.class]",
+  "dependencies": [
+    "picturePsychoanalysisService",
+    "streamService",
+    "testService",
+    "aiService"
+  ]
+}
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq '.contexts.[].beans.testService'
+{
+  "aliases": [],
+  "scope": "prototype",
+  "type": "cn.netkiller.service.TestService$$SpringCGLIB$$0",
+  "resource": "file [/Users/neo/workspace/watch/target/classes/cn/netkiller/service/TestService.class]",
+  "dependencies": []
+}
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
