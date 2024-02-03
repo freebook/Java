@@ -266,7 +266,7 @@ public class Task {
 			</programlisting>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.service;
+package cn.netkiller.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -287,7 +287,7 @@ public class TestService {
 			</programlisting>
 			<programlisting>
 			<![CDATA[
-2024-02-02T18:20:50.938+08:00  INFO 91307 --- [watch-development] [       simple-2] cn.aigcsst.service.TestService           : applicationTaskExecutor
+2024-02-02T18:20:50.938+08:00  INFO 91307 --- [watch-development] [       simple-2] cn.netkiller.service.TestService           : applicationTaskExecutor
 			]]>
 			</programlisting>
 		</section>
@@ -553,7 +553,7 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 			<para>这种方式可以直接使用  @Async </para>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.config;
+package cn.netkiller.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -614,7 +614,7 @@ public class ThreadPoolTaskExecutorConfiguration implements AsyncConfigurer {
 			<title>继承 AsyncConfigurerSupport 创建自定义连接池 </title>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.config;
+package cn.netkiller.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -675,7 +675,7 @@ public class ThreadPoolTaskExecutorConfiguration extends AsyncConfigurerSupport 
 			<para>这种方式多用在 Spring 2.x 中</para>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.config;
+package cn.netkiller.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -178,8 +178,8 @@ public class UserService {
 		]]>
 		</programlisting>
 	</section>
-	<section id="service.variable">
-		<title>变量共享</title>
+	<section id="service.singleton">
+		<title>Service 是单例模式</title>
 		<para>Service 的变量是共享的，这是与 new Object 的区别。</para>
 		<programlisting>
 		<![CDATA[
@@ -194,7 +194,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class ChatService {
+public class TestService {
 
     private String test;
 
@@ -219,7 +219,7 @@ public class ChatService {
 		<programlisting>
 		<![CDATA[
     @Autowired
-    private ChatService chatService;
+    private TestService testService;
     		
     @GetMapping("test")
     private Mono<String> test() {
@@ -242,11 +242,24 @@ public class ChatService {
 
 		]]>
 		</programlisting>
+		<para>我们可以看到 Service 是 singleton 单例模式</para>
+		<section>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq '.contexts.[].beans.testService'
+{
+  "aliases": [],
+  "scope": "singleton",
+  "type": "cn.netkiller.service.TestService$$SpringCGLIB$$0",
+  "resource": "file [/Users/neo/workspace/watch/target/classes/cn/netkiller/service/TestService.class]",
+  "dependencies": []
+}		
+		]]>
+		</section>
 		<programlisting>
 		<![CDATA[
-2024-01-01T14:09:10.022+08:00  INFO 59782 --- [watch-development] [         task-1] cn.netkiller.service.ChatService           : null
-2024-01-01T14:09:24.694+08:00  INFO 59782 --- [watch-development] [         task-3] cn.netkiller.service.ChatService           : Test 1
-2024-01-01T14:10:04.394+08:00  INFO 59782 --- [watch-development] [         task-8] cn.netkiller.service.ChatService           : Test 2
+2024-01-01T14:09:10.022+08:00  INFO 59782 --- [watch-development] [         task-1] cn.netkiller.service.TestService           : null
+2024-01-01T14:09:24.694+08:00  INFO 59782 --- [watch-development] [         task-3] cn.netkiller.service.TestService           : Test 1
+2024-01-01T14:10:04.394+08:00  INFO 59782 --- [watch-development] [         task-8] cn.netkiller.service.TestService           : Test 2
 		]]>
 		</programlisting>
 	</section>
