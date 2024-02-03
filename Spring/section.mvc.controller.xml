@@ -700,7 +700,7 @@ public void download(HttpSession
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="@MatrixVariable">
 		<title>@MatrixVariable注解，RFC3986定义URI的路径(Path)中可包含name-value片段</title>
 		<programlisting>
 		<![CDATA[
@@ -1273,6 +1273,22 @@ public class TestController {
 			</programlisting>
 		</section>
 	</section>
+	<section id="StreamingResponseBody">
+		<title>StreamingResponseBody 输出 Raw Data</title>
+		<programlisting>
+		<![CDATA[
+@GetMapping("/download")
+public StreamingResponseBody handle() {
+	return new StreamingResponseBody() {
+		@Override
+		public void writeTo(OutputStream outputStream) throws IOException {
+			// write...
+		}
+	};
+}		
+		]]>
+		</programlisting>
+	</section>
 </section>
 <section id="RestController">
 	<title>@RestController</title>
@@ -1784,6 +1800,46 @@ String fileSize = file.getSize()
 		<title>SSE Streaming in Spring MVC</title>
 		<programlisting>
 		<![CDATA[
+@GetMapping("/events")
+public ResponseBodyEmitter handle() {
+	ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+	// Save the emitter somewhere..
+	return emitter;
+}
+
+// In some other thread
+emitter.send("Hello once");
+
+// and again later on
+emitter.send("Hello again");
+
+// and done at some point
+emitter.complete();
+
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+@GetMapping(path="/events", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+public SseEmitter handle() {
+	SseEmitter emitter = new SseEmitter();
+	// Save the emitter somewhere..
+	return emitter;
+}
+
+// In some other thread
+emitter.send("Hello once");
+
+// and again later on
+emitter.send("Hello again");
+
+// and done at some point
+emitter.complete();		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[		
 @GetMapping("/mvc/sse")
 public SseEmitter streamSseMvc() {
     SseEmitter emitter = new SseEmitter();
@@ -1803,7 +1859,7 @@ public SseEmitter streamSseMvc() {
         }
     });
     return emitter;
-}		
+}
 		]]>
 		</programlisting>
 	</section>

@@ -41,6 +41,21 @@ public class Application {
 		<para>确保你的计划任务在 @ComponentScan 包中。</para>
 	</section>
 	<section>
+		<title>配置</title>
+		<screen>
+		<![CDATA[
+# 任务调度线程池大小 默认 1 建议根据任务加大
+spring.task.scheduling.pool.size=1
+# 调度线程名称前缀 默认 scheduling-
+spring.task.scheduling.thread-name-prefix=scheduling-
+# 线程池关闭时等待所有任务完成
+spring.task.scheduling.shutdown.await-termination=
+# 调度线程关闭前最大等待时间，确保最后一定关闭
+spring.task.scheduling.shutdown.await-termination-period=		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>Component</title>
 		<para>在计划任务方法上加上@Scheduled注解，表示该方法是一个计划任务，项目启动后会去扫描该注解的方法并加入计划任务列表。</para>
 		<programlisting>

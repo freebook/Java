@@ -7,7 +7,6 @@
 	&section.boot.undertow.xml;
 	&section.boot.jetty.xml;
 	&section.boot.http2.xml;
-	&section.boot.template.xml;	
 	&section.boot.datasource.xml;
 	&section.boot.redis.xml;
 	&section.boot.queue.xml;

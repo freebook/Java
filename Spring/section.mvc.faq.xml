@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="faq" ?>
 	<title>FAQ</title>
-<section id="faq">
-		<title>FAQ</title>
-		<section>
-			<title>o.s.web.servlet.PageNotFound</title>
-			<para>解决方法，加入下面代码到 dispatcher-servlet.xml 文件中</para>
-			<screen>
+	<section>
+		<title>o.s.web.servlet.PageNotFound</title>
+		<para>解决方法，加入下面代码到 dispatcher-servlet.xml 文件中</para>
+		<screen>
 			<![CDATA[
 <mvc:annotation-driven />			
 			]]>
-			</screen>
-			<para>dispatcher-servlet.xml</para>
-			<screen>
+		</screen>
+		<para>dispatcher-servlet.xml</para>
+		<screen>
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -38,15 +36,15 @@
 
 </beans>
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>HTTP Status 500 - Handler processing failed; nested exception
-				is java.lang.NoClassDefFoundError:
-				javax/servlet/jsp/jstl/core/Config
-			</title>
-			<para>pom.xml 文件中加入依赖包</para>
-			<screen>
+		</screen>
+	</section>
+	<section>
+		<title>HTTP Status 500 - Handler processing failed; nested exception
+			is java.lang.NoClassDefFoundError:
+			javax/servlet/jsp/jstl/core/Config
+		</title>
+		<para>pom.xml 文件中加入依赖包</para>
+		<screen>
 			<![CDATA[
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -54,12 +52,12 @@
 			<version>1.2</version>
 		</dependency>
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>同时使用 Thymeleaf 与 JSP </title>
-			<subtitle>Using both Thymeleaf and JSP</subtitle>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>同时使用 Thymeleaf 与 JSP </title>
+		<subtitle>Using both Thymeleaf and JSP</subtitle>
+		<programlisting>
 			<![CDATA[
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -86,8 +84,8 @@
 		<property name="viewNames" value="*.html" />
 	</bean>	
 			]]>
-			</programlisting>
-			<programlisting>
+		</programlisting>
+		<programlisting>
 			<![CDATA[
 @RequestMapping("/thymeleaf")
 public String thymeleafView(){
@@ -99,8 +97,8 @@ public String jspView(){
     return "jstl.jsp";
 }
 			]]>
-			</programlisting>
-			<programlisting>
+		</programlisting>
+		<programlisting>
 			<![CDATA[
 			<property name="viewNames" value="*thymeleaf/*" />
 			
@@ -110,12 +108,12 @@ public ModelAndView dboxPrint(Model model){
     return modelAndView;
 }
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>排除静态内容</title>
-			<para>方法一，排除静态内容如 images, css, js 等等</para>
-			<programlisting>
+		</programlisting>
+	</section>
+	<section>
+		<title>排除静态内容</title>
+		<para>方法一，排除静态内容如 images, css, js 等等</para>
+		<programlisting>
 			<![CDATA[
 	<servlet>
         <servlet-name>springframework</servlet-name>
@@ -137,20 +135,20 @@ public ModelAndView dboxPrint(Model model){
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>			
 			]]>
-			</programlisting>
-			<para>方法二</para>
-			<programlisting>
+		</programlisting>
+		<para>方法二</para>
+		<programlisting>
 			<![CDATA[
 	<mvc:resources location="/images/" mapping="/images/**" />
 	<mvc:resources location="/css/" mapping="/css/**" />
 	<mvc:resources location="/js/" mapping="/js/**" />			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>HTTP Status 406</title>
-			<para>配置 url-pattern 增加需要传递给Spring的扩展名</para>
-			<screen>
+		</programlisting>
+	</section>
+	<section>
+		<title>HTTP Status 406</title>
+		<para>配置 url-pattern 增加需要传递给Spring的扩展名</para>
+		<screen>
 			<![CDATA[
 	<servlet>
         <servlet-name>springframework</servlet-name>
@@ -169,13 +167,15 @@ public ModelAndView dboxPrint(Model model){
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>		
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Caused by: java.lang.IllegalArgumentException: Not a managed type: class common.domain.Article</title>
-			<para>背景描述：Springboot 入口文件 Application.java 的包是 package api; 为了让 domain,pojo 共用，于是将 domain 放到Maven module下命令为 common。启动后出现这个故障。</para>
-			<para>解决方案增加 @EntityScan("common.domain") 即可。</para>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>Caused by: java.lang.IllegalArgumentException: Not a managed
+			type: class common.domain.Article</title>
+		<para>背景描述：Springboot 入口文件 Application.java 的包是 package api; 为了让
+			domain,pojo 共用，于是将 domain 放到Maven module下命令为 common。启动后出现这个故障。</para>
+		<para>解决方案增加 @EntityScan("common.domain") 即可。</para>
+		<programlisting>
 			<![CDATA[
 package api;
 
@@ -198,18 +198,19 @@ public class Application {
 }
 			
 			]]>
-			</programlisting>
-		</section>
-		<section id="error.unauthorized">
-			<title>{"error":"unauthorized","error_description":"Full authentication is required to access this resource"}</title>
-			<para>Oauth @RestController 一切正常， @Controller 提示如下</para>
-			<screen>
+		</programlisting>
+	</section>
+	<section id="error.unauthorized">
+		<title>{"error":"unauthorized","error_description":"Full
+			authentication is required to access this resource"}</title>
+		<para>Oauth @RestController 一切正常， @Controller 提示如下</para>
+		<screen>
 		<![CDATA[
 {"error":"unauthorized","error_description":"Full authentication is required to access this resource"}		
 		]]>
-			</screen>
-			<para>程序如下</para>
-			<programlisting>
+		</screen>
+		<para>程序如下</para>
+		<programlisting>
 		<![CDATA[
 package api.controller;
 
@@ -238,9 +239,10 @@ public class IndexController {
 	}
 }				
 		]]>
-			</programlisting>
-			<para>分析 @Controller 不允许直接返回字符串，必须使用 @ResponseBody 或者 ModelAndView，下改后问题解决。</para>
-			<programlisting>
+		</programlisting>
+		<para>分析 @Controller 不允许直接返回字符串，必须使用 @ResponseBody 或者
+			ModelAndView，下改后问题解决。</para>
+		<programlisting>
 		<![CDATA[
 package api.controller;
 
@@ -273,9 +275,9 @@ public class IndexController {
 }
 
 		]]>
-			</programlisting>
-			<para>同时 @EnableWebSecurity 需要忽略 @Controller 的映射 URL</para>
-			<programlisting>
+		</programlisting>
+		<para>同时 @EnableWebSecurity 需要忽略 @Controller 的映射 URL</para>
+		<programlisting>
 			<![CDATA[
 @Configuration
 @EnableWebSecurity
@@ -287,26 +289,31 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 }
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>@Value 取不到值</title>
-			<para>在构造方法中引用@value为null，由于spring实例化顺序为先执行构造方法，再注入成员变量，所以取值为null。</para>
-			<para>调用spring组件时使用new对象，而不是@Autowired。</para>
-		</section>
-		<section id="faq.springboot.2.1.0">
-			<title>Spring boot 2.1.0</title>
-			<para>application.properties 需要加入下面参数，否则 @Bean 不允许。</para>
-			<screen>
+		</programlisting>
+	</section>
+	<section>
+		<title>@Value 取不到值</title>
+		<para>在构造方法中引用@value为null，由于spring实例化顺序为先执行构造方法，再注入成员变量，所以取值为null。
+		</para>
+		<para>调用spring组件时使用new对象，而不是@Autowired。</para>
+	</section>
+	<section id="faq.springboot.2.1.0">
+		<title>Spring boot 2.1.0</title>
+		<para>application.properties 需要加入下面参数，否则 @Bean 不允许。</para>
+		<screen>
 		<![CDATA[
 spring.main.allow-bean-definition-overriding=true		
 		]]>
-			</screen>
-			<para>另外 MySQL驱动必须使用最新的 com.mysql.cj.jdbc.Driver</para>
-		</section>
-		<section>
-			<title>Field authenticationManager in cn.netkiller.oauth2.config.AuthorizationServerConfigurer required a bean of type 'org.springframework.security.authentication.AuthenticationManager' that could not be found.</title>
-			<screen>
+		</screen>
+		<para>另外 MySQL驱动必须使用最新的 com.mysql.cj.jdbc.Driver</para>
+	</section>
+	<section>
+		<title>Field authenticationManager in
+			cn.netkiller.oauth2.config.AuthorizationServerConfigurer required a
+			bean of type
+			'org.springframework.security.authentication.AuthenticationManager'
+			that could not be found.</title>
+		<screen>
 		<![CDATA[
 ***************************
 APPLICATION FAILED TO START
@@ -324,9 +331,10 @@ Action:
 
 Consider defining a bean of type 'org.springframework.security.authentication.AuthenticationManager' in your configuration.		
 		]]>
-			</screen>
-			<para>注入 @Bean @Override public AuthenticationManager authenticationManagerBean() 即可解决</para>
-			<screen>
+		</screen>
+		<para>注入 @Bean @Override public AuthenticationManager
+			authenticationManagerBean() 即可解决</para>
+		<screen>
 		<![CDATA[
 package cn.netkiller.oauth2.config;
 
@@ -360,11 +368,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 }
 		
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>打印 Bean 信息</title>
-			<programlisting>
+		</screen>
+	</section>
+	<section>
+		<title>打印 Bean 信息</title>
+		<programlisting>
 		<![CDATA[
 import java.util.Arrays;
 
@@ -398,12 +406,13 @@ public class Application {
 
 }		
 		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>The dependencies of some of the beans in the application context form a cycle</title>
-			<para>@Service 中的 @Autowired 出现了相互注入，引起循环。</para>
-			<screen>
+		</programlisting>
+	</section>
+	<section>
+		<title>The dependencies of some of the beans in the application
+			context form a cycle</title>
+		<para>@Service 中的 @Autowired 出现了相互注入，引起循环。</para>
+		<screen>
 			<![CDATA[
 api    | ***************************
 api    | APPLICATION FAILED TO START
@@ -421,10 +430,10 @@ api    | ↑     ↓
 api    | |  incarAttachServiceImpl (field private cn.netkiller.service.IIncarOrderFlowService cn.netkiller.service.impl.IncarAttachServiceImpl.iIncarOrderFlowService)
 api    | └─────┘
 			]]>
-			</screen>
-			<para>解决方案</para>
-			<para>增加 @Lazy 注解</para>
-			<screen>
+		</screen>
+		<para>解决方案</para>
+		<para>增加 @Lazy 注解</para>
+		<screen>
 			<![CDATA[
 @Slf4j
 @Service
@@ -441,80 +450,81 @@ public class IncarOrderFlowServiceImpl implements IIncarOrderFlowService {
 	...
 }	
 			]]>
-			</screen>
-		</section>
-		<section id="Could not read document: Invalid UTF-8 middle byte 0xd0">
-			<title>Could not read document: Invalid UTF-8 middle byte 0xd0</title>
-			<para>Spring 默认不支持 UTF-8</para>
-			<screen>
+		</screen>
+	</section>
+	<section
+		id="Could not read document: Invalid UTF-8 middle byte 0xd0">
+		<title>Could not read document: Invalid UTF-8 middle byte 0xd0</title>
+		<para>Spring 默认不支持 UTF-8</para>
+		<screen>
 		<![CDATA[
 2016-08-17 16:04:53.148 WARN 7700 --- [nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Failed to read HTTP message:	org.springframework.http.converter.HttpMessageNotReadableException:Could not read document: Invalid UTF-8 middle byte 0xd0 at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38](through reference chain: api.domain.oracle.Withdraw["bankname"]); nested exception is 	com.fasterxml.jackson.databind.JsonMappingException: Invalid UTF-8 middle byte 0xd0 at [Source: java.io.PushbackInputStream@33aa54cc; line: 1, column: 38]
 			(through reference chain: api.domain.oracle.Withdraw["bankname"])
 		]]>
-			</screen>
-			<para>解决方案 application.properties 配置文件中加入如下配置：</para>
-			<screen>
-				spring.messages.encoding=UTF-8
-				server.tomcat.uri-encoding=UTF-8
-				spring.http.encoding.charset=UTF-8
-				spring.http.encoding.enabled=true
-				spring.http.encoding.force=true
-			</screen>
-		</section>
+		</screen>
+		<para>解决方案 application.properties 配置文件中加入如下配置：</para>
+		<screen>
+			spring.messages.encoding=UTF-8
+			server.tomcat.uri-encoding=UTF-8
+			spring.http.encoding.charset=UTF-8
+			spring.http.encoding.enabled=true
+			spring.http.encoding.force=true
+		</screen>
+	</section>
 
-		<section>
-			<title>Field javaMailSender in cn.netkiller.rest.EmailRestController
-				required a bean of type
-				'org.springframework.mail.javamail.JavaMailSender' that could not be
-				found.
-			</title>
-			<para>启动提示 'org.springframework.mail.javamail.JavaMailSender' that
-				could not be found 这句话很误导人。实际上是 (spring.mail.host) did not find
-				property 'host'
-			</para>
-			<screen>
-				***************************
-				APPLICATION FAILED TO START
-				***************************
+	<section>
+		<title>Field javaMailSender in cn.netkiller.rest.EmailRestController
+			required a bean of type
+			'org.springframework.mail.javamail.JavaMailSender' that could not be
+			found.
+		</title>
+		<para>启动提示 'org.springframework.mail.javamail.JavaMailSender' that
+			could not be found 这句话很误导人。实际上是 (spring.mail.host) did not find
+			property 'host'
+		</para>
+		<screen>
+			***************************
+			APPLICATION FAILED TO START
+			***************************
 
-				Description:
+			Description:
 
-				Field javaMailSender in cn.netkiller.rest.EmailRestController required a
-				bean of type 'org.springframework.mail.javamail.JavaMailSender' that
-				could not be found.
-				- Bean method 'mailSender' not loaded because AnyNestedCondition 0
-				matched 2 did not; NestedCondition on
-				MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty
-				@ConditionalOnProperty (spring.mail.jndi-name) did not find property
-				'jndi-name';
-				NestedCondition on
-				MailSenderAutoConfiguration.MailSenderCondition.HostProperty
-				@ConditionalOnProperty (spring.mail.host) did not find property
-				'host'
-
-
-				Action:
-
-				Consider revisiting the conditions above or defining a bean of type
-				'org.springframework.mail.javamail.JavaMailSender' in your
-				configuration.
-			</screen>
-			<para>解决方案，application.properties 增加 spring.mail.host=localhost</para>
-		</section>
+			Field javaMailSender in cn.netkiller.rest.EmailRestController required a
+			bean of type 'org.springframework.mail.javamail.JavaMailSender' that
+			could not be found.
+			- Bean method 'mailSender' not loaded because AnyNestedCondition 0
+			matched 2 did not; NestedCondition on
+			MailSenderAutoConfiguration.MailSenderCondition.JndiNameProperty
+			@ConditionalOnProperty (spring.mail.jndi-name) did not find property
+			'jndi-name';
+			NestedCondition on
+			MailSenderAutoConfiguration.MailSenderCondition.HostProperty
+			@ConditionalOnProperty (spring.mail.host) did not find property
+			'host'
 
 
+			Action:
 
-		<section>
-			<title>no main manifest attribute, in /srv/job-admin.jar</title>
-			<para></para>
-			<screen>
+			Consider revisiting the conditions above or defining a bean of type
+			'org.springframework.mail.javamail.JavaMailSender' in your
+			configuration.
+		</screen>
+		<para>解决方案，application.properties 增加 spring.mail.host=localhost</para>
+	</section>
+
+
+
+	<section>
+		<title>no main manifest attribute, in /srv/job-admin.jar</title>
+		<para></para>
+		<screen>
 		<![CDATA[
 [root@localhost cloud.netkiller.cn]# java -jar job-admin.jar 
 no main manifest attribute, in job-admin.jar		
 		]]>
-			</screen>
-			<para>解压 jar 包，查看 META-INF/MANIFEST.MF 文件</para>
-			<screen>
+		</screen>
+		<para>解压 jar 包，查看 META-INF/MANIFEST.MF 文件</para>
+		<screen>
 		<![CDATA[
 [root@localhost ~]# unzip job-admin.jar		
 [root@localhost ~]# cat META-INF/MANIFEST.MF 
@@ -524,9 +534,9 @@ Built-By: gitlab-runner
 Created-By: Apache Maven 3.8.4
 Build-Jdk: 1.8.0_312		
 		]]>
-			</screen>
-			<para>解决方法，pom.xml 中增加 repackage 配置项</para>
-			<screen>
+		</screen>
+		<para>解决方法，pom.xml 中增加 repackage 配置项</para>
+		<screen>
 		<![CDATA[
 		<plugins>
             <plugin>
@@ -543,9 +553,9 @@ Build-Jdk: 1.8.0_312
             </plugin>
         </plugins>
 		]]>
-			</screen>
-			<para>重新打包，再解压开查看 MANIFEST.MF 文件</para>
-			<screen>
+		</screen>
+		<para>重新打包，再解压开查看 MANIFEST.MF 文件</para>
+		<screen>
 		<![CDATA[
 [root@localhost ~]# cat META-INF/MANIFEST.MF 
 Manifest-Version: 1.0
@@ -561,8 +571,8 @@ Created-By: Apache Maven 3.8.4
 Build-Jdk: 1.8.0_312
 Main-Class: org.springframework.boot.loader.JarLauncher		
 		]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
-	
+
+
 </chapter>

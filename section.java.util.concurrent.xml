@@ -1,5 +1,5 @@
 <section id="java.util.concurrent">
-	<title>java.util.concurrent</title>
+	<title>Java 并发编程</title>
 	<section>
 		<title>TimeUnit</title>
 		<programlisting>
@@ -8,6 +8,15 @@
 		TimeUnit.SECONDS.sleep(5);
 	} catch (InterruptedException e) {
 	}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>AtomicInteger</title>
+		<programlisting>
+		<![CDATA[
+AtomicInteger sequence = new AtomicInteger(1);
+sequence.getAndIncrement(); // 加1操作
 		]]>
 		</programlisting>
 	</section>

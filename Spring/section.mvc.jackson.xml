@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="Problem Details">
-	<title>Problem Details [RFC 7807]</title>
-	<para>HTTP RFC 7807
-		规范：https://www.rfc-editor.org/rfc/rfc7807。这个规范里定义了HTTP
-		API的“问题细节”（Problem Details）内容。用它来携带HTTP错误返回信息，避免自定义新的错误返回格式。</para>
-	<programlisting>
+<section id="json">
+	<title>Json 处理</title>
+	<section id="Problem Details">
+		<title>Problem Details [RFC 7807]</title>
+		<para>HTTP RFC 7807
+			规范：https://www.rfc-editor.org/rfc/rfc7807。这个规范里定义了HTTP
+			API的“问题细节”（Problem Details）内容。用它来携带HTTP错误返回信息，避免自定义新的错误返回格式。
+		</para>
+		<programlisting>
 	<![CDATA[
 HTTP/1.1 403 Forbidden
 Content-Type: application/problem+json
@@ -18,8 +21,8 @@ Content-Language: en
 	"instance": "/account-transfer-service"
 }		
 	]]>
-	</programlisting>
-	<programlisting>
+		</programlisting>
+		<programlisting>
 	<![CDATA[
 type：		问题的类型；
 title：		问题类型描述；
@@ -27,8 +30,8 @@ status：	HTTP状态码；
 detail：	问题实例描述；
 instance：	URI的内容应该用来描述问题实例，但不是必须的。
 	]]>
-	</programlisting>
-	<programlisting>
+		</programlisting>
+		<programlisting>
 	<![CDATA[
     @GetMapping("/ProblemDetail/v1/{id}")
     public ResponseEntity config(@PathVariable("id") Long id) {
@@ -43,8 +46,8 @@ instance：	URI的内容应该用来描述问题实例，但不是必须的。
         }
     }
 	]]>
-	</programlisting>
-	<programlisting>
+		</programlisting>
+		<programlisting>
 	<![CDATA[
     @GetMapping(path = "/ProblemDetail/v2/{id}")
     public ResponseEntity getEmployeeById_V3(@PathVariable("id") Long id) {
@@ -63,11 +66,11 @@ instance：	URI的内容应该用来描述问题实例，但不是必须的。
         }
     }
 	]]>
-	</programlisting>
+		</programlisting>
 
-	<section id="ResponseEntity">
-		<title>ResponseEntity</title>
-		<programlisting>
+		<section id="ResponseEntity">
+			<title>ResponseEntity</title>
+			<programlisting>
 			<![CDATA[
 @PostMapping(path = "/foo", params = {"id", "name=John"})
 public ResponseEntity<String> handlePostRequest() {
@@ -75,25 +78,237 @@ public ResponseEntity<String> handlePostRequest() {
     return ResponseEntity.ok("Success");
 }
 			]]>
-		</programlisting>
-		<section>
-			<title>status</title>
-			<programlisting>
+			</programlisting>
+			<section>
+				<title>status</title>
+				<programlisting>
 			<![CDATA[
 return ResponseEntity
                   .status(HttpStatus.CREATED)
                   .header("Location", locationUri)
                   .body("Employee created successfully. Location: " + locationUri);		
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
 	</section>
-</section>
-<section id="Jackson">
-	<title>Jackson</title>
-	<section>
-		<title>Jackson 相关配置</title>
-		<screen>
+	<section id="javax.json">
+		<title>javax.json.*</title>
+
+		<section id="json.encode">
+			<title>Json 编码</title>
+			<programlisting language="java">
+			<![CDATA[			
+package netkiller.json;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.json.*;
+
+public final class Writer {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder addressBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder phoneNumBuilder = Json.createArrayBuilder();
+		
+		phoneNumBuilder.add("12355566688").add("0755-2222-3333");
+		
+		addressBuilder.add("street", "Longhua").add("city",	"Shenzhen").add("zipcode", 518000);
+		
+		jsonBuilder.add("nickname", "netkiller").add("name", "Neo").add("department", "IT").add("role",	"Admin");
+		
+		jsonBuilder.add("phone", phoneNumBuilder);
+		jsonBuilder.add("address", addressBuilder);
+		
+		JsonObject jsonObject = jsonBuilder.build();
+		
+		System.out.println(jsonObject);
+		
+		try {
+			// write to file
+			File file = new File("json.txt");
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			OutputStream os = null;
+			os = new FileOutputStream(file);
+			JsonWriter jsonWriter = Json.createWriter(os);
+			jsonWriter.writeObject(jsonObject);
+			jsonWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>运行后输出</para>
+			<screen>
+			<![CDATA[
+{"nickname":"netkiller","name":"Neo","department":"IT","role":"Admin","phone":["12355566688","0755-2222-3333"],"address":{"street":"Longhua","city":"Shenzhen","zipcode":"518000"}}			
+			]]>
+			</screen>
+		</section>
+		<section id="json.decode">
+			<title>Json 解码</title>
+			<programlisting>
+			<![CDATA[
+package netkiller.json;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+
+public final class Reader {
+	
+	public static final String JSON_FILE="json.txt";
+	
+	public static void main(String[] args) throws IOException {
+		InputStream fis = new FileInputStream(JSON_FILE);
+		//create JsonReader object
+		JsonReader jsonReader = Json.createReader(fis);
+		
+		//get JsonObject from JsonReader
+		JsonObject jsonObject = jsonReader.readObject();
+		
+		//we can close IO resource and JsonReader now
+		jsonReader.close();
+		fis.close();
+		
+		System.out.printf("nickname: %s \n", jsonObject.getString("nickname"));
+		System.out.printf("name: %s \n", jsonObject.getString("name"));
+		System.out.printf("department: %s \n",
+		jsonObject.getString("department"));
+		System.out.printf("role: %s \n", jsonObject.getString("role"));
+		JsonArray jsonArray = jsonObject.getJsonArray("phone");
+		
+		//long[] numbers = new long[jsonArray.size()];
+		int index = 0;
+		for(JsonValue value : jsonArray){
+			//numbers[index++] = Long.parseLong(value.toString());
+			System.out.printf("phone[%d]: %s \n", index++, value.toString());
+		}
+		
+		//reading inner object from json object
+		JsonObject innerJsonObject = jsonObject.getJsonObject("address");
+		
+		System.out.printf("address: %s, %s, %d \n",
+		innerJsonObject.getString("street"),
+		innerJsonObject.getString("city"),
+		innerJsonObject.getInt("zipcode"));
+	
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+nickname: netkiller
+name: Neo
+department: IT
+role: Admin
+phone[0]: +8612355566688
+phone[1]: 0755-2222-3333
+address: Longhua, Shenzhen, 518000
+			]]>
+			</screen>
+		</section>
+		<section id="json.url">
+			<title>URL获取Json</title>
+			<programlisting>
+		<![CDATA[
+package netkiller.json;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
+
+import javax.json.*;
+
+public class HttpUrl {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String URL = "http://www.example.com/json/2/20/0.html";
+		// system.out.println("Requeted URL:" + URL);
+		StringBuilder sb = new StringBuilder();
+		URLConnection urlConn = null;
+		InputStreamReader in = null;
+		try {
+			URL url = new URL(URL);
+			urlConn = url.openConnection();
+			if (urlConn != null)
+				urlConn.setReadTimeout(60 * 1000);
+			if (urlConn != null && urlConn.getInputStream() != null) {
+				in = new InputStreamReader(urlConn.getInputStream(), Charset.defaultCharset());
+				BufferedReader bufferedReader = new BufferedReader(in);
+				if (bufferedReader != null) {
+					int cp;
+					while ((cp = bufferedReader.read()) != -1) {
+						sb.append((char) cp);
+					}
+					bufferedReader.close();
+				}
+			}
+			in.close();
+
+			String jsonString = sb.toString();
+
+			//System.out.println(jsonString);
+
+			JsonReader reader = Json.createReader(new StringReader(jsonString));
+
+			JsonObject jsonObject = reader.readObject();
+
+			reader.close();
+
+			// System.out.println(jsonObject.size());
+
+			for (int i = 0; i < jsonObject.size() - 2; i++) {
+				JsonObject rowObject = jsonObject.getJsonObject(Integer.toString(i));
+				// System.out.println(rowObject.toString());
+				System.out.printf("%s\t%s\t%s\n", rowObject.getJsonString("id"), rowObject.getJsonString("title"),
+						rowObject.getJsonString("ctime"));
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException("Exception while calling URL:" + URL, e);
+		}
+
+	}
+
+}
+		]]>
+			</programlisting>
+		</section>
+
+	</section>
+	<section id="Jackson">
+		<title>Jackson</title>
+		<section>
+			<title>Jackson 相关配置</title>
+			<screen>
 		<![CDATA[
 #序列化时间格式
 spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
@@ -101,51 +316,51 @@ spring.mvc.date-format=yyyy-MM-dd HH:mm:ss
 #mvc序列化时候时区选择
 spring.jackson.time-zone=GMT+8		
 		]]>
-		</screen>
-	</section>
-	<section id="@JsonIgnore">
-		<title>@JsonIgnore 返回json是不含有该字段</title>
-		<programlisting>
+			</screen>
+		</section>
+		<section id="@JsonIgnore">
+			<title>@JsonIgnore 返回json是不含有该字段</title>
+			<programlisting>
 			<![CDATA[
 	@JsonIgnore
 	private String entityName = this.getClass().getSimpleName();	
 			]]>
-		</programlisting>
-	</section>
-	<section id="@JsonFormat 日期格式化">
-		<title>@JsonFormat 格式化 json 时间格式</title>
-		<section>
-			<title>日期格式化</title>
+			</programlisting>
+		</section>
+		<section id="@JsonFormat 日期格式化">
+			<title>@JsonFormat 格式化 json 时间格式</title>
+			<section>
+				<title>日期格式化</title>
 
-			<para>默认 json 中的时间格式是这样的</para>
-			<screen>
+				<para>默认 json 中的时间格式是这样的</para>
+				<screen>
 			<![CDATA[
 "createDate":"2018-09-11T07:34:20.106+0000","updateDate":"2018-09-11T07:34:20.106+0000"			
 			]]>
-			</screen>
-			<para>@JsonFormat 可以格式化 json 返回的时间格式。</para>
-			<programlisting>
+				</screen>
+				<para>@JsonFormat 可以格式化 json 返回的时间格式。</para>
+				<programlisting>
 			<![CDATA[
 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")			
 			]]>
-			</programlisting>
-			<para>格式化后</para>
-			<programlisting>
+				</programlisting>
+				<para>格式化后</para>
+				<programlisting>
 			<![CDATA[
 "createDate":"2018-09-11 07:42:44","updateDate":"2018-09-11 07:42:44"			
 			]]>
-			</programlisting>
-			<para>解决时区问题，MongoDb 默认使用UTC,显示时间相差8小时</para>
-			<programlisting>
+				</programlisting>
+				<para>解决时区问题，MongoDb 默认使用UTC,显示时间相差8小时</para>
+				<programlisting>
 			<![CDATA[
 @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")	
 private Date createdDate = new Date();			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>时区</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>时区</title>
+				<programlisting>
 			<![CDATA[
 public class Test {
    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MMM-dd HH:mm:ss z", timezone="EST")
@@ -153,11 +368,11 @@ public class Test {
    private Date recentBookPubDate;	
 } 			
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>枚举</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>枚举</title>
+				<programlisting>
 			<![CDATA[
 public class Test {
    @JsonFormat(shape=JsonFormat.Shape.NUMBER)
@@ -165,18 +380,18 @@ public class Test {
    private Date birthDate;
 } 
 			]]>
-			</programlisting>
-			<screen>
+				</programlisting>
+				<screen>
 			<![CDATA[
 {
   "birthDate" : 1528702883858
 } 			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>枚举</title>
-			<programlisting>
+				</screen>
+			</section>
+			<section>
+				<title>枚举</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -196,12 +411,12 @@ enum Lang {
 	Python
 } 
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section>
-	<section id="@JsonComponent">
-		<title>@JsonComponent</title>
-		<programlisting>
+		<section id="@JsonComponent">
+			<title>@JsonComponent</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.json;
 
@@ -234,8 +449,8 @@ public class Member {
 }
 		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.json;
 
@@ -284,8 +499,8 @@ public class Json {
 	}
 }		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.json.controller;
 
@@ -318,11 +533,11 @@ public class SimpleController {
 
 }
 		]]>
-		</programlisting>
-	</section>
-	<section id="ObjectToJson">
-		<title>Object to Json</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="ObjectToJson">
+			<title>Object to Json</title>
+			<programlisting>
 		<![CDATA[
 ObjectMapper mapper = new ObjectMapper();
 User user = new User();
@@ -336,18 +551,18 @@ String jsonInString = mapper.writeValueAsString(user);
 //Convert object to JSON string and pretty print
 String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(user);
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 	Notification notification = new Notification(status, time, summary + info);
 	ObjectMapper objectMapper = new ObjectMapper();
 	String json = objectMapper.writeValueAsString(notification);		
 		]]>
-		</programlisting>
-	</section>
-	<section id="JsonToObject">
-		<title>Json To Object</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="JsonToObject">
+			<title>Json To Object</title>
+			<programlisting>
 		<![CDATA[
 ObjectMapper mapper = new ObjectMapper();
 String jsonInString = "{'name' : 'mkyong'}";
@@ -358,6 +573,114 @@ User user = mapper.readValue(new File("c:\\user.json"), User.class);
 //JSON from String to Object
 User user = mapper.readValue(jsonInString, User.class);
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>ObjectToJSON</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+import java.util.Date;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class ObjectToJSON {
+  public static void main(String[] args) throws JsonProcessingException {
+     Test test = new Test("Neo", 123, new Date());   
+     ObjectMapper mapper = new ObjectMapper();     
+     String jsonData = mapper.writerWithDefaultPrettyPrinter()
+		 .writeValueAsString(test);
+     System.out.println(jsonData);
+  }
+} 			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JSONToObject</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class JSONToObject {
+	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
+		 String jsonData = 
+		    "{"
+			  +"\"name\" : \"Neo\","
+			  +"\"age\" : 12,"
+			  +"\"birthDate\" : \"2019-Jun-11 07:00:46 CST\""	
+		   +"}";
+		 ObjectMapper mapper = new ObjectMapper();
+		 Test test = mapper.readValue(jsonData, Test.class);
+		 System.out.println(test.getName()+" | "+test.getBirthDate()+" | "+ test.getAge());
+	}
+} 
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>JsonNode</title>
+			<programlisting>
+			<![CDATA[
+String[] picture;
+ObjectMapper mapper = new ObjectMapper();
+JsonNode jsonNode = mapper.convertValue(picture, JsonNode.class);		
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>org.json</title>
+		<section>
+			<title>JSONArray forEach</title>
+			<programlisting>
+			<![CDATA[
+            JSONArray playlists = object.getJSONArray("result");
+            Log.i(TAG, "播放数量：" + playlists.size() + " 列表" + playlists);
+
+            List<String> lists = new ArrayList<String>();
+
+            playlists.forEach(jsonObject -> {
+                JSONObject obj = (JSONObject) jsonObject;
+                lists.add(obj.getString("url"));
+            });
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+	<section id="gson">
+		<title>Google Json</title>
+		<section>
+			<title>json 转 map</title>
+			<programlisting>
+			<![CDATA[
+ 		HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap<String, String>>();
+        Gson gson = new Gson();
+        data = gson.fromJson(jsonString, data.getClass());		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>LinkedHashMap 转 Json</title>
+			<programlisting>
+			<![CDATA[
+Gson gson = new Gson();
+Map<String, String> data = new LinkedHashMap<String, String>() {{
+    put("text", text);
+    put("scene", "talk");
+}};
+
+String json = gson.toJson(data, LinkedHashMap.class);
+			]]>
+			</programlisting>
+			<para>注意：String json = gson.toJson(data); 这样转换不成功，返回 null，必须指定 class
+				才能成功 String json = gson.toJson(data, LinkedHashMap.class); </para>
+		</section>
 	</section>
 </section>

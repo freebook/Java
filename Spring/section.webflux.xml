@@ -1331,4 +1331,64 @@ data:发射
 		</programlisting>
 	</section>
 </section>
+<section>
+	<title>并发</title>
+	<programlisting>
+	<![CDATA[
+        Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
+                .publishOn(Schedulers.parallel())
+                .flatMap(integer -> {
+                    System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
+                    return Mono.just(integer);
+                }, 5)
+                .repeat()
+                .subscribe();	
+	]]>
+	</programlisting>
+	<programlisting>
+	<![CDATA[
+    @GetMapping(value = "parallel", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Integer> parallel() {
+        return Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
+                .publishOn(Schedulers.parallel())
+                .flatMap(integer -> {
+                    log.info("val:" + integer + ", thread:" + Thread.currentThread().getId());
+                    return Mono.just(integer);
+                }, 2).repeat(10L);
 
+    }
+	]]>
+	</programlisting>
+	<programlisting>
+	<![CDATA[
+Flux.just(1,2,3,4,5,6,7,8)
+    .parallel(2) // mention number of threads
+    .runOn(Schedulers.parallel())
+    .map(integer -> {
+             System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId()); 
+             return integer;
+        })   
+    .subscribe();	
+	]]>
+	</programlisting>
+	<programlisting>
+	<![CDATA[
+	
+	]]>
+	</programlisting>
+	<programlisting>
+	<![CDATA[
+	
+	]]>
+	</programlisting>
+	<programlisting>
+	<![CDATA[
+	
+	]]>
+	</programlisting>
+	<programlisting>
+	<![CDATA[
+	
+	]]>
+	</programlisting>
+</section>

@@ -398,11 +398,71 @@ public String getUsers() {
 		</section>
 
 	</section>
-	<section>
-		<title></title>
+	<section id="httpBasic">
+		<title>httpBasic 配置</title>
 		<programlisting>
 			<![CDATA[
+package cn.aigcsst.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
+/**
+ * @author Neo
+ * @description Security 配置类
+ * @date 2023-01-26 21:18
+ */
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class WebSecurityConfig {
+
+//    @Autowired
+//    private SecurityTokenAuthenticationFilter securityTokenAuthenticationFilter;
+
+//    @Value("${spring.profiles.active}")
+//    private String env;
+
+    @Bean
+    public WebSecurityCustomizer ignoringCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/token", "/version");
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        manager.createUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
+        manager.createUser(User.withDefaultPasswordEncoder().username("neo").password("chen").roles("USER").build());
+        return manager;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> {
+                            authorize
+                                    .requestMatchers("/", "/ping", "/exclude", "/mock/**", "/test/**").permitAll()
+                                    .requestMatchers("/swagger/**").permitAll()
+                                    .requestMatchers("/picture/**", "/chat/**", "/badges/**", "/device/**", "/album/**", "/book/**", "/tools/**").permitAll()
+                                    .requestMatchers("/firefly/**", "/resources/**").permitAll()
+                                    .anyRequest().authenticated();
+                        }
+                ).httpBasic(withDefaults());
+
+        return http.build();
+    }
+}
 			]]>
 		</programlisting>
 	</section>

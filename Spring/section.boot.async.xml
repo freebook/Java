@@ -54,7 +54,7 @@ public WebAsyncTask<String> webAsyncTask() {
 		</programlisting>
 	</section>
 	<section id="DeferredResult">
-		<title>DeferredResult 实现异步访问</title>
+		<title>DeferredResult 实现异步返回结果</title>
 		<programlisting>
 		<![CDATA[
 	private DeferredResult<String> deferredResult = new DeferredResult<String>();
@@ -116,7 +116,7 @@ public WebAsyncTask<String> webAsyncTask() {
 		</programlisting>
 	</section>
 	<section id="SimpleAsyncTaskExecutor">
-		<title>SimpleAsyncTaskExecutor</title>
+		<title>默认简单线程池 SimpleAsyncTaskExecutor</title>
 		<para>启用异步执行 @EnableAsync</para>
 		<programlisting>
 		<![CDATA[
@@ -171,7 +171,7 @@ spring.task.execution.pool.keep-alive=60s
 spring.task.execution.pool.allow-core-thread-timeout=true
 spring.task.execution.shutdown.await-termination=true
 spring.task.execution.shutdown.await-termination-period=60
-spring.task.execution.thread-name-prefix=task-
+spring.task.execution.thread-name-prefix=simple-
 		]]>
 			</screen>
 			<screen>
@@ -192,11 +192,122 @@ spring:
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>@Service/@Component 中异步执行</title>
+
+			<para>直接使用 @Async 注解，即可调用默认线程池</para>
+			<programlisting>
+        <![CDATA[
+@Component
+public class Task {
+
+	@Async
+	public void doTaskOne() throws Exception {
+	    // 业务逻辑
+	}
+	
+	@Async
+	public void doTaskTwo() throws Exception {
+	    // 业务逻辑
+	}
+	
+	@Async
+	public void doTaskThree() throws Exception {
+	    // 业务逻辑
+	}
+
+}			
+        ]]>
+			</programlisting>
+			<para>this 调用方法 @Async 将失效，编程同步阻塞执行。例如下面的 doTaskThree() 会同步执行
+				this.doTaskOne(); 和 this.doTaskTwo();</para>
+			<programlisting>
+			<![CDATA[
+@Component
+public class Task {
+
+	@Async
+	public void doTaskOne() throws Exception {
+	    // 业务逻辑
+	}
+	
+	@Async
+	public void doTaskTwo() throws Exception {
+	    // 业务逻辑
+	}
+	
+	public void doTaskThree() throws Exception {
+	    this.doTaskOne();
+	    this.doTaskTwo();
+	}
+
+}						
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>applicationTaskExecutor</title>
+			<para>SimpleAsyncTaskExecutor Bean 名字是 applicationTaskExecutor</para>
+			<programlisting>
+			<![CDATA[
+	"applicationTaskExecutor": {
+          "aliases": [
+            "taskExecutor"
+          ],
+          "scope": "singleton",
+          "type": "org.springframework.core.task.SimpleAsyncTaskExecutor",
+          "resource": "class path resource [org/springframework/boot/autoconfigure/task/TaskExecutorConfigurations$TaskExecutorConfiguration.class]",
+          "dependencies": [
+            "org.springframework.boot.autoconfigure.task.TaskExecutorConfigurations$TaskExecutorConfiguration",
+            "simpleAsyncTaskExecutorBuilder"
+          ]
+        }			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+public class TestService {
+
+    @Async("applicationTaskExecutor")
+    public void thread() {
+        log.info("applicationTaskExecutor");
+    }
+}
+
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+2024-02-02T18:20:50.938+08:00  INFO 91307 --- [watch-development] [       simple-2] cn.aigcsst.service.TestService           : applicationTaskExecutor
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ThreadPoolTaskExecutor">
 		<title>ThreadPoolTaskExecutor 自定义线程池</title>
+		<para>Springboot 官方不建议在生产环境使用 SimpleAsyncTaskExecutor，建议使用 自定义线程池。
+		</para>
+		<screen>
+		<![CDATA[
+2024-02-02T16:24:38.585+08:00  WARN 86223 --- [watch-development] [nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerAdapter : !!!
+Performing asynchronous handling through the default Spring MVC SimpleAsyncTaskExecutor.
+This executor is not suitable for production use under load.
+Please, configure an AsyncTaskExecutor through the WebMvc config.
+-------------------------------
+!!!		
+		]]>
+		</screen>
 		<para>Bean 注入配置线程池</para>
-		
+
 		<programlisting>
         <![CDATA[
 import org.springframework.boot.SpringApplication;
@@ -277,12 +388,12 @@ public class Task {
 	    // 业务逻辑
 	}
 	
-	@Async
+	@Async("asyncExecutor")
 	public void doTaskTwo() throws Exception {
 	    // 业务逻辑
 	}
 	
-	@Async("asyncExecutor")
+	@Async("thread")
 	public void doTaskThree() throws Exception {
 	    // 业务逻辑
 	}
@@ -290,7 +401,8 @@ public class Task {
 }			
         ]]>
 			</programlisting>
-
+			<para>注意：@Async 不会用到刚刚定义的线程池，@Async("asyncExecutor")，@Async("thread")
+				会正确调用</para>
 		</section>
 		<section>
 			<title>队列</title>
@@ -343,10 +455,9 @@ public class ThreadPoolTaskExecutorConfiguration {
 			]]>
 			</programlisting>
 		</section>
-	</section>
-	<section>
-		<title>定义多个线程池</title>
-		<programlisting>
+		<section>
+			<title>定义多个线程池</title>
+			<programlisting>
         <![CDATA[
 package cn.netkiller.wallet.config;
 
@@ -392,9 +503,9 @@ public class ExecutorConfiguration {
 }
         
         ]]>
-		</programlisting>
+			</programlisting>
 
-		<programlisting>
+			<programlisting>
         <![CDATA[
 @Service
 public class DemoAsyncServiceImpl implements DemoAsyncService {
@@ -433,11 +544,217 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 
 }
         ]]>
-		</programlisting>
+			</programlisting>
 
+		</section>
+		
+		<section>
+			<title>实现 AsyncConfigurer 接口方式创建自定义连接池</title>
+			<para>这种方式可以直接使用  @Async </para>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+
+@Configuration
+@EnableAsync
+public class ThreadPoolTaskExecutorConfiguration implements AsyncConfigurer {
+
+    @Value("${spring.task.execution.pool.core-size}")
+    private int corePoolSize;
+    @Value("${spring.task.execution.pool.max-size}")
+    private int maxPoolSize;
+    @Value("${spring.task.execution.pool.queue-capacity}")
+    private int queueCapacity;
+    //    @Value("${spring.task.execution.thread-name-prefix}")
+    private final String threadNamePrefix = "async-";
+    @Value("${spring.task.execution.pool.keep-alive}")
+    private int keepAliveSeconds;
+
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        //最大线程数
+        executor.setMaxPoolSize(maxPoolSize);
+        //核心线程数
+        executor.setCorePoolSize(corePoolSize);
+        //任务队列的大小
+        executor.setQueueCapacity(queueCapacity);
+        //线程前缀名
+        executor.setThreadNamePrefix(threadNamePrefix);
+        //线程存活时间
+        executor.setKeepAliveSeconds(keepAliveSeconds);
+
+        /**
+         * 拒绝处理策略
+         * CallerRunsPolicy()：交由调用方线程运行，比如 main 线程。
+         * AbortPolicy()：直接抛出异常。
+         * DiscardPolicy()：直接丢弃。
+         * DiscardOldestPolicy()：丢弃队列中最老的任务。
+         */
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        //线程初始化
+        executor.initialize();
+        return executor;
+    }
+}
+    
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>继承 AsyncConfigurerSupport 创建自定义连接池 </title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+
+@Configuration
+@EnableAsync
+public class ThreadPoolTaskExecutorConfiguration extends AsyncConfigurerSupport {
+
+    @Value("${spring.task.execution.pool.core-size}")
+    private int corePoolSize;
+    @Value("${spring.task.execution.pool.max-size}")
+    private int maxPoolSize;
+    @Value("${spring.task.execution.pool.queue-capacity}")
+    private int queueCapacity;
+    //    @Value("${spring.task.execution.thread-name-prefix}")
+    private final String threadNamePrefix = "async-";
+    @Value("${spring.task.execution.pool.keep-alive}")
+    private int keepAliveSeconds;
+
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        //最大线程数
+        executor.setMaxPoolSize(maxPoolSize);
+        //核心线程数
+        executor.setCorePoolSize(corePoolSize);
+        //任务队列的大小
+        executor.setQueueCapacity(queueCapacity);
+        //线程前缀名
+        executor.setThreadNamePrefix(threadNamePrefix);
+        //线程存活时间
+        executor.setKeepAliveSeconds(keepAliveSeconds);
+
+        /**
+         * 拒绝处理策略
+         * CallerRunsPolicy()：交由调用方线程运行，比如 main 线程。
+         * AbortPolicy()：直接抛出异常。
+         * DiscardPolicy()：直接丢弃。
+         * DiscardOldestPolicy()：丢弃队列中最老的任务。
+         */
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        //线程初始化
+        executor.initialize();
+        return executor;
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>生产环境完整代码 @Bean 注入方式</title>
+			<para>这种方式多用在 Spring 2.x 中</para>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+
+@Configuration
+@EnableAsync
+public class ThreadPoolTaskExecutorConfiguration {
+
+    @Value("${spring.task.execution.pool.core-size}")
+    private int corePoolSize;
+    @Value("${spring.task.execution.pool.max-size}")
+    private int maxPoolSize;
+    @Value("${spring.task.execution.pool.queue-capacity}")
+    private int queueCapacity;
+    //    @Value("${spring.task.execution.thread-name-prefix}")
+    private final String threadNamePrefix = "";
+    @Value("${spring.task.execution.pool.keep-alive}")
+    private int keepAliveSeconds;
+    
+    @Bean
+    public Executor threadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        //最大线程数
+        executor.setMaxPoolSize(maxPoolSize);
+        //核心线程数
+        executor.setCorePoolSize(corePoolSize);
+        //任务队列的大小
+        executor.setQueueCapacity(queueCapacity);
+        //线程前缀名
+        executor.setThreadNamePrefix(threadNamePrefix);
+        //线程存活时间
+        executor.setKeepAliveSeconds(keepAliveSeconds);
+
+        /**
+         * 拒绝处理策略
+         * CallerRunsPolicy()：交由调用方线程运行，比如 main 线程。
+         * AbortPolicy()：直接抛出异常。
+         * DiscardPolicy()：直接丢弃。
+         * DiscardOldestPolicy()：丢弃队列中最老的任务。
+         */
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        //线程初始化
+        executor.initialize();
+        return executor;
+    }
+}			
+			]]>
+			</programlisting>
+			<para>注意：使用@Bean方式必须配合 @Async("threadPoolTaskExecutor")</para>
+		</section>
+		<section>
+			<title>通过 @Bean 覆盖掉 SimpleAsyncTaskExecutor</title>
+			<para>自定义连接池之后，系统内会存在两个连接吃 SimpleAsyncTaskExecutor 和 ThreadPoolTaskExecutor</para>
+			<programlisting>
+			<![CDATA[
+   @Bean
+    public Executor applicationTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("Netkiller-");
+        executor.initialize();
+        return executor;
+    }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	<section>
-		<title>自定义线程池</title>
+	
+	<section id="ThreadPoolExecutor">
+		<title>自定义线程池 ThreadPoolExecutor</title>
 		<para>自定义线程池</para>
 		<section>
 			<title>ThreadPoolExecutor</title>
@@ -557,9 +874,10 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics/exec
 		]]>
 		</programlisting>
 	</section>
-		<section>
+	<section>
 		<title>注意事项</title>
-		<para>再 Service 中 通过 this 访问另一个 @Async 方法，异步会失效，必须使用 @@Autowired 入住。</para>
+		<para>再 Service 中 通过 this 访问另一个 @Async 方法，异步会失效，必须使用 @@Autowired 入住。
+		</para>
 	</section>
 
 </chapter>

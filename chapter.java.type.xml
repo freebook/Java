@@ -604,8 +604,27 @@ The SQL TIME is: 16:51:57
 The SQL TIMESTAMP is: 2017-08-24 16:51:57.234		
 		]]>
 		</screen>
+		<section>
+			<title>DateTimeFormatter 格式化日期和时间</title>
+			<programlisting>
+			<![CDATA[
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+ 
+public class Main {
+    public static void main(String[] args) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.now();
+        String formattedDateTime = dateTime.format(formatter);
+        System.out.println(formattedDateTime);
+    }
+}
+			
+			]]>
+			</programlisting>
+		</section>
 		<section id="SimpleDateFormat">
-			<title>SimpleDateFormat</title>
+			<title>SimpleDateFormat 格式化日期和时间</title>
 			<para>字符串转日期</para>
 			<programlisting>
 			<![CDATA[

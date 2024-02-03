@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="@EnableWebMvc">
+	<title>@EnableWebMvc</title>
+	<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+@Configuration
+@EnableWebMvc
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
+
+	@Bean
+	public InternalResourceViewResolver viewResolver() {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("WEB-INF/jsp/");
+		resolver.setSuffix(".jsp");
+		return resolver;
+	}
+
+}
+		]]>
+	</programlisting>
+	<section id="cors">
+		<title>CORS 跨域请求</title>
+		<programlisting>
+			<![CDATA[
+@Configuration
+public class CorsConfiguration
+{
+    @Bean
+    public WebMvcConfigurer corsConfigurer()
+    {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");
+            }
+        };
+    }
+}		
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+ 	@Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+            }
+        };
+    }			
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Spring MVC CORS with WebMvcConfigurerAdapter</title>
+		<programlisting>
+			<![CDATA[
+@Configuration
+@EnableWebMvc
+public class CorsConfiguration extends WebMvcConfigurerAdapter
+{
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods("GET", "POST");
+    }
+}
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+@Configuration
+@EnableWebMvc
+public class AppConfig extends WebMvcConfigurerAdapter {
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+	  registry.addMapping("/info/**")
+	   	  .allowedOrigins("http://localhost:8080", "http://localhost:8000")
+		  .allowedMethods("POST", "GET",  "PUT", "OPTIONS", "DELETE")
+		  .allowedHeaders("X-Auth-Token", "Content-Type")
+		  .exposedHeaders("custom-header1", "custom-header2")
+		  .allowCredentials(false)
+		  .maxAge(4800);
+	}
+}			
+			]]>
+		</programlisting>
+	</section>
+
+</section>
+<section id="mvc"><!-- <?dbhtml dir="javax/json" ?> -->
+	<title>@Bean</title>
+	<programlisting>
+	<![CDATA[
+package cn.netkiller.config;
+
+import lombok.Data;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Configuration
+@Data
+public class Config {
+
+    @Bean
+    public MyBean myBean() {
+        return new MyBean();
+    }
+
+    @Bean(initMethod = "init", destroyMethod = "destroy")
+    public MyBean myBean2() {
+        return new MyBean();
+    }
+
+    @Bean({"myBean4", "myBean5"})
+    @Scope("prototype")
+    public MyBean myBean3() {
+        return new MyBean();
+    }
+
+    public class MyBean {
+
+        public MyBean() {
+            System.out.println("MyBean Initializing");
+        }
+
+        public String output() {
+            return "Helloworld!!!";
+        }
+
+        public void init() {
+            System.out.println("Bean 初始化方法被调用");
+        }
+
+        public void destroy() {
+            System.out.println("Bean 销毁方法被调用");
+        }
+    }
+}
+
+	]]>
+	</programlisting>
+	<para>查看注入情况</para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq | grep -i mybean -A 5
+        "myBean2": {
+          "aliases": [],
+          "scope": "singleton",
+          "type": "cn.netkiller.config.Config$MyBean",
+          "resource": "class path resource [cn/netkiller/config/Config.class]",
+          "dependencies": [
+            "config"
+          ]
+        },
+--
+        "myBean4": {
+          "aliases": [
+            "myBean5"
+          ],
+          "scope": "prototype",
+          "type": "cn.netkiller.config.Config$MyBean",
+          "resource": "class path resource [cn/netkiller/config/Config.class]",
+          "dependencies": []
+        },
+        "dbHealthContributor": {
+          "aliases": [],
+--
+        "myBean": {
+          "aliases": [],
+          "scope": "singleton",
+          "type": "cn.netkiller.config.Config$MyBean",
+          "resource": "class path resource [cn/netkiller/config/Config.class]",
+          "dependencies": [
+            "config"
+          ]
+        },	
+	]]>
+	</screen>
+</section>
