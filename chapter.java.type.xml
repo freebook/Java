@@ -42,7 +42,7 @@ String javastack = "javastack";
 		</programlisting>
 	</section>
 	<section id="integer">
-		<title>Integer</title>
+		<title>Integer 整形</title>
 		<programlisting>
 		<![CDATA[
 十进制转成十六进制：   
@@ -165,7 +165,7 @@ public static String frontCompWithZore(int sourceDate,int formatLength) {
 
 	</section>
 	<section id="string">
-		<title>String</title>
+		<title>String 字符串</title>
 		<para>Java 11 增加了一系列的字符串处理方法，如以下所示。</para>
 		<screen>
 		<![CDATA[
@@ -559,7 +559,7 @@ public class Test {
 	</section>
 
 	<section id="date">
-		<title>Date</title>
+		<title>Date 日期时间</title>
 		<para>java.util.Date, java.sql.Date, java.sql.Time, java.sql.Timestamp
 			区别
 		</para>
@@ -968,7 +968,7 @@ Date.from(java.time.ZonedDateTime.now().toInstant());
 		</section>
 	</section>
 	<section id="array">
-		<title>Array</title>
+		<title>Array 数组</title>
 		<para>一定字符串数组</para>
 		<programlisting>
 		<![CDATA[
@@ -1056,7 +1056,7 @@ String string = String.join(",", array)
 		</section>
 	</section>
 	<section id="float">
-		<title>float</title>
+		<title>float 浮点</title>
 		<para>float 不能直接做减法运算</para>
 		<screen>
 			float a = 77.22f;
@@ -1146,7 +1146,7 @@ public class Math {
 		</programlisting>
 	</section>
 	<section id="double">
-		<title>double</title>
+		<title>double 双精度浮点</title>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.example;

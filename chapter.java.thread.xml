@@ -535,5 +535,36 @@ public class Main {
 }
 		]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class VirtualThreadExample {
+
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
+        executor.submit(() -> {
+            System.out.println(Thread.currentThread().getName())
+        });
+
+        executor.shutdown();
+    }
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Thread.ofVirtual().start(Runnable);
+Thread.ofVirtual().unstarted(Runnable);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Thread.ofVirtual().start(Runnable);
+Thread.ofVirtual().unstarted(Runnable);		
+		]]>
+		</programlisting>
 	</section>
 </section>
