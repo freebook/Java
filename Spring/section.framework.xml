@@ -1,4 +1,180 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><!-- <?dbhtml dir="bean" ?> -->
+	<title>@Bean</title>
+	<programlisting>
+	<![CDATA[
+package cn.netkiller.config;
+
+import lombok.Data;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Configuration
+@Data
+public class Config {
+
+    @Bean
+    public MyBean myBean() {
+        return new MyBean();
+    }
+
+    @Bean(initMethod = "init", destroyMethod = "destroy")
+    public MyBean myBean2() {
+        return new MyBean();
+    }
+
+    @Bean({"myBean4", "myBean5"})
+    @Scope("prototype")
+    public MyBean myBean3() {
+        return new MyBean();
+    }
+
+    public class MyBean {
+
+        public MyBean() {
+            System.out.println("MyBean Initializing");
+        }
+
+        public String output() {
+            return "Helloworld!!!";
+        }
+
+        public void init() {
+            System.out.println("Bean 初始化方法被调用");
+        }
+
+        public void destroy() {
+            System.out.println("Bean 销毁方法被调用");
+        }
+    }
+}
+
+	]]>
+	</programlisting>
+	<para>查看注入情况</para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq | grep -i mybean -A 5
+        "myBean2": {
+          "aliases": [],
+          "scope": "singleton",
+          "type": "cn.netkiller.config.Config$MyBean",
+          "resource": "class path resource [cn/netkiller/config/Config.class]",
+          "dependencies": [
+            "config"
+          ]
+        },
+--
+        "myBean4": {
+          "aliases": [
+            "myBean5"
+          ],
+          "scope": "prototype",
+          "type": "cn.netkiller.config.Config$MyBean",
+          "resource": "class path resource [cn/netkiller/config/Config.class]",
+          "dependencies": []
+        },
+        "dbHealthContributor": {
+          "aliases": [],
+--
+        "myBean": {
+          "aliases": [],
+          "scope": "singleton",
+          "type": "cn.netkiller.config.Config$MyBean",
+          "resource": "class path resource [cn/netkiller/config/Config.class]",
+          "dependencies": [
+            "config"
+          ]
+        },	
+	]]>
+	</screen>
+	<section>
+		<title>@Scope 定义类型</title>
+		<programlisting>
+		<![CDATA[
+    @Bean({"neo","netkiller"})
+    @Scope("prototype")
+    public MyBean myBean(){
+        return new MyBean();
+    }		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+Scope		详解
+singleton	默认单例的bean定义信息，对于每个IOC容器来说都是单例对象
+prototype	bean对象的定义为任意数量的对象实例
+request		bean对象的定义为一次HTTP请求的生命周期，也就是说，每个HTTP请求都有自己的bean实例，它是在单个bean定义的后面创建的。仅仅在web-aware的上下文中有效
+session		bean对象的定义为一次HTTP会话的生命周期。仅仅在web-aware的上下文中有效
+application	bean对象的定义范围在ServletContext生命周期内。仅仅在web-aware的上下文中有效
+websocket	bean对象的定义为WebSocket的生命周期内。仅仅在web-aware的上下文中有效
+		]]>
+		</screen>
+		<para>singleton和prototype 一般都用在普通的Java项目中，而request、session、application、websocket都用于web应用中。</para>
+		<programlisting>
+		<![CDATA[
+	@Bean
+    @Scope(value = "singleton")
+    public Person person(){
+        return new Person();
+    }		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+ConfigurableBeanFactory.SCOPE_PROTOTYPE，即“prototype”
+ConfigurableBeanFactory.SCOPE_SINGLETON，即“singleton”
+WebApplicationContext.SCOPE_REQUEST，即“request”
+WebApplicationContext.SCOPE_SESSION，即“session”
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>InitializingBean</title>
+		<para>afterPropertiesSet() 在 @Value 完成之后执行</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.services;
+
+import lombok.Data;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+@Data
+@Slf4j
+public class TestService implements InitializingBean {
+
+    private String appId;
+
+    public TestService(@Value("${app.id}") String appId) {
+        this.appId = appId;
+        log.info(this.appId);
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        log.info(this.appId);
+    }
+}
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
+</chapter>
+	&section.mvc.service.xml;
+	&section.mvc.template.xml;
+	&chapter.mvc.tomcat.xml;
 <chapter id="index"><?dbhtml dir="util" ?>
 	<title>Spring 工具集</title><!-- Miscellaneous -->
 	<section id="UriComponents">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="service">
+<chapter id="index"><?dbhtml dir="service" ?>
 	<title>Service</title>
 	<section id="service.ComponentScan">
 		<title>Application</title>
@@ -493,4 +493,74 @@ neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/act
 			</screen>
 		</section>
 	</section>
-</section>
+	<section>
+		<title>构造方法</title>
+		<programlisting>
+		<![CDATA[
+	@Autowired
+    private TestService testService;
+		]]>
+		</programlisting>
+		<para>当我们使用 @Autowired 注解，构造方法先于 @Value 执行，所以我们无法在构造方法中获得 @Value 注入的值。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.services;
+
+import lombok.Data;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+@Data
+@Slf4j
+public class TestService {
+    @Value("${app.id}")
+    private String appId;
+
+    public TestService() {
+        log.info(this.appId);
+    }
+
+}
+
+		]]>
+		</programlisting>
+		<para>@Value 作为构造方法的参数可以实现赋值需求</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.services;
+
+import lombok.Data;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+@Data
+@Slf4j
+public class TestService {
+
+    private String appId;
+
+    public TestService(@Value("${app.id}") String appId) {
+        this.appId = appId;
+        log.info(this.appId);
+    }
+}
+
+		]]>
+		</programlisting>
+		<para>同时还能使用 new 创建实例</para>
+		<programlisting>
+		<![CDATA[
+    TestService test = new TestService("Test");
+    test.getAppId();
+		]]>
+		</programlisting>
+		
+	</section>
+	
+</chapter>

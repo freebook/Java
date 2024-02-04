@@ -7,7 +7,6 @@
 	&section.mvc.xml;
 	&section.mvc.controller.xml;	
 	&section.mvc.view.xml;
-	&section.mvc.service.xml;
 	&section.mvc.validation.xml;
 	&section.mvc.interceptor.xml;
 	&section.mvc.faq.xml;
