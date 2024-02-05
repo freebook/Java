@@ -103,7 +103,7 @@
 			</exec>
 		</sequential>
 	</macrodef>
-	
+
 	<target name="pull" depends="">
 		<echo>${project.dir} exists</echo>
 		<git command="clean" dir="${project.dir}">
@@ -185,6 +185,10 @@
 		<!--
 		<mkdir dir="${project.build}" />
 		-->
+	</target>
+	<target name="html5" depends="clean,images">
+		<echo>Output: ${public_html}</echo>
+		<xsltproc output="${public_html}" stylesheet="/opt/homebrew/opt/docbook-xsl/docbook-xsl/xhtml/chunk.xsl" file="book.xml" />
 	</target>
 	<target name="htmlhelp" depends="images">
 		<tstamp>
