@@ -74,7 +74,7 @@ public class ApplicationTests {
 	private RedisTemplate<String, String> redisTemplate;
 				]]>
 			</programlisting>
-			
+
 			<example>
 				<title>RedisTemplate</title>
 				<programlisting>
@@ -283,130 +283,21 @@ public class RedisMessagePublisher {
 			</programlisting>
 		</section>
 	</section>
-	<section id="RedisLockRegistry">
-		<title>Spring Redis Lock</title>
-		<section>
-			<title>Maven 依赖</title>
-			<programlisting>
-			<![CDATA[
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-integration</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-redis</artifactId>
-        </dependency>			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>配置锁</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.config;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.integration.redis.util.RedisLockRegistry;
-
-@Configuration
-public class RedisLockRegistryConfiguration {
-    @Bean
-    public RedisLockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
-        return new RedisLockRegistry(redisConnectionFactory, "netkiller-lock");
-    }
-}
-			
-			]]>
-			</programlisting>
-			<para></para>
-			<programlisting>
-			<![CDATA[
-  @Bean(destroyMethod = "destroy")
-  public RedisLockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory) {
-    return new RedisLockRegistry(redisConnectionFactory, "neo-lock",
-        TimeUnit.MINUTES.toMillis(10));
-  }			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>使用方法</title>
-			<programlisting>
-			<![CDATA[
-@Autowired
-private RedisLockRegistry redisLockRegistry;
-			
-		Lock lock = redisLockRegistry.obtain(device);
-        if (lock.tryLock()) {
-            try {
-                // manipulate protected state
-            } finally {
-                lock.unlock();
-            }
-        } else {
-            // perform alternative actions
-        }			
-			]]>
-			</programlisting>
-			<programlisting>
-			<![CDATA[
-@Autowired
-private RedisLockRegistry redisLockRegistry;
-
-Lock lock = redisLockRegistry.obtain(key);
-boolean locked = false;
-try {
-  locked = lock.tryLock();
-  if (!locked) {
-    // 没有获取到锁的逻辑    
-  }
-
-  // 获取锁的逻辑
-} finally {
-  if (locked) {
-    lock.unlock();
-  }
-}			
-			]]>
-			</programlisting>
-			<para>如果没有上锁，上锁后返回 true 状态。如果已经上锁阻塞等待10秒，然后再返回锁状态</para>
-			<programlisting>
-			<![CDATA[
-    public boolean isLock(String device) {
-
-        Lock lock = redisLockRegistry.obtain(device);
-        boolean status = false;
-        try {
-            status = lock.tryLock(10, TimeUnit.SECONDS);
-
-        } catch (Exception e) {
-            log.info(e.getMessage());
-        }
-        log.warn("status: {} <<<<<<<<<<", status);
-        return status;
-    }			
-			]]>
-			</programlisting>
-		</section>
-	</section>
 	<section id="redisson">
-	<title>Sprint boot with Redisson</title>
-	<section>
-		<title>Springboot 3.x</title>
-		<screen>
+		<title>Sprint boot with Redisson</title>
+		<section>
+			<title>Springboot 3.x</title>
+			<screen>
 		<![CDATA[
 
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>Springboot 2.1</title>
-		<para>注意：排除 redisson-spring-data-23，引用 redisson-spring-data-21</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>Springboot 2.1</title>
+			<para>注意：排除 redisson-spring-data-23，引用 redisson-spring-data-21</para>
+			<screen>
 		<![CDATA[
  		<dependency>
             <groupId>org.redisson</groupId>
@@ -426,8 +317,8 @@ try {
         </dependency>
 		
 		]]>
-		</screen>
-	</section>
+			</screen>
+		</section>
 
-</section>
+	</section>
 </section>

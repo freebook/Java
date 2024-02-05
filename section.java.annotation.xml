@@ -33,4 +33,13 @@ public class TestComponent {
 		]]>
 		</programlisting>
 	</section>
+	<section id="@Deprecated">
+		<title>@Deprecated 声明即将废弃的类/方法</title>
+		<programlisting>
+		<![CDATA[
+@Deprecated
+@Deprecated(since = "1.2", forRemoval = true)
+		]]>
+		</programlisting>
+	</section>
 </section>

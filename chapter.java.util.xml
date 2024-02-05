@@ -978,10 +978,68 @@ public class TestSupplier {
         return "Helloworld!!!";
     }
 }
-			
 			]]>
 			</programlisting>
 		</section>
-		
+		<section>
+			<title>Consumer</title>
+			<programlisting>
+			<![CDATA[
+        Consumer<String> printer = (s) -> System.out.println(s);
+        // 使用 accept 方法执行操作
+        printer.accept("Hello, World!");			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+        Consumer<String> upperCasePrinter = (s) -> System.out.println(s.toUpperCase());
+        Consumer<String> lowerCasePrinter = (s) -> System.out.println(s.toLowerCase());
+
+        // 使用 andThen 方法连接两个 Consumer
+        Consumer<String> combinedPrinter = upperCasePrinter.andThen(lowerCasePrinter);
+        combinedPrinter.accept("Hello world!!!");			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+
+package cn.netkiller;
+
+import java.util.function.Consumer;
+
+import lombok.Data;
+
+/**
+ * TestConsumer
+ */
+@Data
+public class TestConsumer {
+    private String name;
+    private String nickname;
+    private int age;
+
+    public void init(Consumer<TestConsumer> configurator) {
+        configurator.accept(this);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Hello world!");
+
+        TestConsumer test = new TestConsumer();
+
+        // 使用 Consumer 配置 Person 对象
+        test.init(p -> {
+            p.setName("Neo");
+            p.setNickname("netkiller");
+            p.setAge(30);
+        });
+
+        System.out.println(test);
+
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </section>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY part.spring.xml				SYSTEM "part.spring.xml">
 <!ENTITY chapter.spring.xml				SYSTEM "chapter.spring.xml">
-<!ENTITY chapter.suite.xml				SYSTEM "chapter.suite.xml">
+<!ENTITY chapter.integration.xml		SYSTEM "chapter.integration.xml">
 
 <!ENTITY chapter.boot.xml				SYSTEM "chapter.boot.xml">
 <!ENTITY section.boot.xml				SYSTEM "section.boot.xml">
