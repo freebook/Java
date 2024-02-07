@@ -1109,8 +1109,8 @@ Flux<String> bridge = Flux.create(sink -> {
                 .subscribe(System.out::println);		
 		]]>
 		</programlisting>
-		
-		
+
+
 	</section>
 	<section>
 		<title>过滤</title>
@@ -1122,6 +1122,23 @@ Flux<String> bridge = Flux.create(sink -> {
                 .filter(num -> num % 2 == 0) // 过滤掉奇数
                 .subscribe(System.out::println);		
 		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>触发操作</title>
+		<para>doOnComplete 完成时执行</para>
+		<programlisting>
+	<![CDATA[
+AtomicBoolean onComplete = new AtomicBoolean();
+        Flux<Integer> flux = Flux.just(1, 2, 3);
+        flux.log()
+                .doOnComplete(() -> onComplete.set(true))
+                .doOnComplete(() -> {
+                    System.out.println("OK");
+                })
+                .subscribe(System.out::println);
+        System.out.println(onComplete.get());	
+	]]>
 		</programlisting>
 	</section>
 </section>
@@ -1395,17 +1412,27 @@ public class Test {
 	</programlisting>
 	<programlisting>
 	<![CDATA[
-	
+Flux.just(1,2,3,4,5,6,7,8)
+        .publishOn(Schedulers.parallel()) // <- Each flux can be published in a different thread
+        .flatMap(integer -> {
+            return Mono.fromCallable(() -> {
+                 System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId()); 
+                 return integer;
+            }).publishOn(Schedulers.parallel()); // <- Each Mono processing every integer can be processed in a different thread
+         })
+        .repeat()
+        .subscribe();	
 	]]>
 	</programlisting>
+</section>
+<section id="ConnectableFlux">
+	<title>ConnectableFlux</title>
 	<programlisting>
 	<![CDATA[
-	
-	]]>
-	</programlisting>
-	<programlisting>
-	<![CDATA[
-	
+        AtomicBoolean onComplete = new AtomicBoolean();
+        ConnectableFlux<Integer> f = Flux.just(1)
+                .doOnComplete(() -> onComplete.set(true))
+                .publish();	
 	]]>
 	</programlisting>
 </section>

@@ -402,7 +402,7 @@ public String getUsers() {
 		<title>httpBasic 配置</title>
 		<programlisting>
 			<![CDATA[
-package cn.aigcsst.config;
+package cn.netkiller.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

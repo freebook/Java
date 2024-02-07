@@ -396,7 +396,7 @@ webClient.get()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="webclient.block">
 		<title>同步阻塞等待返回结果</title>
 		<programlisting>
 		<![CDATA[
@@ -411,24 +411,10 @@ webClient.get()
         System.out.println(mono.block());		
 		]]>
 		</programlisting>
-	</section>
-	<section>
-		<title>websocket</title>
-		<programlisting>
-			<![CDATA[
-WebSocketClient client = new ReactorNettyWebSocketClient();
-URI url = new URI("ws://localhost:8080/path");
-client.execute(url, session ->
-        session.receive()
-                .doOnNext(System.out::println)
-                .then());			
-			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>同步阻塞等待结果</title>
-		<para>在同步模式下使用WebClient</para>
-		<programlisting>
+		<section id="block">
+			<title>同步阻塞等待结果</title>
+			<para>在同步模式下使用WebClient</para>
+			<programlisting>
 			<![CDATA[
  WebClient client =  WebClient.create("http://www.netkiller.cn");
       String result = client .get()
@@ -438,9 +424,9 @@ client.execute(url, session ->
                 .block();
         System.err.println(result);			
 			]]>
-		</programlisting>
-		
-		<programlisting>
+			</programlisting>
+
+			<programlisting>
 		<![CDATA[
 
 Person person = client.get().uri("/person/{id}", i).retrieve()
@@ -453,9 +439,9 @@ List<Person> persons = client.get().uri("/persons").retrieve()
     .block();
 		
 		]]>
-		</programlisting>
-		<para>避免单独阻塞每个同步响应</para>
-		<programlisting>
+			</programlisting>
+			<para>避免单独阻塞每个同步响应</para>
+			<programlisting>
 			<![CDATA[
       WebClient client =  WebClient.create("http://www.netkiller.cn");
         Mono<String> result1Mono = client .get()
@@ -489,9 +475,24 @@ List<Person> persons = client.get().uri("/persons").retrieve()
 		        .block();
 
 			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="webclient.websocket">
+		<title>websocket</title>
+		<programlisting>
+			<![CDATA[
+WebSocketClient client = new ReactorNettyWebSocketClient();
+URI url = new URI("ws://localhost:8080/path");
+client.execute(url, session ->
+        session.receive()
+                .doOnNext(System.out::println)
+                .then());			
+			]]>
 		</programlisting>
 	</section>
-	<section>
+	
+	<section id="webclient.httpstatus">
 		<title>获取 HTTP 链接状态</title>
 		<programlisting>
 		<![CDATA[
@@ -521,7 +522,7 @@ List<Person> persons = client.get().uri("/persons").retrieve()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="webclient.auth">
 		<title>Http Base Authentication - 401 Unauthorized</title>
 		<para></para>
 		<programlisting>
@@ -566,7 +567,7 @@ List<Person> persons = client.get().uri("/persons").retrieve()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="webclient.sse">
 		<title>订阅 SSE</title>
 		<programlisting>
 		<![CDATA[
@@ -595,8 +596,95 @@ public void consumeServerSentEvent() {
         log.info("结果数：{}, {}" , posts.size(),posts.toString());		
 		]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+public Flux<String> stream(String prompt) {
+        String format = "请帮我写一篇《%s》故事。";
+        String content = String.format(format, prompt);
+        WebClient client = WebClient.create(url);
+        Flux<String> flux = client.get()
+                .uri("/chatgpt/stream?content={content}", content)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
+                .retrieve()
+                .bodyToFlux(String.class);
+//                .map(content -> {
+//                    log.info("data: {}", content);
+//                    return content;
+//                });
+        return flux;
+    }
+
+    public Flux<String> streamSentence(String prompt, Callback1 callback) {
+        //        Set<String> symbol = Set.of(",", ".", "!", "?", "，", "。", "！", "？");
+        Set<String> symbol = Set.of(".", "!", "?", "。", "！", "？");
+
+        return Flux.create(sink -> {
+            StringBuffer word = new StringBuffer();
+            List<String> sentence = new ArrayList<String>();
+            Flux<String> flux = this.stream(prompt);
+//            ParallelFlux<String> flux = stream.parallel(5).runOn(Schedulers.parallel());
+            flux.subscribe(
+                    content -> {
+                        word.append(content);
+                        boolean contains = symbol.stream().anyMatch(content::contains);
+                        if (contains) {
+                            sentence.add(word.toString());
+//                            new Thread(() -> {
+                            sink.next(word.toString());
+//                            }).start();
+                            log.debug("sentence: {}", sentence.get(sentence.size() - 1));
+                            word.setLength(0);
+                        }
+//                    log.info("word: {}", content);
+                    },
+                    error -> log.error("Error receiving SSE: {}", error),
+                    () -> {
+                        sink.complete();
+                        sentence.add(word.toString());
+                        String segment = String.join("", sentence);
+                        log.info("Story: {}", segment);
+                        if (callback != null) {
+                            callback.onCallback(segment);
+                        }
+                    });
+        });
+    }		
+		]]>
+		</programlisting>
 	</section>
 	<section>
+		<title>share() 共享订阅数据</title>
+		<para>WebClient 只能被订阅一次，如果你尝试多次订阅，就是重复请求</para>
+		<programlisting>
+		<![CDATA[
+		WebClient client = WebClient.create(url);
+        Flux<String> flux = client.get()
+                .uri("/chatgpt/stream/sentence?content={content}&symbol=。", content)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
+                .retrieve()
+                .bodyToFlux(String.class)
+        flux.subscribe(
+                value -> {
+                    log.warn(value);
+                });
+        flux.subscribe(System.out::println);
+        flux.subscribe(System.out::println);
+		]]>
+		</programlisting>
+		<para>解决方案是加入 .share() 共享订阅数据</para>
+		<programlisting>
+		<![CDATA[
+		WebClient client = WebClient.create(url);
+        Flux<String> flux = client.get()
+                .uri("/chatgpt/stream/sentence?content={content}&symbol=。", content)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
+                .retrieve()
+                .bodyToFlux(String.class)
+                .share();		
+		]]>
+		</programlisting>
+	</section>
+	<section id="webclient.log">
 		<title>打印调试日志</title>
 		<para>.log() 会打印运行期间的所有信息</para>
 		<programlisting>
