@@ -227,6 +227,7 @@ public class MqttConfiguration {
 		</section>
 		<section>
 			<title>@MessagingGateway 定义消息网管接口</title>
+			<programlisting>
 			<![CDATA[
     @MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
     public interface MyGateway {
@@ -241,6 +242,7 @@ public class MqttConfiguration {
 
     }			
 			]]>
+			</programlisting>
 		</section>
 		<section id="ACK">
 			<title>手动 ACK 应答</title>
