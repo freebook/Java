@@ -210,13 +210,14 @@ public class MqttConfiguration {
 }
 			]]>
 			</programlisting>
+			<para></para>
 			<programlisting>
 			<![CDATA[
     @Autowired
     private MqttConfiguration.MyGateway myGateway;
 
     @GetMapping("/mqtt")
-    public Mono<String> getUsers1(Principal principal) {
+    public Mono<String> mqtt(Principal principal) {
         myGateway.sendToMqtt("Test");
         myGateway.sendToMqtt("neo", "Test");
         return Mono.empty();
@@ -224,10 +225,27 @@ public class MqttConfiguration {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>@MessagingGateway 定义消息网管接口</title>
+			<![CDATA[
+    @MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
+    public interface MyGateway {
+
+        void sendToMqtt(String data);
+
+        void sendToMqtt(@Header(MqttHeaders.TOPIC) String topic, String data);
+
+        void sendToMqtt(@Header(MqttHeaders.TOPIC) String topic, @Header(MqttHeaders.QOS) int qos, String payload);
+
+        void sendToMqtt(@Header(MqttHeaders.TOPIC) String topic, @Header(MqttHeaders.QOS) int qos, byte[] payload);
+
+    }			
+			]]>
+		</section>
 		<section id="ACK">
 			<title>手动 ACK 应答</title>
 			<ulink url="o" />
-			<para></para>
+			
 			<para></para>
 			<para></para>
 			<para></para>
