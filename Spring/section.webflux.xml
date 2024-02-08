@@ -1168,6 +1168,18 @@ data:Omega
 		<tip>Safari 浏览器不支持 SSE推送，微软的 Egde 支持。</tip>
 	</section>
 	<section>
+		<title>从 Steam 返回数据</title>
+		<programlisting>
+		<![CDATA[
+    @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    private Flux<String> getWords() {
+        Stream<String> items = Arrays.asList("alpha", "bravo", "charlie").stream();
+        return Flux.fromStream(items);
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>周期性事件</title>
 		<para>每间隔一秒发送一次数据</para>
 		<programlisting>
@@ -1192,6 +1204,44 @@ data:Omega
 	}	
 			]]>
 		</programlisting>
+	</section>
+	<section>
+		<title>返回 ServerSentEvent 数据结构</title>
+		<programlisting>
+		<![CDATA[
+    @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    private Flux<ServerSentEvent<Object>> getWords() {
+        AtomicInteger seq = new AtomicInteger(1);
+        return Flux.just("你好", "我是 Neo", "我的昵称是 netkiller")
+                .map(data -> ServerSentEvent.builder()
+                        .event("hello")
+                        .id(String.valueOf(seq.getAndIncrement()))
+                        .data(data)
+                        .comment("测试数据")
+                        .build());
+    }		
+		]]>
+		</programlisting>
+		<para>演示结果</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~> curl http://localhost:8080/test/sse
+id:1
+event:hello
+data:你好
+:测试数据
+
+id:2
+event:hello
+data:我是 Neo
+:测试数据
+
+id:3
+event:hello
+data:我的昵称是 netkiller
+:测试数据
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>SSE 完整的例子</title>
