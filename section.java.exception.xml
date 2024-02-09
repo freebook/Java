@@ -13,4 +13,64 @@ throw new ArrayIndexOutOfBoundsException("数字范围越界");
 		]]>
 		</programlisting>
 	</section>
+	<section id="try-with-resources">
+		<title>try-with-resources</title>
+		<para>打开的系统资源，比如流、文件或者 Socket 连接等，都需要被开发者手动关闭资源，否则将会造成资源占用和泄露。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.demo;
+		
+import java.io.*;
+
+class ExceptionTest {
+    public static void main(String[] args) {
+        BufferedReader br = null;
+        String line;
+
+        try {
+            System.out.println("Entering try block");
+            br = new BufferedReader(new FileReader("test.txt"));
+            while ((line = br.readLine()) != null) {
+            System.out.println("Line =>"+line);
+            }
+        } catch (IOException e) {
+            System.out.println("IOException in try block =>" + e.getMessage());
+        } finally {
+            System.out.println("Entering finally block");
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                System.out.println("IOException in finally block =>"+e.getMessage());
+            }
+        }
+    }
+}
+		]]>
+		</programlisting>
+		<para>try-with-resources 语句关闭所有实现 AutoCloseable 接口的资源。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.demo;
+
+import java.io.*;
+
+public class ExceptionTest {
+
+    public static void main(String[] args) {
+    	String line;
+        try(BufferedReader br = new BufferedReader(new FileReader("test.txt"))) {
+            while ((line = br.readLine()) != null) {
+                System.out.println("Line =>"+line);
+            }
+        } catch (IOException e) {
+            System.out.println("IOException in try block =>" + e.getMessage());
+        }
+    }
+}
+		]]>
+		</programlisting>
+		<para>无需再使用 close() 关闭资源 try 执行完毕后会自动释放资源。</para>
+	</section>
 </chapter>

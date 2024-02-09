@@ -1,7 +1,313 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
-	<title>java.util.stream</title>
-	<section>
+<section id="java.util.stream">
+	<title>Stream</title>
+	<section id="Stream.of">
+		<title>Stream.of</title>
+		<programlisting>
+		<![CDATA[
+Stream<String> stream = Stream.of("Hollis", "HollisChuang", "hollis", "Hello", "HelloWorld", "Hollis");		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Stream.ofNullable">
+		<title>Stream.ofNullable</title>
+		<para>增加单个参数构造方法，可为null</para>
+		<screen>
+		<![CDATA[
+Stream.ofNullable(null).count(); // 0		
+		]]>
+		</screen>
+	</section>
+	<section id="stream.filter">
+		<title>filter</title>
+		<para>filter 方法用于通过设置的条件过滤出元素。以下代码片段使用 filter 方法过滤掉空字符串：</para>
+		<programlisting>
+		<![CDATA[
+List<String> strings = Arrays.asList("Hollis", "", "HollisChuang", "H", "hollis");
+strings.stream().filter(string -> !string.isEmpty()).forEach(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.map">
+		<title>map</title>
+		<para>map 方法用于映射每个元素到对应的结果，以下代码片段使用 map 输出了元素对应的平方数：</para>
+		<programlisting>
+		<![CDATA[
+List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
+numbers.stream().map( i -> i*i).forEach(System.out::println);
+//9,4,4,9,49,9,25
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.limit">
+		<title>limit/skip</title>
+		<para>limit 返回 Stream 的前面 n 个元素；skip 则是扔掉前 n 个元素。以下代码片段使用 limit
+			方法保理4个元素：
+		</para>
+		<programlisting>
+		<![CDATA[
+List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
+numbers.stream().limit(4).forEach(System.out::println);
+//3,2,2,3		
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.sorted">
+		<title>sorted</title>
+		<para>sorted 方法用于对流进行排序。以下代码片段使用 sorted 方法进行排序：</para>
+		<programlisting>
+		<![CDATA[
+List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
+numbers.stream().sorted().forEach(System.out::println);
+//2,2,3,3,3,5,7		
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.distinct">
+		<title>distinct</title>
+		<para>distinct主要用来去重，以下代码片段使用 distinct 对元素进行去重：</para>
+		<programlisting>
+		<![CDATA[
+List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
+numbers.stream().distinct().forEach(System.out::println);
+//3,2,7,5		
+		]]>
+		</programlisting>
+	</section>
+
+	<section id="stream.foreach">
+		<title>forEach</title>
+		<para>Stream 提供了方法 'forEach' 来迭代流中的每个数据。以下代码片段使用 forEach 输出了10个随机数：
+		</para>
+		<programlisting>
+		<![CDATA[
+Random random = new Random();
+random.ints().limit(10).forEach(System.out::println);
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.count">
+		<title>count</title>
+		<para>count用来统计流中的元素个数。</para>
+		<programlisting>
+		<![CDATA[
+List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis","Hollis666", "Hello", "HelloWorld", "Hollis");
+System.out.println(strings.stream().count());
+//7
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.collect">
+		<title>collect</title>
+		<para>collect就是一个归约操作，可以接受各种做法作为参数，将流中的元素累积成一个汇总结果：</para>
+		<programlisting>
+		<![CDATA[
+List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis","Hollis666", "Hello", "HelloWorld", "Hollis");
+strings  = strings.stream().filter(string -> string.startsWith("Hollis")).collect(Collectors.toList());
+System.out.println(strings);
+//Hollis, HollisChuang, Hollis666, Hollis	
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.takeWhile">
+		<title>takeWhile 和 dropWhile</title>
+		<para>增加 takeWhile 和 dropWhile 方法</para>
+		<screen>
+		<![CDATA[
+Stream.of(1, 2, 3, 2, 1)
+.takeWhile(n -> n < 3)
+.collect(Collectors.toList()); // [1, 2]
+		]]>
+		</screen>
+		<para>从开始计算，当 n &lt; 3 时就截止</para>
+		<screen>
+		<![CDATA[
+Stream.of(1, 2, 3, 2, 1)
+.dropWhile(n -> n < 3)
+.collect(Collectors.toList()); // [3, 2, 1]
+		]]>
+		</screen>
+	</section>
+
+	<section id="Stream.concat">
+		<title>合并 Stream</title>
+		<para>前方插队</para>
+		<programlisting>
+		<![CDATA[
+Stream<Integer> stream = Stream.of(1, 2, 3, 4);
+//Prepend 0 to the stream
+Stream<Integer> prependedStream = Stream.concat(Stream.of(0), stream);
+//Verify Stream
+prependedStream.forEach(System.out::print); //Prints 01234		
+		]]>
+		</programlisting>
+		<para>末尾追加</para>
+		<programlisting>
+		<![CDATA[
+Stream<Integer> stream = Stream.of(1, 2, 3, 4);
+//Append 5 and 6 to the stream
+Stream<Integer> appenededStream = Stream.concat(stream, Stream.of(5, 6));
+//Verify Stream
+appenededStream.forEach(System.out::print); //Prints 123456		
+		]]>
+		</programlisting>
+	</section>
+	<section id="stream.example">
+		<title>混合使用的例子</title>
+		<programlisting>
+		<![CDATA[
+List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis", "Hello", "HelloWorld", "Hollis");
+Stream s = strings.stream().filter(string -> string.length()<= 6).map(String::length).sorted().limit(3)
+            .distinct();				
+		]]>
+		</programlisting>
+		<section id="stream.list">
+			<title>List to Stream</title>
+			<programlisting>
+		<![CDATA[
+List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis", "Hello", "HelloWorld", "Hollis");
+Stream<String> stream = strings.stream();		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="Collectors.teeing">
+		<title>Collectors.teeing()</title>
+		<para>teeing
+			收集器已公开为静态方法Collectors::teeing。该收集器将其输入转发给其他两个收集器，然后将它们的结果使用函数合并。
+		</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.demo;
+
+public class Student {
+	public String name;
+	public int score;
+
+	public Student(String name, int score) {
+		this.name = name;
+		this.score = score;
+
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	@Override
+	public String toString() {
+		return "Student [name=" + name + ", score=" + score + "]";
+	}
+
+}
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.demo;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Test {
+
+	public Test() {
+	}
+
+	public static void main(String[] args) {
+
+		List<Student> list = Arrays.asList(new Student("Neo", 80), new Student("Tom", 60), new Student("Jerry", 70));
+		// 平均分 总分
+		String result = list.stream().collect(Collectors.teeing(Collectors.averagingInt(Student::getScore), Collectors.summingInt(Student::getScore), (s1, s2) -> s1 + ":" + s2));
+		// 最低分 最高分
+		String result2 = list.stream().collect(Collectors.teeing(Collectors.minBy(Comparator.comparing(Student::getScore)), Collectors.maxBy(Comparator.comparing(Student::getScore)), (s1, s2) -> s1.orElseThrow() + ":" + s2.orElseThrow()));
+		System.out.println(result);
+		System.out.println(result2);
+	}
+
+}
+
+		]]>
+		</programlisting>
+	</section>
+
+
+	<section id="streamSupplier">
+		<title>流复用 streamSupplier</title>
+		<programlisting>
+		<![CDATA[
+Supplier<Stream<String>> streamSupplier =
+                () -> Stream.of("d2", "a2", "b1", "b3", "c")
+                        .filter(s -> s.startsWith("a"));		
+		]]>
+		</programlisting>
+	</section>
+	<section id="parallelStream">
+		<title>Parallel Streams（并行流）</title>
+		<programlisting>
+		<![CDATA[
+Arrays.asList("a1", "a2", "b1", "c2", "c1")
+    .parallelStream()
+    .filter(s -> {
+        System.out.format("filter: %s [%s]\n",
+            s, Thread.currentThread().getName());
+        return true;
+    })
+    .map(s -> {
+        System.out.format("map: %s [%s]\n",
+            s, Thread.currentThread().getName());
+        return s.toUpperCase();
+    })
+    .sorted((s1, s2) -> {
+        System.out.format("sort: %s <> %s [%s]\n",
+            s1, s2, Thread.currentThread().getName());
+        return s1.compareTo(s2);
+    })
+    .forEach(s -> System.out.format("forEach: %s [%s]\n",
+        s, Thread.currentThread().getName()));		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+List<Person> persons = Arrays.asList(
+    new Person("Max", 18),
+    new Person("Peter", 23),
+    new Person("Pamela", 23),
+    new Person("David", 12));
+
+persons
+    .parallelStream()
+    .reduce(0,
+        (sum, p) -> {
+            System.out.format("accumulator: sum=%s; person=%s [%s]\n",
+                sum, p, Thread.currentThread().getName());
+            return sum += p.age;
+        },
+        (sum1, sum2) -> {
+            System.out.format("combiner: sum1=%s; sum2=%s [%s]\n",
+                sum1, sum2, Thread.currentThread().getName());
+            return sum1 + sum2;
+        });
+		
+		]]>
+		</programlisting>
+	</section>
+	<section id="IntStream">
 		<title>IntStream</title>
 		<programlisting>
 		<![CDATA[
@@ -13,6 +319,15 @@
             picture.setImage("https://www.netkiller.cn/images/" + i + ".png");
             list.add(picture);
         });		
+		]]>
+		</programlisting>
+	</section>
+	
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		
 		]]>
 		</programlisting>
 	</section>

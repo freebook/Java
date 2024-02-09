@@ -245,7 +245,8 @@ System.out.println(list.get(index));
 		</section>
 		<section>
 			<title>getFirst() / getLast()</title>
-			<para>使用 idea 写代码，list 变量可以看到 getFirst() / getLast() 但实际上 list 并没有两个方法，这时 idea 模版造成的。</para>
+			<para>使用 idea 写代码，list 变量可以看到 getFirst() / getLast() 但实际上 list
+				并没有两个方法，这时 idea 模版造成的。</para>
 			<screen>
 			<![CDATA[
 java: 找不到符号
@@ -253,7 +254,7 @@ java: 找不到符号
   位置: 类型为java.util.ArrayList<java.lang.String>的变量 list			
 			]]>
 			</screen>
-			
+
 			<programlisting>
 			<![CDATA[
         // 创建一个ArrayList对象
@@ -1251,230 +1252,7 @@ public class Main {
 			</programlisting>
 		</section>
 	</section>
-	<section id="stream">
-		<title>Stream</title>
-		<section>
-			<title>Stream.of</title>
-			<programlisting>
-		<![CDATA[
-Stream<String> stream = Stream.of("Hollis", "HollisChuang", "hollis", "Hello", "HelloWorld", "Hollis");		
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Stream.ofNullable</title>
-			<para>增加单个参数构造方法，可为null</para>
-			<screen>
-		<![CDATA[
-Stream.ofNullable(null).count(); // 0		
-		]]>
-			</screen>
-		</section>
-		<section>
-			<title>filter</title>
-			<para>filter 方法用于通过设置的条件过滤出元素。以下代码片段使用 filter 方法过滤掉空字符串：</para>
-			<programlisting>
-		<![CDATA[
-List<String> strings = Arrays.asList("Hollis", "", "HollisChuang", "H", "hollis");
-strings.stream().filter(string -> !string.isEmpty()).forEach(System.out::println);		
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>map</title>
-			<para>map 方法用于映射每个元素到对应的结果，以下代码片段使用 map 输出了元素对应的平方数：</para>
-			<programlisting>
-		<![CDATA[
-List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
-numbers.stream().map( i -> i*i).forEach(System.out::println);
-//9,4,4,9,49,9,25
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>limit/skip</title>
-			<para>limit 返回 Stream 的前面 n 个元素；skip 则是扔掉前 n 个元素。以下代码片段使用 limit
-				方法保理4个元素：
-			</para>
-			<programlisting>
-		<![CDATA[
-List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
-numbers.stream().limit(4).forEach(System.out::println);
-//3,2,2,3		
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>sorted</title>
-			<para>sorted 方法用于对流进行排序。以下代码片段使用 sorted 方法进行排序：</para>
-			<programlisting>
-		<![CDATA[
-List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
-numbers.stream().sorted().forEach(System.out::println);
-//2,2,3,3,3,5,7		
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>distinct</title>
-			<para>distinct主要用来去重，以下代码片段使用 distinct 对元素进行去重：</para>
-			<programlisting>
-		<![CDATA[
-List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
-numbers.stream().distinct().forEach(System.out::println);
-//3,2,7,5		
-		]]>
-			</programlisting>
-		</section>
 
-		<section>
-			<title>forEach</title>
-			<para>Stream 提供了方法 'forEach' 来迭代流中的每个数据。以下代码片段使用 forEach 输出了10个随机数：
-			</para>
-			<programlisting>
-		<![CDATA[
-Random random = new Random();
-random.ints().limit(10).forEach(System.out::println);
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>count</title>
-			<para>count用来统计流中的元素个数。</para>
-			<programlisting>
-		<![CDATA[
-List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis","Hollis666", "Hello", "HelloWorld", "Hollis");
-System.out.println(strings.stream().count());
-//7
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>collect</title>
-			<para>collect就是一个归约操作，可以接受各种做法作为参数，将流中的元素累积成一个汇总结果：</para>
-			<programlisting>
-		<![CDATA[
-List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis","Hollis666", "Hello", "HelloWorld", "Hollis");
-strings  = strings.stream().filter(string -> string.startsWith("Hollis")).collect(Collectors.toList());
-System.out.println(strings);
-//Hollis, HollisChuang, Hollis666, Hollis	
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>takeWhile 和 dropWhile</title>
-			<para>增加 takeWhile 和 dropWhile 方法</para>
-			<screen>
-		<![CDATA[
-Stream.of(1, 2, 3, 2, 1)
-.takeWhile(n -> n < 3)
-.collect(Collectors.toList()); // [1, 2]
-		]]>
-			</screen>
-			<para>从开始计算，当 n &lt; 3 时就截止</para>
-			<screen>
-		<![CDATA[
-Stream.of(1, 2, 3, 2, 1)
-.dropWhile(n -> n < 3)
-.collect(Collectors.toList()); // [3, 2, 1]
-		]]>
-			</screen>
-		</section>
-		<section>
-			<title>List to Stream</title>
-			<programlisting>
-		<![CDATA[
-List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis", "Hello", "HelloWorld", "Hollis");
-Stream<String> stream = strings.stream();		
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>混合使用的例子</title>
-			<programlisting>
-		<![CDATA[
-List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis", "Hello", "HelloWorld", "Hollis");
-Stream s = strings.stream().filter(string -> string.length()<= 6).map(String::length).sorted().limit(3)
-            .distinct();				
-		]]>
-			</programlisting>
-		</section>
-		<section id="Collectors.teeing">
-			<title>Collectors.teeing()</title>
-			<para>teeing
-				收集器已公开为静态方法Collectors::teeing。该收集器将其输入转发给其他两个收集器，然后将它们的结果使用函数合并。
-			</para>
-			<programlisting>
-		<![CDATA[
-package cn.netkiller.demo;
-
-public class Student {
-	public String name;
-	public int score;
-
-	public Student(String name, int score) {
-		this.name = name;
-		this.score = score;
-
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-
-	@Override
-	public String toString() {
-		return "Student [name=" + name + ", score=" + score + "]";
-	}
-
-}
-
-		]]>
-			</programlisting>
-			<programlisting>
-		<![CDATA[
-package cn.netkiller.demo;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class Test {
-
-	public Test() {
-	}
-
-	public static void main(String[] args) {
-
-		List<Student> list = Arrays.asList(new Student("Neo", 80), new Student("Tom", 60), new Student("Jerry", 70));
-		// 平均分 总分
-		String result = list.stream().collect(Collectors.teeing(Collectors.averagingInt(Student::getScore), Collectors.summingInt(Student::getScore), (s1, s2) -> s1 + ":" + s2));
-		// 最低分 最高分
-		String result2 = list.stream().collect(Collectors.teeing(Collectors.minBy(Comparator.comparing(Student::getScore)), Collectors.maxBy(Comparator.comparing(Student::getScore)), (s1, s2) -> s1.orElseThrow() + ":" + s2.orElseThrow()));
-		System.out.println(result);
-		System.out.println(result2);
-	}
-
-}
-
-		]]>
-			</programlisting>
-		</section>
-
-	</section>
 	<section id="Optional">
 		<title>Optional</title>
 		<screen>
@@ -1524,7 +1302,8 @@ Optional<String> someNull = Optional.of(null);
 			</programlisting>
 		</section>
 		<section id="Optional.isPresent()">
-			<title>isPresent 如果值存在返回true，否则返回false。ifEmpty() null 返回 true 否则返回 false</title>
+			<title>isPresent 如果值存在返回true，否则返回false。ifEmpty() null 返回 true 否则返回
+				false</title>
 			<programlisting>
 		<![CDATA[
 	//isPresent方法用来检查Optional实例中是否包含值
@@ -1533,7 +1312,7 @@ Optional<String> someNull = Optional.of(null);
 	}
 		]]>
 			</programlisting>
-			
+
 			<para>ifEmpty() 与 ifPresent() 刚好相反</para>
 		</section>
 		<section id="Optional.ifEmpty()">

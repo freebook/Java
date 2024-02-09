@@ -1839,6 +1839,24 @@ emitter.complete();
 		]]>
 		</programlisting>
 		<programlisting>
+		<![CDATA[
+    @GetMapping(value = "emitter", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter emitter() {
+        SseEmitter sseEmitter = new SseEmitter(300_000L);
+        sseEmitter.onTimeout(() -> System.out.println("超时"));
+        sseEmitter.onCompletion(() -> System.out.println("完成"));
+
+        try {
+            sseEmitter.send(SseEmitter.event().id("1").name("test").data("Test"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        sseEmitter.complete();
+        return sseEmitter;
+    }		
+		]]>
+		</programlisting>
+		<programlisting>
 		<![CDATA[		
 @GetMapping("/mvc/sse")
 public SseEmitter streamSseMvc() {
@@ -1860,6 +1878,52 @@ public SseEmitter streamSseMvc() {
     });
     return emitter;
 }
+		]]>
+		</programlisting>
+	</section>
+	<section id="StreamingResponseBody">
+		<title>StreamingResponseBody</title>
+		<programlisting>
+		<![CDATA[
+ @RequestMapping("/stream")
+    public StreamingResponseBody stream(HttpServletResponse response) {
+        response.setContentType("text/plain");
+        return outputStream -> {
+            for (int i = 0; i < 10; i++) {
+                outputStream.write(("Message " + i + "\n").getBytes());
+                outputStream.flush();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }		
+		]]>
+		</programlisting>
+		<para>SseEmitter 实现，可以对比一下两者的区别</para>
+		<programlisting>
+		<![CDATA[
+@RequestMapping("/sse")
+public SseEmitter sse() {
+    SseEmitter emitter = new SseEmitter();
+    new Thread(() -> {
+        try {
+            for (int i = 0; i < 10; i++) {
+                emitter.send(SseEmitter.event()
+                        .id(String.valueOf(i))
+                        .name("message")
+                        .data("Message " + i));
+                Thread.sleep(1000);
+            }
+            emitter.complete();
+        } catch (Exception e) {
+            emitter.completeWithError(e);
+        }
+    }).start();
+    return emitter;
+}		
 		]]>
 		</programlisting>
 	</section>
