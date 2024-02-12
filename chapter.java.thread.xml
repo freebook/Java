@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="thread" ?>
+<chapter id="index"><?dbhtml dir="thread" ?>
 	<title>Java 线程</title>
 	<para></para>
 	<section>
@@ -567,4 +567,4 @@ Thread.ofVirtual().unstarted(Runnable);
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

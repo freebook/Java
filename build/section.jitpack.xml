@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
-<section id="jitpack">
+<chapter id="jitpack">
 	<title>JitPack - Easy to use package repository for Git</title>
 	<note>
 		<title>JitPack</title>
 		<para>Easy to use package repository for Git</para>
 		<para>Publish your JVM and Android libraries</para>
 	</note>
-</section>
+</chapter>

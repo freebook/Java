@@ -2,6 +2,4 @@
 <part id="index"><?dbhtml dir="java" ?>
 	<title>Java 21</title>
 	&chapter.java.xml;
-	&chapter.build.xml;
-	&chapter.sdk.xml;
 </part>

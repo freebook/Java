@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="java.util.Properties">
+		<title>Properties 处理 *.properties 文件</title>
+		<programlisting>
+		<![CDATA[
+package netkiller.test;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.util.Properties;
+
+public class PropertiesTest {
+
+	public static void main(String[] args) {
+
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
+		Properties ps = new Properties();
+		try {
+			ps.load(new FileInputStream("netkiller.properties"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(ps.getProperty("key"));
+	}
+
+}
+		]]>
+		</programlisting>
+		<section>
+			<title>打开 properties 文件</title>
+			<section>
+				<title>文件方式打开</title>
+				<programlisting>
+				<![CDATA[
+BufferedReader br = null;
+Properties properties = new Properties();
+br = new BufferedReader(new InputStreamReader(new  FileInputStream(new File("data.properties")), "UTF8"));
+properties.load(br);				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>输入流</title>
+				<programlisting>
+				<![CDATA[
+Properties properties = new Properties();
+InputStream in = getClass().getResourceAsStream("/IcisReport.properties");
+properties.load(in);
+Set keyValue = properties.keySet();
+for (Iterator it = keyValue.iterator(); it.hasNext();)
+{
+	String key = (String) it.next();
+}				
+				]]>
+				</programlisting>
+			</section>
+
+		</section>
+		<section id="propertyNames">
+			<title>propertyNames()</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.properties;
+
+import java.util.Enumeration;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+public class PropertiesTest {
+
+	public PropertiesTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties properties = new Properties();
+
+		properties.put("K1", "V1");
+		properties.put("K2", "V2");
+
+		for (Entry<Object, Object> x : properties.entrySet()) {
+			System.out.println(x.getKey() + " " + x.getValue());
+		}
+		
+		Enumeration<?> e = properties.propertyNames();
+		while (e.hasMoreElements()) {
+			String key = (String) e.nextElement();
+			String value = properties.getProperty(key);
+			System.out.println(key + ": " + value);
+		}
+	}
+
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+import java.io.FileInputStream;
+import java.util.Enumeration;
+import java.util.Properties;
+
+public class MainClass {
+  public static void main(String args[]) throws Exception {
+    Properties p = new Properties();
+    p.load(new FileInputStream("test.properties"));
+    Enumeration e = p.propertyNames();
+
+    for (; e.hasMoreElements();) {
+      System.out.println(e.nextElement());
+
+    }
+  }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>keySet()</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.properties;
+
+import java.util.Properties;
+import java.util.Set;
+
+public class PropertiesTest {
+
+	public PropertiesTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties properties = new Properties();
+
+		properties.put("K1", "V1");
+		properties.put("K2", "V2");
+
+		Set<Object> states = properties.keySet();
+
+		for (Object name : states)
+			System.out.println("The value of " + name + " is " + properties.getProperty((String) name) + ".");
+	}
+
+}
+
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>entrySet()</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.properties;
+
+import java.util.Map.Entry;
+import java.util.Properties;
+
+public class PropertiesTest {
+
+	public PropertiesTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties properties = new Properties();
+
+		properties.put("K1", "V1");
+		properties.put("K2", "V2");
+
+		for (Entry<Object, Object> x : properties.entrySet()) {
+			System.out.println(x.getKey() + " " + x.getValue());
+		}
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>方法中返回 Properties</title>
+			<programlisting>
+			<![CDATA[
+	@RequestMapping("/host")
+	public Enumeration<Object> host() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "host")));
+		return properties.keys();
+	}
+
+	@RequestMapping("/mail")
+	public Collection<Object> mail() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "mail")));
+		return properties.values();
+	}
+	@RequestMapping("/nameserver")
+	public Set<Entry<Object, Object>> nameserver() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "dns")));
+		return properties.entrySet();
+	}
+	@RequestMapping("/dns")
+	public Properties dns() throws IOException {
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(String.format("/%s.properties", "dns")));
+		return properties;
+	}	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+			]]>
+			</programlisting>
+		</section>
+		<section id="getResourceAsStream">
+			<title>getResourceAsStream()</title>
+			<programlisting>
+			<![CDATA[
+Properties prop = new Properties();
+prop.load(getServletContext().getResourceAsStream("/WEB-INF/resource/sample.properties"));
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("netkiller.properties"));
+			]]>
+			</programlisting>
+		</section>
+		<section id="store">
+			<title>store</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Properties;
+
+public class Config {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties prop = new Properties();
+		OutputStream output = null;
+
+		try {
+
+			output = new FileOutputStream("config.properties");
+
+			// set the properties value
+			prop.setProperty("host", "localhost");
+			prop.setProperty("port", "8000");
+			prop.setProperty("user", "neo");
+			prop.setProperty("pass", "password");
+
+			// save properties to project root folder
+			prop.store(output, null);
+
+		} catch (IOException io) {
+			io.printStackTrace();
+		} finally {
+			if (output != null) {
+				try {
+					output.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>getProperty 取出key的值</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+public class LoadConfig {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Properties prop = new Properties();
+		InputStream input = null;
+
+		try {
+
+			input = new FileInputStream("config.properties");
+
+			// load a properties file
+			prop.load(input);
+
+			// get the property value and print it out
+			System.out.println(prop.getProperty("host"));
+			System.out.println(prop.getProperty("port"));
+			System.out.println(prop.getProperty("user"));
+			System.out.println(prop.getProperty("pass"));
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+}
+			]]>
+			</programlisting>
+			<para>循环打印所有 Properties 内容</para>
+			<programlisting>
+			<![CDATA[
+package test;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Properties;
+
+public class Application {
+
+	public static void main(String[] args) {
+		Application app = new Application();
+		app.config();
+
+	}
+
+	private void config() {
+		Properties prop = new Properties();
+		InputStream input = null;
+		try {
+
+			String filename = "config.properties";
+
+			prop.load(new FileInputStream(filename));
+
+			Enumeration<?> e = prop.propertyNames();
+			while (e.hasMoreElements()) {
+				String key = (String) e.nextElement();
+				String value = prop.getProperty(key);
+				System.out.println(key + ": " + value);
+			}
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>实现国际化</title>
+			<para>准备语言包文件 chinese.properties 内容如下</para>
+			<screen>
+			<![CDATA[
+hello=你好世界
+			]]>
+			</screen>
+			<para>english.properties</para>
+			<screen>
+			<![CDATA[
+hello=Helloworld
+			]]>
+			</screen>
+			<programlisting>
+			 <![CDATA[
+	@GetMapping("/lang")
+	public String lang(@RequestHeader String lang) throws IOException {
+		System.out.println(lang);
+		Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(lang + ".properties"));
+		String tmp = properties.getProperty("hello");
+		return tmp;
+	}
+			 ]]>
+			</programlisting>
+			<para>测试效果</para>
+			<screen>
+			<![CDATA[
+curl -s -H lang:chinese http://localhost:8080/lang
+你好世界
+
+curl -s -H lang:english http://localhost:8080/lang
+Helloworld
+			]]>
+			</screen>
+		</section>
+	</section>

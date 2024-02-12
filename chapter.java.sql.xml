@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="sql" ?>
+<chapter id="index"><?dbhtml dir="sql" ?>
 	<title>JDBC</title>
 	<section>
 		<title>安装 JDBC 包</title>
 		<para>将ojdbc6.jar包复制到jre/lib/ext目录下</para>
-		<screen>
+		<screen><![CDATA[
 # mv ojdbc6.jar /srv/jdk1.8.0_60/jre/lib/ext/
-		</screen>
+		]]></screen>
 	</section>
 	<section id="mysql">
 			<title>MySQL</title>
@@ -17,29 +17,29 @@
 		<section>
 			<title>SID</title>
 			<para><![CDATA[jdbc:oracle:thin:@<host>:<port>:<SID> ]]> Example:</para>
-			<screen>
+			<screen><![CDATA[
 jdbc:oracle:thin:@192.168.2.1:1521:oral
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>SERVICE_NAME</title>
 			<para><![CDATA[jdbc:oracle:thin:@//<host>:<port>/<service_name>]]></para>
 			<para>Example:</para>
-			<screen> 
+			<screen><![CDATA[ 
 jdbc:oracle:thin:@//192.168.2.1:1521/orcl.example.com 			
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>TNS</title>
 			<para><![CDATA[jdbc:oracle:thin:@<TNSName> ]]> Example:</para>
-			<section>
+			<screen><![CDATA[
 jdbc:oracle:thin:@TNS
-			</section>
+			]]></screen>
 		</section>
 		<section>
 			<title>Oracle RAC Cluster</title>
 			<para>Oracle 11G 不能直接链接 RAC 的 VIP </para>
-			<screen>
+			<screen><![CDATA[
 jdbc:oracle:thin:@(DESCRIPTION =
 	(ADDRESS_LIST = 
 		(ADDRESS = (PROTOCOL = TCP)(HOST = 172.16.10.10)(PORT = 1521))
@@ -51,10 +51,10 @@ jdbc:oracle:thin:@(DESCRIPTION =
 		(SERVICE_NAME = orcl.example.com)
 		(FAILOVER_MODE =(TYPE = SELECT )(METHOD = BASIC)(RETRIES = 120)(DELAY = 5)))
 	)
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=16.50.26.29)(PORT=1521))(LOAD_BALANCE=yes)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl.example.com)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))			
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>Oracle JDBC Demo</title>
@@ -147,18 +147,18 @@ public class Oracle {
 		<section>
 			<title>java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection</title>
 			<para>直接连接 RAC VIP 提示</para>
-			<screen>
+			<screen><![CDATA[
 java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection		
-			</screen>
+			]]></screen>
 			<para>解决方案</para>
-			<screen>
+			<screen><![CDATA[
 jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=16.50.26.29)(PORT=1521))(LOAD_BALANCE=yes)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl.example.com)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))			
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>Exception in thread "main" java.lang.ClassNotFoundException: oracle.jdbc.driver.OracleDriver</title>
 			<para>检查 /srv/jdk1.8.0_60/jre/lib/ext/ 是否有jdbc包，然后运行下面程序检查是否已经载入</para>
-			<screen>
+			<screen><![CDATA[
 # java -verbose:class JdbcTest | grep jdbc
 
 [Loaded oracle.jdbc.driver.OracleDriver from file:/srv/jdk1.8.0_60/jre/lib/ext/ojdbc6.jar]
@@ -300,7 +300,7 @@ jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=16.50.26.29)(PORT=15
 [Loaded oracle.net.aso.b from file:/srv/jdk1.8.0_60/jre/lib/ext/ojdbc6.jar]
 [Loaded oracle.net.ns.ConnectPacket from file:/srv/jdk1.8.0_60/jre/lib/ext/ojdbc6.jar]
 [Loaded oracle.net.ns.RedirectPacket from file:/srv/jdk1.8.0_60/jre/lib/ext/ojdbc6.jar]	
-			</screen>
+			]]></screen>
 		</section>
 	</section>		
-</section>
+</chapter>

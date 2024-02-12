@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="javax">
+	<title>javax</title>
+	&section.javax.script.xml;
+	&section.javax.crypto.xml;
+</chapter>

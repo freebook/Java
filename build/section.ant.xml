@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="ant">
+<chapter id="ant">
 	<title>Apache Ant</title>
-	<para><ulink url="http://ant.apache.org/">http://ant.apache.org/</ulink></para>
+	<para>
+		<ulink url="http://ant.apache.org/">http://ant.apache.org/</ulink>
+	</para>
 	<section id="setup">
 		<title>安装 ant</title>
 		<section>
 			<title>1.8</title>
-			<screen>
+			<screen><![CDATA[
 cd /usr/local/src
 wget http://mirror.bjtu.edu.cn/apache//ant/binaries/apache-ant-1.8.1-bin.tar.gz
 tar zxvf apache-ant-1.8.1-bin.tar.gz
 mv apache-ant-1.8.1 /usr/local/
 cd ..
 ln -s apache-ant-1.8.1 apache-ant
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 ANT_HOME=/usr/local/apache-ant
 export CLASSPATH=$CLASSPATH:$ANT_HOME/lib
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>1.10.1</title>
 			<para>Netkiller OSCM 一键安装</para>
-			<screen>
+			<screen><![CDATA[
 curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/ant/apache-ant-1.10.1.sh | bash
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	<section id="cli">
@@ -80,7 +82,7 @@ ant -f build.xml -propertyfile build.properties
 <description>project Name</description>
 		]]>
 		</screen>
-		
+
 		<section>
 			<title>property</title>
 			<para>在 build.xml 中定义 property</para>
@@ -105,7 +107,7 @@ ant -f build.xml -propertyfile build.properties
 <property name="tomcat.home" value="${env.CATALINA_HOME}"/> 
 			]]>
 			</screen>
-	 		<para>命令行传值，使用-D参数是会覆盖build.xml中的先前定义的变量</para>
+			<para>命令行传值，使用-D参数是会覆盖build.xml中的先前定义的变量</para>
 			<screen>
 			<![CDATA[
 $ ant --help | grep property
@@ -168,7 +170,7 @@ ${ant.project.name}
 		]]>
 		</screen>
 	</section>
-	
+
 	<section id="copy">
 		<title>copy</title>
 		<para>复制目录</para>
@@ -240,7 +242,7 @@ ${ant.project.name}
   </target>
 </project>		
 		]]>
-		</screen>		
+		</screen>
 	</section>
 	<section id="exec">
 		<title>exec</title>
@@ -355,7 +357,8 @@ ${ant.project.name}
 	<section id="macrodef">
 		<title>macrodef</title>
 		<para>arg value 与 arg line</para>
-		<para>arg line 可以处理参数的空格， 而arg value则不能. arg line 可以处理空参数， arg value传递空参数会报错.</para>
+		<para>arg line 可以处理参数的空格， 而arg value则不能. arg line 可以处理空参数， arg
+			value传递空参数会报错.</para>
 		<screen>
 		<![CDATA[
 <exec executable = "sh" dir = "@{dir}">
@@ -429,7 +432,7 @@ ${ant.project.name}
 </macrodef>
 			]]>
 			</screen>
-			
+
 			<screen>
 			<![CDATA[
 <git command = "clone">
@@ -444,7 +447,7 @@ ${ant.project.name}
 <git-clone-pull repository="git://github.com/280north/ojunit.git" dest="ojunit" />	
 			]]>
 			</screen>
-			
+
 		</section>
 		<section>
 			<title>Rsync</title>
@@ -479,9 +482,9 @@ ${ant.project.name}
 	</target>			
 			]]>
 			</screen>
-			
+
 		</section>
-		
+
 		<section>
 			<title>SSH</title>
 			<screen>
@@ -513,7 +516,7 @@ ${ant.project.name}
 	</target>		
 			]]>
 			</screen>
-			
+
 		</section>
 		<section id="maven">
 			<title>maven</title>
@@ -640,7 +643,8 @@ will set cmdname to foo.
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
-			<title>warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds</title>
+			<title>warning: 'includeantruntime' was not set, defaulting to
+				build.sysclasspath=last; set to false for repeatable builds</title>
 			<para>includeantruntime="false"</para>
 			<screen>
 			<![CDATA[
@@ -680,39 +684,41 @@ will set cmdname to foo.
 			</screen>
 		</section>
 	</section>
-</section>
-<section id="ivy">
+</chapter>
+<chapter id="ivy">
 	<title>Apache Ivy</title>
-	<para><ulink url="http://ant.apache.org/ivy/index.html">http://ant.apache.org/ivy/index.html</ulink></para>
+	<para>
+		<ulink url="http://ant.apache.org/ivy/index.html">http://ant.apache.org/ivy/index.html</ulink>
+	</para>
 	<section>
 		<title>Ivy Install</title>
 		<section>
 			<title>source code</title>
-			<screen>
+			<screen><![CDATA[
 cd /usr/local/src
 wget http://labs.renren.com/apache-mirror//ant/ivy/2.2.0/apache-ivy-2.2.0-bin.tar.gz
 tar zxvf apache-ivy-2.2.0-bin.tar.gz
 mv apache-ivy-2.2.0 /usr/local/
 cd ..
 ln -s apache-ivy-2.2.0 apache-ivy
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 IVY_HOME=/usr/local/apache-ivy
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 cp $IVY_HOME/ivy-2.2.0.jar $ANT_HOME/lib/
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>apt-get</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo apt-get install ant
 $ sudo apt-get install ivy
-			</screen>
+			]]></screen>
 			<para>To know more about this package, you can use dpkg</para>
-			<screen>
+			<screen><![CDATA[
 $ dpkg -s ivy
-			</screen>
+			]]></screen>
 
 		</section>
 	</section>
@@ -720,7 +726,7 @@ $ dpkg -s ivy
 	<section>
 		<title>Test example</title>
 		<para>ant</para>
-		<screen>
+		<screen><![CDATA[
 cd $IVY_HOME/src/example/hello-ivy
 ant
 
@@ -798,15 +804,13 @@ run:
 BUILD SUCCESSFUL
 Total time: 1 second
 
-		</screen>
+		]]></screen>
 		<para>run it</para>
-		<screen>
+		<screen><![CDATA[
 neo@debian:/usr/local/apache-ivy/src/example/hello-ivy/build$ export CLASSPATH=$CLASSPATH:/usr/local/apache-ivy/src/example/hello-ivy/lib/*
 neo@debian:/usr/local/apache-ivy/src/example/hello-ivy/build$ /usr/local/java/bin/java example.Hello
 standard message : hello ivy !
 capitalized by org.apache.commons.lang.WordUtils : Hello Ivy !
-		</screen>
+		]]></screen>
 	</section>
-</section>
-
-
+</chapter>

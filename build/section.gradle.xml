@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="gradle">
+<chapter id="gradle">
 	<title>Gradle 5</title>
 	<section id="gradle.setup">
 		<title>安装 Gradle</title>
@@ -95,8 +95,90 @@ neo@MacBook-Pro-M2 test % export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk
 			]]>
 			</screen>
 		</section>
-		
 
+		<section id="Artifactory">
+			<title>Artifactory 本地仓库</title>
+			<para>
+				<ulink url="" />
+			</para>
+			<screen>
+	<![CDATA[
+	
+	]]>
+			</screen>
+			<section>
+				<title>Artifactory Web UI</title>
+				<para>通过访问 http://localhost:8081/artifactory/
+					，用默认管理员账号密码(用户名：admin，密码：password ) 登录，进入管理界面体验 Artifactory。</para>
+
+			</section>
+			<section>
+				<title>build.gradle</title>
+				<screen>
+		<![CDATA[
+buildscript {
+    repositories {
+
+        maven {
+            url "http://artifactory.netkiller.cn:8081/artifactory/libs-release-local"
+        }
+
+        jcenter()
+    }
+    dependencies {
+        ...
+    }
+}
+
+allprojects {
+    repositories {
+        maven {
+            url "http://artifactory.netkiller.cn:8081/artifactory/libs-release-local"
+        }
+
+        jcenter()
+    }
+}
+		]]>
+				</screen>
+				<para>Artifactory 默认将 jecnter 库缓存到私有 maven仓库中。我们可以在项目中配置 jcenter
+					仓库信息列表，后续编译所需要的包都直接从私服 maven仓库读取，加快项目编译速度。</para>
+				<screen>
+		<![CDATA[
+buildscript {
+    repositories {
+        maven {
+            url "http://artifactory.netkiller.cn:8081/artifactory/jcenter" // 配置私服jcenter仓库信息
+        }
+
+        maven {
+            url "http://artifactory.netkiller.cn:8081/artifactory/libs-release-local"
+        }
+
+        jcenter()
+    }
+    dependencies {
+       ...
+    }
+}
+
+allprojects {
+    repositories {
+        maven {
+            url "http://artifactory.netkiller.cn:8081/artifactory/jcenter" // 配置私服jcenter仓库信息
+        }
+
+        maven {
+            url "http://artifactory.netkiller.cn:8081/artifactory/libs-release-local"
+        }
+
+        jcenter()
+    }
+}		
+		]]>
+				</screen>
+			</section>
+		</section>
 	</section>
 	<section>
 		<title>Example</title>
@@ -459,7 +541,7 @@ task hello << {
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>ext</title>
 			<screen>
 			<![CDATA[
 ext {
@@ -499,5 +581,5 @@ hello, Neo
 		</section>
 
 	</section>
-	
-</section>
+
+</chapter>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="java.util.function">
+	<title>函数式编程</title>
+	<section id="Supplier">
+		<title>Supplier</title>
+
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.function.Supplier;
+
+public class TestSupplier {
+    private final int age = 24;
+
+    TestSupplier() {
+        System.out.println(age);
+    }
+
+    public static void main(String[] args) {
+        Supplier<TestSupplier> supplier = TestSupplier::new;
+        //调用get()方法，此时会调用对象的构造方法，即获得到真正对象
+        supplier.get();
+        System.out.println(supplier.get().test());
+
+        TestSupplier test = supplier.get();
+        System.out.println(test.test());
+    }
+
+    private String test() {
+        return "Helloworld!!!";
+    }
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.function.Supplier;
+
+public class TestSupplier {
+    private final int age = 24;
+    private final String name;
+
+    TestSupplier(String name) {
+        this.name = name;
+//        System.out.println(name);
+    }
+
+    public static void main(String[] args) {
+        Supplier<String> stringSupplier = () -> {
+            return "test1";
+        };
+        System.out.println(stringSupplier.get());
+
+        Supplier<String> stringSupplier1 = () -> "test2";
+        System.out.println(stringSupplier1.get());
+
+        Supplier<TestSupplier> testSupplier = () -> new TestSupplier("Neo");
+        System.out.println(testSupplier.get().name);
+
+//        String name = "Netkiller";
+//        Supplier<TestSupplier> testSupplier1 = (name) -> {new TestSupplier(name)};
+//        System.out.println(testSupplier1.get().name);
+//        System.out.println(test.test());
+    }
+
+    private String test() {
+        return "Helloworld!!!";
+    }
+}
+			]]>
+		</programlisting>
+	</section>
+	<section id="Consumer">
+		<title>Consumer</title>
+		<programlisting>
+			<![CDATA[
+        Consumer<String> printer = (s) -> System.out.println(s);
+        // 使用 accept 方法执行操作
+        printer.accept("Hello, World!");			
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+        Consumer<String> upperCasePrinter = (s) -> System.out.println(s.toUpperCase());
+        Consumer<String> lowerCasePrinter = (s) -> System.out.println(s.toLowerCase());
+
+        // 使用 andThen 方法连接两个 Consumer
+        Consumer<String> combinedPrinter = upperCasePrinter.andThen(lowerCasePrinter);
+        combinedPrinter.accept("Hello world!!!");			
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+
+package cn.netkiller;
+
+import java.util.function.Consumer;
+
+import lombok.Data;
+
+/**
+ * TestConsumer
+ */
+@Data
+public class TestConsumer {
+    private String name;
+    private String nickname;
+    private int age;
+
+    public void init(Consumer<TestConsumer> configurator) {
+        configurator.accept(this);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Hello world!");
+
+        TestConsumer test = new TestConsumer();
+
+        // 使用 Consumer 配置 Person 对象
+        test.init(p -> {
+            p.setName("Neo");
+            p.setNickname("netkiller");
+            p.setAge(30);
+        });
+
+        System.out.println(test);
+
+    }
+}			
+			]]>
+		</programlisting>
+	</section>
+
+	<section id="IntConsumer">
+		<title>IntConsumer</title>
+		<programlisting>
+		<![CDATA[
+IntConsumer printNumber = num -> System.out.println("The number is: " + num);
+printNumber.accept(42);  // 输出: The number is: 42		
+		]]>
+		</programlisting>
+	</section>
+	<section id="BiConsumer">
+		<title>BiConsumer</title>
+		<para>BiConsumer 可以返回两个参数</para>
+		<programlisting>
+		<![CDATA[
+BiConsumer<String, Integer> printInfo = (name, age) -> System.out.println(name + " is " + age + " years old.");
+printInfo.accept("Neo", 25);  // 输出: Neo is 25 years old.		
+		]]>
+		</programlisting>
+	</section>
+</section>

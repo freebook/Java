@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="io" ?>
+<chapter id="index"><?dbhtml dir="io" ?>
 	<title>IO</title>
 	<section id="File">
 		<title>取出文件名中的扩展名</title>
@@ -1151,4 +1151,4 @@ public class PngFile {
 			</section>
 		</section>
 	</section>
-</section>
+</chapter>

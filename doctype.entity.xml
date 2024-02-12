@@ -8,24 +8,29 @@
 <!ENTITY section.java.jvm.xml		 	SYSTEM "section.java.jvm.xml">
 <!ENTITY chapter.java.type.xml		 	SYSTEM "chapter.java.type.xml">
 <!ENTITY section.java.controlflow.xml 	SYSTEM "section.java.controlflow.xml">
-<!ENTITY section.java.util.data.xml	 	SYSTEM "section.java.util.data.xml">
 <!ENTITY chapter.java.net.xml 			SYSTEM "chapter.java.net.xml">
 <!ENTITY chapter.java.sql.xml			SYSTEM "chapter.java.sql.xml">
-<!ENTITY chapter.java.util.xml			SYSTEM "chapter.java.util.xml">
-<!ENTITY section.java.util.concurrent.xml	SYSTEM "section.java.util.concurrent.xml">
-<!ENTITY section.java.util.stream.xml	SYSTEM "section.java.util.stream.xml">
 <!ENTITY chapter.java.io.xml			SYSTEM "chapter.java.io.xml">
-<!ENTITY chapter.javax.script.xml		SYSTEM "chapter.javax.script.xml">
-<!ENTITY chapter.javax.crypto.xml		SYSTEM "chapter.javax.crypto.xml">
 <!ENTITY chapter.java.security.xml 		SYSTEM "chapter.java.security.xml">
 <!ENTITY chapter.java.reflect.xml 		SYSTEM "chapter.java.reflect.xml">
+
+<!ENTITY chapter.java.util.xml			SYSTEM "chapter.java.util.xml">
+<!ENTITY section.java.util.data.xml	 	SYSTEM "section.java.util.data.xml">
+<!ENTITY section.java.util.concurrent.xml	SYSTEM "section.java.util.concurrent.xml">
+<!ENTITY section.java.util.stream.xml	SYSTEM "section.java.util.stream.xml">
+<!ENTITY section.java.util.function.xml	SYSTEM "section.java.util.function.xml">
+<!ENTITY section.java.util.regex.xml	SYSTEM "section.java.util.regex.xml">
+<!ENTITY section.java.util.Properties.xml		SYSTEM "section.java.util.Properties.xml">
+
+<!ENTITY chapter.javax.xml				SYSTEM "chapter.javax.xml">
+<!ENTITY section.javax.script.xml		SYSTEM "section.javax.script.xml">
+<!ENTITY section.javax.crypto.xml		SYSTEM "section.javax.crypto.xml">
 
 <!ENTITY chapter.build.xml				SYSTEM "chapter.build.xml">
 <!ENTITY section.ant.xml				SYSTEM "build/section.ant.xml">
 <!ENTITY section.gradle.xml				SYSTEM "build/section.gradle.xml">
 <!ENTITY section.maven.xml				SYSTEM "build/section.maven.xml">
 <!ENTITY section.jitpack.xml			SYSTEM "build/section.jitpack.xml">
-<!ENTITY section.artifactory.xml		SYSTEM "build/section.artifactory.xml">
 <!ENTITY section.nexus.xml				SYSTEM "build/section.nexus.xml">
 
 <!ENTITY chapter.cache.xml			 	SYSTEM "chapter.cache.xml">

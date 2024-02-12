@@ -2,6 +2,5 @@
 	&section.java.jvm.xml;
 	&section.java.runtime.xml;
 	&chapter.java.type.xml;
-	&section.java.util.data.xml;
 	&section.java.controlflow.xml;
 	&section.java.exception.xml;

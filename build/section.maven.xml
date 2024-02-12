@@ -1,4 +1,4 @@
-<section id="maven">
+<chapter id="maven">
 	<title>Apache Maven</title>
 	<para>http://maven.apache.org/</para>
 	<section id="install">
@@ -80,7 +80,48 @@ mvn -v
   </mirrors>			
 			]]>
 			</screen>
-			<para>apache-maven-3.8.2 默认会阻止其他镜像，需要会去掉 maven-default-http-blocker 配置</para>
+			<para>apache-maven-3.8.2 默认会阻止其他镜像，需要会去掉 maven-default-http-blocker
+				配置</para>
+		</section>
+		<section id="NexusRepositoryOSS">
+			<title>Nexus Repository OSS</title>
+			<para>
+				<ulink url="https://www.sonatype.com/nexus-repository-oss" />
+			</para>
+			<section>
+				<title>安装 </title>
+				<section>
+					<title>Docker</title>
+					<para>
+						<ulink url="https://github.com/sonatype/docker-nexus3" />
+					</para>
+					<screen>
+			<![CDATA[
+$ docker volume create --name nexus-data
+$ docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3
+			]]>
+					</screen>
+				</section>
+				<section>
+					<title>docker compose</title>
+					<screen>
+			<![CDATA[
+version: "2"
+
+services:
+  nexus:
+    image: sonatype/nexus3
+    volumes:
+      - "nexus-data:/nexus-data"
+    ports:
+      - "8081:8081"
+  
+volumes:
+  nexus-data: {}			
+			]]>
+					</screen>
+				</section>
+			</section>
 		</section>
 		<section id="mvnd">
 			<title>mvnd</title>
@@ -231,7 +272,8 @@ mvn clean package -T 1C -Dmaven.test.skip=true  -Dmaven.compile.fork=true
 				]]>
 				</screen>
 				<para>-T 4 是直接指定4线程</para>
-				<para>-T 1C 表示CPU线程的倍数, 现在现在1个物理CPU，有4个核心，8个线程。那么此时-T 1C 就是8线程。</para>
+				<para>-T 1C 表示CPU线程的倍数, 现在现在1个物理CPU，有4个核心，8个线程。那么此时-T 1C 就是8线程。
+				</para>
 			</section>
 		</section>
 		<section>
@@ -1554,7 +1596,8 @@ Project
     |---pom.xml	
 		]]>
 		</screen>
-		<para>common 是公共项目，独立仓库。通过git submodule 技术挂载到项目目录。project1，project2 构建依赖 common 项目产生的 jar 包。</para>
+		<para>common 是公共项目，独立仓库。通过git submodule 技术挂载到项目目录。project1，project2
+			构建依赖 common 项目产生的 jar 包。</para>
 		<section>
 			<title>Parent</title>
 			<example>
@@ -3008,4 +3051,4 @@ root@netkiller ~/neo (maven)# mvn deploy -Dproject.branch=main
 			</screen>
 		</section>
 	</section>
-</section>
+</chapter>

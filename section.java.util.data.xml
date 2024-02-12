@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<section>
 	<title>数据结构</title>
 	<section id="java.util.List">
 		<title>List</title>
@@ -1692,4 +1692,4 @@ public class ResponseJson implements Serializable {
 			</section>
 		</section>
 	</section>
-</chapter>
+</section>
