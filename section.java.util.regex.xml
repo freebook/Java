@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="java.util.regex">
+<chapter id="java.util.regex">
 	<title>正则表达式</title>
 	<programlisting>
 		<![CDATA[
@@ -116,4 +116,4 @@ public class Test {
 		</screen>
 	</section>
 
-</section>
+</chapter>

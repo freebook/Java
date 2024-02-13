@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="java.util.stream">
+<chapter id="index"><?dbhtml dir="stream" ?>
 	<title>Stream</title>
 	<section id="Stream.of">
 		<title>Stream.of</title>
@@ -323,12 +323,12 @@ persons
 		</programlisting>
 	</section>
 	
-	<section>
+<!-- 	<section id="java.util.stream">
 		<title></title>
 		<programlisting>
 		<![CDATA[
 		
 		]]>
 		</programlisting>
-	</section>
-</section>
+	</section> -->
+</chapter>

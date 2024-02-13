@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="java.util.function">
+<chapter id="java.util.function"><?dbhtml dir="function" ?>
+<!-- java.util.function -->
 	<title>函数式编程</title>
 	<section id="Supplier">
 		<title>Supplier</title>
@@ -193,4 +194,4 @@ public class Test {
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

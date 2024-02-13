@@ -3,9 +3,9 @@
 	<title>JDK Development Kit</title>
 
 	&chapter.java.util.xml;
+	&chapter.java.io.xml;
 	&chapter.java.net.xml;
 	&chapter.java.sql.xml;
-	&chapter.java.io.xml;
 	&chapter.java.reflect.xml;
 	&chapter.java.security.xml;
 	&chapter.javax.xml;

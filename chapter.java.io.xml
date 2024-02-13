@@ -626,7 +626,7 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 			</programlisting>
 		</section>
 		<section id="binary.char">
-			<title>chat 类型</title>
+			<title>char 类型</title>
 			<para>有符号 signed char 类型的范围为 -128~127</para>
 			<para>无符号 unsigned char 的范围为0~ 255</para>
 			<para>char 与 byte 操作类似，我们首先去 ASCII 表查找字符 A 对应 65，我们将 65 写入二进制文件。然后读取该字符，输出结果是 A。</para>

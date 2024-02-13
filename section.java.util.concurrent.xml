@@ -1,5 +1,6 @@
-<section id="java.util.concurrent">
+<chapter id="index"><?dbhtml dir="concurrent" ?>
 	<title>Java 并发编程</title>
+	<para>包位置 java.util.concurrent</para>
 	<section id="TimeUnit">
 		<title>TimeUnit</title>
 		<programlisting>
@@ -916,4 +917,4 @@ Thread.ofVirtual().unstarted(Runnable);
 		]]>
 		</programlisting>
 	</section>
-</section>
+</chapter>

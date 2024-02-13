@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	&section.java.util.data.xml;
+	&section.java.util.regex.xml;
+	&section.java.util.concurrent.xml;
+	&section.java.util.stream.xml;
+	&section.java.util.function.xml;
 <chapter id="index"><?dbhtml dir="util" ?>
 	<title>Util</title>
-	&section.java.util.data.xml;
+	
 	&section.java.util.Properties.xml;
 	<section id="java.util.logging">
 		<title>Logging</title>
@@ -372,8 +377,5 @@ public class CRC {
 		]]>
 		</programlisting>
 	</section>
-	&section.java.util.regex.xml;
-	&section.java.util.concurrent.xml;
-	&section.java.util.stream.xml;
-	&section.java.util.function.xml;
+	
 </chapter>
