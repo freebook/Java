@@ -128,7 +128,7 @@ public class QueueTest {
 		<title>Future</title>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.test;
+package cn.netkiller.test;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
