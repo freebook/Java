@@ -4,3 +4,4 @@
 	&chapter.java.type.xml;
 	&section.java.controlflow.xml;
 	&section.java.exception.xml;
+	&chapter.java.thread.xml;

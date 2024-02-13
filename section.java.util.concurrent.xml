@@ -124,6 +124,69 @@ public class QueueTest {
 		]]>
 		</programlisting>
 	</section>
+	<section id="Future">
+		<title>Future</title>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.test;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class Test {
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    public Future<Integer> calculate(Integer input) {
+        return executor.submit(() -> {
+            System.out.println("Calculating..." + input);
+            Thread.sleep(1000);
+            return input * input;
+        });
+    }
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+
+        Test test = new Test();
+        Future<Integer> future = test.calculate(12);
+        Integer value = future.get();
+
+        System.out.println(value);
+    }
+}
+		
+		]]>
+		</programlisting>
+		<para>设置超时时间</para>
+		<programlisting>
+		<![CDATA[
+value = future.get(500, TimeUnit.MILLISECONDS);
+		]]>
+		</programlisting>
+		<para>设置超时时间</para>
+		<programlisting>
+		<![CDATA[
+value = future.get(500, TimeUnit.MILLISECONDS);
+		]]>
+		</programlisting>
+		<para>取消运行</para>
+		<programlisting>
+		<![CDATA[
+boolean canceled = future.cancel(true);
+		]]>
+		</programlisting>
+		<para>判断是否完成</para>
+		<programlisting>
+		<![CDATA[
+while(!future.isDone()) {
+    System.out.println("Calculating...");
+    Thread.sleep(300);
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="java.util.concurrent.FutureTask">
 		<title>FutureTask</title>
 		<programlisting>
@@ -169,6 +232,7 @@ public class Future {
 	]]>
 		</programlisting>
 	</section>
+	
 	<section id="CompletableFuture">
 		<title>CompletableFuture</title>
 		<section id="runAsync">
@@ -693,5 +757,163 @@ java.lang.RuntimeException
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section id="ThreadPool">
+		<title>java 线程池</title>
+		<section id="Executors.newCachedThreadPool">
+			<title>newCachedThreadPool</title>
+			<programlisting>
+			<![CDATA[
+	private void startTask(List<String> usersList){
+        ExecutorService executor = Executors.newCachedThreadPool();
+        executor.submit(()->{
+			//do someting
+        });
+    }
+			
+			]]>
+			</programlisting>
+		</section>
+		<section id="newFixedThreadPool">
+			<title>固定线程池(newFixedThreadPool)</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test.grey;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class GreyTest {
+
+	public GreyTest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	static class MyThread implements Runnable {
+		public void run() {
+			System.out.println("Thread Name:" + Thread.currentThread().getName());
+		}
+	}
+
+	public static void main(String[] args) {
+		// 创建五个线程池
+		int nThreads = 5;
+		ExecutorService pool = Executors.newFixedThreadPool(nThreads);
+		// 创建实现了Runnable接口对象
+		MyThread t1 = new MyThread();
+		MyThread t2 = new MyThread();
+		MyThread t3 = new MyThread();
+		MyThread t4 = new MyThread();
+		MyThread t5 = new MyThread();
+		// 将线程放入池中进行执行
+		pool.execute(t1);
+		pool.execute(t2);
+		pool.execute(t3);
+		pool.execute(t4);
+		pool.execute(t5);
+		// 关闭线程池
+		pool.shutdown();
+	}
+
+}
+			]]>
+			</programlisting>
+		</section>
+		<section id="newScheduledThreadPool">
+			<title>Executors.newScheduledThreadPool</title>
+			<programlisting>
+			<![CDATA[
+
+@Configuration
+public class ScheduleConfig implements SchedulingConfigurer {
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        //当然了，这里设置的线程池是corePoolSize也是很关键了，自己根据业务需求设定
+        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(10));
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="VirtualThreads">
+		<title>Java 协程</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.thread;
+
+import static java.lang.Thread.*;
+
+public class VirtualThreadsTest {
+    public static void main(String[] args) throws InterruptedException {
+        var virtualThread = startVirtualThread(() -> System.out.println("Hello from the virtual thread"));
+        virtualThread.join();
+    }
+}		
+		]]>
+		</programlisting>
+		<para>运行演示</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 thread % java --source 20 --enable-preview VirtualThreadsTest.java
+注: VirtualThreadsTest.java 使用 Java SE 20 的预览功能。
+注: 有关详细信息，请使用 -Xlint:preview 重新编译。
+Hello from the virtual thread
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
+
+public class Main {
+    public static void main(String[] args) {
+
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            IntStream.range(0, 10000).forEach(i -> {
+                executor.submit(() -> {
+                    Thread.sleep(Duration.ofSeconds(1));
+                    return i;
+                });
+            });
+        }
+    }
+}
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class VirtualThreadExample {
+
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
+        executor.submit(() -> {
+            System.out.println(Thread.currentThread().getName())
+        });
+
+        executor.shutdown();
+    }
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Thread.ofVirtual().start(Runnable);
+Thread.ofVirtual().unstarted(Runnable);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+Thread.ofVirtual().start(Runnable);
+Thread.ofVirtual().unstarted(Runnable);		
+		]]>
+		</programlisting>
 	</section>
 </section>

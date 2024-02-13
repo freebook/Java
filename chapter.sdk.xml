@@ -3,7 +3,6 @@
 	<title>JDK Development Kit</title>
 
 	&chapter.java.util.xml;
-	&chapter.java.thread.xml;
 	&chapter.java.net.xml;
 	&chapter.java.sql.xml;
 	&chapter.java.io.xml;
