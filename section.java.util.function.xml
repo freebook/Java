@@ -153,4 +153,44 @@ printInfo.accept("Neo", 25);  // 输出: Neo is 25 years old.
 		]]>
 		</programlisting>
 	</section>
+	<section id="BiFunction">
+		<title>BiFunction</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.ExecutionException;
+import java.util.function.BiFunction;
+
+public class Test {
+
+    public static void main(String[] args) {
+        BiFunction<String, String, Integer> biFunction = (s1, s2) -> s1.length() + s2.length();
+        Integer length = biFunction.apply("Neo", "netkiller");
+        System.out.println(length);
+    }
+}
+		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.ExecutionException;
+import java.util.function.BiFunction;
+
+public class Test {
+
+    public static void main(String[] args) {
+        BiFunction<String, String, Integer> biFunction = (s1, s2) -> s1.length() + s2.length();
+        Integer length = biFunction.andThen(len -> len * 2).apply("Neo", "netkiller");
+        System.out.println(length);
+    }
+}
+		
+		]]>
+		</programlisting>
+	</section>
 </section>
