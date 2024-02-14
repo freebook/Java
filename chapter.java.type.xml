@@ -1045,7 +1045,7 @@ Output:
 			</programlisting>
 		</section>
 		<section id="String.join">
-			<title></title>
+			<title>数据转字符串</title>
 			<programlisting>
 			<![CDATA[
 String[] array = {"neo", "chen"};

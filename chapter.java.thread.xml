@@ -385,6 +385,47 @@ public class ThreadLocaTest {
 }		
 		]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(Thread.currentThread());
+
+        try (var ctx = new UserContext("Bob")) {
+            // 可任意调用UserContext.currentUser():
+            String currentUser = UserContext.currentUser();
+            System.out.println(currentUser);
+        } // 在此自动调用UserContext.close()方法释放ThreadLocal关联对象
+
+    }
+
+    public static class UserContext implements AutoCloseable {
+
+        static final ThreadLocal<String> ctx = new ThreadLocal<>();
+
+        public UserContext(String user) {
+            ctx.set(user);
+        }
+
+        public static String currentUser() {
+            return ctx.get();
+        }
+
+        @Override
+        public void close() {
+            ctx.remove();
+        }
+    }
+}
+
+		
+		]]>
+		</programlisting>
+	</section>
+	<section id="ThreadLocalMap">
+		<title>ThreadLocalMap</title>
 	</section>
 	<section id="InheritableThreadLocal">
 		<title>InheritableThreadLocal</title>
@@ -406,6 +447,56 @@ public class ThreadLocaTest {
             }
         });
     }
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>守护线程</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(Thread.currentThread());
+
+        Thread t = new Thread(() -> {
+            Thread.currentThread().setName("netkiller");
+            System.out.println(Thread.currentThread().getName() + ": running...");
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    System.out.println(Thread.currentThread() + " - " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                    break;
+                }
+            }
+        });
+        t.setDaemon(true);//设置为守护线程【表示守护主线程，随主线程结束而结束】
+        t.start();
+
+        while (t.isAlive()) {
+            try {
+                
+                ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+                int activeCount = currentGroup.activeCount();
+                Thread[] threads = new Thread[activeCount];
+                currentGroup.enumerate(threads);
+                for (Thread thread : threads) {
+                    System.out.println("线程号：" + thread.getId() + " = " + thread.getName() + " 线程状态：" + thread.getState());
+                }
+                Thread.sleep(5000);
+                t.interrupt();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+}
+
+		
 		]]>
 		</programlisting>
 	</section>

@@ -166,7 +166,7 @@ System.out.println(list == copy); // false
 		]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="Arrays.asList">
 			<title>String[] to List</title>
 			<programlisting>
 		<![CDATA[
@@ -175,7 +175,7 @@ List list = Arrays.asList(arr);
 		]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="Collectors.toList">
 			<title>Stream.toList() 方法</title>
 			<para>数组转List</para>
 			<programlisting>
@@ -233,7 +233,7 @@ public class TestList {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="随机获取List元素">
 			<title>随机 List</title>
 			<programlisting>
 			<![CDATA[
@@ -243,7 +243,7 @@ System.out.println(list.get(index));
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="getFirst">
 			<title>getFirst() / getLast()</title>
 			<para>使用 idea 写代码，list 变量可以看到 getFirst() / getLast() 但实际上 list
 				并没有两个方法，这时 idea 模版造成的。</para>
@@ -273,7 +273,18 @@ java: 找不到符号
 			]]>
 			</programlisting>
 		</section>
-
+		<section id="List.toArray">
+			<title>List 转 Array</title>
+			<programlisting>
+			<![CDATA[
+        List<CompletableFuture<String>> completableFutures = Stream.of(future1, future2, future3).toList();
+        CompletableFuture[] completableFutureArray = completableFutures.toArray(CompletableFuture[]::new);			
+			
+		List<CompletableFuture<String>> completableFutures = Stream.of(future1, future2, future3).toList();
+        var completableFutureArray = completableFutures.toArray(CompletableFuture[]::new);
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="ArrayList">
