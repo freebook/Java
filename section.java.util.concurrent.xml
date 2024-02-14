@@ -188,7 +188,7 @@ while(!future.isDone()) {
 		]]>
 		</programlisting>
 	</section>
-	<section id="java.util.concurrent.FutureTask">
+	<section id="FutureTask">
 		<title>FutureTask</title>
 		<programlisting>
 	<![CDATA[
@@ -233,12 +233,14 @@ public class Future {
 	]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="CompletableFuture">
 		<title>CompletableFuture</title>
 		<section id="runAsync">
 			<title>runAsync 创建没有返回值的异步任务</title>
-			<para>runAsync 创建没有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是自定义线程池的重载方法</para>
+			<para>runAsync
+				创建没有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是自定义线程池的重载方法
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller;
@@ -320,7 +322,9 @@ Result ->true
 		</section>
 		<section id="supplyAsync">
 			<title>supplyAsync 创建带有返回值的异步任务。</title>
-			<para>supplyAsync 创建带有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是带有自定义线程池的重载方法</para>
+			<para>supplyAsync
+				创建带有返回值的异步任务。它有如下两个方法，一个是使用默认线程池（ForkJoinPool.commonPool()）的方法，一个是带有自定义线程池的重载方法
+			</para>
 			<screen>
 			<![CDATA[
 // 带返回值异步请求，默认线程池
@@ -462,11 +466,33 @@ Result ->done
 			]]>
 			</screen>
 		</section>
-		
+
+		<section id="get">
+			<title>获取结果</title>
+			<programlisting>
+			<![CDATA[
+@Service
+public class MyService {
+
+    @Async
+    public CompletableFuture<String> asyncMethod() {
+        // 异步方法逻辑...
+        return CompletableFuture.completedFuture("Result");
+    }
+}
+
+// 调用异步方法并获取结果
+CompletableFuture<String> future = myService.asyncMethod();
+String result = future.get(); // 阻塞等待结果			
+			]]>
+			</programlisting>
+		</section>
 		<section id="Run">
 			<title>thenRun / thenRunAsync</title>
 			<para>thenRun/thenRunAsync 功能是什么？完成前置任务之后，自己在执行。</para>
-			<para>thenRun/thenRunAsync 区别是什么？thenRun 使用同一个线程执行任务，thenRunAsync 会再开一个新线程执行任务。</para>
+			<para>thenRun/thenRunAsync 区别是什么？thenRun 使用同一个线程执行任务，thenRunAsync
+				会再开一个新线程执行任务。
+			</para>
 			<programlisting>
 			<![CDATA[
     @GetMapping("/completableFutureRun")
@@ -497,11 +523,15 @@ ForkJoinPool.commonPool-worker-1 - 接着执行第二个 thenRun 任务
 ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
 			]]>
 			</screen>
-			<para>这里可以看到 thenRunAsync 的线程变化，开启新线程 ForkJoinPool.commonPool-worker-2 处理任务</para>
+			<para>这里可以看到 thenRunAsync 的线程变化，开启新线程
+				ForkJoinPool.commonPool-worker-2 处理任务
+			</para>
 		</section>
 		<section id="Accept">
 			<title>thenAccept / thenAcceptAsync</title>
-			<para>thenAccept/thenAcceptAsync 的功能是，前置任务执行完毕之后，将返回值给到 thenAccept/thenAcceptAsync，再执行接下来的任务。</para>
+			<para>thenAccept/thenAcceptAsync 的功能是，前置任务执行完毕之后，将返回值给到
+				thenAccept/thenAcceptAsync，再执行接下来的任务。
+			</para>
 			<programlisting>
 			<![CDATA[
     @GetMapping("/completableFutureAccept")
@@ -540,7 +570,9 @@ ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
 		</section>
 		<section id="Apply">
 			<title>thenApply / thenApplyAsync</title>
-			<para>thenApply/thenApplyAsync 前置任务执行完毕之后，结果作为入参，thenApply/thenApplyAsync 执行完毕之后再返回执行结果</para>
+			<para>thenApply/thenApplyAsync
+				前置任务执行完毕之后，结果作为入参，thenApply/thenApplyAsync 执行完毕之后再返回执行结果
+			</para>
 			<programlisting>
 			<![CDATA[
     @GetMapping("/completableFutureApply")
@@ -605,7 +637,9 @@ supplyAsync -- 返回值 --> thenApply/thenApplyAsync -- 返回值 -->
 		</section>
 		<section id="whenComplete">
 			<title>whenComplete</title>
-			<para>whenComplete 与 runAsync / thenAccept / thenApply 区别是能处理 Throwable</para>
+			<para>whenComplete 与 runAsync / thenAccept / thenApply 区别是能处理
+				Throwable
+			</para>
 			<programlisting>
 			<![CDATA[
     @GetMapping("/completableFutureWhenComplete")
@@ -676,26 +710,263 @@ String finalResult = future2.get(); // 阻塞等待最终结果
 			]]>
 			</programlisting>
 		</section>
-		<section id="get">
-			<title>获取结果</title>
-			<programlisting>
-			<![CDATA[
-@Service
-public class MyService {
+		<section id="thenCombine">
+			<title>多任务组合处理 </title>
+			<section>
+				<title>thenCombine、thenAcceptBoth 和runAfterBoth</title>
 
-    @Async
-    public CompletableFuture<String> asyncMethod() {
-        // 异步方法逻辑...
-        return CompletableFuture.completedFuture("Result");
-    }
+				<para>thenCombine会将两个任务的执行结果作为所提供函数的参数，且该方法有返回值。</para>
+				<para>thenAcceptBoth同样将两个任务的执行结果作为方法入参，但是无返回值。</para>
+				<para>runAfterBoth没有入参，也没有返回值。注意两个任务中只要有一个执行异常，则将该异常信息作为指定任务的执行结果。
+				</para>
+				<programlisting>
+			<![CDATA[
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<Integer> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+            return 1;
+        });
+
+        CompletableFuture<Integer> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+            return 2;
+        });
+
+        CompletableFuture<Integer> completableFuture3 = completableFuture1.thenCombine(completableFuture2, (a, b) -> {
+            System.out.println(Thread.currentThread() + " completableFuture3 do something....");
+            return a + b;
+        });
+
+        System.out.println("completableFuture3结果->" + completableFuture3.get());
 }
 
-// 调用异步方法并获取结果
-CompletableFuture<String> future = myService.asyncMethod();
-String result = future.get(); // 阻塞等待结果			
+ public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<Integer> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+            return 1;
+        });
+
+        CompletableFuture<Integer> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+            return 2;
+        });
+        
+        CompletableFuture<Void> completableFuture3 = completableFuture1.thenAcceptBoth(completableFuture2, (a, b) -> {
+            System.out.println(Thread.currentThread() + " completableFuture3 do something....");
+            System.out.println(a + b);
+        });
+
+        System.out.println("completableFuture3结果->" + completableFuture3.get());
+}
+
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<Integer> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+            return 1;
+        });
+
+        CompletableFuture<Integer> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+            return 2;
+        });
+
+        CompletableFuture<Void> completableFuture3 = completableFuture1.runAfterBoth(completableFuture2, () -> {
+            System.out.println(Thread.currentThread() + " completableFuture3 do something....");
+        });
+
+        System.out.println("completableFuture3结果->" + completableFuture3.get());
+}
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>applyToEither、acceptEither和runAfterEither</title>
+				<para>这三个方法和上面一样也是将两个CompletableFuture组合起来处理，当有一个任务正常完成时，就会进行下阶段任务。
+				</para>
+				<para>applyToEither会将已经完成任务的执行结果作为所提供函数的参数，且该方法有返回值；</para>
+				<para>acceptEither同样将已经完成任务的执行结果作为方法入参，但是无返回值；</para>
+				<para>runAfterEither没有入参，也没有返回值。</para>
+				<programlisting>
+				<![CDATA[
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "completableFuture1 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "completableFuture2 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture3 = completableFuture1.applyToEither(completableFuture2, (result) -> {
+            System.out.println("接收到" + result);
+            System.out.println(Thread.currentThread() + " completableFuture3 do something....");
+            return "completableFuture3 任务完成";
+        });
+
+        System.out.println("completableFuture3结果->" + completableFuture3.get());
+}
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "completableFuture1 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "completableFuture2 任务完成";
+        });
+
+        CompletableFuture<Void> completableFuture3 = completableFuture1.acceptEither(completableFuture2, (result) -> {
+            System.out.println("接收到" + result);
+            System.out.println(Thread.currentThread() + " completableFuture3 do something....");
+        });
+
+        System.out.println("completableFuture3结果->" + completableFuture3.get());
+}
+
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture1 任务完成");
+            return "completableFuture1 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture2 任务完成");
+            return "completableFuture2 任务完成";
+        });
+
+        CompletableFuture<Void> completableFuture3 = completableFuture1.runAfterEither(completableFuture2, () -> {
+            System.out.println(Thread.currentThread() + " completableFuture3 do something....");
+            System.out.println("completableFuture3 任务完成");
+        });
+
+        System.out.println("completableFuture3结果->" + completableFuture3.get());
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>allOf / anyOf</title>
+				<para>allOf：CompletableFuture是多个任务都执行完成后才会执行，只有有一个任务执行异常，则返回的CompletableFuture执行get方法时会抛出异常，如果都是正常执行，则get返回null。
+				</para>
+				<para>anyOf：CompletableFuture是多个任务只要有一个任务执行完成，则返回的CompletableFuture执行get方法时会抛出异常，如果都是正常执行，则get返回执行完成任务的结果。
+				</para>
+				<programlisting>
+				<![CDATA[
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture1 任务完成");
+            return "completableFuture1 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+                int a = 1/0;
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture2 任务完成");
+            return "completableFuture2 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture3 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture3 任务完成");
+            return "completableFuture3 任务完成";
+        });
+
+        CompletableFuture<Void> completableFutureAll = CompletableFuture.allOf(completableFuture1, completableFuture2, completableFuture3);
+        System.out.println("completableFutureAll结果->" + completableFutureAll.get());
+}
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture1 do something....");
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture1 任务完成");
+            return "completableFuture1 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture2 任务完成");
+            return "completableFuture2 任务完成";
+        });
+
+        CompletableFuture<String> completableFuture3 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " completableFuture2 do something....");
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("completableFuture3 任务完成");
+            return "completableFuture3 任务完成";
+        });
+
+        CompletableFuture<Object> completableFutureAll = CompletableFuture.anyOf(completableFuture1, completableFuture2, completableFuture3);
+        System.out.println("completableFutureAll结果->" + completableFutureAll.get());
+}
+				]]>
+				</programlisting>
+			</section>
 		</section>
+		
 		<section id="exceptionally">
 			<title>异常处理</title>
 			<programlisting>

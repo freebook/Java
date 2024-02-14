@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="java.util.function"><?dbhtml dir="function" ?>
+<chapter id="index"><?dbhtml dir="function" ?>
 <!-- java.util.function -->
 	<title>函数式编程</title>
 	<section id="Supplier">
