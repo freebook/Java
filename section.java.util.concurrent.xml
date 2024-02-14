@@ -1190,6 +1190,92 @@ public class GreyTest {
 }
 			]]>
 			</programlisting>
+			<para>CompletableFuture 线程池</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.function.Supplier;
+
+public class Test {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        System.out.println(Thread.currentThread());
+        Executor executor = Executors.newFixedThreadPool(10);
+
+        Parallel parallel = new Parallel();
+
+        parallel.addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    return "task1";
+                }, executor)
+                .addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    return "task2";
+                }, executor)
+                .addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    return "task3";
+                }, executor)
+                .addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return "finally";
+                }, executor).join();
+
+        List<CompletableFuture<String>> futures = parallel.get();
+
+        futures.stream().forEach(item -> {
+            System.out.println(item.getNow("no result"));
+        });
+
+    }
+
+    public static class Parallel<T> {
+
+        private final List<CompletableFuture<T>> futures;
+
+        Parallel() {
+            this(10);
+        }
+
+        Parallel(int size) {
+            futures = new ArrayList<>(size);
+        }
+
+        public Parallel addAsyncTask(Supplier<T> supplier) {
+            futures.add(CompletableFuture.supplyAsync(supplier));
+            return this;
+        }
+
+        public Parallel addAsyncTask(Supplier<T> supplier, Executor executor) {
+            futures.add(CompletableFuture.supplyAsync(supplier, executor));
+            return this;
+        }
+
+        public List<CompletableFuture<T>> get() {
+            return futures;
+        }
+
+        public void join() {
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
+        }
+
+        public void clear() {
+            futures.clear();
+        }
+    }
+}
+
+			
+			]]>
+			</programlisting>
 		</section>
 		<section id="newScheduledThreadPool">
 			<title>Executors.newScheduledThreadPool</title>
