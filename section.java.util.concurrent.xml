@@ -354,6 +354,32 @@ do something....
 Result ->true
 			]]>
 			</screen>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class Test {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        System.out.println(Thread.currentThread());
+
+        AtomicInteger variable = new AtomicInteger(0);
+        CompletableFuture<Void> runAsync = CompletableFuture.runAsync(() -> process(variable));
+        runAsync.join();
+        System.out.println(variable.get());
+
+    }
+
+    public static void process(AtomicInteger variable) {
+        System.out.println(Thread.currentThread().getName() + " Process...");
+        variable.set(1024);
+    }
+}
+			]]>
+			</programlisting>
 		</section>
 		<section id="supplyAsync">
 			<title>supplyAsync 创建带有返回值的异步任务。</title>
@@ -501,9 +527,17 @@ Result ->done
 			]]>
 			</screen>
 		</section>
-
 		<section id="get">
 			<title>获取结果</title>
+			<programlisting>
+			<![CDATA[
+        CompletableFuture<String> completableFuture = CompletableFuture.completedFuture("Hello netkiller");
+        if (completableFuture.isDone()) {
+            System.out.println(completableFuture.get());
+        }			
+			]]>
+			</programlisting>
+			<para>Spring Service 用法</para>
 			<programlisting>
 			<![CDATA[
 @Service
@@ -746,7 +780,7 @@ String finalResult = future2.get(); // 阻塞等待最终结果
 			</programlisting>
 		</section>
 
-		<section>
+		<section id="thenCombine">
 			<title>thenCombine、thenAcceptBoth 和runAfterBoth</title>
 
 			<para>thenCombine会将两个任务的执行结果作为所提供函数的参数，且该方法有返回值。</para>
@@ -813,7 +847,7 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="applyToEither">
 			<title>applyToEither、acceptEither和runAfterEither</title>
 			<para>这三个方法和上面一样也是将两个CompletableFuture组合起来处理，当有一个任务正常完成时，就会进行下阶段任务。
 			</para>
@@ -913,7 +947,7 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 				]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="allOf">
 			<title>allOf / anyOf</title>
 			<para>allOf：CompletableFuture是多个任务都执行完成后才会执行，只有有一个任务执行异常，则返回的CompletableFuture执行get方法时会抛出异常，如果都是正常执行，则get返回null。
 			</para>
@@ -1129,6 +1163,184 @@ java.lang.RuntimeException
 			]]>
 			</screen>
 		</section>
+		<section id="CompletableFuturePipeline">
+			<title>CompletableFuture 实现 Pipeline 流水线</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import lombok.SneakyThrows;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+public class CompletableFuturePipeline {
+
+    private final Parallel parallel = new Parallel();
+
+    public CompletableFuturePipeline() {
+
+    }
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        System.out.println(Thread.currentThread().getName());
+
+        CompletableFuturePipeline test = new CompletableFuturePipeline();
+        test.begin().batch().run().end();
+        test.parallel().supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + ": parallel1");
+            return "parallel1";
+        }).supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + ": parallel2");
+            return "parallel2";
+        }).join();
+
+
+    }
+
+    @SneakyThrows
+    public CompletableFuturePipeline begin() {
+        String method = Thread.currentThread().getStackTrace()[1].getMethodName();
+
+        parallel.runAsync(() -> {
+            String thread = Thread.currentThread().getName();
+            System.out.printf("%s - %s\n", thread, method);
+        });
+        return this;
+    }
+
+    public CompletableFuturePipeline run() throws ExecutionException, InterruptedException {
+        String method = Thread.currentThread().getStackTrace()[1].getMethodName();
+        parallel.supplyAsync(() -> {
+            System.out.printf("%s - %s\n", Thread.currentThread().getName(), method);
+            return "OK";
+        });
+        System.out.println(this.asyncMethod1().get());
+        return this;
+    }
+
+    public CompletableFuturePipeline batch() {
+        String method = Thread.currentThread().getStackTrace()[1].getMethodName();
+        Parallel batchs = this.parallel();
+
+        batchs.runAsync(() -> {
+                    String thread = Thread.currentThread().getName();
+                    System.out.printf("%s - %s - task1\n", thread, method);
+                })
+                .runAsync(() -> {
+                    try {
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    String thread = Thread.currentThread().getName();
+                    System.out.printf("%s - %s - task2\n", thread, method);
+
+                })
+                .runAsync(() -> {
+                    String thread = Thread.currentThread().getName();
+                    System.out.printf("%s - %s - task3\n", thread, method);
+                })
+                .supplyAsync(() -> {
+                    String thread = Thread.currentThread().getName();
+                    System.out.printf("%s - %s - finally\n", thread, method);
+                    return "finally";
+                }).join();
+        System.out.println(batchs.futures.size());
+
+        return this;
+    }
+
+    @SneakyThrows
+    public CompletableFuturePipeline end() {
+        String method = Thread.currentThread().getStackTrace()[1].getMethodName();
+        parallel.supplyAsync(() -> {
+            System.out.printf("%s - %s\n", Thread.currentThread().getName(), method);
+            return "End";
+        });
+
+        parallel.join();
+
+        List<CompletableFuture<String>> futures = parallel.get();
+
+        futures.stream().forEach(item -> {
+            System.out.println(item.getNow("no result"));
+        });
+
+        System.out.println(parallel.futures.size());
+        return this;
+    }
+
+    public Parallel parallel() {
+        return new Parallel();
+    }
+
+    public Parallel parallel(int size) {
+        return new Parallel(size);
+    }
+
+    public CompletableFuture<String> asyncMethod1() {
+//        Thread.currentThread().setName(Thread.currentThread().getName() + "-" + this.getClass().getSimpleName());
+        System.out.println(Thread.currentThread().getName() + ": asyncMethod1");
+        return CompletableFuture.completedFuture("Result1");
+    }
+
+    public static class Parallel<T> {
+
+        private final List<CompletableFuture> futures;
+//        private final List<CompletableFuture<Void>> voids = new ArrayList<>();
+
+        Parallel() {
+            this(10);
+        }
+
+        Parallel(int size) {
+            futures = new ArrayList<>(size);
+        }
+
+        public Parallel runAsync(Runnable runnable) {
+            futures.add(CompletableFuture.runAsync(runnable));
+            return this;
+        }
+
+        public Parallel runAsync(Runnable runnable, Executor executor) {
+            futures.add(CompletableFuture.runAsync(runnable, executor));
+            return this;
+        }
+
+        public Parallel supplyAsync(Supplier<T> supplier) {
+            futures.add(CompletableFuture.supplyAsync(supplier));
+            return this;
+        }
+
+        public Parallel supplyAsync(Supplier<T> supplier, Executor executor) {
+            futures.add(CompletableFuture.supplyAsync(supplier, executor));
+            return this;
+        }
+
+        public List<CompletableFuture> get() {
+            return futures;
+        }
+
+        public void join() {
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
+        }
+
+        public void clear() {
+            futures.clear();
+        }
+    }
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 	<section id="ThreadPool">
 		<title>java 线程池</title>
