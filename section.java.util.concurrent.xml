@@ -1134,6 +1134,7 @@ java.lang.RuntimeException
 		<title>java 线程池</title>
 		<section id="Executors.newCachedThreadPool">
 			<title>newCachedThreadPool</title>
+			<para>newCachedThreadPool 线程池尺寸没有固定上线</para>
 			<programlisting>
 			<![CDATA[
 	private void startTask(List<String> usersList){
@@ -1143,6 +1144,23 @@ java.lang.RuntimeException
         });
     }
 			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for (int i = 0; i < 100; i++) {
+            executor.execute(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                    System.out.println(Thread.currentThread().getName());
+
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        executor.shutdown();			
 			]]>
 			</programlisting>
 		</section>
@@ -1190,6 +1208,27 @@ public class GreyTest {
 }
 			]]>
 			</programlisting>
+			<para>提交线程数大于线程池尺寸时会同步等待，然后复用已经处理完的空间线程。</para>
+			<programlisting>
+			<![CDATA[
+        System.out.println(Thread.currentThread());
+        AtomicInteger count = new AtomicInteger(1);
+        int nThread = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(nThread);
+        for (int i = 0; i < 100; i++) {
+            executor.execute(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                    System.out.println(count.getAndIncrement() + " [" + Thread.currentThread().getName() + "] " + System.currentTimeMillis());
+
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        executor.shutdown();			
+			]]>
+			</programlisting>
 			<para>CompletableFuture 线程池</para>
 			<programlisting>
 			<![CDATA[
@@ -1203,7 +1242,8 @@ import java.util.function.Supplier;
 public class Test {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println(Thread.currentThread());
-        Executor executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+
 
         Parallel parallel = new Parallel();
 
@@ -1227,14 +1267,180 @@ public class Test {
                         e.printStackTrace();
                     }
                     return "finally";
-                }, executor).join();
-
+                }, executor);
+        parallel.join();
         List<CompletableFuture<String>> futures = parallel.get();
 
         futures.stream().forEach(item -> {
             System.out.println(item.getNow("no result"));
         });
 
+        executor.shutdown();
+    }
+
+    public static class Parallel<T> {
+
+        private final List<CompletableFuture<T>> futures;
+
+        Parallel() {
+            this(10);
+        }
+
+        Parallel(int size) {
+            futures = new ArrayList<>(size);
+        }
+
+        public Parallel addAsyncTask(Supplier<T> supplier) {
+            futures.add(CompletableFuture.supplyAsync(supplier));
+            return this;
+        }
+
+        public Parallel addAsyncTask(Supplier<T> supplier, Executor executor) {
+            futures.add(CompletableFuture.supplyAsync(supplier, executor));
+            return this;
+        }
+
+        public List<CompletableFuture<T>> get() {
+            return futures;
+        }
+
+        public void join() {
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
+        }
+
+        public void clear() {
+            futures.clear();
+        }
+    }
+}
+
+
+			]]>
+			</programlisting>
+		</section>
+		
+		<section id="newScheduledThreadPool">
+			<title>Executors.newScheduledThreadPool</title>
+			<programlisting>
+			<![CDATA[
+
+@Configuration
+public class ScheduleConfig implements SchedulingConfigurer {
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        //当然了，这里设置的线程池是corePoolSize也是很关键了，自己根据业务需求设定
+        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(10));
+    }
+
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
+
+service.schedule(new Task(), 10, TimeUnit.SECONDS);
+
+service.scheduleAtFixedRate(new Task(), 10, 10, TimeUnit.SECONDS);
+
+service.scheduleWithFixedDelay(new Task(), 10, 10, TimeUnit.SECONDS);
+			
+			]]>
+			</programlisting>
+		</section>
+		<section id="SingleThreadExecutor">
+			<title>SingleThreadExecutor</title>
+			<para>可以理解为 SingleThreadExecutor = Executors.newFixedThreadPool(1);</para>
+			<programlisting>
+			<![CDATA[
+ExecutorService executor = Executors.newSingleThreadExecutor();
+ExecutorService executor = Executors.newSingleThreadScheduledExecutor();			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+        System.out.println(Thread.currentThread());
+        AtomicInteger count = new AtomicInteger(1);
+        int nThread = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        for (int i = 0; i < 100; i++) {
+            executor.execute(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                    System.out.println(count.getAndIncrement() + " [" + Thread.currentThread().getName() + "] " + System.currentTimeMillis());
+
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        executor.shutdown();			
+			]]>
+			</programlisting>
+		</section>
+		<section id="ExecutorService">
+			<title>ExecutorService 正确关闭方法</title>
+			<para>ExecutorService 功能包括，提交任务、执行任务、关闭线程池。</para>
+			<para>首先通过 executor.shutdown(); 发送关闭信号，然后再通过 executor.awaitTermination(10, TimeUnit.SECONDS) 设置超时时间，超时抛出异常，最后通过 executor.shutdownNow(); 强制关闭。</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.function.Supplier;
+
+public class Test {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        System.out.println(Thread.currentThread());
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+
+
+        Parallel parallel = new Parallel();
+
+        parallel.addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    return "task1";
+                }, executor)
+                .addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    return "task2";
+                }, executor)
+                .addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    return "task3";
+                }, executor)
+                .addAsyncTask(() -> {
+                    System.out.println(Thread.currentThread().getName());
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return "finally";
+                }, executor);
+        parallel.join();
+        List<CompletableFuture<String>> futures = parallel.get();
+
+        futures.stream().forEach(item -> {
+            System.out.println(item.getNow("no result"));
+        });
+
+        executor.shutdown();
+
+        try {
+            executor.shutdown();
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                // 超时的时候向线程池中所有的线程发出中断(interrupted)。
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            // awaitTermination方法被中断的时候也中止线程池中全部的线程的执行。
+            System.out.println("awaitTermination interrupted: " + e);
+            executor.shutdownNow();
+        }
     }
 
     public static class Parallel<T> {
@@ -1277,28 +1483,11 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
-		<section id="newScheduledThreadPool">
-			<title>Executors.newScheduledThreadPool</title>
-			<programlisting>
-			<![CDATA[
-
-@Configuration
-public class ScheduleConfig implements SchedulingConfigurer {
-
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        //当然了，这里设置的线程池是corePoolSize也是很关键了，自己根据业务需求设定
-        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(10));
-    }
-
-}			
-			]]>
-			</programlisting>
-		</section>
-	</section>
-	<section>
+	<section id="ForkJoinPool">
 		<title>ForkJoinPool / ForkJoinTask</title>
 	</section>
+	</section>
+	
 	<section id="VirtualThreads">
 		<title>Java 协程</title>
 		<programlisting>

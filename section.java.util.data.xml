@@ -324,6 +324,16 @@ List<String> list4 = new ArrayList<String>() {
 }; 	
 			]]>
 			</programlisting>
+			<para>初始化容量 initialCapacity</para>
+			<programlisting>
+			<![CDATA[
+        List<String> test = new ArrayList<>(5);
+        IntStream.range(1, 10).forEach(value -> {
+            test.add(String.valueOf(value));
+        });
+        System.out.println(test);			
+			]]>
+			</programlisting>
 		</section>
 		<section>
 			<title>判断元素是否存在</title>
@@ -435,7 +445,9 @@ public class ArrayListExample {
 		<section>
 			<title>Array to List</title>
 			<programlisting>
-				Arrays.asList(array)
+			<![CDATA[
+Arrays.asList(array)			
+			]]>
 			</programlisting>
 		</section>
 		<section>
