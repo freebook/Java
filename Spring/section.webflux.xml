@@ -1242,6 +1242,30 @@ data:我的昵称是 netkiller
 :测试数据
 		]]>
 		</screen>
+		<para>FluxSink 发送 ServerSentEvent</para>
+		<programlisting>
+		<![CDATA[
+    @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<String>> serverSentEvent() {
+        AtomicInteger sequence = new AtomicInteger(1);
+        Flux<ServerSentEvent<String>> flux = Flux.create(sink -> {
+            sink.next(ServerSentEvent.<String>builder()
+                    .id(String.valueOf(sequence.getAndIncrement()))
+                    .event("LocalTime")
+                    .data(String.valueOf(LocalTime.now()))
+                    .build());
+            sink.next(ServerSentEvent.<String>builder()
+                    .id(String.valueOf(sequence.getAndIncrement()))
+                    .event("test")
+                    .data("Hello netkiller")
+                    .comment("测试")
+                    .build());
+            sink.complete();
+        });
+        return flux;
+    }		
+		]]>
+		</programlisting>
 	</section>
 	<section>
 		<title>SSE 完整的例子</title>

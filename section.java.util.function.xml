@@ -3,8 +3,28 @@
 <!-- java.util.function -->
 	<title>函数式编程</title>
 	<section id="Supplier">
-		<title>Supplier</title>
+		<title>Supplier 供应型的接口</title>
+		<programlisting>
+		<![CDATA[
+Supplier<String> supplier = () -> "hello, world";
+String result = supplier.get();
+System.out.println(result);
 
+Supplier stringSupplier = () -> new String("Hi Neo");
+String string = stringSupplier.get();
+System.out.println(string);
+
+Supplier<LocalDateTime> currentTime = () -> LocalDateTime.now();  
+LocalDateTime now = currentTime.get(); // 计算当前时间
+
+Optional<String> optional = Optional.ofNullable("hello"); 
+String orElseGet = optional.orElseGet(() -> "world");
+
+Supplier userSupplier= () -> new User(1,"netkiller");  
+User user=userSupplier.get();  
+System.out.println(user.getName());  
+		]]>
+		</programlisting>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
@@ -73,9 +93,107 @@ public class TestSupplier {
 }
 			]]>
 		</programlisting>
+		<section>
+			<title>Supplier 作为方法参数使用</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
+
+public class Test {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        System.out.println(Thread.currentThread());
+        process(() -> {
+            System.out.println(Thread.currentThread().getName() + " Process...");
+            return "Test";
+        });
+
+        Supplier<String> stringSupplier1 = () -> "netkiller";
+        process(stringSupplier1);
+
+    }
+
+    public static <T> void process(Supplier<T> supplier) {
+//        System.out.println(Thread.currentThread().getName() + " Process...");
+
+//        CompletableFuture<T> runAsync = CompletableFuture.supplyAsync(supplier);
+//        runAsync.join();
+//        System.out.println(variable.get());
+
+        T value = supplier.get();
+        System.out.println(value);
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="IntSupplier">
+		<title>IntSupplier / LongSupplier / DoubleSupplier / BooleanSupplier</title>
+		<para>IntSupplier - 有getAsInt()方法</para>
+		<para>LongSupplier - 有getAsLong()方法</para>
+		<para>DoubleSupplier - 有getAsDouble()方法</para>
+		<para>BooleanSupplier - 有getAsBoolean()方法。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.function.IntSupplier;
+import java.util.stream.IntStream;
+
+public class Test {
+    public static void main(String[] args) {
+
+        IntSupplier naturalGenerator = new IntSupplier() {
+            int currentValue = 0;
+
+            public int getAsInt() {
+                return currentValue++;
+            }
+        };
+
+        IntStream.range(0, 10).forEach((n) -> {
+            System.out.println(naturalGenerator.getAsInt());
+        });
+
+    }
+}
+		]]>
+		</programlisting>
+		<para>自定义 getAsInt 抽象方法，可以定制步进值</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.function.IntSupplier;
+import java.util.stream.IntStream;
+
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(Thread.currentThread());
+
+        IntSupplier naturalGenerator = new IntSupplier() {
+            int currentValue = 1;
+
+            public int getAsInt() {
+                return currentValue *= 2;
+            }
+        };
+
+        IntStream.range(0, 10).forEach((n) -> {
+            System.out.println(naturalGenerator.getAsInt());
+        });
+
+    }
+
+}		
+		]]>
+		</programlisting>
 	</section>
 	<section id="Consumer">
-		<title>Consumer</title>
+		<title>Consumer 消费型的接口</title>
 		<programlisting>
 			<![CDATA[
         Consumer<String> printer = (s) -> System.out.println(s);
@@ -191,6 +309,60 @@ public class Test {
     }
 }
 		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Predicate">
+		<title>Predicate 判断型的接口</title>
+		<programlisting>
+		<![CDATA[
+        Predicate<Integer> predicate = i -> i > 5;
+        System.out.println(predicate.test(1));
+        System.out.println(predicate.test(10));		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Supplier / Consumer / Predicate 应用场景</title>
+		<para>Supplier 没有入参，但是有返回值，通过 get() 获得。</para>
+		<para>Consumer 有入参，但是没有返回值，通过 andThen() 可以获得返回叔叔。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(Thread.currentThread());
+        Supplier<String> supplier = () -> "hello, world";
+        String result = supplier.get();
+        System.out.println("Supplier: " + result);
+
+        Consumer<String> consumer = (s) -> System.out.println(s);
+//        consumer.accept("Hello, Neo!");
+
+        Consumer<String> then = consumer.andThen(value -> {
+            System.out.println("Consumer: " + value);
+        });
+        consumer.accept("Hello, Neo!");
+        then.accept("Hello, Netkiller!");
+
+
+        Predicate<Integer> predicate = i -> i > 5;
+        System.out.println(predicate.test(1));
+        System.out.println(predicate.test(10));
+
+        Predicate<String> string = s -> !s.isEmpty();
+        string.or(s -> s.equals("neo"));
+        System.out.println(string.test(""));
+        System.out.println(string.test("neo"));
+
+    }
+
+}		
 		]]>
 		</programlisting>
 	</section>
