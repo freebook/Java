@@ -82,7 +82,8 @@ numbers.stream().distinct().forEach(System.out::println);
 
 	<section id="stream.foreach">
 		<title>forEach</title>
-		<para>Stream 提供了方法 'forEach' 来迭代流中的每个数据。以下代码片段使用 forEach 输出了10个随机数：</para>
+		<para>Stream 提供了方法 'forEach' 来迭代流中的每个数据。以下代码片段使用 forEach 输出了10个随机数：
+		</para>
 		<programlisting>
 		<![CDATA[
 Stream<String> mystream = Stream.of("AA", "BB", "CC", "DD");
@@ -110,22 +111,110 @@ System.out.println(strings.stream().count());
 	<section id="stream.collect">
 		<title>collect</title>
 		<para>collect就是一个归约操作，可以接受各种做法作为参数，将流中的元素累积成一个汇总结果：</para>
-		<programlisting>
+		<section>
+			<title>Collectors.toList() 列表转字符串</title>
+			<programlisting>
 		<![CDATA[
 List<String> strings = Arrays.asList("Hollis", "HollisChuang", "hollis","Hollis666", "Hello", "HelloWorld", "Hollis");
 strings  = strings.stream().filter(string -> string.startsWith("Hollis")).collect(Collectors.toList());
 System.out.println(strings);
 //Hollis, HollisChuang, Hollis666, Hollis	
 		]]>
-		</programlisting>
-		<para>连接字符串</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Collectors.joining() 连接字符串</title>
+			<para>连接字符串</para>
+			<programlisting>
 		<![CDATA[
         Stream<String> stream = Stream.of("https://", "www.netkiller.cn", "/java/index.html");
         String url = stream.collect(Collectors.joining());
         System.out.println(url);		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>转 Set Collectors.toSet()</title>
+			<programlisting>
+			<![CDATA[
+Set<String> studentNames=students.stream().map(student -> student.getName()).collect(Collectors.toSet());			
+			]]>
+			</programlisting>
+		</section>
+		<section id="Collectors.teeing">
+			<title>Collectors.teeing()</title>
+			<para>teeing
+				收集器已公开为静态方法Collectors::teeing。该收集器将其输入转发给其他两个收集器，然后将它们的结果使用函数合并。
+			</para>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.demo;
+
+public class Student {
+	public String name;
+	public int score;
+
+	public Student(String name, int score) {
+		this.name = name;
+		this.score = score;
+
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	@Override
+	public String toString() {
+		return "Student [name=" + name + ", score=" + score + "]";
+	}
+
+}
+
+		]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.demo;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Test {
+
+	public Test() {
+	}
+
+	public static void main(String[] args) {
+
+		List<Student> list = Arrays.asList(new Student("Neo", 80), new Student("Tom", 60), new Student("Jerry", 70));
+		// 平均分 总分
+		String result = list.stream().collect(Collectors.teeing(Collectors.averagingInt(Student::getScore), Collectors.summingInt(Student::getScore), (s1, s2) -> s1 + ":" + s2));
+		// 最低分 最高分
+		String result2 = list.stream().collect(Collectors.teeing(Collectors.minBy(Comparator.comparing(Student::getScore)), Collectors.maxBy(Comparator.comparing(Student::getScore)), (s1, s2) -> s1.orElseThrow() + ":" + s2.orElseThrow()));
+		System.out.println(result);
+		System.out.println(result2);
+	}
+
+}
+
+		]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="stream.takeWhile">
 		<title>takeWhile 和 dropWhile</title>
@@ -170,6 +259,15 @@ appenededStream.forEach(System.out::print); //Prints 123456
 		]]>
 		</programlisting>
 	</section>
+	<section id="mapToObj">
+		<title>mapToObj</title>
+		<para>mapToObj 会返字符串 “message 1” </para>
+		<programlisting>
+		<![CDATA[
+ IntStream.range(0, 11).mapToObj(i -> "message " + i).peek(message -> publisher.submit(message)).forEach(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
 	<section id="stream.example">
 		<title>混合使用的例子</title>
 		<programlisting>
@@ -189,80 +287,7 @@ Stream<String> stream = strings.stream();
 			</programlisting>
 		</section>
 	</section>
-	<section id="Collectors.teeing">
-		<title>Collectors.teeing()</title>
-		<para>teeing
-			收集器已公开为静态方法Collectors::teeing。该收集器将其输入转发给其他两个收集器，然后将它们的结果使用函数合并。
-		</para>
-		<programlisting>
-		<![CDATA[
-package cn.netkiller.demo;
-
-public class Student {
-	public String name;
-	public int score;
-
-	public Student(String name, int score) {
-		this.name = name;
-		this.score = score;
-
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-
-	@Override
-	public String toString() {
-		return "Student [name=" + name + ", score=" + score + "]";
-	}
-
-}
-
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-package cn.netkiller.demo;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class Test {
-
-	public Test() {
-	}
-
-	public static void main(String[] args) {
-
-		List<Student> list = Arrays.asList(new Student("Neo", 80), new Student("Tom", 60), new Student("Jerry", 70));
-		// 平均分 总分
-		String result = list.stream().collect(Collectors.teeing(Collectors.averagingInt(Student::getScore), Collectors.summingInt(Student::getScore), (s1, s2) -> s1 + ":" + s2));
-		// 最低分 最高分
-		String result2 = list.stream().collect(Collectors.teeing(Collectors.minBy(Comparator.comparing(Student::getScore)), Collectors.maxBy(Comparator.comparing(Student::getScore)), (s1, s2) -> s1.orElseThrow() + ":" + s2.orElseThrow()));
-		System.out.println(result);
-		System.out.println(result2);
-	}
-
-}
-
-		]]>
-		</programlisting>
-	</section>
+	
 
 
 	<section id="streamSupplier">
