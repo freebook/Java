@@ -325,7 +325,8 @@ date = date.replace(/(.{7})/, "$1-");
 				</programlisting>
 				<para>用正则处理 Alertmanager 日期 rfc3339 格式
 					2021-08-23T01:30:30.2206015+08:00，Alertmanager 日期格式中有7位数的毫秒，使用
-					SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX") 无法正常读取。</para>
+					SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX") 无法正常读取。
+				</para>
 				<programlisting>
 				<![CDATA[
 package cn.netkiller.alertmanager;
@@ -976,8 +977,11 @@ String[] str={"AAA","BBB","CCC"};
 String str[]={"AAA","BBB","CCC"};		
 		]]>
 		</programlisting>
-		<para>String to Array</para>
-		<programlisting>
+		<section id="StringToArray">
+			<title>字符串转数组</title>
+
+			<para>String to Array</para>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.java;
 
@@ -994,7 +998,8 @@ public class StringToArray {
 	}
 }		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 		<section>
 			<title>for each</title>
 			<programlisting>
@@ -1012,7 +1017,7 @@ public class StringToArray {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="ArrayToString">
 			<title>Array to String</title>
 			<programlisting>
 			<![CDATA[

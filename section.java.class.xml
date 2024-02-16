@@ -7,6 +7,96 @@
 Log.d(TAG, this.getClass().getName());	
 	]]>
 	</programlisting>
+	<section id="Generics">
+		<title>泛型</title>
+		<para>java 中泛型标记符：</para>
+		<screen>
+		<![CDATA[
+E - Element (在集合中使用，因为集合中存放的是元素)
+T - Type（Java 类）
+K - Key（键）
+V - Value（值）
+N - Number（数值类型）
+？ - 表示不确定的 java 类型	
+S 和 U 基本上与 T 相同，即表示任意的一个Java类型。
+		]]>
+		</screen>
+		<para>其实我们可以使用 A-Z 之间的任何一个 字母，并不会影响程序的正常运行，但是如果换成 T，E，K，V，？，S，U 字母，在可读性上更好一些。</para>
+		<section>
+			<title>泛型方法</title>
+
+			<para>下面的例子演示了如何使用泛型方法打印不同类型的数组元素：</para>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+public class GenericsTest {
+    // 泛型方法 printArray
+    public static <E> void printArray(E[] inputArray) {
+        // 输出数组元素
+        for (E element : inputArray) {
+            System.out.printf("%s ", element);
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Thread.currentThread());
+
+        // 创建不同类型数组： Integer, Double 和 Character, String
+        Integer[] intArray = {1, 2, 3, 4, 5};
+        Double[] doubleArray = {1.1, 2.2, 3.3, 4.4};
+        Character[] charArray = {'H', 'E', 'L', 'L', 'O'};
+        String[] stringArray = {"Neo", "Chen"};
+
+        System.out.println("整型数组元素为:");
+        printArray(intArray); // 传递一个整型数组
+
+        System.out.println("\n双精度型数组元素为:");
+        printArray(doubleArray); // 传递一个双精度型数组
+
+        System.out.println("\n字符型数组元素为:");
+        printArray(charArray); // 传递一个字符型数组
+
+        System.out.println("\n字符串数组元素为:");
+        printArray(stringArray); // 传递一个字符型数组
+    }
+
+}		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>泛型类</title>
+			<programlisting>
+			<![CDATA[
+public class Generics<T> {
+   
+  private T t;
+ 
+  public void add(T t) {
+    this.t = t;
+  }
+ 
+  public T get() {
+    return t;
+  }
+ 
+  public static void main(String[] args) {
+    Generics<Integer> integerGenerics = new Generics<Integer>();
+    Generics<String> stringGenerics = new Generics<String>();
+ 
+    integerGenerics.add(new Integer(10));
+    stringGenerics.add(new String("Netkiller"));
+ 
+    System.out.printf("整型值为 :%d\n\n", integerGenerics.get());
+    System.out.printf("字符串为 :%s\n", stringGenerics.get());
+  }
+}
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="record">
 		<title>record</title>
 		<programlisting>
