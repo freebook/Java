@@ -73,4 +73,94 @@ public class ExceptionTest {
 		</programlisting>
 		<para>无需再使用 close() 关闭资源 try 执行完毕后会自动释放资源。</para>
 	</section>
+	<section id="SneakyThrows">
+		<title>SneakyThrows</title>
+		<section>
+			<title>处理所有异常 Exception</title>
+
+			<programlisting>
+		<![CDATA[
+    public static void exceptionTest() {
+        File file = new File("/tmp/test.txt");
+        try {
+            FileReader fileReader = new FileReader(file);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void exceptionTest() throws Exception {
+        File file = new File("/tmp/test.txt");
+        FileReader fileReader = new FileReader(file);
+    }
+		]]>
+			</programlisting>
+			<para>使用 @SneakyThrows 注解，替代写法</para>
+			<programlisting>
+		<![CDATA[
+    @SneakyThrows
+    public static void exceptionTest(String pathname) {
+        File file = new File(pathname);
+        FileReader fileReader = new FileReader(file);
+    }		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>处理特定异常</title>
+			<programlisting>
+			<![CDATA[
+	public static void exceptionTest() {
+        File file = new File("/tmp/test.txt");
+        try {
+            FileReader fileReader = new FileReader(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void exceptionTest() throws FileNotFoundException {
+        File file = new File("/tmp/test.txt");
+        FileReader fileReader = new FileReader(file);
+    }
+			]]>
+			</programlisting>
+			<para>使用 @SneakyThrows 注解，替代写法</para>
+			<programlisting>
+			<![CDATA[
+    @SneakyThrows(FileNotFoundException.class)
+    public static void exceptionTest(File file) {
+        FileReader fileReader = new FileReader(file);
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>抛出异常</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import lombok.SneakyThrows;
+
+public class Test {
+    @SneakyThrows
+    public static void throwExceptionTest(String message) {
+        throw new IllegalStateException(message);
+    }
+
+
+    public static void main(String[] args) {
+        try {
+            throwExceptionTest("Test");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 </chapter>
