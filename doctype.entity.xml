@@ -8,6 +8,7 @@
 <!ENTITY section.java.jvm.xml		 	SYSTEM "section.java.jvm.xml">
 <!ENTITY chapter.java.type.xml		 	SYSTEM "chapter.java.type.xml">
 <!ENTITY section.java.controlflow.xml 	SYSTEM "section.java.controlflow.xml">
+<!ENTITY section.java.class.xml		 	SYSTEM "section.java.class.xml">
 <!ENTITY chapter.java.net.xml 			SYSTEM "chapter.java.net.xml">
 <!ENTITY chapter.java.sql.xml			SYSTEM "chapter.java.sql.xml">
 <!ENTITY chapter.java.io.xml			SYSTEM "chapter.java.io.xml">

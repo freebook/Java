@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="Java面向对象">
+<chapter id="index"><?dbhtml dir="class" ?>
 	<title>面向对象</title>
 	<para>获取 Class 名称</para>
 	<programlisting>
@@ -7,7 +7,7 @@
 Log.d(TAG, this.getClass().getName());	
 	]]>
 	</programlisting>
-	<section>
+	<section id="Java面向对象">
 		<title>可变参数</title>
 		<para>修饰符 返回值类型 方法名（参数类型…变量名）{}</para>
 		<programlisting>
@@ -42,7 +42,7 @@ public class Test {
 		]]>
 		</programlisting>
 	</section>
-	<section id="Generics">
+	<section id="class.generics">
 		<title>泛型</title>
 		<para>java 中泛型标记符：</para>
 		<screen>
@@ -132,7 +132,7 @@ public class Generics<T> {
 			</programlisting>
 		</section>
 	</section>
-	<section id="record">
+	<section id="class.record">
 		<title>record</title>
 		<programlisting>
 		<![CDATA[
@@ -158,7 +158,7 @@ public class RecordDemo {
 		]]>
 		</programlisting>
 	</section>
-	<section id="Callback例子">
+	<section id="class.callback">
 		<title>Callback 回调</title>
 		<programlisting>
 		<![CDATA[
@@ -201,7 +201,7 @@ public class Main {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="class.sealed">
 		<title>密封类</title>
 		<para>Java 17 之前，如果限制一个类可以被其他类继承，只能使用 final 关键字限制被集成。Java 17 提供了密封类，可以控制谁可以集成。</para>
 		<programlisting>
@@ -232,4 +232,4 @@ public class Test {
 		</programlisting>
 		<section>例如上面例子中，Furit 可以被 Apple, Pear 继承，但是不能被 Vegetables 继承。</section>
 	</section>
-</section>
+</chapter>

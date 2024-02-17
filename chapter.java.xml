@@ -3,5 +3,6 @@
 	&section.java.runtime.xml;
 	&chapter.java.type.xml;
 	&section.java.controlflow.xml;
+	&section.java.class.xml;
 	&section.java.exception.xml;
 	&chapter.java.thread.xml;
