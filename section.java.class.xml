@@ -201,5 +201,35 @@ public class Main {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>密封类</title>
+		<para>Java 17 之前，如果限制一个类可以被其他类继承，只能使用 final 关键字限制被集成。Java 17 提供了密封类，可以控制谁可以集成。</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
 
+
+public class Test {
+    public static void main(String[] args) {
+
+    }
+
+    public abstract sealed class Furit permits Apple, Pear {
+    }
+
+    public non-sealed class Apple extends Furit {
+    }
+
+    public final class Pear extends Furit {
+
+    }
+
+    private final class Vegetables extends Furit {
+    }
+}
+
+		]]>
+		</programlisting>
+		<section>例如上面例子中，Furit 可以被 Apple, Pear 继承，但是不能被 Vegetables 继承。</section>
+	</section>
 </section>

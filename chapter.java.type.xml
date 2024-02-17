@@ -43,8 +43,18 @@ String javastack = "javastack";
 	</section>
 	<section id="integer">
 		<title>Integer 整形</title>
-		<programlisting>
-		<![CDATA[
+		<section>
+			<title>字符串转整数</title>
+			<programlisting>
+			<![CDATA[
+Integer x =Integer.valueOf("1024");
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>进制转换</title>
+			<programlisting>
+			<![CDATA[
 十进制转成十六进制：   
   
 Integer.toHexString(int i)   
@@ -101,26 +111,21 @@ parseInt("99",throws a NumberFormatException
   
 parseInt("Kona", 10) throws a NumberFormatException   
   
-parseInt("Kona", 27) returns 411787    
-  
-  
-例二   
-  
-  
+parseInt("Kona", 27) returns 411787    			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
 int i=100;   
 
 String binStr=Integer.toBinaryString(i);   
 String otcStr=Integer.toOctalString(i);   
 String hexStr=Integer.toHexString(i);   
 System.out.println(binStr);   
-  
-
-  
-  
-  
-  
-例二   
- 
+			]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
 Integer factor = Integer.valueOf(args[0]);   
   
 String s;   
@@ -137,18 +142,17 @@ System.out.println(s);
   
 其他方法：   
   
-  
-  
 Integer.toHexString(你的10进制数);   
   
 例如   
   
 String temp = Integer.toHexString(75);   
   
-输出temp就为 4b     		
+输出temp就为 4b
 		]]>
 		</programlisting>
-
+		</section>
+		
 		<section>
 			<title>前面补零</title>
 			<programlisting>
@@ -162,7 +166,60 @@ public static String frontCompWithZore(int sourceDate,int formatLength) {
 			</programlisting>
 
 		</section>
+		<section id="NumberFormat">
+			<title>NumberFormat 数字格式化</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
+public class Test {
+    
+    public static void main(String[] args) {
+
+        NumberFormat fmt = NumberFormat.getCompactNumberInstance(Locale.ENGLISH, NumberFormat.Style.SHORT);
+        System.out.println(fmt.format(1000));
+        System.out.println(fmt.format(100000));
+        System.out.println(fmt.format(1000000));
+
+        fmt = NumberFormat.getCompactNumberInstance(Locale.ENGLISH, NumberFormat.Style.LONG);
+        System.out.println(fmt.format(1000));
+        System.out.println(fmt.format(100000));
+        System.out.println(fmt.format(1000000));
+
+        fmt = NumberFormat.getCompactNumberInstance(Locale.CHINESE, NumberFormat.Style.SHORT);
+        System.out.println(fmt.format(1000));
+        System.out.println(fmt.format(100000));
+        System.out.println(fmt.format(1000000));
+
+        fmt = NumberFormat.getCompactNumberInstance(Locale.CHINESE, NumberFormat.Style.LONG);
+        System.out.println(fmt.format(1000));
+        System.out.println(fmt.format(100000));
+        System.out.println(fmt.format(1000000));
+        
+    }
+}
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+1K
+100K
+1M
+1 thousand
+100 thousand
+1 million
+1,000
+10万
+100万
+1,000
+10万
+100万
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="string">
 		<title>String 字符串</title>
@@ -495,7 +552,7 @@ public class Test {
 				"name" : "netkiller",
 				"home" : "https://www.netkiller.cn/"
 				}
-								""";
+				""";
 		System.out.println(json);
 	}
 
@@ -605,7 +662,7 @@ The SQL TIME is: 16:51:57
 The SQL TIMESTAMP is: 2017-08-24 16:51:57.234		
 		]]>
 		</screen>
-		<section>
+		<section id="DateTimeFormatter">
 			<title>DateTimeFormatter 格式化日期和时间</title>
 			<programlisting>
 			<![CDATA[
@@ -620,9 +677,28 @@ public class Main {
         System.out.println(formattedDateTime);
     }
 }
-			
 			]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("B");
+        System.out.println(dtf.format(LocalTime.of(8, 0)));
+        System.out.println(dtf.format(LocalTime.of(13, 0)));
+        System.out.println(dtf.format(LocalTime.of(20, 0)));
+        System.out.println(dtf.format(LocalTime.of(23, 0)));
+        System.out.println(dtf.format(LocalTime.of(0, 0)));			
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+			<![CDATA[
+上午
+下午
+晚上
+晚上
+午夜			
+			]]>
+			</screen>
 		</section>
 		<section id="SimpleDateFormat">
 			<title>SimpleDateFormat 格式化日期和时间</title>

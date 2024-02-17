@@ -55,6 +55,59 @@ public class DemoSwitch {
 		System.out.println(cn);			
 			]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+
+public class Test {
+    public static void main(String[] args) {
+        withSwitchExpression(Fruit.APPLE);
+        withReturnValue(Fruit.AVOCADO);
+        withYield(Fruit.VEGETABLES);
+    }
+
+    private static void withSwitchExpression(Fruit fruit) {
+        switch (fruit) {
+            case APPLE, PEAR -> System.out.println("普通水果");
+            case MANGO, AVOCADO -> System.out.println("进口水果");
+            default -> System.out.println("未知水果");
+        }
+    }
+
+    private static void withReturnValue(Fruit fruit) {
+        System.out.println(switch (fruit) {
+            case APPLE, PEAR -> "普通水果";
+            case MANGO, AVOCADO -> "进口水果";
+            default -> "未知水果";
+        });
+    }
+
+    private static void withYield(Fruit fruit) {
+        String text = switch (fruit) {
+            case APPLE, PEAR, MANGO, AVOCADO -> {
+                System.out.println("水果: " + fruit);
+                yield "水果: " + fruit;
+            }
+            case VEGETABLES -> {
+                System.out.println("蔬菜: " + fruit);
+                yield "蔬菜：" + fruit;
+            }
+            default -> {
+                yield "未知食物";
+            }
+        };
+        System.out.println(text);
+    }
+
+    public enum Fruit {
+        APPLE, PEAR, MANGO, AVOCADO, VEGETABLES
+    }
+
+}
+			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 </chapter>

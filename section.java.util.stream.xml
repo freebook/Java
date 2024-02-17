@@ -108,6 +108,16 @@ System.out.println(strings.stream().count());
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>流转列表</title>
+		<programlisting>
+		<![CDATA[
+        Stream<String> stream = Stream.of("Apple", "Banana", "Coconut");
+        List<String> fruits = stream.toList();
+        fruits.forEach(System.out::println);		
+		]]>
+		</programlisting>
+	</section>
 	<section id="stream.collect">
 		<title>collect</title>
 		<para>collect就是一个归约操作，可以接受各种做法作为参数，将流中的元素累积成一个汇总结果：</para>
@@ -120,6 +130,14 @@ strings  = strings.stream().filter(string -> string.startsWith("Hollis")).collec
 System.out.println(strings);
 //Hollis, HollisChuang, Hollis666, Hollis	
 		]]>
+			</programlisting>
+			<para>最佳替代方案</para>
+			<programlisting>
+			<![CDATA[
+	        Stream<String> stream = Stream.of("Apple", "Banana", "Coconut");
+	        List<String> fruits = stream.toList();
+	        fruits.forEach(System.out::println);		
+			]]>
 			</programlisting>
 		</section>
 		<section>
