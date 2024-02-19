@@ -140,7 +140,7 @@ android:scaleType="matrix"
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section>
 			<title>唱片播放效果（旋转PNG图片）</title>
 			<para>旋转 PNG 动画效果，用于显示唱片播放效果</para>
@@ -185,7 +185,7 @@ android:scaleType="matrix"
 </androidx.constraintlayout.widget.ConstraintLayout>				
 				]]>
 				</programlisting>
-				
+
 			</section>
 			<section>
 				<title>旋转动画效果文件</title>
@@ -218,7 +218,7 @@ android:scaleType="matrix"
 				</programlisting>
 			</section>
 		</section>
-		
+
 	</section>
 	<section id="TextClock">
 		<title>TextClock</title>
@@ -281,7 +281,7 @@ android:scaleType="matrix"
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="widgets.ProgressBar">
 		<title>进度条</title>
 		<para>style属性：</para>
 		<screen>
@@ -310,6 +310,56 @@ android:scaleType="matrix"
         tools:layout_editor_absoluteX="179dp" />		
 		]]>
 		</programlisting>
+		<section>
+			<title>定义进度条样式</title>
+			<programlisting>
+			<![CDATA[
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="13dp"
+        android:max="100"
+        android:maxHeight="32dip"
+        android:minHeight="32dip"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress"
+        android:progressTint="#43A047"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="179dp" />	
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 设置背景色 -->
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="20dp"></corners>
+            <solid android:color="#CCCCCC"></solid>
+        </shape>
+    </item>
+    <!-- 设置进度条颜色 -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <gradient
+                    android:angle="45"
+                    android:endColor="#2DC8FE"
+                    android:startColor="#149EFF"></gradient>
+                <!-- 设置圆角 -->
+                <corners android:radius="20dp"></corners>
+            </shape>
+        </clip>
+    </item>
+</layer-list>	
+			]]>
+			</programlisting>
+		</section>
 	</section>
-	
+
 </section>

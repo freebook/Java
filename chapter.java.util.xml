@@ -377,5 +377,37 @@ public class CRC {
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="Timer">
+		<title>Timer / TimerTask 实现周期性重复执行</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class Test {
+
+    public static void main(String[] args) {
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            int count = 1;
+
+            @Override
+            public void run() {
+                System.out.println("count: " + count + " time:" + System.currentTimeMillis());
+                count++;
+                if (count > 10) {
+                    timer.cancel();
+                    System.out.println("purge value :" + timer.purge());
+                }
+            }
+        }, 1000, 1000);
+
+    }
+}
+		]]>
+		</programlisting>
+	</section>
 </chapter>

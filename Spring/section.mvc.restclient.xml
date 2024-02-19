@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="RestClient">
 	<title>RestClient</title>
-	<section>
+	<section id="RestClient.Bean">
 		<title>创建 RestClient</title>
 		<para>Bean 注入方式</para>
 		<programlisting>
@@ -15,7 +15,7 @@ RestClient restClient() {
 }		
 		]]>
 		</programlisting>
-		
+
 		<programlisting>
 		<![CDATA[
 RestClient defaultClient = RestClient.create();
@@ -33,7 +33,7 @@ RestClient customClient = RestClient.builder()
 		</programlisting>
 
 	</section>
-	<section>
+	<section id="RestClient.get">
 		<title>Get 操作</title>
 		<programlisting>
 		<![CDATA[
@@ -63,7 +63,7 @@ ResponseEntity<List> responseEntity = restClient.get()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="RestClient.post">
 		<title>Post Json</title>
 		<programlisting>
 		<![CDATA[
@@ -98,7 +98,7 @@ ResponseEntity<List> responseEntity = restClient.get()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="RestClient.auth">
 		<title>HTTP Authorization Basic</title>
 		<programlisting>
 		<![CDATA[
@@ -127,7 +127,7 @@ ResponseEntity<List> responseEntity = restClient.get()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="RestClient.onStatus">
 		<title>onStatus</title>
 		<programlisting>
 		<![CDATA[
@@ -140,6 +140,68 @@ ResponseEntity<List> responseEntity = restClient.get()
                 .onStatus(status -> status.value() == 404, (request, response) -> {
                 	throw new ArticleNotFoundException(response)
                 }).toEntity(JsonObject.class);
+		]]>
+		</programlisting>
+	</section>
+	<section id="RestClient.bytes">
+		<title>下载二进制流</title>
+		<programlisting>
+		<![CDATA[
+@SneakyThrows
+    public Optional<String> speechSynthesizer(String session, String text, String filePath) {
+        if (text.isEmpty()) {
+            throw new AigcException.AigcSpeechSynthesizerException("文本不能为空");
+        }
+        RestClient client = RestClient.create("http://nls-gateway-cn-shanghai.aliyuncs.com");
+
+        LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+        data.put("appkey", this.appKey);
+        data.put("token", getToken());
+        data.put("text", text);
+        data.put("format", "mp3");
+
+        if (isEnglishText(text)) {
+            data.put("text", convertString(text));
+            data.put("voice", this.english);
+            data.put("speech_rate", -250);
+        } else {
+            data.put("text", text);
+            data.put("voice", this.chinese);
+            data.put("speech_rate", -80);
+        }
+
+        ResponseEntity<byte[]> response = client.post()
+                .uri("/stream/v1/tts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(data)
+                .retrieve()
+                .toEntity(byte[].class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            log.debug(response.getHeaders().toString());
+            boolean isAudio = response.getHeaders().getContentType().equals(MediaType.valueOf("audio/mpeg"));
+            if (isAudio) {
+
+                File file = new File(filePath);
+                if (!file.getParentFile().isDirectory()) {
+                    boolean directory = file.getParentFile().mkdirs();
+                }
+                if (file.exists() && file.isFile()) {
+                    boolean flag = file.delete();
+                }
+                if (file.createNewFile()) {
+                    try (DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(filePath, true))) {
+                        dataOutputStream.write(response.getBody());
+                    }
+                }
+                String audio = filePath.replace("/tmp/audio", audioUrl);
+                log.info("speechSynthesizer audio: {}", audio);
+                return Optional.ofNullable(audio);
+            } else {
+                log.info(response.getBody().toString());
+            }
+        }
+        return Optional.empty();
+    }
 		]]>
 		</programlisting>
 	</section>

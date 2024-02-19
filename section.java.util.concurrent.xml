@@ -29,6 +29,51 @@ private static AtomicReference<BankCard> bankCardRef = new AtomicReference<>(new
 		]]>
 		</programlisting>
 	</section>
+	<section id="ConcurrentHashMap">
+		<title>线程安全的 HashMap(ConcurrentHashMap)</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Test {
+    private final ConcurrentHashMap<String, Boolean> isComplated = new ConcurrentHashMap<String, Boolean>();
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        test.isComplated.putIfAbsent("create", true);
+        test.isComplated.putIfAbsent("story", false);
+        test.isComplated.putIfAbsent("picture", true);
+
+        boolean isDone = test.isComplated.values().stream().allMatch(status -> status);
+        System.out.println(test.isComplated);
+        System.out.println(isDone);
+
+        test.isComplated.put("story", true);
+        isDone = test.isComplated.values().stream().allMatch(status -> status);
+        System.out.println(test.isComplated);
+        System.out.println(isDone);
+    }
+}
+		]]>
+		</programlisting>
+		<section>
+			<title>设置键与值</title>
+			<para>putIfAbsent 当 key 不存在时可以设置值</para>
+			<programlisting>
+			<![CDATA[
+test.isComplated.putIfAbsent("create", true);	
+			]]>
+			</programlisting>
+			<para>put 可以覆盖已存在的值</para>
+			<programlisting>
+		<![CDATA[
+test.isComplated.put("story", true);
+		]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="ArrayBlockingQueue">
 		<title>ArrayBlockingQueue</title>
 		<programlisting>
@@ -556,7 +601,7 @@ String result = future.get(); // 阻塞等待结果
 			]]>
 			</programlisting>
 		</section>
-		<section id="Run">
+		<section id="thenRun / thenRunAsync">
 			<title>thenRun / thenRunAsync</title>
 			<para>thenRun/thenRunAsync 功能是什么？完成前置任务之后，自己在执行。</para>
 			<para>thenRun/thenRunAsync 区别是什么？thenRun 使用同一个线程执行任务，thenRunAsync
@@ -596,7 +641,7 @@ ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
 				ForkJoinPool.commonPool-worker-2 处理任务
 			</para>
 		</section>
-		<section id="Accept">
+		<section id="thenAccept / thenAcceptAsync">
 			<title>thenAccept / thenAcceptAsync</title>
 			<para>thenAccept/thenAcceptAsync 的功能是，前置任务执行完毕之后，将返回值给到
 				thenAccept/thenAcceptAsync，再执行接下来的任务。
@@ -688,9 +733,14 @@ ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
 			]]>
 			</screen>
 		</section>
-		<section id="runAsync">
+		<section id="runAsync / thenAccept / thenApply 区别">
 			<title>runAsync / thenAccept / thenApply 区别</title>
 			<para>runAsync 配合 thenRun/thenRunAsync 使用</para>
+			<screen>
+			<![CDATA[
+runAsync --> thenRun/thenRunAsync 无返回值			
+			]]>
+			</screen>
 			<para>supplyAsync 配合 thenAccept/thenAcceptAsync 使用</para>
 			<screen>
 			<![CDATA[
@@ -705,7 +755,7 @@ supplyAsync -- 返回值 --> thenApply/thenApplyAsync -- 返回值 -->
 			</screen>
 		</section>
 		<section id="whenComplete">
-			<title>whenComplete</title>
+			<title>whenComplete 任务完成时执行，并且返回结果和异常</title>
 			<para>whenComplete 与 runAsync / thenAccept / thenApply 区别是能处理
 				Throwable
 			</para>
@@ -1966,7 +2016,7 @@ Subscriber.onComplete
 			</screen>
 		</section>
 	</section>
-	
+
 	<section id="VirtualThreads">
 		<title>Java 协程</title>
 		<programlisting>

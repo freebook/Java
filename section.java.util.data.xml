@@ -246,7 +246,8 @@ System.out.println(list.get(index));
 		<section id="getFirst">
 			<title>getFirst() / getLast()</title>
 			<para>使用 idea 写代码，list 变量可以看到 getFirst() / getLast() 但实际上 list
-				并没有两个方法，这时 idea 模版造成的。</para>
+				并没有两个方法，这时 idea 模版造成的。
+			</para>
 			<screen>
 			<![CDATA[
 java: 找不到符号
@@ -1326,7 +1327,8 @@ Optional<String> someNull = Optional.of(null);
 		</section>
 		<section id="Optional.isPresent()">
 			<title>isPresent 如果值存在返回true，否则返回false。ifEmpty() null 返回 true 否则返回
-				false</title>
+				false
+			</title>
 			<programlisting>
 		<![CDATA[
 	//isPresent方法用来检查Optional实例中是否包含值
