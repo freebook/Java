@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="time" ?>
+	<title>时间</title>
+	<para>Period 与 Duration
+		类的作用就不需要你自己复杂的计算关于两个年月日之间的相差的时间或日期，都是一段持续时间的概念,如果需要对比时间，它们就需要一个固定的时间值，所以就需要
+		LocalDate 类与 Instant 类来配合它们使用:
+	</para>
+	<para>Period 对应使用 LocalDate ，它们的作用范围域都是日期(年/月/日);Duration 对应使用
+		Instant，它们的作用范围域都是时间(天/时/分/秒/毫秒/纳秒)
+	</para>
+	<section id="LocalDate">
+		<title>LocalDate</title>
+		<para>精度到日期记录固定时间值的LocalDate,创建方式:</para>
+		<programlisting>
+		<![CDATA[
+LocalDate localDate1 = LocalDate.of(2019,9,1);
+LocalDate localDate2 = LocalDate.ofYearDay(2019,150);
+		]]>
+		</programlisting>
+	</section>
+	<section id="Instant">
+		<title>Instant</title>
+		<para>以精度到纳秒记录固定的时间值的Instant,创建方式:</para>
+		<programlisting>
+		<![CDATA[
+Instant instant1 = Instant.parse("2017-10-03T10:15:30.00Z");//用解析字符串的形式创建
+Instant instant2 = Instant.ofEpochMilli(System.currentTimeMillis());//用传入单位为毫秒的时间戳创建
+Instant instant3 = Instant.ofEpochSecond(System.currentTimeMillis()/1000);//用传入为单位秒的
+		]]>
+		</programlisting>
+	</section>
+	<section id="Period">
+		<title>Period ：基于日期值</title>
+		<para>对比时间</para>
+		<programlisting>
+		<![CDATA[
+LocalDate start = LocalDate.of(2019,9,25);
+LocalDate end = LocalDate.of(2019,9,29);
+Period period = Period.between(start, end);
+System.out.println("相差天数="+period.getDays());
+		]]>
+		</programlisting>
+	</section>
+	<section id="Duration">
+		<title>Duration：基于时间值</title>
+		<para>Duration字面意思是持续时间</para>
+		<programlisting>
+		<![CDATA[
+Duration duration = Duration.ofSeconds(30);
+
+使用​between()​方法创建Duration对象，计算两个时间点之间的时间间隔。例如：
+LocalDateTime start = LocalDateTime.now();
+LocalDateTime end = start.plusMinutes(15);
+Duration duration = Duration.between(start, end);
+
+
+Duration duration = Duration.ofMinutes(30);
+long minutes = duration.toMinutes(); // 获取时间间隔的分钟数
+Duration halfDay = Duration.ofHours(12);
+Duration updatedDuration = duration.plusMinutes(15); // 增加15分钟的时间间隔
+boolean isNegative = duration.isNegative(); // 判断是否为负时间间隔		
+		]]>
+		</programlisting>
+		<section>
+			<title>设置指定单位的持续时间</title>
+
+			<programlisting>
+		<![CDATA[
+Duration durationDays = Duration.ofDays(1);//天
+Duration durationHours = Duration.ofHours(1);//小时
+Duration durationMinutes = Duration.ofMinutes(1);//分
+Duration durationSeconds = Duration.ofSeconds(1);//秒
+Duration durationMillis = Duration.ofMillis(1);//毫秒 
+
+
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>获取指定单位的持续时间</title>
+			<programlisting>
+			<![CDATA[
+Duration duration = Duration.ofDays(1);//设置一天时间
+long timeHours = duration.toHours();//小时
+long timeMinutes = duration.toMinutes();//分钟
+long timeMillis = duration.toMillis();//毫秒
+long timeNanos = duration.toNanos();//纳秒
+String timeString = duration.toString(); //此持续时间的字符串表示形式,使用基于ISO-8601秒*的表示形式,例如 PT8H6M12.345S
+System.out.println("timeHours时间="+timeHours);
+System.out.println("timeMinutes时间="+timeMinutes);
+System.out.println("timeMillis时间="+timeMillis);
+System.out.println("timeNanos时间="+timeNanos);
+System.out.println("timeString时间="+timeString);			
+			]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>获取两个时间点之间差值的持续时间</title>
+			<programlisting>
+			<![CDATA[
+long todayTimeMillis = System.currentTimeMillis();
+long yesterdayTimeMillis = todayTimeMillis - 24 * 60 * 60 * 1000;
+Instant start = Instant.ofEpochMilli(yesterdayTimeMillis);
+Instant end = Instant.ofEpochMilli(todayTimeMillis);
+
+Duration duration = Duration.between(start, end);
+System.out.println("天数="+duration.toDays());
+注意这个天数是可以负数,意味着如果开始时间比结束时间更后面就会得到负数天数				
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>获取毫秒</title>
+			<programlisting>
+		<![CDATA[
+		Duration duration = Duration.ofSeconds(1);
+        long timeMillis = duration.toMillis();
+        System.out.println(timeMillis);
+		]]>
+			</programlisting>
+		</section>
+	</section>
+
+</chapter>		

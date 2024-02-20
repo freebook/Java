@@ -491,7 +491,7 @@ client.execute(url, session ->
 			]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="webclient.httpstatus">
 		<title>获取 HTTP 链接状态</title>
 		<programlisting>
@@ -552,7 +552,7 @@ client.execute(url, session ->
             System.out.println(flux);		
 		]]>
 		</programlisting>
-		
+
 		<para>ExchangeFilterFunctions 方案</para>
 		<programlisting>
 		<![CDATA[
@@ -652,7 +652,20 @@ public Flux<String> stream(String prompt) {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+
+	<section id="webclient.timeout">
+		<title>超时时间</title>
+		<programlisting>
+		<![CDATA[
+webClient.get()
+  .uri("https://www.netkiller.cn/index.html")
+  .retrieve()
+  .bodyToFlux(JsonNode.class)
+  .timeout(Duration.ofSeconds(5));
+		]]>
+		</programlisting>
+	</section>
+	<section id="webclient.share">
 		<title>share() 共享订阅数据</title>
 		<para>WebClient 只能被订阅一次，如果你尝试多次订阅，就是重复请求</para>
 		<programlisting>

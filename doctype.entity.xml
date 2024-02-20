@@ -23,6 +23,9 @@
 <!ENTITY section.java.util.regex.xml	SYSTEM "section.java.util.regex.xml">
 <!ENTITY section.java.util.Properties.xml		SYSTEM "section.java.util.Properties.xml">
 
+
+<!ENTITY section.java.time.xml			SYSTEM "section.java.time.xml">
+
 <!ENTITY chapter.javax.xml				SYSTEM "chapter.javax.xml">
 <!ENTITY section.javax.script.xml		SYSTEM "section.javax.script.xml">
 <!ENTITY section.javax.crypto.xml		SYSTEM "section.javax.crypto.xml">
