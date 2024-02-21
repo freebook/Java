@@ -633,7 +633,9 @@ CREATE TABLE `elasticsearch_trash` (
     private Date date;			
 			]]>
 			</programlisting>
-			<para>下面我们实际演示一下，例如默认返回 "ctime": "2024-01-25T08:07:39.000+00:00" 这样的格式</para>
+			<para>下面我们实际演示一下，例如默认返回 "ctime": "2024-01-25T08:07:39.000+00:00"
+				这样的格式
+			</para>
 			<screen>
 			<![CDATA[
 HTTP/1.1 200 
@@ -1471,20 +1473,99 @@ public class Category {
 				]]>
 				</programlisting>
 			</section>
-			<section id="unique">
-				<title>唯一索引</title>
-				<para>针对字段做唯一索引</para>
+			<section>
+				<title>组合索引</title>
+				<para>定义相同的 name 可以实现组合索引</para>
+				<programlisting>
+				<![CDATA[
+@Table(indexes = {
+        @Index(name = "key_device_hobby", columnList = "device_id"),
+        @Index(name = "key_device_hobby", columnList = "hobby")
+})				
+				]]>
+				</programlisting>
+				<para>参考案例</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.domain;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serializable;
+
+@Entity
+@Table(indexes = {
+        @Index(name = "key_device_hobby", columnList = "device_id"),
+        @Index(name = "key_device_hobby", columnList = "hobby")
+})
+@DynamicUpdate
+@DynamicInsert
+@Data
+@Comment("用户画像")
+public class UserPersona implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "bigint unsigned")
+    @Comment("主键")
+    private Long id;
+
+    @OneToOne
+    @Comment("设备")
+    @JoinColumn(name = "device_id", unique = true, nullable = false, insertable = true, updatable = false)
+    private Device device;
+    @Comment("兴趣爱好")
+    private String hobby;
+    @Comment("权重")
+    private Integer weight;
+}
+				
+				]]>
+				</programlisting>
+				<para>输出结果 KEY `key_device_hobby` (`device_id`,`hobby`)</para>
 				<screen>
 				<![CDATA[
-@Column(unique = true)
+CREATE TABLE `user_persona` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `hobby` varchar(255) DEFAULT NULL COMMENT '兴趣爱好',
+  `weight` int DEFAULT NULL COMMENT '权重',
+  `device_id` int unsigned NOT NULL COMMENT '设备',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_5ib64k66pbo08dmhkr0i0uu7k` (`device_id`),
+  KEY `key_device_hobby` (`device_id`,`hobby`),
+  CONSTRAINT `FK8ar0rxcxej5u3q0l38xdpwke1` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户画像'				
 				]]>
 				</screen>
 			</section>
-			<section id="uniqueConstraints">
-				<title>复合索引</title>
+			<section id="unique">
+				<title>唯一索引</title>
+				<section>
+					<title>@Column 声明唯一索引</title>
+					<para>针对字段做唯一索引</para>
+					<screen>
+				<![CDATA[
+@Column(unique = true)
+				]]>
+					</screen>
+				</section>
+				<section>
+					<title>@UniqueConstraint 定义唯一索引</title>
+					<para>在表中定义唯一索引</para>
+					<programlisting>
+				<![CDATA[
+@Table(uniqueConstraints = @UniqueConstraint(columnNames= {"name"}))				
+				]]>
+					</programlisting>
+				</section>
+				<section id="uniqueConstraints">
+					<title>复合唯一索引</title>
 
-				<para>创建由多个字段组成的复合索引</para>
-				<programlisting>
+					<para>创建由多个字段组成的复合索引</para>
+					<programlisting>
 				<![CDATA[
 package cn.netkiller.api.model;
 
@@ -1573,8 +1654,8 @@ public class Comment implements Serializable {
 	}
 }
 				]]>
-				</programlisting>
-				<screen>
+					</programlisting>
+					<screen>
 				<![CDATA[
 CREATE TABLE `comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1587,7 +1668,72 @@ CREATE TABLE `comment` (
   CONSTRAINT `FKmrrrpi513ssu63i2783jyiv9m` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 				]]>
-				</screen>
+					</screen>
+					<programlisting>
+					<![CDATA[
+package cn.aigcsst.domain;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serializable;
+
+@Entity
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UK_device_hobby", columnNames = {"device_id", "hobby"})})
+@DynamicUpdate
+@DynamicInsert
+@Data
+@Comment("用户画像")
+public class UserPersona implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Integer id;
+
+    @ManyToOne
+    @Comment("设备")
+    @JoinColumn(name = "device_id", unique = false, nullable = false, insertable = true, updatable = false)
+    private Device device;
+
+    @Comment("兴趣爱好")
+    private String hobby;
+
+    @Comment("权重")
+    private Integer weight;
+}
+					
+					]]>
+					</programlisting>
+					<screen>
+					<![CDATA[
+CREATE TABLE `user_persona` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `hobby` varchar(255) DEFAULT NULL COMMENT '兴趣爱好',
+  `weight` int DEFAULT NULL COMMENT '权重',
+  `device_id` int unsigned NOT NULL COMMENT '设备',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_device_hobby` (`device_id`,`hobby`),
+  CONSTRAINT `FK8ar0rxcxej5u3q0l38xdpwke1` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户画像'			
+					]]>
+					</screen>
+				</section>
+				<section>
+					<title>定义多组唯一索引</title>
+					<programlisting>
+					<![CDATA[
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames={"firstname", "lastname"}),
+        @UniqueConstraint(columnNames={"account", "mobile"})
+})					
+					]]>
+					</programlisting>
+				</section>
+				
 			</section>
 		</section>
 		<section id="@Embeddable">
@@ -2117,7 +2263,7 @@ CREATE TABLE `book_detail` (
 					]]>
 					</programlisting>
 				</section>
-				
+
 				<section>
 					<title></title>
 					<programlisting>
@@ -2239,7 +2385,9 @@ CREATE TABLE `profile` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 					]]>
 					</programlisting>
-					<para>指定一对一字段名，默认是表名+PK，例如上面的例子 users_id，如果我们希望自定义字段名，可以使用 @JoinColumn(name = "id")</para>
+					<para>指定一对一字段名，默认是表名+PK，例如上面的例子 users_id，如果我们希望自定义字段名，可以使用
+						@JoinColumn(name = "id")
+					</para>
 					<programlisting>
 					<![CDATA[
 package cn.netkiller.domain.demo;
@@ -2279,7 +2427,9 @@ CREATE TABLE `profile` (
 				</section>
 				<section>
 					<title>does not define an IdClass</title>
-					<para>如果一对一的关系中，我们希望两端都是用 id 字段，而@OneToOne 一端是对象，必须定义一个 @Id，这时加入 @MapsId 可以解决 does not define an IdClass 错误，这时一段表中没有 @Id</para>
+					<para>如果一对一的关系中，我们希望两端都是用 id 字段，而@OneToOne 一端是对象，必须定义一个 @Id，这时加入
+						@MapsId 可以解决 does not define an IdClass 错误，这时一段表中没有 @Id
+					</para>
 					<programlisting>
 					<![CDATA[
 package cn.netkiller.domain.demo;
@@ -2528,7 +2678,9 @@ public class PicturePsychoanalysis implements Serializable {
 }
 					]]>
 					</programlisting>
-					<para>讲 @OneToOne 增加 @OneToOne(cascade = CascadeType.MERGE) 参数，如果 CascadeType.ALL 需要改为 CascadeType.MERGE</para>
+					<para>讲 @OneToOne 增加 @OneToOne(cascade = CascadeType.MERGE) 参数，如果
+						CascadeType.ALL 需要改为 CascadeType.MERGE
+					</para>
 					<programlisting>
 					<![CDATA[
 	@Id
@@ -3392,7 +3544,10 @@ private List<Student> studentList;
 		</section>
 		<section id="@ElementCollection">
 			<title>映射集合属性</title>
-			<para>@ElementCollection 很像 @OneToMany，甚至有些场景可以相互替代，@ElementCollection 更适合 List/Set/Map/Array 等数据类型，而 @OneToMany 是对应一个实体。</para>
+			<para>@ElementCollection 很像
+				@OneToMany，甚至有些场景可以相互替代，@ElementCollection 更适合 List/Set/Map/Array
+				等数据类型，而 @OneToMany 是对应一个实体。
+			</para>
 			<programlisting>
 			<![CDATA[
 import javax.persistence.*;
@@ -4185,7 +4340,7 @@ public interface MemberRepository extends JpaRepository<User, Integer>, UserRepo
 			]]>
 			</programlisting>
 		</section>
-		
+
 	</section>
 	<section id="TransactionTemplate">
 		<title>TransactionTemplate</title>

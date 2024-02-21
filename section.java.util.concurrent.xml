@@ -29,6 +29,198 @@ private static AtomicReference<BankCard> bankCardRef = new AtomicReference<>(new
 		]]>
 		</programlisting>
 	</section>
+	<section id="ReentrantLock">
+		<title>ReentrantLock 锁</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Test {
+
+    private final Lock lock = new ReentrantLock();
+    private int count;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        Test test = new Test();
+        new Thread(() -> {
+            while (true) {
+                test.add(1);
+                System.out.println(Thread.currentThread().getName() + ": " + test.count);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, "线程1").start();
+        new Thread(() -> {
+            while (true) {
+                test.add(1);
+                System.out.println(Thread.currentThread().getName() + ": " + test.count);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, "线程2").start();
+        new Thread(() -> {
+            while (true) {
+                test.add(1);
+                System.out.println(Thread.currentThread().getName() + ": " + test.count);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, "线程3").start();
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    System.out.println(test.count);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }, "线程1").start();
+
+    }
+
+    public void add(int n) {
+        count += n;
+    }
+}
+
+		]]>
+		</programlisting>
+		<para>没有加锁，线程是无序执行的</para>
+		<screen>
+		<![CDATA[
+线程2: 2
+线程3: 3
+线程1: 1
+3
+线程2: 4
+线程3: 5
+线程1: 6
+6
+线程2: 7
+线程1: 8
+线程3: 9
+线程2: 10
+10
+线程1: 11
+线程3: 12
+12
+线程1: 14
+线程2: 13
+线程3: 15
+15		
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Test {
+
+    private final Lock lock = new ReentrantLock();
+    private int count;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        Test test = new Test();
+        new Thread(() -> {
+            while (true) {
+                test.add(1);
+                System.out.println(Thread.currentThread().getName() + ": " + test.count);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, "线程1").start();
+        new Thread(() -> {
+            while (true) {
+                test.add(1);
+                System.out.println(Thread.currentThread().getName() + ": " + test.count);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, "线程2").start();
+        new Thread(() -> {
+            while (true) {
+                test.add(1);
+                System.out.println(Thread.currentThread().getName() + ": " + test.count);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, "线程3").start();
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    System.out.println(test.count);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }, "线程1").start();
+
+    }
+
+    public void add(int n) {
+        lock.lock();
+        try {
+            count += n;
+        } finally {
+            lock.unlock();
+        }
+    }
+}		
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+线程3: 3
+线程1: 1
+线程2: 2
+3
+线程1: 4
+线程3: 5
+线程2: 6
+6
+线程1: 7
+线程3: 8
+线程2: 9
+9
+线程1: 10
+线程2: 11
+线程3: 12
+12		
+		]]>
+		</screen>
+	</section>
 	<section id="ConcurrentHashMap">
 		<title>线程安全的 HashMap(ConcurrentHashMap)</title>
 		<programlisting>
@@ -571,7 +763,45 @@ Result ->done
 ==================================================================	
 			]]>
 			</screen>
+			<para>通过 Supplier 对象创建异步执行</para>
+			<programlisting>
+			<![CDATA[
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(new Supplier<String>() {
+            @Override
+            public String get() {
+
+                return "https://www.netkiller.cn";
+            }
+        }).exceptionally((throwable) -> {
+            return throwable.toString();
+        });			
+			]]>
+			</programlisting>
 		</section>
+		<section id="CompletableFuture.new">
+			<title>创建 CompletableFuture 实例，并且其他线程中使用</title>
+			<programlisting>
+			<![CDATA[
+		public Future<Double> getPriceAsync(String product) {
+        //创建 CompletableFuture 对象，对象中包含异步计算结果
+        CompletableFuture<Double> futurePrice = new CompletableFuture<>();
+        //新建线程计算商品价格
+        new Thread(() -> {
+            try {
+                double price = calculatePrice(product);
+                //将异步计算得到的结果设置到 CompletableFuture 中，
+                futurePrice.complete(price);
+            } catch (Exception e) {
+                futurePrice.completeExceptionally(e);
+            }
+        }).start();
+        //无需等待计算结果，直接返回 CompletableFuture 对象
+        return futurePrice;
+    }			
+			]]>
+			</programlisting>
+		</section>
+
 		<section id="get">
 			<title>获取结果</title>
 			<programlisting>
@@ -783,6 +1013,17 @@ supplyAsync -- 返回值 --> thenApply/thenApplyAsync -- 返回值 -->
 前置任务完成			
 			]]>
 			</screen>
+			<programlisting>
+			<![CDATA[
+        future.whenCompleteAsync(new BiConsumer<String, Throwable>() {
+            @Override
+            public void accept(String s, Throwable throwable) {
+                System.out.println("whenCompleteAsync: " + System.currentTimeMillis() + " : " + s);
+                System.out.println("whenCompleteAsync: " + System.currentTimeMillis() + " : " + throwable.toString());
+            }
+        });			
+			]]>
+			</programlisting>
 		</section>
 		<section id="completeOnTimeout">
 			<title>超时处理</title>
@@ -1150,68 +1391,167 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
+		<section id="complete/completeExceptionally">
+			<title>通知完成任务</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
+public class Test {
+
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(new Supplier<String>() {
+            @Override
+            public String get() {
+                try {
+                    while (true) {
+                        TimeUnit.SECONDS.sleep(1);
+                        System.out.println("supplyAsync: " + System.currentTimeMillis());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return "https://www.netkiller.cn";
+            }
+        });
+
+
+        future.whenCompleteAsync(new BiConsumer<String, Throwable>() {
+            @Override
+            public void accept(String s, Throwable throwable) {
+                System.out.println("whenCompleteAsync: " + System.currentTimeMillis() + " : " + s);
+                System.out.println("whenCompleteAsync: " + System.currentTimeMillis() + " : " + throwable.toString());
+            }
+        });
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (Exception e) {
+                    //异常退出。
+                    future.completeExceptionally(e);
+                }
+
+                // CompletableFuture被通知线程任务完成。
+                System.out.println("完成任务: " + System.currentTimeMillis());
+                future.complete("任务完成");
+            }
+        }).start();
+
+        System.out.println("任务返回:" + future.get());
+
+
+    }
+}			
+			]]>
+			</programlisting>
+			<para>completeExceptionally 抛出异常，终止执行</para>
+			<programlisting>
+			<![CDATA[
+        CompletableFuture completableFuture = CompletableFuture.completedFuture("message").thenApplyAsync(String::toUpperCase, CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS));
+        completableFuture.completeExceptionally(new Exception("异常终止"));
+
+        try {
+            completableFuture.join();
+            System.out.println(completableFuture.get());
+        } catch (CompletionException ex) { // just for testing
+            System.err.println("completed exceptionally: " + ex.getCause().getMessage());
+        }			
+			]]>
+			</programlisting>
+		</section>
 		<section id="exceptionally">
 			<title>异常处理</title>
 			<programlisting>
 			<![CDATA[
-@Service
-public class MyService {
+package cn.netkiller.test;
 
-    @Async
-    public CompletableFuture<String> asyncMethod() {
-        try {
-            // 异步方法逻辑...
-            return CompletableFuture.completedFuture("Success");
-        } catch (Exception e) {
-            // 处理异常...
-            return CompletableFuture.failedFuture(e);
-        }
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+public class Test {
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            throw new RuntimeException("Neo!");
+//            return "Neo";
+        }).thenApply(i -> "Success: " + i);
+
+        CompletableFuture<String> result = future.exceptionally(e -> {
+            return e.toString();
+        });
+
+        System.out.println(result.get());
+
     }
 }
-
-// 调用异步方法并处理异常
-CompletableFuture<String> future = myService.asyncMethod();
-future.exceptionally(e -> {
-    // 异常处理逻辑...
-    return "Error";
-});
-
 			]]>
 			</programlisting>
 			<programlisting>
 			<![CDATA[
-    @GetMapping("/completableFutureExceptionally")
-    public String completableFutureExceptionally() throws ExecutionException, InterruptedException {
+	public static CompletableFuture whenComplete(int a, int b){
+        return CompletableFuture.supplyAsync(() -> a/b)
+                .whenComplete((result, ex) -> {
+                    if (null != ex) {
+                        System.out.println("whenComplete error:\t"+ex.getMessage());
+                    }
+                });
+    }
 
-        CompletableFuture.supplyAsync(() -> {
-            System.out.println("当前线程名称：" + Thread.currentThread().getName());
-            throw new RuntimeException();
-        }).exceptionally((e) -> {
-            System.out.println(e.getMessage());
-            return "程序出现异常";
-        });
+        try {
+            System.out.println("success:\t"+whenComplete(6,3).get());
+            System.out.println("exception:\t"+whenComplete(6,0).get());
+        } catch (Exception exception){
+            System.out.println("catch===="+exception.getMessage());
+        }
 
-//        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
-////            throw new RuntimeException();
-//            return "程序出现异常";
-//        }).exceptionally((e) -> {
-//            System.out.println("程序出现异常");
-//            return "程序出现异常";
-//        });
-//        System.out.println(completableFuture.get());
+输出结果：
 
-        return "Done";
-    }			
+success:    2
+whenComplete error:    java.lang.ArithmeticException: / by zero
+catch====java.lang.ArithmeticException: / by zero			
 			]]>
 			</programlisting>
-			<para>输出结果</para>
-			<screen>
+			<programlisting>
 			<![CDATA[
-当前线程名称：ForkJoinPool.commonPool-worker-1
-java.lang.RuntimeException			
+public static CompletableFuture divide(int a, int b){
+        return CompletableFuture.supplyAsync(() -> a/b)
+                .handle((result, ex) -> {
+                    if (null != ex) {
+                        System.out.println(ex.getMessage());
+                        return 0;
+                    } else {
+                        return result;
+                    }
+                });
+    }
+
+        try {
+            System.out.println("success:\t"+divide(6,3).get());
+            System.out.println("exception:\t"+divide(6,0).get());
+        } catch (Exception exception){
+            System.out.println("catch="+exception.getMessage());
+        }
+
+输出结果：
+success:    2
+java.lang.ArithmeticException: / by zero
+exception:    0			
 			]]>
-			</screen>
+			</programlisting>
 		</section>
 		<section id="CompletableFuturePipeline">
 			<title>CompletableFuture 实现 Pipeline 流水线</title>

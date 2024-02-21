@@ -115,6 +115,123 @@ public WebAsyncTask<String> webAsyncTask() {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>带有返回值的异步任务</title>
+		<section>
+			<title>Future</title>
+			<programlisting>
+        <![CDATA[
+@Service
+public class DemoAsyncServiceImpl implements DemoAsyncService {
+
+	public static Random random =new Random();
+	
+	@Async("OneAsync")
+	public Future<String> doTaskOne() throws Exception {
+	    System.out.println("开始做任务一");
+	    long start = System.currentTimeMillis();
+	    Thread.sleep(random.nextInt(10000));
+	    long end = System.currentTimeMillis();
+	    System.out.println("完成任务一，耗时：" + (end - start) + "毫秒");
+	    return new AsyncResult<>("任务一完成");
+	}
+	
+	@Async("TwoAsync")
+	public Future<String> doTaskTwo() throws Exception {
+	    System.out.println("开始做任务二");
+	    long start = System.currentTimeMillis();
+	    Thread.sleep(random.nextInt(10000));
+	    long end = System.currentTimeMillis();
+	    System.out.println("完成任务二，耗时：" + (end - start) + "毫秒");
+	    return new AsyncResult<>("任务二完成");
+	}
+	
+	@Async
+	public Future<String> doTaskThree() throws Exception {
+	    System.out.println("开始做任务三");
+	    long start = System.currentTimeMillis();
+	    Thread.sleep(random.nextInt(10000));
+	    long end = System.currentTimeMillis();
+	    System.out.println("完成任务三，耗时：" + (end - start) + "毫秒");
+	    return new AsyncResult<>("任务三完成");
+	}
+
+}
+        ]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>CompletableFuture</title>
+			<programlisting>
+			<![CDATA[
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+            throw new RuntimeException();
+//            return "程序出现异常";
+        }).exceptionally((e) -> {
+            System.out.println("程序出现异常");
+            return "程序出现异常";
+        });
+        System.out.println(completableFuture.get());			
+			]]>
+			</programlisting>
+
+			<programlisting>
+			<![CDATA[
+@Service
+public class MyService {
+
+    @Async
+    public CompletableFuture<String> asyncMethod() {
+        try {
+            // 异步方法逻辑...
+            return CompletableFuture.completedFuture("Success");
+        } catch (Exception e) {
+            // 处理异常...
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+}
+
+// 调用异步方法并处理异常
+CompletableFuture<String> future = myService.asyncMethod();
+future.exceptionally(e -> {
+    // 异常处理逻辑...
+    return "Error";
+});
+
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/completableFutureExceptionally")
+    public String completableFutureExceptionally() throws ExecutionException, InterruptedException {
+
+        CompletableFuture.supplyAsync(() -> {
+            System.out.println("当前线程名称：" + Thread.currentThread().getName());
+            throw new RuntimeException();
+        }).exceptionally((e) -> {
+            System.out.println(e.getMessage());
+            return "程序出现异常";
+        });
+
+        return "Done";
+    }			
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+当前线程名称：ForkJoinPool.commonPool-worker-1
+java.lang.RuntimeException			
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="SimpleAsyncTaskExecutor">
 		<title>默认简单线程池 SimpleAsyncTaskExecutor</title>
 		<para>启用异步执行 @EnableAsync</para>
@@ -220,7 +337,8 @@ public class Task {
         ]]>
 			</programlisting>
 			<para>this 调用方法 @Async 将失效，编程同步阻塞执行。例如下面的 doTaskThree() 会同步执行
-				this.doTaskOne(); 和 this.doTaskTwo();</para>
+				this.doTaskOne(); 和 this.doTaskTwo();
+			</para>
 			<programlisting>
 			<![CDATA[
 @Component
@@ -402,7 +520,8 @@ public class Task {
         ]]>
 			</programlisting>
 			<para>注意：@Async 不会用到刚刚定义的线程池，@Async("asyncExecutor")，@Async("thread")
-				会正确调用</para>
+				会正确调用
+			</para>
 		</section>
 		<section>
 			<title>队列</title>
@@ -547,10 +666,10 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 			</programlisting>
 
 		</section>
-		
+
 		<section>
 			<title>实现 AsyncConfigurer 接口方式创建自定义连接池</title>
-			<para>这种方式可以直接使用  @Async </para>
+			<para>这种方式可以直接使用 @Async </para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.config;
@@ -735,7 +854,9 @@ public class ThreadPoolTaskExecutorConfiguration {
 		</section>
 		<section>
 			<title>通过 @Bean 覆盖掉 SimpleAsyncTaskExecutor</title>
-			<para>自定义连接池之后，系统内会存在两个连接吃 SimpleAsyncTaskExecutor 和 ThreadPoolTaskExecutor</para>
+			<para>自定义连接池之后，系统内会存在两个连接吃 SimpleAsyncTaskExecutor 和
+				ThreadPoolTaskExecutor
+			</para>
 			<programlisting>
 			<![CDATA[
    @Bean
@@ -752,7 +873,7 @@ public class ThreadPoolTaskExecutorConfiguration {
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section id="ThreadPoolExecutor">
 		<title>自定义线程池 ThreadPoolExecutor</title>
 		<para>自定义线程池</para>
