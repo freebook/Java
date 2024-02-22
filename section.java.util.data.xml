@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="structures" ?>
 	<title>数据结构</title>
-	<section id="java.util.List">
-		<title>List</title>
-		<screen>
+	<screen>
 		<![CDATA[
 Collection
  ├List
@@ -13,18 +11,23 @@ Collection
  │　└Stack
  └Set
 		]]>
-		</screen>
+	</screen>
+	<section id="Collection">
+		<title>Collection 接口</title>
 		<screen>
 		<![CDATA[
-Collection接口
-　　Collection是最基本的集合接口，一个Collection代表一组Object，即Collection的元素（Elements）。一些 Collection允许相同的元素而另一些不行。一些能排序而另一些不行。Java SDK不提供直接继承自Collection的类，Java SDK提供的类都是继承自Collection的“子接口”如List和Set。
+Collection是最基本的集合接口，一个Collection代表一组Object，即Collection的元素（Elements）。一些 Collection允许相同的元素而另一些不行。一些能排序而另一些不行。Java SDK不提供直接继承自Collection的类，Java SDK提供的类都是继承自Collection的“子接口”如List和Set。
 　　所有实现Collection接口的类都必须提供两个标准的构造函数：无参数的构造函数用于创建一个空的Collection，有一个 Collection参数的构造函数用于创建一个新的Collection，这个新的Collection与传入的Collection有相同的元素。后 一个构造函数允许用户复制一个Collection。
 　　如何遍历Collection中的每一个元素？不论Collection的实际类型如何，它都支持一个iterator()的方法，该方法返回一个迭代子，使用该迭代子即可逐一访问Collection中每一个元素。典型的用法如下：
 　　　　Iterator it = collection.iterator(); // 获得一个迭代子
 　　　　while(it.hasNext()) {
 　　　　　　Object obj = it.next(); // 得到下一个元素
 　　　　}
-　　由Collection接口派生的两个接口是List和Set。
+由Collection接口派生的两个接口是List和Set。		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
 List接口
 　　List是有序的Collection，使用此接口能够精确的控制每个元素插入的位置。用户能够使用索引（元素在List中的位置，类似于数组下标）来访问List中的元素，这类似于Java的数组。
 和下面要提到的Set不同，List允许有相同的元素。
@@ -51,6 +54,11 @@ Map接口
 　　请注意，Map没有继承Collection接口，Map提供key到value的映射。一个Map中不能包含相同的key，每个key只能映射一个 value。Map接口提供3种集合的视图，Map的内容可以被当作一组key集合，一组value集合，或者一组key-value映射。		
 		]]>
 		</screen>
+	</section>
+	<section id="java.util.List">
+		<title>List</title>
+
+
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.example;
@@ -670,6 +678,177 @@ arrayList.stream()
 			</programlisting>
 		</section>
 	</section>
+	<section id="LinkedList">
+		<title>LinkedList</title>
+		<para>链表（Linked list）是一种线性表，但是并不会按线性的顺序存储数据，而是在每一个节点里存到下一个节点的地址</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Test {
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        ArrayList<Integer> arrayList = new ArrayList<Integer>();
+        LinkedList<Integer> linkedList = new LinkedList<Integer>();
+        int size = 10000 * 1000;
+        int index = 5000 * 1000;
+
+        System.out.println("arrayList add " + size);
+        addData(arrayList, size);
+        System.out.println("linkedList add " + +size);
+        addData(linkedList, size);
+        System.out.println();
+
+        System.out.println("arrayList get " + index + " th");
+        getIndex(arrayList, index);
+        System.out.println("linkedList get " + index + " th");
+        getIndex(linkedList, index);
+        System.out.println();
+
+        System.out.println("arrayList set " + index + " th");
+        setIndex(arrayList, index);
+        System.out.println("linkedList set " + index + " th");
+        setIndex(linkedList, index);
+        System.out.println();
+
+        System.out.println("arrayList add " + index + " th");
+        addIndex(arrayList, index);
+        System.out.println("linkedList add " + index + " th");
+        addIndex(linkedList, index);
+        System.out.println();
+
+        System.out.println("arrayList remove " + index + " th");
+        removeIndex(arrayList, index);
+        System.out.println("linkedList remove " + index + " th");
+        removeIndex(linkedList, index);
+        System.out.println();
+
+        System.out.println("arrayList remove Object " + index);
+        removeObject(arrayList, index);
+        System.out.println("linkedList remove Object " + index);
+        removeObject(linkedList, index);
+        System.out.println();
+
+        System.out.println("arrayList add");
+        add(arrayList);
+        System.out.println("linkedList add");
+        add(linkedList);
+        System.out.println();
+
+        System.out.println("arrayList iterator");
+        iterator(arrayList);
+        System.out.println("linkedList iterator");
+        iterator(linkedList);
+        System.out.println();
+
+        System.out.println("arrayList foreach");
+        foreach(arrayList);
+        System.out.println("linkedList foreach");
+        foreach(linkedList);
+        System.out.println();
+
+        System.out.println("arrayList forSize");
+        forSize(arrayList);
+        System.out.println("linkedList forSize");
+//        forSize(linkedList);
+        System.out.println("wait: ...");
+        System.out.println();
+
+
+    }
+
+    private static void addData(List<Integer> list, int size) {
+        long begin = System.currentTimeMillis();
+        for (int i = 0; i < size; i++) {
+            list.add(i);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void getIndex(List<Integer> list, int index) {
+        long begin = System.currentTimeMillis();
+        list.get(index);
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void setIndex(List<Integer> list, int index) {
+        long begin = System.currentTimeMillis();
+        list.set(index, 1024);
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void addIndex(List<Integer> list, int index) {
+        long begin = System.currentTimeMillis();
+        list.add(index, 1024);
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void removeIndex(List<Integer> list, int index) {
+        long begin = System.currentTimeMillis();
+        list.remove(index);
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void removeObject(List<Integer> list, Object obj) {
+        long begin = System.currentTimeMillis();
+        list.remove(obj);
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void add(List<Integer> list) {
+        long begin = System.currentTimeMillis();
+        list.add(1024);
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void iterator(List<Integer> list) {
+        long begin = System.currentTimeMillis();
+        Iterator<Integer> ite = list.iterator();
+        while (ite.hasNext()) {
+            ite.next();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void foreach(List<Integer> list) {
+        long begin = System.currentTimeMillis();
+        for (Integer i : list) {
+            //do nothing
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+    private static void forSize(List<Integer> list) {
+        long begin = System.currentTimeMillis();
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
+            list.get(i);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("cost time: " + (end - begin));
+    }
+
+
+}		
+		]]>
+		</programlisting>
+	</section>
+	
 	<section id="set">
 		<title>Set 转为 List</title>
 		<programlisting>
@@ -1107,6 +1286,230 @@ items.forEach((k,v)->{
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section id="Iterator">
+		<title>Iterator 迭代器</title>
+		<para>Iterator接口包含四个方法：hasNext，next，remove，forEachRemaining</para>
+		<section>
+			<title>List 迭代</title>
+
+
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Iterator;
+import java.util.List;
+
+public class Test {
+
+    public static void main(String[] args) {
+        Test test = new Test();
+
+//        ArrayList<String> arrayList = new ArrayList<String>();
+
+        List<String> list = List.of("Neo", "Tom", "Jerry");
+
+        System.out.printf("%s for %s\n", "=".repeat(10), "=".repeat(10));
+        for (String name : list) {
+            System.out.println(name);
+        }
+        System.out.printf("%s forEach %s\n", "=".repeat(10), "=".repeat(10));
+        list.forEach(obj -> {
+            System.out.println(obj);
+        });
+
+
+        Iterator<String> iterator = list.iterator();
+        
+        System.out.printf("%s while %s\n", "=".repeat(10), "=".repeat(10));
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+        System.out.printf("%s forEachRemaining %s\n", "=".repeat(10), "=".repeat(10));
+        iterator.forEachRemaining(System.out::println);
+
+    }
+}		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>处理剩余结果</title>
+			<programlisting>
+			<![CDATA[
+iterator.forEachRemaining(System.out::println);
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Map 迭代</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class Test {
+
+    public static void main(String[] args) {
+        System.out.printf("%s Map<Integer, String> %s\n", "=".repeat(10), "=".repeat(10));
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        for (int i = 0; i < 10; i++) {
+            map.put(i, "map" + i);
+        }
+        Iterator iterMap = map.entrySet().iterator();
+        while (iterMap.hasNext()) {
+            Map.Entry strMap = (Map.Entry) iterMap.next();
+            System.out.println("key: " + strMap.getKey() + ", value: " + strMap.getValue());
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Iterator 与 List 的区别</title>
+			<para>List 加载后放入内存，可以可以反复使用，Iterator 一旦调用 next() 就会从内存中清除，无法再次引用。
+			</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Iterator;
+import java.util.List;
+
+public class Test {
+
+    public static void main(String[] args) {
+
+        List<String> list = List.of("Neo", "Tom", "Jerry");
+
+        System.out.printf("%s List<String> %s\n", "=".repeat(10), "=".repeat(10));
+        list.forEach(System.out::println);
+
+        Iterator<String> iterator = list.iterator();
+
+        System.out.printf("%s next() %s\n", "=".repeat(10), "=".repeat(10));
+        String name = iterator.next();
+        System.out.println(name);
+
+        System.out.printf("%s forEachRemaining() %s\n", "=".repeat(10), "=".repeat(10));
+        iterator.forEachRemaining(System.out::println);
+
+        System.out.printf("%s while hasNext() %s\n", "=".repeat(10), "=".repeat(10));
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+    }
+}
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+========== List<String> ==========
+Neo
+Tom
+Jerry
+========== next() ==========
+Neo
+========== forEachRemaining() ==========
+Tom
+Jerry
+========== while hasNext() ==========
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>remove() 删除操作</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class Test {
+
+    public static void main(String[] args) {
+
+        List<String> list = new ArrayList<>(List.of("Neo", "Tom", "Jerry"));
+
+        System.out.printf("%s List<String> %s\n", "=".repeat(10), "=".repeat(10));
+        list.forEach(System.out::println);
+        Iterator<String> iterator = list.iterator();
+
+        System.out.printf("%s remove() %s\n", "=".repeat(10), "=".repeat(10));
+        while (iterator.hasNext()) {
+            String name = iterator.next();
+
+            if (name.equals("Tom")) {
+                iterator.remove();
+            } else {
+                System.out.println(name);
+            }
+
+        }
+
+    }
+}			
+			]]>
+			</programlisting>
+			<para>UnsupportedOperationException 异常</para>
+			<programlisting>
+			<![CDATA[
+Exception in thread "main" java.lang.UnsupportedOperationException
+	at java.base/java.util.ImmutableCollections.uoe(ImmutableCollections.java:142)
+	at java.base/java.util.ImmutableCollections$ListItr.remove(ImmutableCollections.java:387)
+	at cn.netkiller.test.Test.main(Test.java:36)			
+			]]>
+			</programlisting>
+			<para>List.of 跟 Arrays.asList 不支持 remove() 操作，会抛出
+				UnsupportedOperationException 异常。</para>
+			<programlisting>
+			<![CDATA[
+List<String> list = List.of("Neo", "Tom", "Jerry");
+List<String> list = Arrays.asList("Neo", "Tom", "Jerry");
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Iterable 转 List</title>
+			<programlisting>
+			<![CDATA[
+	Iterable<Entity> iterable = repository.findAll();
+	List<Entity> list = new ArrayList<>();
+	iterable.forEach(single->{list.add(single);});
+ 
+  	List<String> result = new ArrayList<String>();
+    iterable.forEach(result::add);
+ 
+    List<String> result = new ArrayList<String>();
+    for (String str : iterable) {
+        result.add(str);
+    } 			
+    
+    List<String> result = new ArrayList<String>();
+    while (iterator.hasNext()) {
+        result.add(iterator.next());
+    }
+    
+	List<String> result = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+	List<String> result = StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false).collect(Collectors.toList());
+
+    List<String> result = new ArrayList<String>();
+    iterator.forEachRemaining(result::add);
+    
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 	<section id="java.util.Queue">
 		<title>Queue</title>
