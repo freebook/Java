@@ -1733,7 +1733,7 @@ CREATE TABLE `user_persona` (
 					]]>
 					</programlisting>
 				</section>
-				
+
 			</section>
 		</section>
 		<section id="@Embeddable">
@@ -4493,7 +4493,11 @@ public interface UserPersonaRepository extends CrudRepository<UserPersona, Integ
   ]			
 			]]>
 			</programlisting>
-			<para>@ManyToOne 字段的巧妙处理，正常情况 @ManyToOne 会返回一个对象，如果我们返回List列表，这个对象就会重复出现，首先使用 @JsonIgnore 将其屏蔽，然后创建两个方法 private void setDeviceId(Integer deviceId)  和 private Integer getDeviceId()</para>
+			<para>@ManyToOne 字段的巧妙处理，正常情况 @ManyToOne
+				会返回一个对象，如果我们返回List列表，这个对象就会重复出现，首先使用 @JsonIgnore 将其屏蔽，然后创建两个方法
+				private void setDeviceId(Integer deviceId) 和 private Integer
+				getDeviceId()
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.domain;
@@ -4553,7 +4557,7 @@ public class UserPersona implements Serializable {
 			]]>
 			</programlisting>
 		</section>
-		
+
 	</section>
 	<section id="TransactionTemplate">
 		<title>TransactionTemplate</title>
@@ -4885,8 +4889,11 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 			</programlisting>
 		</section>
 		<section id="Query.nativeQuery">
-			<title>原生 SQL</title>
-			<programlisting>
+			<title>原生 SQL 操作</title>
+			<section>
+				<title>查询</title>
+
+				<programlisting>
 				<![CDATA[
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -4894,18 +4901,36 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findByEmailAddress(String emailAddress);
 }
 				]]>
-			</programlisting>
-			<para>insert ignore</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>忽略插入</title>
+				<para>insert ignore</para>
+				<programlisting>
 				<![CDATA[
 	@Modifying
     @Query(value = "insert ignore into emp(create, modified, user_id, user_name, user_nickname, user_mail) values(?1, ?2, ?3, ?4, ?5, ?6)", nativeQuery = true)
     void insertIgnoreEmployee(Timestamp create, Timestamp modified, String userId, String name, String nickname, String mail);
 				
 				]]>
-			</programlisting>
+				</programlisting>
+			</section>
+			<section id="nativeQuery">
+				<title>数据更新</title>
+				<para>这里的nativeQuery=true代表在执行这个方法的时候使用原生sql语句，直接写数据库中的实际表名和表中的字段名，而不是实体表名。
+				</para>
+				<programlisting>
+				<![CDATA[
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE project p, (SELECT MIN(start) AS start, MAX(finish) AS finish FROM project WHERE parent_id = :id) t SET p.start = t.start, p.finish = t.finish WHERE p.id = :id")
+    public void updateStartAndFinishById(@Param("id") Long id);				
+				]]>
+				</programlisting>
+				<para>在什么情况下使用呢？例如上面，同时操作两张表，做更新，如果不使用 nativeQuery = true 无法实现。
+				</para>
+			</section>
 		</section>
-		<section>
+		<section id="Pageagble">
 			<title>@Query 与 Pageagble</title>
 			<para>
 				<ulink
@@ -5098,8 +5123,14 @@ public interface TransactionHistoryRepository extends CrudRepository<Transaction
 public List<Object> getCustomField();
 				]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+@Query(value = "select new map(u.userName, ui.name, ui.gender, ui.description) from UserInfo ui, User u where u.id = ui.userId")
+public List<Map<String, Object>> getCustomField();			
+			]]>
+			</programlisting>
 		</section>
-		<section>
+		<section id="返回指定的模型">
 			<title>返回指定的模型</title>
 			<para>临时写一个新的模型</para>
 			<programlisting>
@@ -5148,20 +5179,7 @@ List<User> findUserByNameList(@Param("names") Collection<String> names);
 			]]>
 			</programlisting>
 		</section>
-		<section id="nativeQuery">
-			<title>原生SQL查询</title>
-			<para>这里的nativeQuery=true代表在执行这个方法的时候使用原生sql语句，直接写数据库中的实际表名和表中的字段名，而不是实体表名。
-			</para>
-			<programlisting>
-				<![CDATA[
-    @Modifying
-    @Query(nativeQuery = true, value = "UPDATE project p, (SELECT MIN(start) AS start, MAX(finish) AS finish FROM project WHERE parent_id = :id) t SET p.start = t.start, p.finish = t.finish WHERE p.id = :id")
-    public void updateStartAndFinishById(@Param("id") Long id);				
-				]]>
-			</programlisting>
-			<para>在什么情况下使用呢？例如上面，同时操作两张表，做更新，如果不使用 nativeQuery = true 无法实现。
-			</para>
-		</section>
+		
 		<section id="Sort">
 			<title>Sort</title>
 			<programlisting>

@@ -1511,6 +1511,77 @@ List<String> list = Arrays.asList("Neo", "Tom", "Jerry");
 		</section>
 		
 	</section>
+	<section id="ListIterator">
+		<title>ListIterator</title>
+		<para>ListIterator 可以实现添加/删除和向前/向后访问数据</para>
+		<para>Iterator 可以用于 List / Set / Vector / Map 数据结构，ListIterator 只能用于 List</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
+public class Test {
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        List<String> arrayList = new ArrayList<String>();
+        List<String> linkedList = new LinkedList<String>();
+
+        linkedList.add("Neo");
+        linkedList.add("Tom");
+        linkedList.add("Jerry");
+        ListIterator<String> listIterator = linkedList.listIterator();
+        String first = listIterator.next();
+
+        System.out.printf("%s List<String> %s\n", "=".repeat(10), "=".repeat(10));
+        System.out.println("first:" + first);
+
+        listIterator.remove();
+
+        System.out.printf("%s forEachRemaining %s\n", "=".repeat(10), "=".repeat(10));
+        listIterator.add("Netkiller");
+        listIterator.forEachRemaining(System.out::println);
+
+        arrayList.add("Netkiller Linux 手札");
+        arrayList.add("Netkiller Java 手札");
+        arrayList.add("Netkiller Sprint 手札");
+
+        listIterator = arrayList.listIterator();
+        System.out.printf("%s next() %s\n", "=".repeat(10), "=".repeat(10));
+        while (listIterator.hasNext()) {
+            System.out.println(listIterator.next());
+        }
+
+        listIterator.add("Netkiller MySQL 手札");
+
+        System.out.printf("%s previous() %s\n", "=".repeat(10), "=".repeat(10));
+        while (listIterator.hasPrevious()) {
+            System.out.println(listIterator.previous());
+        }
+    }
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+String next = listIterator.next();
+if( "Neo".equals(next)) {
+    listIterator.set("Netkiller");
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+List<String> items = new ArrayList<String>();
+String nextWithIndex = items.get(listIterator.nextIndex());
+String previousWithIndex = items.get(listIterator.previousIndex());		
+		]]>
+		</programlisting>
+	</section>
 	<section id="java.util.Queue">
 		<title>Queue</title>
 		<programlisting>
