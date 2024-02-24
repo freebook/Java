@@ -249,15 +249,7 @@ public class TestController {
 	<section id="RedisTemplate">
 		<title>RedisTemplate</title>
 
-		<section id="redis.ops">
-			<title>Redis 一般操作</title>
-			<programlisting>
-			<![CDATA[
-redisTemplate.opsForValue().set("name","neo");
-redisTemplate.opsForValue().get("name")			
-			]]>
-			</programlisting>
-		</section>
+
 		<section id="redisTemplate.set.TimeUnit">
 			<title>设置缓存时间</title>
 			<programlisting>
@@ -271,42 +263,7 @@ redisTemplate.opsForValue().get("name")
 			]]>
 			</programlisting>
 		</section>
-		<section id="redisTemplate.substring">
-			<title>字符串截取</title>
-			<programlisting>
-			<![CDATA[
-设置：redisTemplate.opsForValue().set("hello","Helloworld");
-代码：System.out.println(redisTemplate.opsForValue().get("hello",0,5));
-结果：Hellow
-代码：System.out.println(redisTemplate.opsForValue().get("hello",0,-1));
-结果：Helloworld
-代码：System.out.println(redisTemplate.opsForValue().get("hello",-3,-1));
-结果：rld			
-			]]>
-			</programlisting>
-		</section>
-		<section id="redisTemplate.append">
-			<title>追加字符串</title>
-			<programlisting>
-			<![CDATA[
-redisTemplate.opsForValue().append("hello","Hello");
-System.out.println(redisTemplate.opsForValue().get("hello"));
 
-redisTemplate.opsForValue().append("hello","world");
-System.out.println(redisTemplate.opsForValue().get("hello")); // 结果：Helloworld        			
-			]]>
-			</programlisting>
-		</section>
-		<section id="redisTemplate.getAndSet">
-			<title>设置键的字符串值并返回其旧值</title>
-			<programlisting>
-			<![CDATA[
-	redisTemplate.opsForValue().set("name","neo");
-    System.out.println(redisTemplate.opsForValue().getAndSet("name","Jerry"));
-	// 结果 neo			
-			]]>
-			</programlisting>
-		</section>
 		<section id="redisTemplate.increment">
 			<title>increment</title>
 			<screen>
@@ -333,540 +290,25 @@ stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中
 		]]>
 			</programlisting>
 		</section>
-		<section id="size">
-			<title>返回字符串长度</title>
-			<programlisting>
-			<![CDATA[
-redisTemplate.opsForValue().set("key","hello world");
-System.out.println(redisTemplate.opsForValue().size("key"));			
-			]]>
-			</programlisting>
-		</section>
-		<section id="setIfAbsent">
-			<title>如果key不存便缓存。</title>
-			<programlisting>
-			<![CDATA[
-System.out.println(redisTemplate.opsForValue().setIfAbsent("name","neo"));	// name 之前已经存在 false
-System.out.println(redisTemplate.opsForValue().setIfAbsent("age","11"));		// age 之前不存在	true
-			]]>
-			</programlisting>
-			<para>setIfAbsent 实现分布式锁</para>
-			<programlisting>
-			<![CDATA[
-boolean static = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent("lock:order", 1, 1, TimeUnit.DAYS));			
-			]]>
-			</programlisting>
-		</section>
 
-		<section id="multiSet">
-			<title>缓存多个值 /获取多个值 multiSet / multiGet</title>
-			<programlisting>
-			<![CDATA[
-Map<String,String> maps = new HashMap<String, String>();
-	maps.put("multi1","multi1");
-	maps.put("multi2","multi2");
-	maps.put("multi3","multi3");
 
-redisTemplate.opsForValue().multiSet(maps);
 
-List<String> keys = new ArrayList<String>();
-	keys.add("multi1");
-	keys.add("multi2");
-	keys.add("multi3");
 
-System.out.println(redisTemplate.opsForValue().multiGet(keys));			
-			]]>
-			</programlisting>
-			<para>输出结果</para>
-			<screen>
-			<![CDATA[
-[multi1, multi2, multi3]			
-			]]>
-			</screen>
-			<para>为多个键分别设置它们的值，如果存在则返回false，不存在返回true</para>
-			<programlisting>
-			<![CDATA[
-Map<String,String> maps = new HashMap<String, String>();
-        maps.put("multi11","multi11");
-        maps.put("multi22","multi22");
-        maps.put("multi33","multi33");
-Map<String,String> maps2 = new HashMap<String, String>();
-        maps2.put("multi1","multi1");
-        maps2.put("multi2","multi2");
-        maps2.put("multi3","multi3");
-
-System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps)); 	// 返回 true
-System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps2));	// 返回 false
-			]]>
-			</programlisting>
-
-		</section>
 
 		<section id="list">
 			<title>List</title>
 
-			<section>
-				<title>rightPush</title>
 
-				<programlisting>
-			<![CDATA[
-ListOperations<String, Object> list = redisTemplate.opsForList();
-list.rightPush("books", "Linux");
-list.rightPush("books", "Java");
-System.out.println(list.range("books", 0, 1));
 
-System.out.println(redisTemplate.opsForList().size("list"));
-			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>rightPushAll</title>
-				<programlisting>
-				<![CDATA[
-		String[] stringarrays = new String[]{"1","2","3"};
-        redisTemplate.opsForList().rightPushAll("listarrayright",stringarrays);
-        System.out.println(redisTemplate.opsForList().range("listarrayright",0,-1));				
-				]]>
-				</programlisting>
-				<programlisting>
-				<![CDATA[
-		List<Object> strings = new ArrayList<Object>();
-        strings.add("1");
-        strings.add("2");
-        strings.add("3");
-        redisTemplate.opsForList().rightPushAll("listcollectionright", strings);
-        System.out.println(redisTemplate.opsForList().range("listcollectionright",0,-1));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>rightPushIfPresent</title>
-				<programlisting>
-				<![CDATA[
-		System.out.println("========== KEY 不存在===========");
-		System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","aa"));
-        System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","bb"));
-        System.out.println("========== KEY 已经存在===========");
-        System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","aa"));
-        System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","bb"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>leftPush</title>
-				<programlisting>
-			<![CDATA[
-redisTemplate.opsForList().leftPush("list","java");
-redisTemplate.opsForList().leftPush("list","python");
-redisTemplate.opsForList().leftPush("list","c++");			
-			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>leftPushAll</title>
 
-				<para>批量把一个数组插入到列表中</para>
-				<programlisting>
-				<![CDATA[
-	String[] stringarrays = new String[]{"1","2","3"};
-    redisTemplate.opsForList().leftPushAll("listarray",stringarrays);	
-				]]>
-				</programlisting>
-				<para>批量把一个集合插入到列表中</para>
-				<programlisting>
-			<![CDATA[
-使用：List<Object> strings = new ArrayList<Object>();
-        strings.add("1");
-        strings.add("2");
-        strings.add("3");
-        redisTemplate.opsForList().leftPushAll("listcollection", strings);
-        System.out.println(redisTemplate.opsForList().range("listcollection",0,-1));
-结果:[3, 2, 1]			
-			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>range</title>
 
-				<programlisting>
-			<![CDATA[
-    System.out.println(redisTemplate.opsForList().range("listarray",0,-1));
-	// 结果:[3, 2, 1]				
-			]]>
-				</programlisting>
-			</section>
-		</section>
-		<section id="set">
-			<title>SET 数据类型</title>
-			<para>Redis的Set是无序集合并且集合成员是唯一的，这就意味着集合中不能出现重复的数据。</para>
-			<screen>
-			<![CDATA[
-stringRedisTemplate.opsForSet().add("test", "1","2","3");						//向指定key中存放set集合
-stringRedisTemplate.opsForSet().isMember("test", "1")							//根据key查看集合中是否存在指定数据
-stringRedisTemplate.opsForSet().members("test");								//根据key获取set集合				
-			]]>
-			</screen>
 
-			<programlisting>
-		<![CDATA[
-//添加 一个 set 集合
-SetOperations<String, Object> set = redisTemplate.opsForSet();
-set.add("Member", "neo");
-set.add("Member", "36");
-set.add("Member", "178cm");
-//输出 set 集合
-System.out.println(set.members("Member"));	
-		]]>
-			</programlisting>
-			<programlisting>
-		<![CDATA[
-package cn.netkiller.api.restful;
 
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import common.pojo.ResponseRestful;
-
-@RestController
-@RequestMapping("/news")
-public class NewsRestController {
-
-	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
-
-	@RequestMapping(value = "/flash/{count}")
-	public ResponseRestful flash(@PathVariable("count") long count) {
-		if(count == 0L) {
-			count=10L;
-		}
-		Set<String> news = this.redisTemplate.opsForZSet().reverseRange("news:flash", 0, count);
-		if (news == null) {
-			return new ResponseRestful(false, 10, "没有查询到结果", news);
-		}
-		return new ResponseRestful(true, 0, "返回数据: " + news.size() + " 条", news);
-	}
-	
-	public void addRecentUser(long userId, String name) {  
-	    String key = RedisKeyGenerator.genRecentBrowsingPositionsKey(String.valueOf(userId));  
-	    // 获取已缓存的最近浏览的职位  
-	    ZSetOperations<String, String> zSetOperations = redisTempalte.opsForZSet();  
-        //zset内部是按分数来排序的，这里用当前时间做分数  
-	    zSetOperations.add(key, name, System.currentTimeMillis());  
-	    zSetOperations.removeRange(key, 0, -6);  
-	}  
-	
-}
-		]]>
-			</programlisting>
-			<section>
-				<title>返回集合中的所有成员</title>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForSet().members("setTest"));				
-				]]>
-				</programlisting>
-			</section>
-
-			<section>
-				<title>取出一个成员</title>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForSet().pop("setTest"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>随机获取无序集合中的一个元素</title>
-				<programlisting>
-				<![CDATA[
-System.out.println("Random member: " + redisTemplate.opsForSet().randomMember("setTest"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>随机获取 n 个成员（存在重复数据）</title>
-				<programlisting>
-				<![CDATA[
-System.out.println("Random member: " + redisTemplate.opsForSet().randomMembers("setTest",5));
-// 结果 Random member: [ccc, ddd, ddd, ddd, aaa]				
-				]]>
-				</programlisting>
-			</section>
-
-			<section>
-				<title>随机获取 n 个不重复成员</title>
-				<programlisting>
-				<![CDATA[
-System.out.println("Random members: " + redisTemplate.opsForSet().distinctRandomMembers("setTest",5));
-//结果 Random members: [aaa, bbb, ddd, ccc]				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>在两个 SET 间移动数据</title>
-				<programlisting>
-				<![CDATA[
-	redisTemplate.opsForSet().move("key1","aaa","key2");
-	System.out.println(redisTemplate.opsForSet().members("key1"));
-    System.out.println(redisTemplate.opsForSet().members("key2"));				
-				]]>
-				</programlisting>
-			</section>
-
-			<section>
-				<title>成员删除</title>
-				<programlisting>
-				<![CDATA[
-String[] arrays = new String[]{"Java","PHP"};
-System.out.println(redisTemplate.opsForSet().remove("setTest",arrays));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>返回集合数量</title>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForSet().size("setTest"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>判断元素是否在集合成员中</title>
-				<programlisting>
-				<![CDATA[
-ystem.out.println(redisTemplate.opsForSet().isMember("setTest","Linux"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>对比两个集合求交集</title>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForSet().members("key"));
-    System.out.println(redisTemplate.opsForSet().members("otherKey"));
-    System.out.println(redisTemplate.opsForSet().intersect("key","otherKey"));				
-				]]>
-				</programlisting>
-				<programlisting>
-				<![CDATA[
-        List<String> library2 = new ArrayList<String>();
-        library2.add("Linux");
-        library2.add("FreeBSD");
-        System.out.println(redisTemplate.opsForSet().intersect("library1",library2));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>对比两个集合求交集，然后存储到新的 key 中</title>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForSet().intersectAndStore("key","otherKey","destKey"));				
-				]]>
-				</programlisting>
-				<programlisting>
-				<![CDATA[
-		List<String> otherKey = new ArrayList<String>();
-        otherKey.add("《Netkiller Java 手札》");
-        otherKey.add("《Netkiller Spring Cloud 手札》");
-        System.out.println(redisTemplate.opsForSet().intersectAndStore("key",otherKey,"destKey"));				
-				]]>
-				</programlisting>
-
-			</section>
-			<section>
-				<title>合并两个集合，并去处重复数据</title>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForSet().union("setTest1","setTest2"));
-	
-	List<String> otherKey = new ArrayList<String>();
-    otherKey.add("《Netkiller Java 手札》");
-    otherKey.add("《Netkiller Spring Cloud 手札》");
-    System.out.println(redisTemplate.opsForSet().union("setTest",otherKey));		
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>合并两个集合去重复后保存到新的 key 中</title>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForSet().unionAndStore("key","otherKey","destKey"));
-	System.out.println(redisTemplate.opsForSet().unionAndStore("key",otherKey,"destKey"));					
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>计算两个合集的差集</title>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForSet().difference("key","otherKey"));		
-	
-	List<String> otherKey = new ArrayList<String>();
-    otherKey.add("setTest2");
-    otherKey.add("setTest3");
-    System.out.println(redisTemplate.opsForSet().difference("key",otherKey));		
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>计算两个合集的差集，然后保存到新的 key 中</title>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForSet().differenceAndStore("key","otherKey","destKey"));
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>遍历 SET 集合</title>
-				<programlisting>
-				<![CDATA[
-	Cursor<Object> curosr = redisTemplate.opsForSet().scan("setTest", ScanOptions.NONE);
-    while(curosr.hasNext()){
-        System.out.println(curosr.next());
-    }				
-				]]>
-				</programlisting>
-			</section>
-		</section>
-		<section id="zset">
-			<title>有序的 set 集合</title>
-			<programlisting>
-			<![CDATA[
-//添加有序的 set 集合
-ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-zset.add("zMember", "neo", 0);
-zset.add("zMember", "36", 1);
-zset.add("zMember", "178cm", 2);
-//输出有序 set 集合
-System.out.println(zset.rangeByScore("zMember", 0, 2));				
-			]]>
-			</programlisting>
 		</section>
 
-		<section id="hash">
-			<title>Hash</title>
-			<section>
-				<title>put</title>
-				<programlisting>
-				<![CDATA[
-	redisTemplate.opsForHash().put("redisHash","name","neo");
-    redisTemplate.opsForHash().put("redisHash","age",30);
-    redisTemplate.opsForHash().put("redisHash","nickname","netkiller");				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>putAll</title>
-				<programlisting>
-				<![CDATA[
-HashOperations<String, Object, Object>  hash = redisTemplate.opsForHash();
-Map<String,Object> map = new HashMap<String,Object>();
-map.put("name", "neo");
-map.put("age", "36");
-hash.putAll("member", map);
 
-System.out.println(hash.entries("member"));		
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>从键中的哈希获取给定hashKey的值</title>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForHash().get("redisHash","age"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>delete</title>
-				<para>删除指定的哈希 hashKeys</para>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForHash().delete("redisHash","name"));
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>确定哈希hashKey是否存在</title>
-				<para>确定哈希hashKey是否存在</para>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForHash().hasKey("redisHash","age"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>从哈希中获取指定的多个 hashKey 的值</title>
-				<programlisting>
-				<![CDATA[
-	List<Object> keys = new ArrayList<Object>();
-    keys.add("name");
-    keys.add("age");
-    System.out.println(redisTemplate.opsForHash().multiGet("redisHash",keys))				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>只有hashKey不存在时才能添加值</title>
-				<programlisting>
-				<![CDATA[
-	System.out.println(redisTemplate.opsForHash().putIfAbsent("redisHash","age",30));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>获取整个Hash</title>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForHash().entries("redisHash"));					
-				]]>
-				</programlisting>
-			</section>
 
-			<section>
-				<title>获取所有key</title>
-				<programlisting>
-				<![CDATA[
 
-System.out.println(redisTemplate.opsForHash().keys("redisHash1"));				
-				]]>
-				</programlisting>
-			</section>
-
-			<section>
-				<title>通过 hashKey 获取所有值</title>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForHash().values("redisHash"));				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>值加法操作</title>
-				<programlisting>
-				<![CDATA[
-System.out.println(redisTemplate.opsForHash().increment("redisHash","age",1)				
-				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>遍历 Hash 表</title>
-				<programlisting>
-				<![CDATA[
-	Cursor<Map.Entry<Object, Object>> curosr = redisTemplate.opsForHash().scan("redisHash", ScanOptions.ScanOptions.NONE);
-	while(curosr.hasNext()){
-	    Map.Entry<Object, Object> entry = curosr.next();
-	    System.out.println(entry.getKey()+":"+entry.getValue());
-	}				
-				]]>
-				</programlisting>
-			</section>
-		</section>
 		<section id="redisTemplate.getExpire">
 			<title>获取过期时间</title>
 			<programlisting>
@@ -936,11 +378,659 @@ System.out.println(redisTemplate.opsForValue().getBit("bitTest",7));
 			]]>
 			</programlisting>
 		</section>
-		<section id="JsonRedisTemplate">
-			<title>存储 Json 对象</title>
-			<section>
-				<title>集成 RedisTemplate 定义新类 JsonRedisTemplate</title>
-				<programlisting>
+
+
+	</section>
+	<section id="stringRedisTemplate">
+		<title>stringRedisTemplate 基本用法</title>
+		<screen>
+			<![CDATA[
+@Autowired
+private final StringRedisTemplate stringRedisTemplate;
+			
+stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
+stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
+stringRedisTemplate.getExpire("test")											//根据key获取过期时间
+stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
+stringRedisTemplate.delete("test");												//根据key删除缓存
+stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
+stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
+			]]>
+		</screen>
+
+	</section>
+	<section id="ValueOperations">
+		<title>ValueOperations</title>
+		<programlisting>
+			<![CDATA[
+ValueOperations<String,String> ops = redisTemplate.opsForValue()
+			
+redisTemplate.opsForValue().set("name","neo");
+redisTemplate.opsForValue().get("name")			
+			]]>
+		</programlisting>
+		<section id="redisTemplate.substring">
+			<title>字符串截取</title>
+			<programlisting>
+			<![CDATA[
+设置：redisTemplate.opsForValue().set("hello","Helloworld");
+代码：System.out.println(redisTemplate.opsForValue().get("hello",0,5));
+结果：Hellow
+代码：System.out.println(redisTemplate.opsForValue().get("hello",0,-1));
+结果：Helloworld
+代码：System.out.println(redisTemplate.opsForValue().get("hello",-3,-1));
+结果：rld			
+			]]>
+			</programlisting>
+		</section>
+		<section id="redisTemplate.append">
+			<title>追加字符串</title>
+			<programlisting>
+			<![CDATA[
+redisTemplate.opsForValue().append("hello","Hello");
+System.out.println(redisTemplate.opsForValue().get("hello"));
+
+redisTemplate.opsForValue().append("hello","world");
+System.out.println(redisTemplate.opsForValue().get("hello")); // 结果：Helloworld        			
+			]]>
+			</programlisting>
+		</section>
+		<section id="redisTemplate.getAndSet">
+			<title>设置键的字符串值并返回其旧值</title>
+			<programlisting>
+			<![CDATA[
+	redisTemplate.opsForValue().set("name","neo");
+    System.out.println(redisTemplate.opsForValue().getAndSet("name","Jerry"));
+	// 结果 neo			
+			]]>
+			</programlisting>
+		</section>
+		<section id="size">
+			<title>返回字符串长度</title>
+			<programlisting>
+			<![CDATA[
+redisTemplate.opsForValue().set("key","hello world");
+System.out.println(redisTemplate.opsForValue().size("key"));			
+			]]>
+			</programlisting>
+		</section>
+		<section id="setIfAbsent">
+			<title>如果key不存便缓存。</title>
+			<programlisting>
+			<![CDATA[
+System.out.println(redisTemplate.opsForValue().setIfAbsent("name","neo"));	// name 之前已经存在 false
+System.out.println(redisTemplate.opsForValue().setIfAbsent("age","11"));		// age 之前不存在	true
+			]]>
+			</programlisting>
+			<para>setIfAbsent 实现分布式锁</para>
+			<programlisting>
+			<![CDATA[
+boolean static = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent("lock:order", 1, 1, TimeUnit.DAYS));			
+			]]>
+			</programlisting>
+		</section>
+		<section id="multiSet">
+			<title>缓存多个值 /获取多个值 multiSet / multiGet</title>
+			<programlisting>
+			<![CDATA[
+Map<String,String> maps = new HashMap<String, String>();
+	maps.put("multi1","multi1");
+	maps.put("multi2","multi2");
+	maps.put("multi3","multi3");
+
+redisTemplate.opsForValue().multiSet(maps);
+
+List<String> keys = new ArrayList<String>();
+	keys.add("multi1");
+	keys.add("multi2");
+	keys.add("multi3");
+
+System.out.println(redisTemplate.opsForValue().multiGet(keys));			
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+[multi1, multi2, multi3]			
+			]]>
+			</screen>
+			<para>为多个键分别设置它们的值，如果存在则返回false，不存在返回true</para>
+			<programlisting>
+			<![CDATA[
+Map<String,String> maps = new HashMap<String, String>();
+        maps.put("multi11","multi11");
+        maps.put("multi22","multi22");
+        maps.put("multi33","multi33");
+Map<String,String> maps2 = new HashMap<String, String>();
+        maps2.put("multi1","multi1");
+        maps2.put("multi2","multi2");
+        maps2.put("multi3","multi3");
+
+System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps)); 	// 返回 true
+System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps2));	// 返回 false
+			]]>
+			</programlisting>
+
+		</section>
+	</section>
+	<section id="ListOperations">
+		<title>列表操作</title>
+		<para>ListOperations</para>
+		<programlisting>
+				<![CDATA[
+public class Example {
+
+    // inject the actual template
+    @Autowired
+    private RedisTemplate<String, String> template;
+
+    // inject the template as ListOperations
+    // can also inject as Value, Set, ZSet, and HashOperations
+    @Resource(name="redisTemplate")
+    private ListOperations<String, String> listOps;
+
+    public void addLink(String userId, URL url) {
+        listOps.leftPush(userId, url.toExternalForm());
+        // or use template directly
+        redisTemplate.boundListOps(userId).leftPush(url.toExternalForm());
+    }
+}
+				]]>
+		</programlisting>
+		<section>
+			<title>rightPush</title>
+
+			<programlisting>
+			<![CDATA[
+ListOperations<String, Object> list = redisTemplate.opsForList();
+list.rightPush("books", "Linux");
+list.rightPush("books", "Java");
+System.out.println(list.range("books", 0, 1));
+
+System.out.println(redisTemplate.opsForList().size("list"));
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>rightPushAll</title>
+			<programlisting>
+				<![CDATA[
+		String[] stringarrays = new String[]{"1","2","3"};
+        redisTemplate.opsForList().rightPushAll("listarrayright",stringarrays);
+        System.out.println(redisTemplate.opsForList().range("listarrayright",0,-1));				
+				]]>
+			</programlisting>
+			<programlisting>
+				<![CDATA[
+		List<Object> strings = new ArrayList<Object>();
+        strings.add("1");
+        strings.add("2");
+        strings.add("3");
+        redisTemplate.opsForList().rightPushAll("listcollectionright", strings);
+        System.out.println(redisTemplate.opsForList().range("listcollectionright",0,-1));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>rightPushIfPresent</title>
+			<programlisting>
+				<![CDATA[
+		System.out.println("========== KEY 不存在===========");
+		System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","aa"));
+        System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","bb"));
+        System.out.println("========== KEY 已经存在===========");
+        System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","aa"));
+        System.out.println(redisTemplate.opsForList().rightPushIfPresent("rightPushIfPresent","bb"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>leftPush</title>
+			<programlisting>
+			<![CDATA[
+  @Autowired
+  private RedisTemplate<String, String> template;
+ 
+  // 将模板作为 ListOperations 注入
+  @Resource(name="redisTemplate")
+  private ListOperations<String, String> listOps;
+ 
+  public void addLink(String userId, URL url) {
+    listOps.leftPush(userId, url.toExternalForm());
+  }			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+redisTemplate.opsForList().leftPush("list","java");
+redisTemplate.opsForList().leftPush("list","python");
+redisTemplate.opsForList().leftPush("list","c++");			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>leftPushAll</title>
+			<para>批量把一个数组插入到列表中</para>
+			<programlisting>
+				<![CDATA[
+	String[] stringarrays = new String[]{"1","2","3"};
+    redisTemplate.opsForList().leftPushAll("listarray",stringarrays);	
+				]]>
+			</programlisting>
+			<para>批量把一个集合插入到列表中</para>
+			<programlisting>
+			<![CDATA[
+使用：List<Object> strings = new ArrayList<Object>();
+        strings.add("1");
+        strings.add("2");
+        strings.add("3");
+        redisTemplate.opsForList().leftPushAll("listcollection", strings);
+        System.out.println(redisTemplate.opsForList().range("listcollection",0,-1));
+结果:[3, 2, 1]			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>range</title>
+
+			<programlisting>
+			<![CDATA[
+    System.out.println(redisTemplate.opsForList().range("listarray",0,-1));
+	// 结果:[3, 2, 1]				
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="SetOperations">
+		<title>SetOperations 数据类型</title>
+		<screen>
+		<![CDATA[
+SetOperations<String,String> ops = redisTemplate.opsForSet();		
+		]]>
+		</screen>
+		<para>Redis的Set是无序集合并且集合成员是唯一的，这就意味着集合中不能出现重复的数据。</para>
+		<screen>
+			<![CDATA[
+stringRedisTemplate.opsForSet().add("test", "1","2","3");						//向指定key中存放set集合
+stringRedisTemplate.opsForSet().isMember("test", "1")							//根据key查看集合中是否存在指定数据
+stringRedisTemplate.opsForSet().members("test");								//根据key获取set集合				
+			]]>
+		</screen>
+
+		<programlisting>
+		<![CDATA[
+//添加 一个 set 集合
+SetOperations<String, Object> set = redisTemplate.opsForSet();
+set.add("Member", "neo");
+set.add("Member", "36");
+set.add("Member", "178cm");
+//输出 set 集合
+System.out.println(set.members("Member"));	
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.api.restful;
+
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import common.pojo.ResponseRestful;
+
+@RestController
+@RequestMapping("/news")
+public class NewsRestController {
+
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+
+	@RequestMapping(value = "/flash/{count}")
+	public ResponseRestful flash(@PathVariable("count") long count) {
+		if(count == 0L) {
+			count=10L;
+		}
+		Set<String> news = this.redisTemplate.opsForZSet().reverseRange("news:flash", 0, count);
+		if (news == null) {
+			return new ResponseRestful(false, 10, "没有查询到结果", news);
+		}
+		return new ResponseRestful(true, 0, "返回数据: " + news.size() + " 条", news);
+	}
+	
+	public void addRecentUser(long userId, String name) {  
+	    String key = RedisKeyGenerator.genRecentBrowsingPositionsKey(String.valueOf(userId));  
+	    // 获取已缓存的最近浏览的职位  
+	    ZSetOperations<String, String> zSetOperations = redisTempalte.opsForZSet();  
+        //zset内部是按分数来排序的，这里用当前时间做分数  
+	    zSetOperations.add(key, name, System.currentTimeMillis());  
+	    zSetOperations.removeRange(key, 0, -6);  
+	}  
+	
+}
+		]]>
+		</programlisting>
+		<section>
+			<title>返回集合中的所有成员</title>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForSet().members("setTest"));				
+				]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>取出一个成员</title>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForSet().pop("setTest"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>随机获取无序集合中的一个元素</title>
+			<programlisting>
+				<![CDATA[
+System.out.println("Random member: " + redisTemplate.opsForSet().randomMember("setTest"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>随机获取 n 个成员（存在重复数据）</title>
+			<programlisting>
+				<![CDATA[
+System.out.println("Random member: " + redisTemplate.opsForSet().randomMembers("setTest",5));
+// 结果 Random member: [ccc, ddd, ddd, ddd, aaa]				
+				]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>随机获取 n 个不重复成员</title>
+			<programlisting>
+				<![CDATA[
+System.out.println("Random members: " + redisTemplate.opsForSet().distinctRandomMembers("setTest",5));
+//结果 Random members: [aaa, bbb, ddd, ccc]				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>在两个 SET 间移动数据</title>
+			<programlisting>
+				<![CDATA[
+	redisTemplate.opsForSet().move("key1","aaa","key2");
+	System.out.println(redisTemplate.opsForSet().members("key1"));
+    System.out.println(redisTemplate.opsForSet().members("key2"));				
+				]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>成员删除</title>
+			<programlisting>
+				<![CDATA[
+String[] arrays = new String[]{"Java","PHP"};
+System.out.println(redisTemplate.opsForSet().remove("setTest",arrays));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>返回集合数量</title>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForSet().size("setTest"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>判断元素是否在集合成员中</title>
+			<programlisting>
+				<![CDATA[
+ystem.out.println(redisTemplate.opsForSet().isMember("setTest","Linux"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>对比两个集合求交集</title>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForSet().members("key"));
+    System.out.println(redisTemplate.opsForSet().members("otherKey"));
+    System.out.println(redisTemplate.opsForSet().intersect("key","otherKey"));				
+				]]>
+			</programlisting>
+			<programlisting>
+				<![CDATA[
+        List<String> library2 = new ArrayList<String>();
+        library2.add("Linux");
+        library2.add("FreeBSD");
+        System.out.println(redisTemplate.opsForSet().intersect("library1",library2));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>对比两个集合求交集，然后存储到新的 key 中</title>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForSet().intersectAndStore("key","otherKey","destKey"));				
+				]]>
+			</programlisting>
+			<programlisting>
+				<![CDATA[
+		List<String> otherKey = new ArrayList<String>();
+        otherKey.add("《Netkiller Java 手札》");
+        otherKey.add("《Netkiller Spring Cloud 手札》");
+        System.out.println(redisTemplate.opsForSet().intersectAndStore("key",otherKey,"destKey"));				
+				]]>
+			</programlisting>
+
+		</section>
+		<section>
+			<title>合并两个集合，并去处重复数据</title>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForSet().union("setTest1","setTest2"));
+	
+	List<String> otherKey = new ArrayList<String>();
+    otherKey.add("《Netkiller Java 手札》");
+    otherKey.add("《Netkiller Spring Cloud 手札》");
+    System.out.println(redisTemplate.opsForSet().union("setTest",otherKey));		
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>合并两个集合去重复后保存到新的 key 中</title>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForSet().unionAndStore("key","otherKey","destKey"));
+	System.out.println(redisTemplate.opsForSet().unionAndStore("key",otherKey,"destKey"));					
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>计算两个合集的差集</title>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForSet().difference("key","otherKey"));		
+	
+	List<String> otherKey = new ArrayList<String>();
+    otherKey.add("setTest2");
+    otherKey.add("setTest3");
+    System.out.println(redisTemplate.opsForSet().difference("key",otherKey));		
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>计算两个合集的差集，然后保存到新的 key 中</title>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForSet().differenceAndStore("key","otherKey","destKey"));
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>遍历 SET 集合</title>
+			<programlisting>
+				<![CDATA[
+	Cursor<Object> curosr = redisTemplate.opsForSet().scan("setTest", ScanOptions.NONE);
+    while(curosr.hasNext()){
+        System.out.println(curosr.next());
+    }				
+				]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="ZSetOperations">
+		<title>ZSetOperations 有序的 set 集合</title>
+		<programlisting>
+		<![CDATA[
+ZSetOperations<String,String> ops = redisTemplate.opsForZSet();		
+		]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+//添加有序的 set 集合
+ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+zset.add("zMember", "neo", 0);
+zset.add("zMember", "36", 1);
+zset.add("zMember", "178cm", 2);
+//输出有序 set 集合
+System.out.println(zset.rangeByScore("zMember", 0, 2));				
+			]]>
+		</programlisting>
+	</section>
+	<section id="HashOperations">
+		<title>HashOperations</title>
+		<screen>
+			<![CDATA[
+HashOperations<String,String,String> ops = redisTemplate.opsForHash();			
+			]]>
+		</screen>
+		<section>
+			<title>put</title>
+			<programlisting>
+				<![CDATA[
+	redisTemplate.opsForHash().put("redisHash","name","neo");
+    redisTemplate.opsForHash().put("redisHash","age",30);
+    redisTemplate.opsForHash().put("redisHash","nickname","netkiller");				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>putAll</title>
+			<programlisting>
+				<![CDATA[
+HashOperations<String, Object, Object>  hash = redisTemplate.opsForHash();
+Map<String,Object> map = new HashMap<String,Object>();
+map.put("name", "neo");
+map.put("age", "36");
+hash.putAll("member", map);
+
+System.out.println(hash.entries("member"));		
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>从键中的哈希获取给定hashKey的值</title>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForHash().get("redisHash","age"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>delete</title>
+			<para>删除指定的哈希 hashKeys</para>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForHash().delete("redisHash","name"));
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>确定哈希hashKey是否存在</title>
+			<para>确定哈希hashKey是否存在</para>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForHash().hasKey("redisHash","age"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>从哈希中获取指定的多个 hashKey 的值</title>
+			<programlisting>
+				<![CDATA[
+	List<Object> keys = new ArrayList<Object>();
+    keys.add("name");
+    keys.add("age");
+    System.out.println(redisTemplate.opsForHash().multiGet("redisHash",keys))				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>只有hashKey不存在时才能添加值</title>
+			<programlisting>
+				<![CDATA[
+	System.out.println(redisTemplate.opsForHash().putIfAbsent("redisHash","age",30));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>获取整个Hash</title>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForHash().entries("redisHash"));					
+				]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>获取所有key</title>
+			<programlisting>
+				<![CDATA[
+
+System.out.println(redisTemplate.opsForHash().keys("redisHash1"));				
+				]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>通过 hashKey 获取所有值</title>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForHash().values("redisHash"));				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>值加法操作</title>
+			<programlisting>
+				<![CDATA[
+System.out.println(redisTemplate.opsForHash().increment("redisHash","age",1)				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>遍历 Hash 表</title>
+			<programlisting>
+				<![CDATA[
+	Cursor<Map.Entry<Object, Object>> curosr = redisTemplate.opsForHash().scan("redisHash", ScanOptions.ScanOptions.NONE);
+	while(curosr.hasNext()){
+	    Map.Entry<Object, Object> entry = curosr.next();
+	    System.out.println(entry.getKey()+":"+entry.getValue());
+	}				
+				]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="JsonRedisTemplate">
+		<title>存储 Json 对象</title>
+		<section>
+			<title>集成 RedisTemplate 定义新类 JsonRedisTemplate</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.wallet.redis;
 
@@ -968,11 +1058,11 @@ public class JsonRedisTemplate extends RedisTemplate<String, Object> {
 }
 			
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>配置 Redis</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>配置 Redis</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.wallet.config;
 
@@ -1035,11 +1125,11 @@ public class RedisConfig {
 }
 			
 			]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>测试</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>测试</title>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.wallet.restful;
 
@@ -1107,53 +1197,8 @@ public class TestRestController {
 	}
 }
 			]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
-
-	</section>
-	<section id="stringRedisTemplate">
-		<title>stringRedisTemplate 基本用法</title>
-		<screen>
-			<![CDATA[
-@Autowired
-private final StringRedisTemplate stringRedisTemplate;
-			
-stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
-stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
-stringRedisTemplate.getExpire("test")											//根据key获取过期时间
-stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
-stringRedisTemplate.delete("test");												//根据key删除缓存
-stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
-stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
-			]]>
-		</screen>
-
-	</section>
-	<section id="ListOperations">
-		<title>列表操作</title>
-		<para>ListOperations</para>
-		<programlisting>
-				<![CDATA[
-public class Example {
-
-    // inject the actual template
-    @Autowired
-    private RedisTemplate<String, String> template;
-
-    // inject the template as ListOperations
-    // can also inject as Value, Set, ZSet, and HashOperations
-    @Resource(name="redisTemplate")
-    private ListOperations<String, String> listOps;
-
-    public void addLink(String userId, URL url) {
-        listOps.leftPush(userId, url.toExternalForm());
-        // or use template directly
-        redisTemplate.boundListOps(userId).leftPush(url.toExternalForm());
-    }
-}
-				]]>
-		</programlisting>
 	</section>
 	<section id="RedisRepository">
 		<title>Spring Data Redis - Repository Examples</title>
