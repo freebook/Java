@@ -114,45 +114,7 @@ public class ApplicationTests {
 			</example>
 		</section>
 	</section>
-	<section>
-		<title></title>
-		<section>
-			<title>获取过期时间</title>
-			<programlisting>
-			<![CDATA[
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-    
-    Long ttl = redisTemplate.getExpire(String.format("lock:%s", device));			
-			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>列表操作</title>
-			<para>ListOperations</para>
-			<programlisting>
-				<![CDATA[
-public class Example {
 
-    // inject the actual template
-    @Autowired
-    private RedisTemplate<String, String> template;
-
-    // inject the template as ListOperations
-    // can also inject as Value, Set, ZSet, and HashOperations
-    @Resource(name="redisTemplate")
-    private ListOperations<String, String> listOps;
-
-    public void addLink(String userId, URL url) {
-        listOps.leftPush(userId, url.toExternalForm());
-        // or use template directly
-        redisTemplate.boundListOps(userId).leftPush(url.toExternalForm());
-    }
-}
-				]]>
-			</programlisting>
-		</section>
-	</section>
 	<section id="redis.pubsub">
 		<title>Redis Pub/Sub</title>
 		<section>

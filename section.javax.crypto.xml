@@ -5,7 +5,9 @@
 		<title>MD5</title>
 		<para>JDK 1.8</para>
 		<programlisting>
-			String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("SOMESTRING".getBytes("UTF-8")));
+		<![CDATA[
+String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("SOMESTRING".getBytes("UTF-8")));
+		]]>
 		</programlisting>
 	</section>
 	<section>

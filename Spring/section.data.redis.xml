@@ -193,25 +193,72 @@ redis 127.0.0.1:6379> get key
 		</section>
 
 	</section>
+	<section>
+		<title>通过构造方法实例化 Redis</title>
+		<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.security.Principal;
+import java.util.*;
+import java.util.stream.IntStream;
+
+@RestController
+@Slf4j
+@RequestMapping("/test")
+@Scope(value = "prototype")
+public class TestController {
+
+    private final RedisTemplate redisTemplate;
+
+    public TestController(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    @GetMapping("cache/set")
+    public void save(String key, String value) {
+        redisTemplate.opsForValue().set("name", "Neo");
+
+    }
+
+    @GetMapping("/cache/get")
+    public Mono<String> cache() {
+        String name = (String) redisTemplate.opsForValue().get("name");
+        log.info(name);
+        return Mono.justOrEmpty(name);
+    }
+}
+			]]>
+		</programlisting>
+	</section>
 	<section id="RedisTemplate">
 		<title>RedisTemplate</title>
 
-		<section id="stringRedisTemplate">
-			<title>stringRedisTemplate 基本用法</title>
-			<screen>
+		<section id="redis.ops">
+			<title>Redis 一般操作</title>
+			<programlisting>
 			<![CDATA[
-stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
-stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
-stringRedisTemplate.getExpire("test")											//根据key获取过期时间
-stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
-stringRedisTemplate.delete("test");												//根据key删除缓存
-stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
-stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
+redisTemplate.opsForValue().set("name","neo");
+redisTemplate.opsForValue().get("name")			
 			]]>
-			</screen>
-
+			</programlisting>
 		</section>
-		<section>
+		<section id="redisTemplate.set.TimeUnit">
 			<title>设置缓存时间</title>
 			<programlisting>
 			<![CDATA[
@@ -224,7 +271,7 @@ redisTemplate.opsForValue().get("name")
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="redisTemplate.substring">
 			<title>字符串截取</title>
 			<programlisting>
 			<![CDATA[
@@ -238,7 +285,7 @@ redisTemplate.opsForValue().get("name")
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="redisTemplate.append">
 			<title>追加字符串</title>
 			<programlisting>
 			<![CDATA[
@@ -250,7 +297,7 @@ System.out.println(redisTemplate.opsForValue().get("hello")); // 结果：Hellow
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="redisTemplate.getAndSet">
 			<title>设置键的字符串值并返回其旧值</title>
 			<programlisting>
 			<![CDATA[
@@ -260,7 +307,7 @@ System.out.println(redisTemplate.opsForValue().get("hello")); // 结果：Hellow
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="redisTemplate.increment">
 			<title>increment</title>
 			<screen>
 			<![CDATA[
@@ -354,9 +401,10 @@ System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps2));	// 返�
 			</programlisting>
 
 		</section>
-		
+
 		<section id="list">
 			<title>List</title>
+
 			<section>
 				<title>rightPush</title>
 
@@ -370,7 +418,7 @@ System.out.println(list.range("books", 0, 1));
 System.out.println(redisTemplate.opsForList().size("list"));
 			]]>
 				</programlisting>
-</section>
+			</section>
 			<section>
 				<title>rightPushAll</title>
 				<programlisting>
@@ -458,7 +506,7 @@ stringRedisTemplate.opsForSet().isMember("test", "1")							//根据key查看集
 stringRedisTemplate.opsForSet().members("test");								//根据key获取set集合				
 			]]>
 			</screen>
-			
+
 			<programlisting>
 		<![CDATA[
 //添加 一个 set 集合
@@ -523,7 +571,7 @@ System.out.println(redisTemplate.opsForSet().members("setTest"));
 				]]>
 				</programlisting>
 			</section>
-			
+
 			<section>
 				<title>取出一个成员</title>
 				<programlisting>
@@ -549,7 +597,7 @@ System.out.println("Random member: " + redisTemplate.opsForSet().randomMembers("
 				]]>
 				</programlisting>
 			</section>
-			
+
 			<section>
 				<title>随机获取 n 个不重复成员</title>
 				<programlisting>
@@ -569,7 +617,7 @@ System.out.println("Random members: " + redisTemplate.opsForSet().distinctRandom
 				]]>
 				</programlisting>
 			</section>
-			
+
 			<section>
 				<title>成员删除</title>
 				<programlisting>
@@ -628,7 +676,7 @@ System.out.println(redisTemplate.opsForSet().intersectAndStore("key","otherKey",
         System.out.println(redisTemplate.opsForSet().intersectAndStore("key",otherKey,"destKey"));				
 				]]>
 				</programlisting>
-				
+
 			</section>
 			<section>
 				<title>合并两个集合，并去处重复数据</title>
@@ -699,7 +747,7 @@ System.out.println(zset.rangeByScore("zMember", 0, 2));
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section id="hash">
 			<title>Hash</title>
 			<section>
@@ -819,7 +867,17 @@ System.out.println(redisTemplate.opsForHash().increment("redisHash","age",1)
 				</programlisting>
 			</section>
 		</section>
-
+		<section id="redisTemplate.getExpire">
+			<title>获取过期时间</title>
+			<programlisting>
+			<![CDATA[
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+    
+    Long ttl = redisTemplate.getExpire(String.format("lock:%s", device));			
+			]]>
+			</programlisting>
+		</section>
 		<section id="redisTemplate.expire">
 			<title>过期时间未执行</title>
 			<para>Spring Redis 中设置过期时间方法如下</para>
@@ -846,7 +904,7 @@ String result = redisTemplate.execute(new RedisCallback<String>() {
 		]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="redisTemplate.bit">
 			<title>setBit / getBit 二进制位操作</title>
 			<screen>
 			<![CDATA[
@@ -1054,7 +1112,49 @@ public class TestRestController {
 		</section>
 
 	</section>
+	<section id="stringRedisTemplate">
+		<title>stringRedisTemplate 基本用法</title>
+		<screen>
+			<![CDATA[
+@Autowired
+private final StringRedisTemplate stringRedisTemplate;
+			
+stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
+stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
+stringRedisTemplate.getExpire("test")											//根据key获取过期时间
+stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
+stringRedisTemplate.delete("test");												//根据key删除缓存
+stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
+stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
+			]]>
+		</screen>
 
+	</section>
+	<section id="ListOperations">
+		<title>列表操作</title>
+		<para>ListOperations</para>
+		<programlisting>
+				<![CDATA[
+public class Example {
+
+    // inject the actual template
+    @Autowired
+    private RedisTemplate<String, String> template;
+
+    // inject the template as ListOperations
+    // can also inject as Value, Set, ZSet, and HashOperations
+    @Resource(name="redisTemplate")
+    private ListOperations<String, String> listOps;
+
+    public void addLink(String userId, URL url) {
+        listOps.leftPush(userId, url.toExternalForm());
+        // or use template directly
+        redisTemplate.boundListOps(userId).leftPush(url.toExternalForm());
+    }
+}
+				]]>
+		</programlisting>
+	</section>
 	<section id="RedisRepository">
 		<title>Spring Data Redis - Repository Examples</title>
 		<section>

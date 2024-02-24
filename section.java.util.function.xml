@@ -251,6 +251,17 @@ public class TestConsumer {
 }			
 			]]>
 		</programlisting>
+		<para>andThen</para>
+		<programlisting>
+		<![CDATA[
+        Consumer<Integer> test = (n) -> {
+            System.out.println(n);
+        };
+        test.andThen((v) -> {
+            System.out.println(v);
+        }).accept(100);		
+		]]>
+		</programlisting>
 	</section>
 
 	<section id="IntConsumer">
