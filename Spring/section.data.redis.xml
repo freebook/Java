@@ -275,7 +275,7 @@ stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中
 			]]>
 			</screen>
 		</section>
-		<section id="delete">
+		<section id="redisTemplate.delete">
 			<title>删除 key </title>
 			<programlisting>
 		<![CDATA[
@@ -290,25 +290,36 @@ stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中
 		]]>
 			</programlisting>
 		</section>
+		<section id="redisTemplate.object">
+			<title>对象存储</title>
+			<programlisting>
+			<![CDATA[
+    @SneakyThrows
+    public Optional<Set<String>> anyCache1(String prefix, String key, Supplier<Optional<Set<String>>> supplier) {
+        // RedisTemplate redisTemplate = new RedisTemplate();
+        Set<String> value;
+        if (redisTemplate == null) {
+            value = supplier.get().get();
+            this.log("Cache Skip Key: " + key + " Value: " + value);
+        } else {
+            String digest = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(key.getBytes(StandardCharsets.UTF_8)));
+            key = String.format("aigc:%s:%s", prefix, digest);
 
+            if (redisTemplate.hasKey(key)) {
+                value = (Set<String>) redisTemplate.opsForValue().get(key);
+                this.log("Cache Hit Key: " + key + " Value: " + value);
 
-
-
-
-		<section id="list">
-			<title>List</title>
-
-
-
-
-
-
-
+            } else {
+                value = supplier.get().get();
+                redisTemplate.opsForValue().set(key, value);
+                this.log("Cache Set Key: " + key + " Value: " + value);
+            }
+        }
+        return Optional.of(value);
+    }			
+			]]>
+			</programlisting>
 		</section>
-
-
-
-
 		<section id="redisTemplate.getExpire">
 			<title>获取过期时间</title>
 			<programlisting>
@@ -346,38 +357,7 @@ String result = redisTemplate.execute(new RedisCallback<String>() {
 		]]>
 			</programlisting>
 		</section>
-		<section id="redisTemplate.bit">
-			<title>setBit / getBit 二进制位操作</title>
-			<screen>
-			<![CDATA[
-setBit Boolean setBit(K key, long offset, boolean value);
-
-offset 二进制位置(从左向右数)
-value 位 ture 表示 0，false 表示 1			
-			]]>
-			</screen>
-			<programlisting>
-			<![CDATA[
-    // 'a' 的ASCII码是 97 转换为二进制是：01100001
-    // 'b' 的ASCII码是 98 转换为二进制是：01100010
-    // 'c' 的ASCII码是 99 转换为二进制是：01100011
-    			
-	redisTemplate.opsForValue().set("bitTest","a");    
-    
-    redisTemplate.opsForValue().setBit("bitTest",7, false); 	// 01100011
-    redisTemplate.opsForValue().setBit("bitTest",8, true);	// 01100010
-    System.out.println(redisTemplate.opsForValue().get("bitTest"));
-    redisTemplate.opsForValue().setBit("bitTest",8, false);	// 01100011
-    System.out.println(redisTemplate.opsForValue().get("bitTest"));			
-			]]>
-			</programlisting>
-			<para>getBit Boolean getBit(K key, long offset); 获取键对应值的ascii码的在offset处位值</para>
-			<programlisting>
-			<![CDATA[
-System.out.println(redisTemplate.opsForValue().getBit("bitTest",7));			
-			]]>
-			</programlisting>
-		</section>
+		
 
 
 	</section>
@@ -512,7 +492,38 @@ System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps2));	// 返�
 			</programlisting>
 
 		</section>
-	</section>
+	<section id="redisTemplate.bit">
+			<title>setBit / getBit 二进制位操作</title>
+			<screen>
+			<![CDATA[
+setBit Boolean setBit(K key, long offset, boolean value);
+
+offset 二进制位置(从左向右数)
+value 位 ture 表示 0，false 表示 1			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+    // 'a' 的ASCII码是 97 转换为二进制是：01100001
+    // 'b' 的ASCII码是 98 转换为二进制是：01100010
+    // 'c' 的ASCII码是 99 转换为二进制是：01100011
+    			
+	redisTemplate.opsForValue().set("bitTest","a");    
+    
+    redisTemplate.opsForValue().setBit("bitTest",7, false); 	// 01100011
+    redisTemplate.opsForValue().setBit("bitTest",8, true);	// 01100010
+    System.out.println(redisTemplate.opsForValue().get("bitTest"));
+    redisTemplate.opsForValue().setBit("bitTest",8, false);	// 01100011
+    System.out.println(redisTemplate.opsForValue().get("bitTest"));			
+			]]>
+			</programlisting>
+			<para>getBit Boolean getBit(K key, long offset); 获取键对应值的ascii码的在offset处位值</para>
+			<programlisting>
+			<![CDATA[
+System.out.println(redisTemplate.opsForValue().getBit("bitTest",7));			
+			]]>
+			</programlisting>
+		</section></section>
 	<section id="ListOperations">
 		<title>列表操作</title>
 		<para>ListOperations</para>
