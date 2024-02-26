@@ -9,5 +9,9 @@
 	&section.mvc.view.xml;
 	&section.mvc.validation.xml;
 	&section.mvc.interceptor.xml;
+	
+	&section.mvc.resttemplate.xml;
+	&section.mvc.restclient.xml;
+	
 	&section.mvc.faq.xml;
 </chapter>

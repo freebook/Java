@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	&section.framework.xml;
 	&chapter.mvc.xml;
 	&chapter.webflux.xml;
-	&section.framework.xml;
+	&section.mvc.service.xml;
+	&section.mvc.template.xml;
+	&chapter.mvc.tomcat.xml;

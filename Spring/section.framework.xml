@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><!-- <?dbhtml dir="bean" ?> -->
-	<title>@Bean</title>
-	<programlisting>
+<chapter id="framework">
+<!-- <?dbhtml dir="util" ?> -->
+	<title>Spring 框架</title><!-- Miscellaneous -->
+	<para>Spring框架为基于Java的现代企业级应用程序提供了全面的编程和配置模型——适用于任何类型的部署平台。</para>
+	<para>Spring框架的关键要素是应用程序级别的基础设施支持：Spring专注于企业级应用程序的“管道”，以便团队可以专注于应用程序级别的业务逻辑，而无需与特定的部署环境产生不必要的联系。</para>
+	<section id="bean"><!-- <?dbhtml dir="bean" ?> -->
+		<title>@Bean</title>
+		<programlisting>
 	<![CDATA[
 package cn.netkiller.config;
 
@@ -52,9 +57,9 @@ public class Config {
 }
 
 	]]>
-	</programlisting>
-	<para>查看注入情况</para>
-	<screen>
+		</programlisting>
+		<para>查看注入情况</para>
+		<screen>
 	<![CDATA[
 neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/actuator/beans' |jq | grep -i mybean -A 5
         "myBean2": {
@@ -89,10 +94,10 @@ neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/act
           ]
         },	
 	]]>
-	</screen>
-	<section>
-		<title>@Scope 定义类型</title>
-		<programlisting>
+		</screen>
+		<section>
+			<title>@Scope 定义类型</title>
+			<programlisting>
 		<![CDATA[
     @Bean({"neo","netkiller"})
     @Scope("prototype")
@@ -100,8 +105,8 @@ neo@MacBook-Pro-M2 ~/w/watch (main)> curl -s 'http://neo:chen@localhost:8080/act
         return new MyBean();
     }		
 		]]>
-		</programlisting>
-		<screen>
+			</programlisting>
+			<screen>
 		<![CDATA[
 Scope		详解
 singleton	默认单例的bean定义信息，对于每个IOC容器来说都是单例对象
@@ -111,9 +116,11 @@ session		bean对象的定义为一次HTTP会话的生命周期。仅仅在web-aw
 application	bean对象的定义范围在ServletContext生命周期内。仅仅在web-aware的上下文中有效
 websocket	bean对象的定义为WebSocket的生命周期内。仅仅在web-aware的上下文中有效
 		]]>
-		</screen>
-		<para>singleton和prototype 一般都用在普通的Java项目中，而request、session、application、websocket都用于web应用中。</para>
-		<programlisting>
+			</screen>
+			<para>singleton和prototype
+				一般都用在普通的Java项目中，而request、session、application、websocket都用于web应用中。
+			</para>
+			<programlisting>
 		<![CDATA[
 	@Bean
     @Scope(value = "singleton")
@@ -121,20 +128,20 @@ websocket	bean对象的定义为WebSocket的生命周期内。仅仅在web-aware
         return new Person();
     }		
 		]]>
-		</programlisting>
-		<screen>
+			</programlisting>
+			<screen>
 		<![CDATA[
 ConfigurableBeanFactory.SCOPE_PROTOTYPE，即“prototype”
 ConfigurableBeanFactory.SCOPE_SINGLETON，即“singleton”
 WebApplicationContext.SCOPE_REQUEST，即“request”
 WebApplicationContext.SCOPE_SESSION，即“session”
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>InitializingBean</title>
-		<para>afterPropertiesSet() 在 @Value 完成之后执行</para>
-		<programlisting>
+			</screen>
+		</section>
+		<section>
+			<title>InitializingBean</title>
+			<para>afterPropertiesSet() 在 @Value 完成之后执行</para>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.services;
 
@@ -164,19 +171,14 @@ public class TestService implements InitializingBean {
 }
 
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
-</chapter>
-	&section.mvc.service.xml;
-	&section.mvc.template.xml;
-	&chapter.mvc.tomcat.xml;
-<chapter id="index"><?dbhtml dir="util" ?>
-	<title>Spring 工具集</title><!-- Miscellaneous -->
 	<section id="UriComponents">
 		<title>URL 拼装/解析</title>
 		<programlisting>
@@ -314,8 +316,5 @@ String locationUri = ServletUriComponentsBuilder
         return chain.filter(exchange);		
 		]]>
 		</programlisting>
-	</section>	
-	&section.mvc.resttemplate.xml;
-	&section.mvc.restclient.xml;
-
+	</section>
 </chapter>
