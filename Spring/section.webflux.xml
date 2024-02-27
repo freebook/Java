@@ -165,22 +165,80 @@ public class WebFluxRouter {
 	</section>
 
 </section>
-<section id="webflux.Thymeleaf">
-	<title>Thymeleaf</title>
+<section id="Webflux.RestController">
+	<title>RestController</title>
 	<section>
-		<title>模板引擎 Thymeleaf 依赖</title>
-		<screen>
+		<title>Post 数据</title>
+		<para>Webflux 不支持 @RequestParam 获取 Form 表单数据</para>
+		<programlisting>
+		<![CDATA[
+    @PostMapping("post")
+    public String post(@RequestParam("param") String test) {
+        log.info(test);
+        return test;
+    }		
+		]]>
+		</programlisting>
+		<para>有一种方法可以获取 Form 提交过来的数据</para>
+		<programlisting>
+		<![CDATA[
+    @PostMapping("post")
+    public Mono<MultiValueMap<String, String>> post(ServerWebExchange exchange) {
+        Mono<MultiValueMap<String, String>> fromData = exchange.getFormData();
+        log.info(fromData.toString());
+        return fromData;
+    }		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    @PostMapping("post")
+    public Mono<MultiValueMap<String, String>> post(ServerWebExchange exchange) {
+        Mono<MultiValueMap<String, String>> fromData = exchange.getFormData();
+        Disposable subscribe = fromData.subscribe(multiValueMap -> {
+            log.info(multiValueMap.toString());
+
+            Map<String, String> singleValueMap = multiValueMap.toSingleValueMap();
+            log.info(singleValueMap.toString());
+            log.info("name: {}, nickname:{}", singleValueMap.get("name"), singleValueMap.get("nickname"));
+        });
+
+        return fromData;
+    }		
+		]]>
+		</programlisting>
+		<para>获取 Form 数据</para>
+		<programlisting>
+		<![CDATA[
+    @PostMapping("post")
+    public Mono<Map<String, String>> post(ServerWebExchange serverWebExchange) {
+        return serverWebExchange.getFormData()
+                .flatMap(formData -> {
+                    Map<String, String> singleValueMap = formData.toSingleValueMap();
+                    log.info(singleValueMap.toString());
+                    return Mono.just(singleValueMap);
+                });
+    }		
+		]]>
+		</programlisting>
+	</section>
+
+	<section id="webflux.Thymeleaf">
+		<title>Thymeleaf</title>
+		<section>
+			<title>模板引擎 Thymeleaf 依赖</title>
+			<screen>
 			<![CDATA[
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>			
 			]]>
-		</screen>
-	</section>
-	<section>
-		<title>application.properties 相关的配置</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>application.properties 相关的配置</title>
+			<screen>
 			<![CDATA[
 spring.thymeleaf.cache=true # Enable template caching.
 spring.thymeleaf.check-template=true # Check that the template exists before rendering it.
@@ -197,11 +255,11 @@ spring.thymeleaf.suffix=.html # Suffix that gets appended to view names when bui
 spring.thymeleaf.template-resolver-order= # Order of the template resolver in the chain.
 spring.thymeleaf.view-names= # Comma-separated list of view names that can be resolved.
 			]]>
-		</screen>
-	</section>
-	<section>
-		<title>Webflux 控制器</title>
-		<programlisting>
+			</screen>
+		</section>
+		<section>
+			<title>Webflux 控制器</title>
+			<programlisting>
 			<![CDATA[
 	@GetMapping("/welcome")
     public Mono<String> hello(final Model model) {
@@ -219,12 +277,12 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
         return "cityList";
     }			
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Tymeleaf 视图</title>
-		<para>welcome.html</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Tymeleaf 视图</title>
+			<para>welcome.html</para>
+			<programlisting>
 			<![CDATA[
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -240,9 +298,9 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 </body>
 </html>			
 			]]>
-		</programlisting>
-		<para>cityList.html</para>
-		<programlisting>
+			</programlisting>
+			<para>cityList.html</para>
+			<programlisting>
 			<![CDATA[
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -283,9 +341,10 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 </body>
 </html>			
 			]]>
-		</programlisting>
-	</section>
+			</programlisting>
+		</section>
 
+	</section>
 </section>
 <section id="redis-reactive">
 	<title>Webflux Redis</title>
