@@ -18,6 +18,45 @@ LocalDate localDate2 = LocalDate.ofYearDay(2019,150);
 		]]>
 		</programlisting>
 	</section>
+	<section id="LocalTime">
+		<title>LocalTime</title>
+		<programlisting>
+		<![CDATA[
+	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm:ss");
+	LocalTime lt = LocalTime.now();
+	System.out.println(dtf.format(lt)); //08:03:32
+
+	dtf = DateTimeFormatter.ofPattern("hh:mm:ss a");
+	lt = LocalTime.now();
+	System.out.println(dtf.format(lt)); //08:03:32 PM
+
+	dtf = DateTimeFormatter.ofPattern("HH:mm");
+	lt = LocalTime.now();
+	System.out.println(dtf.format(lt)); //20:03		
+		]]>
+		</programlisting>
+	</section>
+	<section id="ZonedDateTime">
+		<title>ZonedDateTime</title>
+		<programlisting>
+			<![CDATA[
+Date.from(java.time.ZonedDateTime.now().toInstant());			
+			]]>
+		</programlisting>
+	</section>
+	<section id="DateTimeFormatter">
+		<title>DateTimeFormatter</title>
+		<programlisting>
+		<![CDATA[
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss"); 
+String dateTime = formatter.format(LocalDateTime.now());
+System.out.println(dateTime);
+
+LocalDateTime ldt = LocalDateTime.parse("2018-Dec-20 08:25:30", formatter);
+System.out.println(ldt); 
+		]]>
+		</programlisting>
+	</section>
 	<section id="Instant">
 		<title>Instant</title>
 		<para>以精度到纳秒记录固定的时间值的Instant,创建方式:</para>
@@ -119,7 +158,7 @@ System.out.println("天数="+duration.toDays());
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="toMillis">
 			<title>获取毫秒</title>
 			<programlisting>
 		<![CDATA[

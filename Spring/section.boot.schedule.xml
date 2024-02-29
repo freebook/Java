@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="scheduling" ?>
 	<title>Spring boot with Scheduling</title>
-	<para>项目中经常会用到计划任务，spring Boot 中通过@EnableScheduling启用计划任务，再通过@Scheduled注解配置计划任务如果运行。</para>
+	<para>项目中经常会用到计划任务，spring Boot
+		中通过@EnableScheduling启用计划任务，再通过@Scheduled注解配置计划任务如果运行。
+	</para>
 	<section>
-		<title>Application.java</title>
-		<para>Application.java</para>
-		<para>启用计划任务, 在Spring Boot启动类加上注解@EnableScheduling，表示该项目启用计划任务</para>
+		<title>启用计划任务</title>
 		<programlisting>
+			<![CDATA[
+@EnableScheduling		
+			]]>
+		</programlisting>
+		<section>
+			<title>Application.java</title>
+			<para>Application.java</para>
+			<para>启用计划任务, 在Spring Boot启动类加上注解@EnableScheduling，表示该项目启用计划任务</para>
+			<programlisting>
 			<![CDATA[
 package api;
 
@@ -36,13 +45,13 @@ public class Application {
 
 }
 				]]>
-		</programlisting>
-		<para>开启计划任务 @EnableScheduling</para>
-		<para>确保你的计划任务在 @ComponentScan 包中。</para>
-	</section>
-	<section>
-		<title>配置</title>
-		<screen>
+			</programlisting>
+			<para>开启计划任务 @EnableScheduling</para>
+			<para>确保你的计划任务在 @ComponentScan 包中。</para>
+		</section>
+		<section>
+			<title>配置</title>
+			<screen>
 		<![CDATA[
 # 任务调度线程池大小 默认 1 建议根据任务加大
 spring.task.scheduling.pool.size=1
@@ -53,12 +62,13 @@ spring.task.scheduling.shutdown.await-termination=
 # 调度线程关闭前最大等待时间，确保最后一定关闭
 spring.task.scheduling.shutdown.await-termination-period=		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>Component</title>
-		<para>在计划任务方法上加上@Scheduled注解，表示该方法是一个计划任务，项目启动后会去扫描该注解的方法并加入计划任务列表。</para>
-		<programlisting>
+			</screen>
+		</section>
+		<section>
+			<title>Component</title>
+			<para>在计划任务方法上加上@Scheduled注解，表示该方法是一个计划任务，项目启动后会去扫描该注解的方法并加入计划任务列表。
+			</para>
+			<programlisting>
 			<![CDATA[
 			
 package api.schedule;
@@ -110,18 +120,12 @@ public class ScheduledTasks {
 
 }
 			]]>
-		</programlisting>
+			</programlisting>
 
+		</section>
 	</section>
-	<section>
-		<title>查看日志</title>
-		<programlisting>
-			<![CDATA[
-tail -f spring.log			
-			]]>
-		</programlisting>
-	</section>
-	<section>
+
+	<section id="Scheduled.matchIfMissing">
 		<title>计划任务控制开关</title>
 		<para>matchIfMissing = true， 如果改属性条目不存在返回 true</para>
 		<programlisting>
@@ -205,6 +209,54 @@ initialDelayString：延迟启动计划任务，单位毫秒，表示执行第�
 			]]>
 		</screen>
 		<para></para>
+		<section id="fixedRate">
+			<title>fixedRate 案例</title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+@Service
+@EnableScheduling
+@Slf4j
+public class ScheduleService {
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss");
+
+    @Scheduled(fixedRate = 5000) //5秒运行一次调度任务
+    public void echoCurrentTime() {
+        String dateTime = dateTimeFormatter.format(LocalDateTime.now());
+        System.out.println(dateTime); 
+
+        log.info("The time is now {}", dateTime);
+    }
+}
+			
+			]]>
+			</programlisting>
+
+		</section>
+		<section id="timeUnit">
+			<title>timeUnit</title>
+			<programlisting>
+				<![CDATA[
+@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
+public void doSomething() {
+    // 需要执行的代码
+}				
+				]]>
+			</programlisting>
+		</section>
+
+	</section>
+	<section id="schedule.cron">
+		<title>cron 表达式</title>
 		<para>cron表达式使用空格分隔的时间元素。</para>
 		<screen>
 			<![CDATA[
@@ -326,9 +378,20 @@ public class MyTask {
 				]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>周一 ～ 周五</title>
+			<programlisting>
+			<![CDATA[
+@Scheduled(cron="*/5 * * * * MON-FRI")
+public void doSomething() {
+    // 需要执行的代码，只在周一到周五执行
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
-	<section>
+	<section id="TimerTask">
 		<title>Timer 例子</title>
 		<programlisting>
 			<![CDATA[
@@ -357,12 +420,11 @@ public class TimerTest {
 	}
 
 }
-			
 			]]>
 
 		</programlisting>
 	</section>
-	<section>
+	<section id="ScheduledExecutorService">
 		<title>ScheduledExecutorService 例子</title>
 		<programlisting>
 		<![CDATA[

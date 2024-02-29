@@ -1035,14 +1035,7 @@ ISO 8601扩展格式 YYYY-MM-DDTHH:mm:ss.sssZ
 			]]>
 			</programlisting>
 		</section>
-		<section id="date.ZonedDateTime">
-			<title>ZonedDateTime</title>
-			<programlisting>
-			<![CDATA[
-Date.from(java.time.ZonedDateTime.now().toInstant());			
-			]]>
-			</programlisting>
-		</section>
+
 	</section>
 	<section id="array">
 		<title>Array 数组</title>

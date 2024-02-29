@@ -1,9 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="swagger" ?>
 	<title>Spring boot with Swagger</title>
-	<section>
-		<title>Swagger3</title>
-		<screen>
+	<section id="springdoc">
+		<title>Spring boot with Springdoc</title>
+		<ulink url="https://springdoc.org">https://springdoc.org</ulink>
+		<section>
+			<title>WebMvc</title>
+			<para>Ui</para>
+			<programlisting>
+			<![CDATA[
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+    </dependencies>
+			]]>
+			</programlisting>
+			<para>Api</para>
+			<programlisting>
+			<![CDATA[
+   <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+      <version>2.3.0</version>
+   </dependency>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Webflux</title>
+			<programlisting>
+			<![CDATA[
+   <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+      <version>2.3.0</version>
+   </dependency>			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Swagger UI</title>
+			<ulink url="http://localhost:8080/swagger-ui.html">http://localhost:8080/swagger-ui.html</ulink>
+		</section>
+		<section>
+			<title>从 SpringFox 迁移到 Swagger3 注解变化</title>
+			<programlisting>
+			<![CDATA[
+@Api → @Tag
+@ApiIgnore → @Parameter(hidden = true) or @Operation(hidden = true) or @Hidden
+@ApiImplicitParam → @Parameter
+@ApiImplicitParams → @Parameters
+@ApiModel → @Schema
+@ApiModelProperty(hidden = true) → @Schema(accessMode = READ_ONLY)
+@ApiModelProperty → @Schema
+@ApiOperation(value = "foo", notes = "bar") → @Operation(summary = "foo", description = "bar")
+@ApiParam → @Parameter
+@ApiResponse(code = 404, message = "foo") → @ApiResponse(responseCode = "404", description = "foo")			
+			]]>
+			</programlisting>
+		</section>
+		
+	</section>
+	<section id="springboot.knife4j">
+		<title>Spring boot with knife4j</title>
+		<section>
+			<title>maven</title>
+			<programlisting>
+		<![CDATA[
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <version>4.4.0</version>
+        </dependency>		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Knife4jConfiguration</title>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class Knife4jConfiguration {
+    @Bean
+    public GroupedOpenApi adminApi() {      // 创建了一个api接口的分组
+        return GroupedOpenApi.builder()
+                .group("default")         // 分组名称
+                .pathsToMatch("/**")  // 接口请求路径规则
+                .build();
+    }
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("netkiller")
+                        .description("接口描述")
+                        .version("v1.0.0")
+                        .contact(new Contact().name("neo").email("netkiller@msn.com"))
+                        .license(new License().name("Apache 2.0").url("https://www.netkiller.cn/docs"))
+                ).externalDocs(new ExternalDocumentation()
+                        .description("外部文档")
+                        .url("https://www.netkiller.cn/docs"));
+
+    }
+
+}		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties</title>
+			<programlisting>
+		<![CDATA[
+# springdoc-openapi项目配置
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.tags-sorter=alpha
+springdoc.swagger-ui.operations-sorter=alpha
+springdoc.api-docs.path=/v3/api-docs
+# knife4j的增强配置，不需要增强可以不配
+knife4j.enable=true
+knife4j.setting.language=zh_cn		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="springfox">
+		<title>springfox</title>
+		<section>
+			<title>Swagger3</title>
+			<screen>
 		<![CDATA[
 <dependency>
     <groupId>io.springfox</groupId>
@@ -11,13 +154,13 @@
     <version>3.0.0</version>
 </dependency>
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>Swagger2</title>
+			</screen>
+		</section>
 		<section>
-			<title>Maven 文件</title>
-			<screen>
+			<title>Swagger2</title>
+			<section>
+				<title>Maven 文件</title>
+				<screen>
 		<![CDATA[
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -61,11 +204,11 @@
 </project>
 
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>SpringApplication</title>
-			<programlisting>
+				</screen>
+			</section>
+			<section>
+				<title>SpringApplication</title>
+				<programlisting>
 		<![CDATA[
 package cn.netkiller.swagger2;
 
@@ -82,11 +225,11 @@ public class Application {
 }
 
 		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>EnableSwagger2</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>EnableSwagger2</title>
+				<programlisting>
 		<![CDATA[
 package cn.netkiller.swagger2;
 
@@ -123,11 +266,11 @@ public class Swagger2Configuration {
 }
 
 		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>RestController</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>RestController</title>
+				<programlisting>
 		<![CDATA[
 package cn.netkiller.swagger2;
 
@@ -144,14 +287,17 @@ public class HelloController {
 	}
 }
 		]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section>
-	<section>
-		<title>@Api()</title>
-		<para>用于类；表示标识这个类是swagger的资源tags,value 是说明，可以使用tags替代,
-			tags如果有多个值，生成多个list</para>
-		<programlisting>
+	<section id="swagger.@Api">
+		<title>@Api() 资源定义</title>
+		<section>
+			<title>标签分类</title>
+			<para>用于类；表示标识这个类是swagger的资源tags,value 是说明，可以使用tags替代,
+				tags如果有多个值，生成多个list
+			</para>
+			<programlisting>
 		<![CDATA[
 @Api(value="用户控制器",tags={"用户操作接口"})
 @RestController
@@ -159,9 +305,16 @@ public class UserController {
 
 }
 		]]>
+			</programlisting>
+		</section>
+	</section><section id="swagger.@ApiIgnore">
+		<title>@ApiIgnore 忽律接口</title>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
 		</programlisting>
-	</section>
-	<section>
+	</section><section>
 		<title>@ApiOperation()</title>
 		<para>用于方法；表示一个http请求的操作，value用于方法描述，notes用于提示内容，tags可以重新分组</para>
 		<screen>
@@ -211,8 +364,7 @@ public class TestController {
 }
 		]]>
 		</programlisting>
-	</section>
-	<section>
+	</section><section>
 		<title>@ApiResponses</title>
 		<programlisting>
 		<![CDATA[
@@ -230,8 +382,7 @@ public class TestController {
 	}
 		]]>
 		</programlisting>
-	</section>
-	<section>
+	</section><section>
 		<title>@ApiModel 实体类</title>
 		<screen>
 		<![CDATA[
@@ -352,80 +503,12 @@ public class TestController {
 
 		]]>
 		</programlisting>
-	</section>
+	</section></section>
+	
+	
+	
+	
+	
 
-	<section id="springboot.knife4j">
-		<title>Spring boot with knife4j</title>
-		<section>
-			<title>maven</title>
-			<programlisting>
-		<![CDATA[
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <version>4.4.0</version>
-        </dependency>		
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Knife4jConfiguration</title>
-			<programlisting>
-		<![CDATA[
-package cn.netkiller.config;
 
-import io.swagger.v3.oas.models.ExternalDocumentation;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class Knife4jConfiguration {
-    @Bean
-    public GroupedOpenApi adminApi() {      // 创建了一个api接口的分组
-        return GroupedOpenApi.builder()
-                .group("default")         // 分组名称
-                .pathsToMatch("/**")  // 接口请求路径规则
-                .build();
-    }
-
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("netkiller")
-                        .description("接口描述")
-                        .version("v1.0.0")
-                        .contact(new Contact().name("neo").email("netkiller@msn.com"))
-                        .license(new License().name("Apache 2.0").url("https://www.netkiller.cn/docs"))
-                ).externalDocs(new ExternalDocumentation()
-                        .description("外部文档")
-                        .url("https://www.netkiller.cn/docs"));
-
-    }
-
-}		
-		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>application.properties</title>
-			<programlisting>
-		<![CDATA[
-# springdoc-openapi项目配置
-springdoc.swagger-ui.path=/swagger-ui.html
-springdoc.swagger-ui.tags-sorter=alpha
-springdoc.swagger-ui.operations-sorter=alpha
-springdoc.api-docs.path=/v3/api-docs
-# knife4j的增强配置，不需要增强可以不配
-knife4j.enable=true
-knife4j.setting.language=zh_cn		
-		]]>
-			</programlisting>
-		</section>
-	</section>
 </chapter>
