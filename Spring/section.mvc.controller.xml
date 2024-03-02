@@ -1294,6 +1294,19 @@ public StreamingResponseBody handle() {
 	<title>@RestController</title>
 	<para></para>
 	<section>
+		<title>返回迭代器</title>
+		<programlisting>
+		<![CDATA[
+    @GetMapping("iterable")
+    public Iterable<PicturePsychoanalysis> get() {
+        Iterable<PicturePsychoanalysis> picturePsychoanalysis = picturePsychoanalysisService.findByAnalysisIsNull();
+        return picturePsychoanalysis;
+
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>上传文件</title>
 		<programlisting>
 		<![CDATA[

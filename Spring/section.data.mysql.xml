@@ -3847,6 +3847,37 @@ In --- 等价于 SQL 中的 "in"，比如 findByUsernameIn(Collection<String> us
 NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<String> userList) ，方法的参数可以是 Collection 类型，也可以是数组或者不定长
 		]]>
 		</screen>
+		<section id="JpaRepository">
+			<title>JpaRepository</title>
+			<para>
+				<ulink url="https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html" />
+			</para>
+			<screen>
+			<![CDATA[
+Modifier and Type	Method and Description
+void	deleteAllInBatch()
+Deletes all entities in a batch call.
+void	deleteInBatch(Iterable<T> entities)
+Deletes the given entities in a batch which means it will create a single Query.
+List<T>	findAll() 
+<S extends T>
+List<S>	findAll(Example<S> example) 
+<S extends T>
+List<S>	findAll(Example<S> example, Sort sort) 
+List<T>	findAll(Sort sort) 
+List<T>	findAllById(Iterable<ID> ids) 
+void	flush()
+Flushes all pending changes to the database.
+T	getOne(ID id)
+Returns a reference to the entity with the given identifier.
+<S extends T>
+List<S>	saveAll(Iterable<S> entities) 
+<S extends T>
+S	saveAndFlush(S entity)
+Saves an entity and flushes changes instantly.		
+			]]>
+			</screen>
+		</section>
 		<section id="CrudRepository">
 			<title>CrudRepository</title>
 			<para>CrudRepository 接口提供了最基本的对实体类的添删改查操作</para>
@@ -3878,38 +3909,7 @@ void deleteAll();								//删除所有实体,不用或慎用!
 			</section>
 		</section>
 
-		<section id="JpaRepository">
-			<title>JpaRepository</title>
-			<para>
-				<ulink
-					url="https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html" />
-			</para>
-			<screen>
-			<![CDATA[
-Modifier and Type	Method and Description
-void	deleteAllInBatch()
-Deletes all entities in a batch call.
-void	deleteInBatch(Iterable<T> entities)
-Deletes the given entities in a batch which means it will create a single Query.
-List<T>	findAll() 
-<S extends T>
-List<S>	findAll(Example<S> example) 
-<S extends T>
-List<S>	findAll(Example<S> example, Sort sort) 
-List<T>	findAll(Sort sort) 
-List<T>	findAllById(Iterable<ID> ids) 
-void	flush()
-Flushes all pending changes to the database.
-T	getOne(ID id)
-Returns a reference to the entity with the given identifier.
-<S extends T>
-List<S>	saveAll(Iterable<S> entities) 
-<S extends T>
-S	saveAndFlush(S entity)
-Saves an entity and flushes changes instantly.		
-			]]>
-			</screen>
-		</section>
+		
 		<section id="PagingAndSortingRepository">
 			<title>PagingAndSortingRepository</title>
 
@@ -4155,7 +4155,20 @@ public interface UserRepository extends CrudRepository<User, Long> {
 			]]>
 			</programlisting>
 		</section>
-
+		<section id="IsNull">
+			<title>IsNull</title>
+			<programlisting>
+			<![CDATA[
+    Iterable<PicturePsychoanalysis> findByAnalysisIsNull();			
+			]]>
+			</programlisting>
+			<para>使用 And / Or 链接多个条件</para>
+			<programlisting>
+			<![CDATA[
+    Iterable<Chat> findByAnswerIsNullOrAudioIsNullOrPsychoanalysisIsNull();
+			]]>
+			</programlisting>
+		</section>
 		<section id="OrderBy">
 			<title>OrderBy</title>
 			<programlisting>
