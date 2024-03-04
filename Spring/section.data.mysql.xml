@@ -226,7 +226,7 @@ precision 	属性和scale属性表示精度，当字段类型为double时，prec
 scale		int	列的精度，仅对十进制数值有效，表示小数位的总位数。默认为0。		
 			]]>
 			</screen>
-			<section>
+			<section id="@Column.length">
 				<title>字段长度</title>
 				<para>字段长度定义</para>
 				<screen>
@@ -235,7 +235,7 @@ scale		int	列的精度，仅对十进制数值有效，表示小数位的总位
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="BigDecimal">
 				<title>浮点型</title>
 				<screen>
 				<![CDATA[
@@ -246,7 +246,7 @@ scale		int	列的精度，仅对十进制数值有效，表示小数位的总位
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="@Column.insertable">
 				<title>创建于更新控制</title>
 				<screen>
 				<![CDATA[
