@@ -1469,5 +1469,17 @@ public class TestRestController {
 			</programlisting>
 		</section>
 	</section>
-
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>Spring Data Redis</title>
+			<para>Spring Data Redis - Could not safely identify store assignment for repository candidate interface cn.aigcsst.repository.ChatRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository</para>
+			<programlisting>
+			<![CDATA[
+spring.data.redis.repositories.enabled=false
+			]]>
+			</programlisting>
+		</section>
+		
+	</section>
 </chapter>
