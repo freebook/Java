@@ -460,7 +460,28 @@ file uploaded
 			]]>
 			</screen>
 		</section>
+		<section id="RequestParam.Set">
+			<title>传递 Set 数据</title>
+			<para>查询接口</para>
+			<programlisting>
+		<![CDATA[
+	@GetMapping("keyword")
+    public Optional<Lora> keywordTest(@RequestParam("key") Set<String> keyword) {
 
+        Optional<Lora> lora = loraRepository.findByKeywordIn(keyword);
+        return lora;
+    }
+		]]>
+			</programlisting>
+			<para>GET 传递 Set 参数的方法如下</para>
+			<programlisting>
+		<![CDATA[
+curl -X 'GET' \
+  'http://localhost:8080/lora/keyword?key=aaa&key=bbb&key=ccc' \
+  -H 'accept: */*'
+		]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>@RequestParam - POST 数组</title>
 			<para>HTTP 头</para>
@@ -510,8 +531,8 @@ picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg
 			]]>
 			</programlisting>
 		</section>
-		
-		
+
+
 	</section>
 
 	<section id="@RequestHeader">
