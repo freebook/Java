@@ -69,8 +69,38 @@ public class CreateTempFileExample
 }
 		]]>
 		</programlisting>
-		<para>Temp file : C:\Users\mkyong\AppData\Local\Temp\temp-file-name623426.tmp</para>
+		<para>Temp file : C:\Users\neo\AppData\Local\Temp\temp-file-name623426.tmp</para>
+		<para>指定目录创建临时文件，运行之后将会在 /tmp/convert 目录中创建文件</para>
+		<programlisting>
+		<![CDATA[
+	@SneakyThrows
+    public InputStream convertInputStreamAmrToPcm(InputStream inputStreamAmr) {
+//        UUID uuid = UUID.randomUUID();
+//        String filename = uuid.toString();
+        String filename = "convert-";
 
+        File source = File.createTempFile(filename, ".amr", new File("/tmp/convert"));
+        File target = File.createTempFile(filename, ".pcm", new File("/tmp/convert"));
+
+        if (!target.getParentFile().isDirectory()) {
+            boolean directory = target.getParentFile().mkdirs();
+        }
+
+        log.info("Source: {}, Target: {}", source.getAbsolutePath(), target.getAbsolutePath());
+        source.deleteOnExit();
+        target.deleteOnExit();
+        inputStreamAmr.transferTo(new FileOutputStream(source));
+        boolean status = audioFormatConversion(source, target);
+        log.info("Amr To Pcm: {}", status);
+        if (!status) {
+            return null;
+        }
+        InputStream inputStream = new FileInputStream(target);
+
+        return inputStream;
+    }		
+		]]>
+		</programlisting>
 	</section>
 	<section id="java.io.FileWriter">
 		<title>FileWriter 文本写入文件</title>
