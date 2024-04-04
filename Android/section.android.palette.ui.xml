@@ -197,6 +197,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			</programlisting>
 		</section>
 	</section>
+	<section>
+		<title>EditText</title>
+			<programlisting>
+		<![CDATA[
+editText.setEnabled(false);//去掉点击时编辑框下面横线:
+editText.setFocusable(false);//不可编辑
+editText.setFocusableInTouchMode(false);//不可编辑
+editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
+editText.setClickable(false);//不可点击，
+editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
 	<section id="ListView">
 		<title>ListView</title>
 		<section id="ListView.array">

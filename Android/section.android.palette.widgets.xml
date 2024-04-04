@@ -37,6 +37,14 @@ android:scaleType="matrix"
 			</programlisting>
 		</section>
 		<section>
+			<title>保持长宽比例</title>
+			<programlisting>
+			<![CDATA[
+android:adjustViewBounds="true" 			
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>ImageView 显示 URL 图片</title>
 			<para>方法一</para>
 			<programlisting>
