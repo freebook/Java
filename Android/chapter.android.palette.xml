@@ -2,6 +2,23 @@
 <chapter id="index"><?dbhtml dir="palette" ?>
 	<title>Palette 视觉设计</title>
 	<section>
+		<title>禁止屏幕休眠</title>
+		<para>android:keepScreenOn="true"</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="cn.aigcsst.student.MainActivity"
+    tools:visibility="invisible"
+    android:keepScreenOn="true">		
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>父容器定位</title>
 		<para>在相对布局中，可以通过以下的属性让的组合让控件处于父容器左上角、右上角、左下角、右下角、上下左右居中，正居中等九个位置。属性如下：</para>
 		<programlisting>

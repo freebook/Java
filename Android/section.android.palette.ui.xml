@@ -197,7 +197,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="ImageButton">
+		<title>ImageButton</title>
+		<section>
+			<title>触摸事件</title>
+			<programlisting>
+			<![CDATA[
+        ImageButton imageButtonSpeak = findViewById(R.id.imageButtonSpeak);
+        imageButtonSpeak.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                System.out.println("图片按钮 touch 事件");
+
+                int action = motionEvent.getAction();
+                if (action == MotionEvent.ACTION_UP) {
+                    System.out.println("按下了图片按钮。");
+                } else if (action == MotionEvent.ACTION_DOWN) {
+                    System.out.println("松开了图片按钮。");
+                } else if (action == MotionEvent.ACTION_MOVE) {
+                    System.out.println("按下并移动了图片按钮。");
+                }
+                return false;
+            }
+        });		
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="EditText">
 		<title>EditText</title>
 			<programlisting>
 		<![CDATA[
