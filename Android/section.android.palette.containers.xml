@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="android.containers">
 	<title>Containers</title>
-	<section>
+	<section id="CardView">
 		<title>CardView</title>
 		<section>
 			<title>实现圆角 ImageView</title>
@@ -29,6 +29,33 @@
             app:srcCompat="@drawable/bg_repast_menu" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="RecyclerView">
+		<title>RecyclerView</title>
+		<section>
+			<title>滚动到最底部</title>
+			<programlisting>
+			<![CDATA[
+        linearLayoutManager = new LinearLayoutManager(ContextHolder.getContext());
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+			]]>
+			</programlisting>
+			<para>调用下面函数</para>
+			<programlisting>
+			<![CDATA[
+recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);			
+			]]>
+			</programlisting>
+			<para>其他用法</para>
+			<programlisting>
+			<![CDATA[
+//                        linearLayoutManager.scrollToPositionWithOffset(adapter.getItemCount() - 1, Integer.MIN_VALUE);
+//                        linearLayoutManager.scrollToPosition(adapter.getItemCount() - 1);
 			]]>
 			</programlisting>
 		</section>

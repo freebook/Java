@@ -483,5 +483,36 @@ textView.setMovementMethod(ScrollingMovementMethod.getInstance());
 	</section>
 	<section id="Dialog">
 		<title>Dialog</title>
+		<programlisting>
+		<![CDATA[
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("你问的是：")//设置对话框 标题
+                                    .setIcon(R.drawable.icon)//设置图标
+                                    .setMessage(prompt);
+
+                            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    aigcSpeech.say("创作中请稍后");
+//                                    Toast.makeText(MainActivity.this,"you click 'yes' button ", Toast.LENGTH_SHORT).show();
+                                    UUID uuid = UUID.randomUUID();
+                                    session = uuid.toString();
+                                    aigc.story(session, prompt, value -> {
+                                        Log.d(TAG, "Session: " + value + " Text: " + prompt);
+                                    });
+                                }
+                            });
+
+                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(MainActivity.this, "取消操作", Toast.LENGTH_SHORT).show();
+                                    aigcSpeech.say("操作取消了");
+                                }
+                            });
+
+                            builder.create().show();		
+		]]>
+		</programlisting>
 	</section>
 </chapter>
