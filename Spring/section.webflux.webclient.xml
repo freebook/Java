@@ -28,6 +28,22 @@ public class WebConfig {
 }			
 			]]>
 		</programlisting>
+		<para>超时设置</para>
+		<programlisting>
+		<![CDATA[
+HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 60000)
+                .responseTimeout(Duration.ofSeconds(60))
+                .doOnConnected(conn -> conn
+                        .addHandler(new ReadTimeoutHandler(60, TimeUnit.SECONDS))
+                        .addHandler(new WriteTimeoutHandler(60, TimeUnit.SECONDS))
+                );
+        WebClient client = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(url)
+                .build();
+		]]>
+		</programlisting>
 	</section>
 	<section>
 		<title>@Controller/@RestController 实例</title>
@@ -711,7 +727,9 @@ webClient.get()
 		</programlisting>
 	</section>
 	<section>
-		<title>org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: Broken pipe</title>
+		<title>org.springframework.web.context.request.async.AsyncRequestNotUsableException:
+			ServletOutputStream failed to flush: java.io.IOException: Broken pipe
+		</title>
 		<programlisting>
 		<![CDATA[
 

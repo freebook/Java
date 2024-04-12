@@ -1294,7 +1294,7 @@ public class TestController {
 			</programlisting>
 		</section>
 	</section>
-	
+
 </section>
 <section id="RestController">
 	<title>@RestController</title>
@@ -1815,92 +1815,11 @@ String fileSize = file.getSize()
 		]]>
 		</programlisting>
 	</section>
-	<section id="spring.mvc.sse">
-		<title>SSE Streaming in Spring MVC</title>
-
-		<section id="ResponseBodyEmitter">
-			<title>ResponseBodyEmitter</title>
-			<programlisting>
-		<![CDATA[
-@RequestMapping("/async")
-public ResponseBodyEmitter async() {
-    ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-    new Thread(() -> {
-        try {
-            for (int i = 0; i < 10; i++) {
-                emitter.send("Message " + i);
-                Thread.sleep(1000);
-            }
-            emitter.complete();
-        } catch (Exception e) {
-            emitter.completeWithError(e);
-        }
-    }).start();
-    return emitter;
-}
-		]]>
-			</programlisting>
-			<programlisting>
-		<![CDATA[
-@GetMapping("/events")
-public ResponseBodyEmitter handle() {
-	ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-	// Save the emitter somewhere..
-	return emitter;
-}
-
-// In some other thread
-emitter.send("Hello once");
-
-// and again later on
-emitter.send("Hello again");
-
-// and done at some point
-emitter.complete();
-
-		
-		]]>
-			</programlisting>
-		</section>
-		<section id="StreamingResponseBody">
-			<title>StreamingResponseBody</title>
-			<programlisting>
-		<![CDATA[
- @RequestMapping("/stream")
-    public StreamingResponseBody stream(HttpServletResponse response) {
-        response.setContentType("text/plain");
-        return outputStream -> {
-            for (int i = 0; i < 10; i++) {
-                outputStream.write(("Message " + i + "\n").getBytes());
-                outputStream.flush();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-    }		
-		]]>
-			</programlisting>
-			<para>StreamingResponseBody 输出 Raw Data</para>
-			<programlisting>
-		<![CDATA[
-@GetMapping("/download")
-public StreamingResponseBody handle() {
-	return new StreamingResponseBody() {
-		@Override
-		public void writeTo(OutputStream outputStream) throws IOException {
-			// write...
-		}
-	};
-}		
-		]]>
-			</programlisting>
-
-		</section>
+	<section id="spring.Emitter">
+		<title>Spring boot with Emitter</title>
+		<para></para>
 		<section id="SseEmitter">
-			<title></title>
+			<title>Server-Sent Events (SSE) </title>
 			<para>SseEmitter 实现，可以对比一下两者的区别</para>
 			<programlisting>
 		<![CDATA[
@@ -1987,6 +1906,111 @@ public SseEmitter sse() {
 		]]>
 			</programlisting>
 		</section>
+
+		<section id="ResponseBodyEmitter">
+			<title>ResponseBodyEmitter</title>
+			<programlisting>
+		<![CDATA[
+@RequestMapping("/async")
+public ResponseBodyEmitter async() {
+    ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+    new Thread(() -> {
+        try {
+            for (int i = 0; i < 10; i++) {
+                emitter.send("Message " + i);
+                Thread.sleep(1000);
+            }
+            emitter.complete();
+        } catch (Exception e) {
+            emitter.completeWithError(e);
+        }
+    }).start();
+    return emitter;
+}
+		]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
+@GetMapping("/events")
+public ResponseBodyEmitter handle() {
+	ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+	// Save the emitter somewhere..
+	return emitter;
+}
+
+// In some other thread
+emitter.send("Hello once");
+
+// and again later on
+emitter.send("Hello again");
+
+// and done at some point
+emitter.complete();
+
+		
+		]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    @GetMapping(value = "sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseBodyEmitter sse() {
+        ResponseBodyEmitter responseBodyEmitter = new ResponseBodyEmitter();
+        CompletableFuture.runAsync(() -> {
+            List.of("text", "audio", "video", "image").forEach((value) -> {
+                try {
+                    responseBodyEmitter.send(SseEmitter.event().id(usingRandom(5)).name(value).data(usingRandom(128).concat("\n").concat(usingRandom(128))).comment(usingRandom(128)).build());
+
+                } catch (IOException e) {
+                    log.error(e.toString());
+                    responseBodyEmitter.completeWithError(e);
+                }
+            });
+            responseBodyEmitter.complete();
+        });
+
+        return responseBodyEmitter;
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="StreamingResponseBody">
+			<title>StreamingResponseBody</title>
+			<programlisting>
+		<![CDATA[
+ @RequestMapping("/stream")
+    public StreamingResponseBody stream(HttpServletResponse response) {
+        response.setContentType("text/plain");
+        return outputStream -> {
+            for (int i = 0; i < 10; i++) {
+                outputStream.write(("Message " + i + "\n").getBytes());
+                outputStream.flush();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }		
+		]]>
+			</programlisting>
+			<para>StreamingResponseBody 输出 Raw Data</para>
+			<programlisting>
+		<![CDATA[
+@GetMapping("/download")
+public StreamingResponseBody handle() {
+	return new StreamingResponseBody() {
+		@Override
+		public void writeTo(OutputStream outputStream) throws IOException {
+			// write...
+		}
+	};
+}		
+		]]>
+			</programlisting>
+
+		</section>
+		
 		<section>
 			<title>使用 CURL 测试 SSE 接口</title>
 			<programlisting>

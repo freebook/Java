@@ -90,7 +90,7 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/AndroidManifes
 		]]>
 		</screen>
 	</section>
-	<section id="okhttp.http">
+	<section id="okhttp.https">
 		<title>okhttp 默认是 HTTPS 开启 HTTP</title>
 		<para>如果你尝试使用 http 链接 OkHttp3 就抛出异常: CLEARTEXT communication to " +
 			host + " not permitted by network security policy
@@ -141,6 +141,25 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/networ
 </manifest>		
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>连接池</title>
+		<programlisting>
+		<![CDATA[
+      ConnectionPool connectionPool = new ConnectionPool(10, 5, TimeUnit.MINUTES);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectionPool(connectionPool)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(5, TimeUnit.MINUTES)
+                .writeTimeout(Duration.ofSeconds(90))
+                .callTimeout(Duration.ofSeconds(90))
+                .build();
+        client.dispatcher().setMaxRequestsPerHost(200);
+        client.dispatcher().setMaxRequests(200);		
+		]]>
+		</programlisting>
 	</section>
 	<section id="okhttp.get">
 		<title>GET</title>
@@ -1021,7 +1040,111 @@ D/okhttp: HTTP Code 200 TEXT {"status":false,"reason":"","code":0,"data":{"id":n
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="okhttp.sse">
+		<title>SSE 客户端</title>
+		<programlisting>
+		<![CDATA[
+ public void postStream(String function, LinkedHashMap<String, String> params, String json) throws InterruptedException {
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(address).newBuilder();
+        urlBuilder.addPathSegments(function);
+        if (params != null) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                urlBuilder.addQueryParameter(key, value);
+            }
+        }
+        String url = urlBuilder.build().toString();
+        Log.d(TAG, "Post URL: " + url + " Json: " + json);
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(json, mediaType);
+        Request request = new Request.Builder()
+                .url(url)
+//                .addHeader("Authorization", "Bearer " + token)
+                .addHeader("Accept", "text/event-stream")
+//                .addHeader("accept-encoding", "gzip, deflate")
+                .addHeader("token", this.token)
+                .post(body).build();
+
+        OkHttpClient client = this.client();
+
+        RealEventSource realEventSource = new RealEventSource(request, new EventSourceListener() {
+            @Override
+            public void onOpen(EventSource eventSource, Response response) {
+                Log.d(TAG, "onOpen");
+            }
+
+            @Override
+            public void onEvent(EventSource eventSource, String id, String type, String data) {
+
+                Log.d(TAG, "Stream Id: " + id + " Type: " + type + " Data: " + data);   // 请求到的数据
+
+            }
+
+            @Override
+            public void onClosed(EventSource eventSource) {
+                Log.d(TAG, "onClosed");
+            }
+
+            @Override
+            public void onFailure(EventSource eventSource, Throwable throwable, Response response) {
+                Log.d(TAG, "onFailure");//这边可以监听并重新打开
+                Log.d(TAG, response.toString());
+                Log.d(TAG, throwable.toString());
+            }
+
+        });
+        realEventSource.connect(client);
+    }		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+ public void getStream(String function, LinkedHashMap<String, String> params, EventSourceListener listener) throws InterruptedException {
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(address).newBuilder();
+        urlBuilder.addPathSegments(function);
+        if (params != null) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                urlBuilder.addQueryParameter(key, value);
+            }
+
+        }
+        String url = urlBuilder.build().toString();
+//        Log.d(TAG, "Post URL: " + url + " params: " + params.toString());
+        Request request = new Request.Builder()
+                .url(url)
+//                .addHeader("Authorization", "Bearer " + token)
+                .addHeader("Accept", "text/event-stream; charset=utf-8")
+//                .addHeader("accept-encoding", "gzip, deflate")
+                .addHeader("token", this.token)
+                .get().build();
+
+        OkHttpClient client = this.client();
+        EventSource.Factory createFactory = EventSources.createFactory(client);
+//        EventSourceListener eventSourceListener = new EventSourceListener() {
+//            @Override
+//            public void onEvent(EventSource eventSource, String id, String type, String data) {
+//
+//                Log.d(TAG, "Stream Id: " + id + " Type: " + type + " Data: " + data);   // 请求到的数据
+//            }
+//
+//            public void onFailure(EventSource eventSource, Throwable throwable, Response response) {
+//                super.onFailure(eventSource, throwable, response);
+//                Log.d(TAG, response.toString());
+//                Log.d(TAG, throwable.toString());
+//            }
+//        };
+        createFactory.newEventSource(request, listener);
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section id="okhttp.websocket">
 		<title>WebSocket Client</title>
 		<programlisting>
 		<![CDATA[
