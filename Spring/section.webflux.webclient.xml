@@ -710,4 +710,12 @@ webClient.get()
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: Broken pipe</title>
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>
+	</section>
 </section>

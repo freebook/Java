@@ -1294,22 +1294,7 @@ public class TestController {
 			</programlisting>
 		</section>
 	</section>
-	<section id="StreamingResponseBody">
-		<title>StreamingResponseBody 输出 Raw Data</title>
-		<programlisting>
-		<![CDATA[
-@GetMapping("/download")
-public StreamingResponseBody handle() {
-	return new StreamingResponseBody() {
-		@Override
-		public void writeTo(OutputStream outputStream) throws IOException {
-			// write...
-		}
-	};
-}		
-		]]>
-		</programlisting>
-	</section>
+	
 </section>
 <section id="RestController">
 	<title>@RestController</title>
@@ -1832,7 +1817,30 @@ String fileSize = file.getSize()
 	</section>
 	<section id="spring.mvc.sse">
 		<title>SSE Streaming in Spring MVC</title>
-		<programlisting>
+
+		<section id="ResponseBodyEmitter">
+			<title>ResponseBodyEmitter</title>
+			<programlisting>
+		<![CDATA[
+@RequestMapping("/async")
+public ResponseBodyEmitter async() {
+    ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+    new Thread(() -> {
+        try {
+            for (int i = 0; i < 10; i++) {
+                emitter.send("Message " + i);
+                Thread.sleep(1000);
+            }
+            emitter.complete();
+        } catch (Exception e) {
+            emitter.completeWithError(e);
+        }
+    }).start();
+    return emitter;
+}
+		]]>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 @GetMapping("/events")
 public ResponseBodyEmitter handle() {
@@ -1852,8 +1860,49 @@ emitter.complete();
 
 		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="StreamingResponseBody">
+			<title>StreamingResponseBody</title>
+			<programlisting>
+		<![CDATA[
+ @RequestMapping("/stream")
+    public StreamingResponseBody stream(HttpServletResponse response) {
+        response.setContentType("text/plain");
+        return outputStream -> {
+            for (int i = 0; i < 10; i++) {
+                outputStream.write(("Message " + i + "\n").getBytes());
+                outputStream.flush();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }		
+		]]>
+			</programlisting>
+			<para>StreamingResponseBody 输出 Raw Data</para>
+			<programlisting>
+		<![CDATA[
+@GetMapping("/download")
+public StreamingResponseBody handle() {
+	return new StreamingResponseBody() {
+		@Override
+		public void writeTo(OutputStream outputStream) throws IOException {
+			// write...
+		}
+	};
+}		
+		]]>
+			</programlisting>
+
+		</section>
+		<section id="SseEmitter">
+			<title></title>
+			<para>SseEmitter 实现，可以对比一下两者的区别</para>
+			<programlisting>
 		<![CDATA[
 @GetMapping(path="/events", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
 public SseEmitter handle() {
@@ -1871,8 +1920,8 @@ emitter.send("Hello again");
 // and done at some point
 emitter.complete();		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
     @GetMapping(value = "emitter", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter emitter() {
@@ -1889,8 +1938,8 @@ emitter.complete();
         return sseEmitter;
     }		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[		
 @GetMapping("/mvc/sse")
 public SseEmitter streamSseMvc() {
@@ -1913,31 +1962,8 @@ public SseEmitter streamSseMvc() {
     return emitter;
 }
 		]]>
-		</programlisting>
-	</section>
-	<section id="StreamingResponseBody">
-		<title>StreamingResponseBody</title>
-		<programlisting>
-		<![CDATA[
- @RequestMapping("/stream")
-    public StreamingResponseBody stream(HttpServletResponse response) {
-        response.setContentType("text/plain");
-        return outputStream -> {
-            for (int i = 0; i < 10; i++) {
-                outputStream.write(("Message " + i + "\n").getBytes());
-                outputStream.flush();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-    }		
-		]]>
-		</programlisting>
-		<para>SseEmitter 实现，可以对比一下两者的区别</para>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 @RequestMapping("/sse")
 public SseEmitter sse() {
@@ -1959,6 +1985,61 @@ public SseEmitter sse() {
     return emitter;
 }		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>使用 CURL 测试 SSE 接口</title>
+			<programlisting>
+		<![CDATA[
+@GetMapping(value = "sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseBodyEmitter sse() {
+        ResponseBodyEmitter responseBodyEmitter = new ResponseBodyEmitter();
+        CompletableFuture.runAsync(() -> {
+            List.of("text", "audio", "video", "image").forEach((value) -> {
+                try {
+                    responseBodyEmitter.send(SseEmitter.event().id(usingRandom(5)).name(value).data(usingRandom(128).concat("\n").concat(usingRandom(128))).comment(usingRandom(128)).build());
+
+                } catch (IOException e) {
+                    log.error(e.toString());
+                    responseBodyEmitter.completeWithError(e);
+                }
+            });
+            responseBodyEmitter.complete();
+        });
+
+        return responseBodyEmitter;
+    }
+		]]>
+			</programlisting>
+			<screen>
+<![CDATA[
+neo@MacBook-Pro-M2 ~/w/watch (main)> curl -H "Accept: text/event-stream" http://dev.netkiller.cn:8081/test/sse
+id:GZ1O2
+event:text
+data:amftmGZcWyhniUbDganQLbttIXe0qAoWbEaMwtzqmW7S0a3odWpkGD4hgBC9sOmljSWEArmwpTv1ZY637tz2m8IdnSHzy5OjWKWwdXdG4GfvqTfpSavk3RWt09aS68zM
+data:DojMvAJhZk7hgoyrQFcx1oXRN78xpxJ6I4k9r7kMfJUBkozpSOsSLmxD2z39ISZkY8rur2mEzDNhzVZAunYC37D5bRW4PNZ0hD7PsAsYXQVxQmOQSODLVUJbJQ5YlmRI
+:tZ5Q0DsH5hFQDHOoviwpWtX96pGyaPREqtlHdr9HuX8FMTJCBkcEK6yJZyjEIjlhiZ7kZKTWaGslvwOda4pIrGFlA1hWtMj5Bntik8CMSuhGkB3nAXbTJ8eJMTe9CHde
+
+id:kpKRH
+event:audio
+data:fRNjEj0daux6WaISv3ZrtnWeGFtlG0Q5bvKTRyjmkSBAEbm2enA9Jsxx4H4DzcdlJDQKsG9Md9f1Rh5YlpikbNWRXAiT1Kw9fMgFdWZvRIDuaRBIxwIZ6T3a5NhWwV9c
+data:OzNJYLBpvRAYNALKKxOmkGuvTLYVscvZS6UYcBX1hKOv0Zx7yKOXgq1vt8LKcluyNNYIoeQsOCbERcEyOLdL8UYqQujeMCXRspa5Gl5SskarbKMlfhobRuydrmaoA3jW
+:Hye2fybk1dHvLXo5nJBdHXJBRfno6C4N6YFvRo0ch2FilKCuAV7VgoOrQj1Hx0TETFbxRziCNsfHU6GVJ9oy5wdAERVIrGnlEh3K2L2jcG5oU8HbADcHWyZ4mPjja0VA
+
+id:I3Hq6
+event:video
+data:IIRcsgPMaxVIkF69JtKz2bHRYfZWF9ydc1kBdpEt4w8J4xezdsDixTb2Jv9ue6F3l8wSGubdw8A77szA65M7VrzKr9NsuRlG5YXzyhioCHDP21vWUttByXAfavRFUaQf
+data:hOZB3iFwK5159tHAh5Ul2plVreIjHm7WlJGZ0dHoYWLsg6Ft8To3Qtv1Gt1p0TCFLyrASr9COyEup5q9tjVsLUSr75ZWeuDoPNjMfNOH4jBrf1PVtKfT7HNgo8fxt64c
+:AhbH0VI78vukAUNieNMRoET7lQiY94UQZbSNaM2UqP9R0RYcxPoTE9g0wpyhz3qJbuxoYkWL5sw2bm7jv3nITL3tqSo64IZZRpkpbcD5OBvtqoFe08euNEB34aEFbOXt
+
+id:pqmcf
+event:image
+data:HKPvvsa2Gut3Pji3DbPXnmWcVGkBHkrIRjaNeaBq0kTl2o0Xo2H7mwYAmZ40lJxlb3cEdvcu2ddYe8mZR9pBOXyl16Sk48UFfRLvirXESw4REb3VWdZVaLCgTeRSgpOC
+data:Ef2EmTusV8xNTdLrcb3ndKOD23Sz1v8iw98YMqd9TGIQppNvXHmrTv4JYzVOIr7NwOqpID81OyjmGhNkqpG4Ho1FMigw939xHuaY9d6tZHSFqVY3wHjMCFqsNuao4gOW
+:HhyY8h0Yez0pIKMYNavtTBuAFX8iOuRlGpAntNak4H09mQbHZ5O7Sc5huOjcgL43BQs0V57UTKI2cpSptroxJTRQPQmJwrHGbWzHHqjjB85p4AsSBzF5mWit2eEmDKWu
+]]>
+			</screen>
+		</section>
 	</section>
+	
 </section>

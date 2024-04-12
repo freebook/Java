@@ -452,6 +452,31 @@ android:shadowRadius：	是阴影的的半径大少
 			]]>
 			</programlisting>
 		</section>
+		<section id="textview.scrollbars">
+			<title>滚动条</title>
+			<para>设置滚动条方向 android:scrollbars="vertical"，是隐藏滚动条滑块 android:fadeScrollbars="true"</para>
+			<programlisting>
+			<![CDATA[
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:inputType="textMultiLine"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        android:fadeScrollbars="true"
+                        android:text="按住麦克风图标说话"
+                        android:textSize="24sp" />			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+textView = findViewById(R.id.textView);
+textView.setMovementMethod(ScrollingMovementMethod.getInstance());
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ProgressBar">
 		<title>ProgressBar</title>
