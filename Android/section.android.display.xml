@@ -193,4 +193,128 @@ fullscreen(getActivity().getWindow().getDecorView().getRootView());
 		]]>
 		</programlisting>
 	</section>
+	<section id="SimpleOnGestureListener">
+		<title>SimpleOnGestureListener</title>
+		<programlisting>
+		<![CDATA[
+
+    private final View.OnTouchListener touchListener = new View.OnTouchListener() {
+        MySimpleOnGestureListener mySimpleOnGestureListener = new MySimpleOnGestureListener();
+        GestureDetector gestureDetector = new GestureDetector(getContext(), mySimpleOnGestureListener);
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+//            Log.d(TAG, "MotionEvent " + motionEvent.toString());
+            gestureDetector.onTouchEvent(motionEvent);
+
+            // true: 持续监听，false: 消费一次便退出
+            return true;
+        }
+    };
+
+    private class MySimpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(@NonNull MotionEvent e) {
+            Log.d(TAG, "MySimpleOnGestureListener onSingleTapUp");
+            return super.onSingleTapUp(e);
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            // 处理上下滑动事件
+            // 根据distanceY的值来调整ImageView的位置
+            // 返回true表示消费了该事件
+            Log.d(TAG, "MySimpleOnGestureListener distanceX: " + distanceX + " distanceY: " + distanceY);
+            if (distanceY > 1) {
+                Log.d(TAG, "MySimpleOnGestureListener onScroll UP");
+            } else {
+                Log.d(TAG, "MySimpleOnGestureListener onScroll Down");
+            }
+            if (distanceX > 1) {
+                Log.d(TAG, "MySimpleOnGestureListener onScroll Left");
+            } else {
+                Log.d(TAG, "MySimpleOnGestureListener onScroll Right");
+            }
+            return false;
+        }
+
+        @Override
+        public void onShowPress(@NonNull MotionEvent e) {
+            Log.d(TAG, "MySimpleOnGestureListener onShowPress");
+            super.onShowPress(e);
+        }
+
+        @Override
+        public void onLongPress(@NonNull MotionEvent e) {
+            Log.d(TAG, "MySimpleOnGestureListener onLongPress");
+            super.onLongPress(e);
+        }
+
+        @Override
+        public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
+            if (velocityY < 2000) {
+                Log.d(TAG, "MySimpleOnGestureListener onFling UP");
+            } else {
+                Log.d(TAG, "MySimpleOnGestureListener onFling Down");
+            }
+            if (velocityX < 2000) {
+                Log.d(TAG, "MySimpleOnGestureListener onFling Left");
+            } else {
+                Log.d(TAG, "MySimpleOnGestureListener onFling Right");
+            }
+            Log.d(TAG, "MySimpleOnGestureListener onFling velocityX: " + velocityX + " velocityY: " + velocityY);
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
+            Log.d(TAG, "MySimpleOnGestureListener onSingleTapConfirmed");
+            return super.onSingleTapConfirmed(e);
+        }
+
+        @Override
+        public boolean onDown(@NonNull MotionEvent e) {
+            Log.d(TAG, "MySimpleOnGestureListener onDown");
+            return super.onDown(e);
+        }
+    }		
+		]]>
+		</programlisting>
+		<para>onScroll 按下后触发，持续获取坐标</para>
+		<para>onFling 按下滑动，手指抬起后触发</para>
+	</section>
+	<section id="SimpleOnScaleGestureListener">
+		<title>SimpleOnScaleGestureListener</title>
+		<programlisting>
+		<![CDATA[
+    private class MyScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            // 处理缩放事件
+            // 根据detector.getScaleFactor()的值来调整ImageView的缩放比例
+            // 返回true表示消费了该事件
+            return true;
+        }
+    }
+    
+    		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    private final View.OnTouchListener touchListener = new View.OnTouchListener() {
+        MyScaleGestureListener scaleGestureListener = new MyScaleGestureListener();
+    	ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getContext(), scaleGestureListener);
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+//            Log.d(TAG, "MotionEvent " + motionEvent.toString());
+              scaleGestureDetector.onTouchEvent(motionEvent);
+            // true: 持续监听，false: 消费一次便退出
+            return true;
+        }
+    };    		
+		]]>
+		</programlisting>
+	</section>
 </section>

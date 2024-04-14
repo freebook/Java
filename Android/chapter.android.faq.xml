@@ -147,6 +147,32 @@ neo@MacBook-Pro-M2 album %
 		</screen>
 	</section>
 	<section>
+		<title>android.os.NetworkOnMainThreadException</title>
+		<para>网络连接会阻塞 UI，必须在线程中异步访问网络</para>
+		<programlisting>
+		<![CDATA[
+		aigcSpeech.resetSpeech();
+        aigcSpeech.Player().play(picture.audio, binding.progressBar);
+        getActivity().runOnUiThread(() -> {
+            binding.textView.setText(picture.story);
+            new Thread(() -> {
+                try {
+
+                    InputStream inputStream = new URL(picture.image).openStream();
+                    Drawable drawable = Drawable.createFromStream(inputStream, null);
+                    binding.imageView.setImageDrawable(drawable);
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                    e.printStackTrace();
+                }
+            }).start();
+
+         });		
+		]]>
+		</programlisting>
+	</section>
+	
+	<section>
 		<title>从 Android API 30 废弃 setSystemUiVisibility(uiOptions) </title>
 		<para>替代方案</para>
 		<programlisting>
