@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="misc" ?>
 	<title>杂项</title>
-	<section id="thread.sleep">
-		<title>Sleep</title>
-		<programlisting>
-		<![CDATA[
-    try {
-
-        Thread.sleep(10000);
-
-    } catch (InterruptedException e) {
-
-        Log.e("Location", e.getMessage());
-
-    }		
-		]]>
-		</programlisting>
-	</section>
+	
 	<section>
 		<title>Caused by: java.net.UnknownServiceException: CLEARTEXT
 			communication to 47.100.253.187 not permitted by network security

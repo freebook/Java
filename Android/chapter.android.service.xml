@@ -553,9 +553,18 @@ handler.post(() -> {
 		]]>
 		</programlisting>
 		<para></para>
+		
+	</section>
+	<section id="service.startForegroundService">
+		<title>前台启动 Service</title>
+		<para>在某些不规范的安卓系统中，会禁止后台刷新，此时只能在前台启动 Service</para>
 		<programlisting>
 		<![CDATA[
-		
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(MainActivity.this, MessageQueueService.class));
+        } else {
+            startService(new Intent(MainActivity.this, MessageQueueService.class));
+        }		
 		]]>
 		</programlisting>
 	</section>

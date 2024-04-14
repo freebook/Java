@@ -515,18 +515,5 @@ textView.setMovementMethod(ScrollingMovementMethod.getInstance());
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>通用设置</title>
-		<section>
-			<title>背景色</title>
-			<para>Color.TRANSPARENT 透明<</para>
-			<programlisting>
-			<![CDATA[
-btn=(Button)findViewById(R.id.button);
-btn.setTextColor(Color.WHITE);
-btn.setBackgroundColor(Color.TRANSPARENT);			
-			]]>
-			</programlisting>
-		</section>
-	</section>
+	
 </chapter>

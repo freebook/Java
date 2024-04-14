@@ -1,9 +1,40 @@
 <section id="layout">
 	<title>样式布局</title>
-	<section>
-		<title>对齐布局</title>
-		<para>垂直/水平剧中</para>
-		<programlisting>
+	<section id="ConstraintLayout">
+		<title>ConstraintLayout</title>
+		<section>
+			<title>父容器定位</title>
+			<para>在相对布局中，可以通过以下的属性让的组合让控件处于父容器左上角、右上角、左下角、右下角、上下左右居中，正居中等九个位置。属性如下：
+			</para>
+			<programlisting>
+		<![CDATA[
+android:layout_alignParentLeft="true" 	父容器左边
+android:layout_alignParentRight="true" 	父容器右边
+android:layout_alignParentTop="true" 	父容器顶部
+android:layout_alignParentBottom="true" 父容器底部
+android:layout_centerHorizontal="true" 	水平方向居中
+android:layout_centerVertical="true" 	垂直方向居中
+android:layout_centerInParent="true" 	水平垂直都居中
+		]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
+android:layout_toLeftOf="@+id/button1" 	在button1控件左方
+android:layout_toRightOf="@+id/button1" 在button1控件右方
+android:layout_above="@+id/button1" 	在button1控件上方
+android:layout_below="@+id/button1" 	在button1控件下方
+
+android:layout_alignLeft="@+id/button1" 与button1控件左边平齐
+android:layout_alignRight="@+id/button1" 	与button1控件右边平齐
+android:layout_alignTop="@+id/button1" 	与button1控件上边平齐
+android:layout_alignBottom="@+id/button1" 	与button1控件下边平齐		
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>对齐布局</title>
+			<para>垂直/水平剧中</para>
+			<programlisting>
 		<![CDATA[
     <TextView
         android:layout_width="wrap_content"
@@ -14,7 +45,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
 	<section id="LinearLayout">
 		<title>LinearLayout</title>
