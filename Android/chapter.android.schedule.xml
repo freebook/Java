@@ -202,6 +202,44 @@ handler.removeCallbacks(runnable);
 handler.removeCallbacksAndMessages(null);		
 		]]>
 		</programlisting>
+		<para>下面用 ImageView 实现 Loading... 动画，实现方式，是吧图片 360 度旋转。</para>
+		<programlisting>
+		<![CDATA[
+                <ImageView
+                    android:id="@+id/imageViewLoading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="fitCenter"
+                    android:visibility="invisible"
+                    android:src="@android:drawable/ic_menu_rotate" />
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+		        ImageView imageViewLoading = view.findViewById(R.id.imageViewLoading);
+		
+ 				Handler handler = new Handler(Looper.getMainLooper());
+                Runnable runnable = new Runnable() {
+                    int count = 1;
+
+                    @Override
+                    public void run() {
+                        handler.postDelayed(this, 50);
+                        imageViewLoading.setRotation(count);
+                        //每隔一段时间要重复执行的代码
+//                        System.out.println("第" + (count++) + "次执行");
+                        if (count == 360) {
+                            handler.removeCallbacks(this);
+                            imageViewLoading.setVisibility(View.INVISIBLE);
+                            linearLayoutSpaek.setVisibility(View.VISIBLE);
+                        }
+                    }
+                };
+                handler.postDelayed(runnable, 100);		
+		]]>
+		</programlisting>
 	</section>
 	<section>
 		<title>TimerTask 实现循环播放</title>

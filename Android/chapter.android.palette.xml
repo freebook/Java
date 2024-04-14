@@ -5,7 +5,7 @@
 		<title>通用设置</title>
 		<section>
 			<title>背景色</title>
-			<para>Color.TRANSPARENT 透明<</para>
+			<para>Color.TRANSPARENT 透明</para>
 			<programlisting>
 			<![CDATA[
 btn=(Button)findViewById(R.id.button);

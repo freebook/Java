@@ -9,6 +9,8 @@
 		<programlisting>
 			<![CDATA[
 String androidId = Settings.System.getString(getContentResolver(), "android_id");
+this.androidId = Settings.System.getString(ContextHolder.getContext().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+private String android_id = Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID);
 			]]>
 		</programlisting>
 	</section>

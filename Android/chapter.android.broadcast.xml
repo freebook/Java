@@ -541,6 +541,73 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 		]]>
 		</programlisting>
 	</section>
-	
+	<section>
+		<title>静态广播接收不到信息</title>
+		<para>StaticBroadcastReceiver 接收不到消息</para>
+		<programlisting>
+		<![CDATA[
+ 		<receiver
+            android:name=".receiver.StaticBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_CHANGED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
+                <action android:name="android.intent.action.ACTION_BATTERY_OKAY" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                <action android:name="android.intent.action.ACTION_DOWNLOAD_COMPLETE" />
+                <action android:name="main.story" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>		
+		]]>
+		</programlisting>
+		<para>解决系统广播 android.intent.action.ACTION_DOWNLOAD_COMPLETE 接收不到问题，经过调试发现 android.intent.action.ACTION_DOWNLOAD_COMPLETE 的值是 android.intent.action.DOWNLOAD_COMPLETE，所以我们要订阅 android.intent.action.DOWNLOAD_COMPLETE。</para>
+		<programlisting>
+		<![CDATA[
+        <receiver
+            android:name=".receiver.StaticBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_CHANGED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
+                <action android:name="android.intent.action.ACTION_BATTERY_OKAY" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="main.story" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>		
+		]]>
+		</programlisting>
+		<para>解决 main.story 自定义广播接收不到的问题，解决方法设置包 setPackage 即可</para>
+		<programlisting>
+		<![CDATA[
+intent.setPackage(context.getPackageName());
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	public static void broadcastStoryPageable(Integer page, String image, String audio, String story) {
+        Context context = ContextHolder.getContext();
+        Intent intent = new Intent();
+        intent.setAction("main.story");
+        intent.putExtra("page", page);
+        intent.putExtra("image", image);
+        intent.putExtra("audio", audio);
+        intent.putExtra("story", story);
+        intent.setPackage(context.getPackageName());
+        context.sendBroadcast(intent);
+    }
+		]]>
+		</programlisting>
+	</section>
 	
 </chapter>
