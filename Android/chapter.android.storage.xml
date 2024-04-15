@@ -14,7 +14,57 @@ Log.d(TAG, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString());
 		]]>
 		</screen>
 	</section>
-	
+	<section>
+		<title>FileProvider 配置</title>
+		<programlisting>
+		<![CDATA[
+        <provider
+            android:authorities="cn.netkiller.student.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+<!--    <root-path path="/data/user/0/com.example.overlay.idea/cache/" name="files_root" />-->
+<!--    <root-path path="." name="external_storage_root" />-->
+<!--    <external-path path="." name="files_path" />-->
+
+<!--    &lt;!&ndash; 物理路径为Context.getFilesDir() + /files/* &ndash;&gt;-->
+<!--    <files-path path="files" name="files" />-->
+<!--    &lt;!&ndash; 物理路径为Context.getCacheDir() + /files/* &ndash;&gt;-->
+<!--    <cache-path path="files" name="cache" />-->
+<!--    &lt;!&ndash; 物理路径为Environment.getExternalStorageDirectory() + /files/* &ndash;&gt;-->
+    <external-path path="Download" name="external" />
+<!--    &lt;!&ndash; 物理路径为Context.getExternalFilesDir(String) + /files/* &ndash;&gt;-->
+<!--    <external-files-path path="files" name="externalfiles"/>-->
+<!--    &lt;!&ndash; 物理路径为Context.getExternalCacheDir() + /files/* &ndash;&gt;-->
+<!--    <external-cache-path  path="files" name="externalcache"/>-->
+<!--    &lt;!&ndash; 物理路径为`Context.getExternalMediaDirs() + /files/*, 要求API21+ &ndash;&gt;-->
+<!--    <external-media-path name="externalmedia" path="files" />-->
+
+</paths>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+		
+	</section>
 	<section id="SharedPreferences">
 		<title>SharedPreferences</title>
 
@@ -229,5 +279,39 @@ File xmlFile = new File("/data/data/<package name>/shared_prefs/<name>.xml");
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title>android.os.FileUriExposedException</title>
+		<para>下载 apk 文件，抛出 android.os.FileUriExposedException 异常</para>
+		<programlisting>
+		<![CDATA[
+android.os.FileUriExposedException: file:///storage/emulated/0/Download/netkiller.apk exposed beyond app through Intent.getData()
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+		]]>
+		</programlisting>
+		<para>此种方法不行</para>
+		<programlisting>
+		<![CDATA[
+            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");		
+		]]>
+		</programlisting>
+		<para>改用 FileProvider.getUriForFile </para>
+		<programlisting>
+		<![CDATA[
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            Uri contentUri = FileProvider.getUriForFile(context, "cn.netkiller.student.fileprovider", new File(filePath));
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+            intent.setPackage(context.getPackageName());
+            context.startActivity(intent);
+		]]>
+		</programlisting>
 	</section>
 </chapter>
