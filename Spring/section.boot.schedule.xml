@@ -213,7 +213,7 @@ initialDelayString：延迟启动计划任务，单位毫秒，表示执行第�
 			<title>fixedRate 案例</title>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.service;
+package cn.netkiller.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;

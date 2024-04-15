@@ -1967,10 +1967,10 @@ public class LoraController {
 			<para>集合表子查询，以Set为例</para>
 			<programlisting>
 		<![CDATA[
-package cn.aigcsst.repository;
+package cn.netkiller.repository;
 
 
-import cn.aigcsst.domain.Lora;
+import cn.netkiller.domain.Lora;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -4364,10 +4364,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
 			<title>In/NotIn</title>
 			<programlisting>
 		<![CDATA[
-package cn.aigcsst.repository;
+package cn.netkiller.repository;
 
 
-import cn.aigcsst.domain.Lora;
+import cn.netkiller.domain.Lora;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -5462,6 +5462,113 @@ interface UserRepository extends Repository<User, Long> {
 	@ElementCollection(fetch = FetchType.EAGER)
     private Set<String> keyword = new HashSet<String>();
 		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Query did not return a unique result: 2 results were returned</title>
+			<para>查询 version 表中的最有一条记录，提示 Query did not return a unique result: 2 results were returned</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.domain;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table
+@DynamicUpdate
+@DynamicInsert
+@Data
+@Comment("版本表")
+public class Version implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Integer id;
+
+    @Comment("产品")
+    @Column(columnDefinition = "enum('Phone','Tablet','Badges','Watch') DEFAULT 'Tablet'")
+    private String product;
+
+    @Comment("版本")
+    @Column(length = 5)
+    private String version;
+    @Comment("下载地址")
+    private String url;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Comment("创建时间")
+    private Date ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    @Comment("修改时间")
+    private Date mtime;
+
+}
+	
+			]]>
+			</programlisting>
+			<para>接口定义 findOneBy 查询 version 表中存在多条记录，我们只要最后一条，所以不能使用 findOneBy，需要使用 findFirstBy</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository;
+
+import cn.netkiller.domain.Version;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface VersionRepository extends CrudRepository<Version, Integer> {
+    Iterable<Version> findByProduct(String tablet);
+
+    Optional<Version> findOneByProductOrderByIdDesc(String tablet);
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository;
+
+import cn.netkiller.domain.Version;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface VersionRepository extends CrudRepository<Version, Integer> {
+    Iterable<Version> findByProduct(String tablet);
+
+    Optional<Version> findFirstByProductOrderByIdDesc(String tablet);
+}
+			]]>
+			</programlisting>			
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/version/tablet/latest")
+    public AigcResponse tabletLatest() {
+        Optional<Version> optional = versionRepository.findFirstByProductOrderByIdDesc("Tablet");
+        if (optional.isPresent()) {
+            Version version = optional.get();
+            log.debug(version.toString());
+            return new AigcResponse(version);
+        }
+        return new AigcResponse(null);
+    }
+			]]>
 			</programlisting>
 		</section>
 	</section>
