@@ -681,6 +681,17 @@ arrayList.stream()
 	<section id="LinkedList">
 		<title>LinkedList</title>
 		<para>链表（Linked list）是一种线性表，但是并不会按线性的顺序存储数据，而是在每一个节点里存到下一个节点的地址</para>
+		<para>初始化</para>
+		<programlisting>
+		<![CDATA[
+        LinkedList<Integer> sequence = new LinkedList<>() {{
+            push(10);
+            push(50);
+            push(100);
+            push(1000);
+        }};		
+		]]>
+		</programlisting>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
@@ -848,7 +859,7 @@ public class Test {
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="set">
 		<title>Set 转为 List</title>
 		<programlisting>
@@ -1471,7 +1482,8 @@ Exception in thread "main" java.lang.UnsupportedOperationException
 			]]>
 			</programlisting>
 			<para>List.of 跟 Arrays.asList 不支持 remove() 操作，会抛出
-				UnsupportedOperationException 异常。</para>
+				UnsupportedOperationException 异常。
+			</para>
 			<programlisting>
 			<![CDATA[
 List<String> list = List.of("Neo", "Tom", "Jerry");
@@ -1509,7 +1521,7 @@ List<String> list = Arrays.asList("Neo", "Tom", "Jerry");
 			]]>
 			</programlisting>
 		</section>
-		
+
 	</section>
 	<section id="ListIterator">
 		<title>ListIterator</title>
@@ -1610,9 +1622,21 @@ DelayQueue：基于延迟、优先级、无界阻塞队列。
 SynchronousQueue ：基于 CAS 的阻塞队列。			
 			]]>
 			</literallayout>
-			<section>
-				<title>LinkedBlockingQueue</title>
-				<programlisting>
+
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+        LinkedBlockingQueue<Integer> sequence = new LinkedBlockingQueue<Integer>() {{
+            add(10);
+            add(50);
+            add(100);
+            add(1000);
+        }};			
+			]]>
+			</programlisting>
+			<programlisting>
 				<![CDATA[
 	LinkedBlockingQueue<String> voice = new LinkedBlockingQueue<String>();
     voice.add("第一句，你是哪里的人");
@@ -1621,8 +1645,7 @@ SynchronousQueue ：基于 CAS 的阻塞队列。
     voice.add("第四句，你从事什么职业");
     voice.add("第五句，问完了");				
 				]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
 		<section>
 			<title>Deque 双端队列</title>
@@ -1749,8 +1772,23 @@ public class Main {
 			]]>
 			</programlisting>
 		</section>
-	</section>
+		<section>
+			<title>PriorityBlockingQueue</title>
 
+		</section>
+	</section>
+	<section id="Stack">
+		<title>Stack</title>
+		<programlisting>
+		<![CDATA[
+        Stack<Integer> sequence = new Stack<Integer>();
+        sequence.push(10);
+        sequence.push(50);
+        sequence.push(100);
+        sequence.push(1000);		
+		]]>
+		</programlisting>
+	</section>
 	<section id="Optional">
 		<title>Optional</title>
 		<screen>

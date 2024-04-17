@@ -548,7 +548,42 @@ public class HotelActivity extends AppCompatActivity {
 			</programlisting>
 		</section>
 	</section>
-	
+	<section>
+		<title>DataBinding</title>
+		<para>以 MainActivity 为例，为 MainActivity 添加 DataBinding</para>
+		<programlisting>
+		<![CDATA[
+import cn.aigcsst.student.databinding.ActivityMainBinding;
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private ActivityMainBinding binding;
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+	}
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+	</section>
 	<section id="App间跳转">
 		<title>App 间跳转</title>
 		<programlisting>
