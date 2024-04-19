@@ -112,4 +112,48 @@ taskZ.dependsOn(taskX,taskY)
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>自定义包名称</title>
+		<screen>
+			<![CDATA[ 
+			applicationVariants.all {
+				outputs.all {
+					if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
+						this.outputFileName = "aigcsst-${baseName}-v$versionName.apk"
+						println("OutputFileName: $this.outputFileName")
+					}
+				}
+			}			
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[ 
+			buildTypes {
+				release {
+					isMinifyEnabled = false
+					proguardFiles(
+							getDefaultProguardFile("proguard-android-optimize.txt"),
+							"proguard-rules.pro"
+					)
+				}
+				debug {
+		
+				}
+				applicationVariants.all {
+					var buildType = this.buildType.name
+					outputs.all {
+						if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
+							if (buildType == "debug") {
+								this.outputFileName = "aigcsst-${baseName}-v${versionName}-${versionCode}.apk"
+							} else {
+								this.outputFileName = "aigcsst-${baseName}-v${versionName}.apk"
+							}
+							println("OutputFileName: $this.outputFileName")
+						}
+					}
+				}
+			}
+			]]>
+		</screen>
+	</section>
 </section>
