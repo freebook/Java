@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="security" ?>
+<chapter id="index">
+	<?dbhtml dir="security"?>
 	<title>java.security</title>
 	<section id="Security.getAlgorithms">
 		<title>列出 Java 支持的数字摘要算法</title>
@@ -86,6 +87,35 @@ public class sha1sum {
 	}
 
 }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Md5sum</title>
+		<programlisting>
+		<![CDATA[
+		public String md5sum(String filename) throws NoSuchAlgorithmException, IOException {
+			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+			messageDigest.update(Files.readAllBytes(Paths.get(filename)));
+			byte[] digest = messageDigest.digest();
+			String checksum = DatatypeConverter.printHexBinary(digest).toUpperCase();
+	
+			return checksum;
+	
+		}
+	
+		public boolean checksum() throws NoSuchAlgorithmException {
+			String hash = "35454B055CC325EA1AF2126E27707052";
+			String password = "ILoveJava";
+	
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(password.getBytes());
+			byte[] digest = md.digest();
+			String myHash = DatatypeConverter.printHexBinary(digest).toUpperCase();
+	
+			return myHash.equals(hash);
+	
+		}
 		]]>
 		</programlisting>
 	</section>
