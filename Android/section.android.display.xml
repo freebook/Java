@@ -282,6 +282,68 @@ fullscreen(getActivity().getWindow().getDecorView().getRootView());
 		</programlisting>
 		<para>onScroll 按下后触发，持续获取坐标</para>
 		<para>onFling 按下滑动，手指抬起后触发</para>
+		<section>
+			<title>上下滑动</title>
+			<programlisting>
+			<![CDATA[
+		@Override
+        public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
+
+            int direction = (int) (e1.getY() - e2.getY());
+            if (direction > 0) {
+                if (rangeInDefined(direction, 250, 450)) {
+                    page += 10;
+                } else if (rangeInDefined(direction, 450, 800)) {
+                    page += 50;
+                } else if (rangeInDefined(direction, 800, 1500)) {
+                    page += 100;
+                } else {
+                    page++;
+                }
+
+                page = page > totalPages ? totalPages : page;
+            }
+
+            if (direction < 0) {
+                if (rangeInDefined(Math.abs(direction), 250, 450)) {
+                    page -= 10;
+                } else if (rangeInDefined(Math.abs(direction), 450, 800)) {
+                    page -= 50;
+                } else if (rangeInDefined(Math.abs(direction), 800, 1500)) {
+                    page -= 100;
+                } else {
+                    page--;
+                }
+                page = page <= 0 ? 0 : page;
+            }
+
+            if (direction > 10) {
+//                Log.d(TAG, "MySimpleOnGestureListener onFling UP");
+                picture.next(page, storyConsumer);
+            } else {
+//                Log.d(TAG, "MySimpleOnGestureListener onFling Down");
+                picture.previous(page, storyConsumer);
+            }
+            Log.d(TAG, "Y1 " + e1.getY() + " Y2 " + e2.getY() + " = " + direction);
+//            Log.d(TAG, "MySimpleOnGestureListener Direction: " + direction + " Page: " + page);
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>双击事件</title>
+			<programlisting>
+			<![CDATA[
+        @Override
+        public boolean onDoubleTap(@NonNull MotionEvent e) {
+            Log.d(TAG, "MySimpleOnGestureListener onDoubleTap");
+            picture.click(picture.id, Picture.Button.LIKES, true, clickConsumer);
+            return super.onDoubleTap(e);
+        }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="SimpleOnScaleGestureListener">
 		<title>SimpleOnScaleGestureListener</title>
