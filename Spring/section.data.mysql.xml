@@ -3568,7 +3568,7 @@ private List<Student> studentList;
 			</programlisting>
 		</section>
 	</section>
-	<section id="index">
+	<section id="indexes">
 		<title>索引</title>
 		<section>
 			<title>普通索引</title>
