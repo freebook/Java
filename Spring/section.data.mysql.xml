@@ -1566,9 +1566,6 @@ public interface UserTokenRepository extends JpaRepository<UserToken, UserTokenP
 				</programlisting>
 			</section>
 		</section>
-
-
-
 		<section id="@JsonIgnore">
 			<title>@JsonIgnore</title>
 			<para>当尸体返回 Json 数据结构是，将不包含 @JsonIgnore 定义变量。</para>
@@ -1579,6 +1576,9 @@ public interface UserTokenRepository extends JpaRepository<UserToken, UserTokenP
     private List<Pet> pets;  
 				]]>
 			</programlisting>
+			
+			
+			
 		</section>
 		<section id="@EnableJpaAuditing">
 			<title>@EnableJpaAuditing 开启 JPA 审计功能</title>
@@ -3567,10 +3567,41 @@ private List<Student> studentList;
 				]]>
 			</programlisting>
 		</section>
+		<section id="@JsonIgnoreProperties">
+			<title>@JsonIgnoreProperties</title>
+			
+		<programlisting>
+			<![CDATA[
+@Entity
+public class Subarea {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
+
+  @OneToMany
+  @JsonIgnoreProperties(value = {"subarea"})
+  @JoinColumn(name = "subarea_id")
+  private List<SubareaSet> subareaSetList;
+
+}
+
+@Entity
+public class SubareaSet {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
+  
+  @ManyToOne
+  @JsonIgnoreProperties(value = {"subareaSetList"})
+  private Subarea subarea;
+}
+			]]>
+			</programlisting></section>
 	</section>
 	<section id="indexes">
 		<title>索引</title>
-		<section>
+		<section id=" @Index">
 			<title>普通索引</title>
 			<screen>
 				<![CDATA[
@@ -5405,6 +5436,272 @@ public List<MyModel> getAllRecord();
 				]]>
 			</programlisting>
 
+		</section>
+		<section>
+			<title>@Query 与 @ManyToOne</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.domain;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+@Entity
+@DynamicInsert
+@DynamicUpdate
+@Table
+@Data
+public class Follow implements Serializable {
+
+    @Serial
+    public static final long serialVersionUID = -1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "follower")
+    private Consumer follower;
+
+    @ManyToOne
+    @JoinColumn(name = "followed")
+    private Consumer followed;
+}
+			
+			]]>
+			</programlisting>
+			
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.domain;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table
+@Data
+@DynamicUpdate
+@DynamicInsert
+@Comment("客户信息表")
+public class Consumer implements Serializable {
+    @Serial
+    public static final long serialVersionUID = -1L;
+
+    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("唯一ID")
+//    @Column(name = "id", nullable = false, columnDefinition = "int unsigned")
+    private Integer id;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    @MapsId
+    @JoinColumn(name = "id", insertable = true, updatable = false, columnDefinition = "int unsigned", foreignKey = @ForeignKey(name = "device_id"))
+    @JsonIgnore
+    private Device device;
+
+    @Comment("姓名")
+    @Column(length = 8)
+    private String name;
+    @Comment("昵称")
+    @Column(length = 16)
+    private String nickname;
+    @Comment("头像")
+    private String avatar;
+    @Comment("性别")
+    private Boolean gender;
+    @Comment("年龄")
+    private Integer age;
+    @Comment("生日")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birthday;
+    @Comment("地址")
+    private String address;
+    @Comment("电话")
+    @Column(length = 15)
+    private String mobile;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Comment("创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    @Comment("修改时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date mtime;
+
+    public Consumer() {
+    }
+
+}
+			
+			]]>
+			</programlisting>
+			
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import cn.netkiller.domain.Consumer;
+import cn.netkiller.domain.Follow;
+import cn.netkiller.repository.FollowRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class FollowService {
+    @Autowired
+    private FollowRepository followRepository;
+
+    public Iterable<Follow> following() {
+        Iterable<Follow> follow = followRepository.findAll();
+        return follow;
+    }
+
+    public void following(Integer follower, Integer followed) {
+        Follow follow = new Follow();
+        Consumer me = new Consumer();
+        me.setId(follower);
+
+        Consumer their = new Consumer();
+        me.setId(followed);
+
+        followRepository.findByFollowerAndFollowed(me, their);
+
+        follow.setFollower(me);
+        follow.setFollower(their);
+
+        followRepository.save(follow);
+
+    }
+
+    @Transactional
+    public boolean follow(Integer follower, Integer followed) {
+
+//        Consumer follower = new Consumer();
+//        follower.setId(follow.getFollower().getId());
+//
+//        Consumer followed = new Consumer();
+//        followed.setId(follow.getFollowed().getId());
+
+        followRepository.followByFollowerAndFollowed(follower, followed);
+        return true;
+    }
+
+    @Transactional
+    public boolean unfollow(Integer follower, Integer followed) {
+
+//        Consumer follower = new Consumer();
+//        follower.setId(follow.getFollower().getId());
+//
+//        Consumer followed = new Consumer();
+//        followed.setId(follow.getFollowed().getId());
+
+        followRepository.deleteByFollowerAndFollowed(follower, followed);
+        return true;
+    }
+}
+			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller;
+
+import cn.netkiller.ai.AigcJsonResponse;
+import cn.netkiller.domain.Follow;
+import cn.netkiller.service.FollowService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@Slf4j
+@RequestMapping("/follow/{appid}/{device}")
+public class FollowController {
+    @Autowired
+    private FollowService followService;
+
+    @GetMapping("following")
+    public Iterable<Follow> following() {
+        Iterable<Follow> follow = followService.following();
+        return follow;
+    }
+
+    @PutMapping("follow/{follower}/{followed}")
+    public AigcJsonResponse follow(@PathVariable("follower") Integer follower, @PathVariable("followed") Integer followed) {
+
+        followService.follow(follower, followed);
+        return new AigcJsonResponse(true);
+    }
+
+    @DeleteMapping("unfollow/{follower}/{followed}")
+    public AigcJsonResponse unfollow(@PathVariable("follower") Integer follower, @PathVariable("followed") Integer followed) {
+        boolean status = followService.unfollow(follower, followed);
+        return new AigcJsonResponse(status);
+    }
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository;
+
+import cn.netkiller.domain.Consumer;
+import cn.netkiller.domain.Follow;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface FollowRepository extends CrudRepository<Follow, Integer> {
+
+    Optional<Follow> findByFollowerAndFollowed(Consumer me, Consumer their);
+
+    @Modifying
+//    @Query(value = "DELETE FROM Follow WHERE follower=:follower and followed=:followed", nativeQuery = true)
+    @Query(value = "DELETE FROM Follow WHERE follower.id=:follower and followed.id=:followed")
+    void deleteByFollowerAndFollowed(@Param("follower") Integer follower, @Param("followed") Integer followed);
+
+
+    @Query(value = "INSERT INTO Follow(follower,followed) VALUES( :follower,:followed)", nativeQuery = true)
+    void followByFollowerAndFollowed(Integer follower, Integer followed);
+}			
+			]]>
+			</programlisting>
+			<para>原生写法：@Query(value = "DELETE FROM Follow WHERE follower=:follower and followed=:followed", nativeQuery = true)</para>
+			<para>JPQL写法：@Query(value = "DELETE FROM Follow WHERE follower.id=:follower and followed.id=:followed")</para>
+			<para>两种写法结果相同</para>	
 		</section>
 		<section id="Query.Collection">
 			<title>Collection</title>
