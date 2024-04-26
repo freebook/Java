@@ -89,7 +89,7 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
 
     </section>
 </section>
-<section>
+<section id="Text">
     <title>Text</title>
 
     <section id="TextView">
@@ -378,9 +378,7 @@ tools:ignore="ResourceName">
             android:textSize="50dp" />			
         ]]>
         </programlisting>
-    </section>
-</section>
-<section id="ImageButton">
+    </section><section id="ImageButton">
     <title>ImageButton</title>
     <section>
         <title>触摸事件</title>
@@ -407,6 +405,8 @@ tools:ignore="ResourceName">
         </programlisting>
     </section>
 </section>
+</section>
+
 <section id="EditText">
     <title>EditText</title>
     <programlisting>
