@@ -246,7 +246,24 @@ public class TestController {
 			]]>
 		</programlisting>
 	</section>
-	<section id="RedisTemplate">
+	<section id="stringRedisTemplate">
+		<title>stringRedisTemplate 基本用法</title>
+		<screen>
+			<![CDATA[
+@Autowired
+private final StringRedisTemplate stringRedisTemplate;
+			
+stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
+stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
+stringRedisTemplate.getExpire("test")											//根据key获取过期时间
+stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
+stringRedisTemplate.delete("test");												//根据key删除缓存
+stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
+stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
+			]]>
+		</screen>
+
+	</section><section id="RedisTemplate">
 		<title>RedisTemplate</title>
 
 
@@ -361,24 +378,7 @@ String result = redisTemplate.execute(new RedisCallback<String>() {
 
 
 	</section>
-	<section id="stringRedisTemplate">
-		<title>stringRedisTemplate 基本用法</title>
-		<screen>
-			<![CDATA[
-@Autowired
-private final StringRedisTemplate stringRedisTemplate;
-			
-stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
-stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
-stringRedisTemplate.getExpire("test")											//根据key获取过期时间
-stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
-stringRedisTemplate.delete("test");												//根据key删除缓存
-stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回boolean值
-stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
-			]]>
-		</screen>
-
-	</section>
+	
 	<section id="ValueOperations">
 		<title>ValueOperations</title>
 		<programlisting>
@@ -1469,7 +1469,74 @@ public class TestRestController {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="CacheService">
+		<title>CacheService</title>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.service;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Service;
+
+import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Duration;
+import java.util.function.Supplier;
+
+@Service
+@Slf4j
+public class CacheService {
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    private final String prefix = "service";
+
+    @SneakyThrows
+    public static String md5Key(String key) {
+        String digest = DatatypeConverter
+                .printHexBinary(MessageDigest.getInstance("MD5").digest(key.getBytes(StandardCharsets.UTF_8)));
+        return digest;
+    }
+
+
+    public <T> T cache(String cacheKey, Duration duration, Supplier<T> supplier) {
+//        RedisTemplate redisTemplate = new RedisTemplate();
+        String key = String.format("%s:%s", prefix, cacheKey);
+
+        T value;
+        if (redisTemplate == null) {
+            value = supplier.get();
+            log.info("Cache Skip Key: " + key + " Value: " + value);
+        } else {
+            if (redisTemplate.hasKey(key)) {
+                value = (T) redisTemplate.opsForValue().get(key);
+                log.info("Cache Hit Key: " + key + " Value: " + value);
+            } else {
+                value = supplier.get();
+                if (value != null) {
+                    redisTemplate.setKeySerializer(new StringRedisSerializer());
+                    redisTemplate.opsForValue().set(key, value);
+                    redisTemplate.expire(key, duration);
+
+                    log.info("Cache Set Key: " + key + " Value: " + value);
+                } else {
+                    log.info("Cache Set Key: " + key + " Error: " + value);
+                }
+            }
+        }
+        return value;
+    }
+
+}		
+		]>
+		</programlisting>
+	</section>
+	<section id="spring.data.redis.faq">
 		<title>FAQ</title>
 		<section>
 			<title>Spring Data Redis</title>
