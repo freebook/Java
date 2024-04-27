@@ -4390,6 +4390,12 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Iterable<Chat> findByAnswerIsNullOrAudioIsNullOrPsychoanalysisIsNull();
 			]]>
 			</programlisting>
+			<para>IsNotNull</para>
+			<programlisting>
+			<![CDATA[
+    Page<Picture> findByImageIsNotNullAndStoryIsNotNullAndAudioIsNotNull(Pageable pageable);			
+			]]>
+			</programlisting>
 		</section>
 		<section id="jpa.InNotIn">
 			<title>In/NotIn</title>

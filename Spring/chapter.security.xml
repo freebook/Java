@@ -467,10 +467,52 @@ public class WebSecurityConfig {
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>InvalidClaimException: The Token can't be used before</title>
+		<para>.withNotBefore(new Date())</para>
+		<programlisting>
+		<![CDATA[
+ public static String token() {
+
+        Calendar calendar = Calendar.getInstance();
+//        instance.add(Calendar.SECOND, Config.Api.expired); // 这里是 token 过期时间
+        calendar.add(Calendar.DATE, Config.Api.expired);
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(Config.Api.appSecret);
+            String token = JWT.create()
+                    .withJWTId(Config.Api.appKey)
+                    .withKeyId(Config.Api.appKey)
+                    .withIssuer(Config.Api.appId)
+                    .withIssuedAt(new Date())
+                    .withSubject(Config.Api.subject)
+                    .withAudience(Config.Api.audience)
+                    .withExpiresAt(calendar.getTime())
+                    .withNotBefore(new Date())
+                    .sign(algorithm);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String datetime = formatter.format(calendar.getTime());
+
+            Log.d(TAG, "Calendar：" + datetime + " Token: " + token);
+            return token;
+        } catch (JWTCreationException exception) {
+            Log.d(TAG, exception.getMessage());
+        }
+        return null;
+    }		
+		]]>
+		</programlisting>
+		<para>.acceptLeeway(3) 允许时间无差</para>
 		<programlisting>
 			<![CDATA[
-			
+JWTVerifier verifier = JWT.require(algorithm)
+                // specify an specific claim validations
+                .withIssuer(business.getAppId())
+                .withJWTId(business.getAppKey())
+                .withSubject(business.getSubject())
+                .withAudience(business.getAudience())
+                .acceptLeeway(3)
+                // reusable verifier instance
+                .build();
 			]]>
 		</programlisting>
 	</section>
