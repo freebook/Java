@@ -1576,9 +1576,9 @@ public interface UserTokenRepository extends JpaRepository<UserToken, UserTokenP
     private List<Pet> pets;  
 				]]>
 			</programlisting>
-			
-			
-			
+
+
+
 		</section>
 		<section id="@EnableJpaAuditing">
 			<title>@EnableJpaAuditing 开启 JPA 审计功能</title>
@@ -1812,7 +1812,7 @@ public class Student {
 			</programlisting>
 		</section>
 
-		<section id="">
+		<section id="Set">
 			<title>Set 集合</title>
 			<para>Set 集合</para>
 			<programlisting>
@@ -3092,49 +3092,18 @@ ENGINE=InnoDB;
 			</programlisting>
 		</section>
 		<section id="orphanRemoval">
-			<title>外键级联操作</title>
-			<para>cascade 属性： 指定级联操作的行为(可多选)</para>
+			<title>外键级联删除</title>
+			<para>orphanRemoval 是 JPA 定义，并不是数据库原生</para>
 			<programlisting>
-				<![CDATA[
-CascadeType.PERSIST：级联新增（又称级联保存）：对A对象保存时也会对B对象进行保存。并且，只有A类新增时，会级联B对象新增。若B对象在数据库存在则抛异常。对应EntityManager的presist方法。
-CascadeType.MERGE：级联合并（级联更新）：指A类新增或者变化，会级联B对象（新增或者变化）。对应EntityManager的merge方法。
-CascadeType.REMOVE：级联删除：只有A类删除时，会级联删除B类,即在设置的那一端进行删除时，另一端才会级联删除。对应EntityManager的remove方法。
-CascadeType.REFRESH：级联刷新：获取A对象时也重新获取最新的B对象。对EntityManager的refresh(object)方法。即会重新查询数据库里的最新数据（用的比较少）
-CascadeType.DETACH：级联分离。
-CascadeType.ALL：级联所有操作。
-				]]>
-			</programlisting>
-			<section>
-				<title>CascadeType.PERSIST</title>
-				<programlisting>
-					<![CDATA[
-@OneToMany(mappedBy = "boss", cascade = CascadeType.PERSIST)  
-private List<Staff> staffList;	
-					]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>CascadeType.REMOVE</title>
-				<programlisting>
-					<![CDATA[
-@OneToMany(mappedBy = "boss", cascade = CascadeType.REMOVE)  
-private List<Staff> staffList;
-					]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>外键级联删除</title>
-				<para>orphanRemoval 是 JPA 定义，并不是数据库原生</para>
-				<programlisting>
 					<![CDATA[
     @Id
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "picture_id"))
     private Picture picture;						
 					]]>
-				</programlisting>
-				<para>orphanRemoval = true 可以实现数据级联删除</para>
-				<programlisting>
+			</programlisting>
+			<para>orphanRemoval = true 可以实现数据级联删除</para>
+			<programlisting>
 			<![CDATA[
 package cn.netkiller.api.domain;
 
@@ -3260,6 +3229,301 @@ public class Member implements Serializable {
 
 }			
 			]]>
+			</programlisting>
+		</section>
+		<section id="CascadeType">
+			<title>外键级联操作</title>
+			<para>cascade 属性： 指定级联操作的行为(可多选)</para>
+			<programlisting>
+				<![CDATA[
+CascadeType.PERSIST：级联新增（又称级联保存）：对A对象保存时也会对B对象进行保存。并且，只有A类新增时，会级联B对象新增。若B对象在数据库存在则抛异常。对应EntityManager的presist方法。
+CascadeType.MERGE：级联合并（级联更新）：指A类新增或者变化，会级联B对象（新增或者变化）。对应EntityManager的merge方法。
+CascadeType.REMOVE：级联删除：只有A类删除时，会级联删除B类,即在设置的那一端进行删除时，另一端才会级联删除。对应EntityManager的remove方法。
+CascadeType.REFRESH：级联刷新：获取A对象时也重新获取最新的B对象。对EntityManager的refresh(object)方法。即会重新查询数据库里的最新数据（用的比较少）
+CascadeType.DETACH：级联分离。
+CascadeType.ALL：级联所有操作。
+				]]>
+			</programlisting>
+			<section id="CascadeType.PERSIST">
+				<title>CascadeType.PERSIST</title>
+				<programlisting>
+					<![CDATA[
+@OneToMany(mappedBy = "boss", cascade = CascadeType.PERSIST)  
+private List<Staff> staffList;	
+					]]>
+				</programlisting>
+			</section>
+			<section id="CascadeType.REMOVE">
+				<title>CascadeType.REMOVE</title>
+				<programlisting>
+					<![CDATA[
+@OneToMany(mappedBy = "boss", cascade = CascadeType.REMOVE)  
+private List<Staff> staffList;
+					]]>
+				</programlisting>
+			</section>
+			<section id="CascadeType.REMOVE">
+				<title>CascadeType.MERGE</title>
+				<programlisting>
+				<![CDATA[
+package cn.aigcsst.domain;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table
+@Data
+@DynamicUpdate
+@DynamicInsert
+@Comment("客户信息表")
+public class Consumer implements Serializable {
+    @Serial
+    public static final long serialVersionUID = -1L;
+
+    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("唯一ID")
+//    @Column(name = "id", nullable = false, columnDefinition = "int unsigned")
+    private Integer id;
+
+    //    CascadeType.MERGE 集联更新，会更新外键表数据，覆盖
+    @OneToOne(cascade = CascadeType.MERGE, optional = false)
+    @MapsId
+    @JoinColumn(name = "id", nullable = false, insertable = true, updatable = false, columnDefinition = "int unsigned", foreignKey = @ForeignKey(name = "device_id"))
+    @JsonIgnore
+    private Device device;
+
+    @Comment("姓名")
+    @Column(length = 8)
+    private String name;
+    @Comment("昵称")
+    @Column(length = 16)
+    private String nickname;
+    @Comment("头像")
+    private String avatar;
+    @Comment("性别")
+    private Boolean gender;
+    @Comment("年龄")
+    private Integer age;
+    @Comment("生日")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birthday;
+    @Comment("地址")
+    private String address;
+    @Comment("电话")
+    @Column(length = 15)
+    private String mobile;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Comment("创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    @Comment("修改时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date mtime;
+
+    public Consumer() {
+    }
+
+}
+
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.aigcsst.domain;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "business_id"})}
+//        indexes = {
+//        @Index(name = "key_device_unique", columnList = "name"),
+//        @Index(name = "key_device_unique", columnList = "business_id")
+//}
+)
+@DynamicUpdate
+@DynamicInsert
+@Data
+//@Builder
+@Comment("设备表")
+public class Device implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Integer id;
+
+    @Column(nullable = false, length = 32)
+    @Comment("设备名称")
+    private String name;
+
+    @Column(unique = true, nullable = false, insertable = true, updatable = false, length = 32)
+    @Comment("序列号")
+    private String sn;
+
+    @Comment("型号")
+    @Column(length = 16)
+    private String model;
+    @Comment("固件版本")
+    @Column(length = 16)
+    private String fireware;
+    @Comment("软件版本")
+    @Column(length = 16)
+    private String version;
+
+    @Column(columnDefinition = "int unsigned")
+    @Comment("存储容量")
+    private Integer capacity = null;
+
+    @Column(columnDefinition = "int unsigned")
+    @Comment("可用容量")
+    private Integer available;
+
+    @Column(columnDefinition = "int unsigned")
+    @Comment("内存容量")
+    private Integer memory;
+
+    @Comment("移动网络提供商")
+    @Column(columnDefinition = "enum('中国移动','中国电信','中国联通','其他') DEFAULT NULL")
+    private String provider;
+
+    @Comment("IMEI")
+    @Column(length = 15)
+    private String imei;
+
+    @Comment("MEID")
+    @Column(length = 15)
+    private String meid;
+
+    @Comment("ICCID")
+    @Column(length = 20)
+    private String iccid;
+
+    @Comment("wlan 无线 mac 地址")
+    @Column(length = 17)
+    private String wlan;
+    @Column(length = 17)
+    @Comment("蓝牙 mac 地址")
+    private String bluetooth;
+
+    @Comment("品牌")
+    private String brand;
+
+    @Comment("CPU")
+    private String cpu;
+
+    @Comment("设备驱动")
+    private String device;
+
+    @Comment("显示屏")
+    private String display;
+
+    @Comment("设备标识")
+    private String fingerprint;
+
+    @Comment("硬件")
+    private String hardware;
+
+    @Comment("制造商")
+    private String manufacturer;
+
+    @Comment("产品")
+    private String product;
+
+    @Column(columnDefinition = "enum('Y','N') DEFAULT 'N'")
+    @Comment("设备状态，正常=Y，其他=N")
+    private String status;
+
+    @Comment("设备状态原因")
+    @Column(columnDefinition = "enum('未激活','激活','充值','正常','禁用','冻结') DEFAULT '正常'")
+    private String reason;
+
+    @Comment("设备状态描述")
+    private String description;
+
+    @CreatedDate
+    @Column(nullable = true, insertable = true, updatable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("访问时间")
+    private Date atime;
+
+    @ManyToOne
+    @JoinColumn(name = "business_id")
+    private Business business;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("创建时间")
+    private Date ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("修改时间")
+    private Date mtime;
+
+    public Device() {
+
+    }
+
+}
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+    @Transactional
+    public Optional<Consumer> update(String deviceName, Consumer consumer) {
+        Device device = new Device();
+        device.setId(consumer.getId());
+        device.setName(deviceName);
+        consumer.setDevice(device);
+        log.debug(consumer.toString());
+        consumer = consumerRepository.save(consumer);
+        return Optional.ofNullable(consumer);
+    }
+				]]>
+				</programlisting>
+				<para>向 Consumer 表中增加数据，Device 表受到影响，会修改里面的数据。这就是 CascadeType.MERGE 作用，如果不想影响 Device 数据，改为 CascadeType.PERSIST</para>
+				<programlisting>
+				<![CDATA[
+@OneToOne(cascade = CascadeType.MERGE, optional = false)
+				]]>
 				</programlisting>
 			</section>
 			<section>
@@ -3569,8 +3833,8 @@ private List<Student> studentList;
 		</section>
 		<section id="@JsonIgnoreProperties">
 			<title>@JsonIgnoreProperties</title>
-			
-		<programlisting>
+
+			<programlisting>
 			<![CDATA[
 @Entity
 public class Subarea {
@@ -3597,7 +3861,8 @@ public class SubareaSet {
   private Subarea subarea;
 }
 			]]>
-			</programlisting></section>
+			</programlisting>
+		</section>
 	</section>
 	<section id="indexes">
 		<title>索引</title>
@@ -5485,7 +5750,7 @@ public class Follow implements Serializable {
 			
 			]]>
 			</programlisting>
-			
+
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.domain;
@@ -5568,7 +5833,7 @@ public class Consumer implements Serializable {
 			
 			]]>
 			</programlisting>
-			
+
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.service;
@@ -5705,9 +5970,12 @@ public interface FollowRepository extends CrudRepository<Follow, Integer> {
 }			
 			]]>
 			</programlisting>
-			<para>原生写法：@Query(value = "DELETE FROM Follow WHERE follower=:follower and followed=:followed", nativeQuery = true)</para>
-			<para>JPQL写法：@Query(value = "DELETE FROM Follow WHERE follower.id=:follower and followed.id=:followed")</para>
-			<para>两种写法结果相同</para>	
+			<para>原生写法：@Query(value = "DELETE FROM Follow WHERE
+				follower=:follower and followed=:followed", nativeQuery = true)
+			</para>
+			<para>JPQL写法：@Query(value = "DELETE FROM Follow WHERE
+				follower.id=:follower and followed.id=:followed")</para>
+			<para>两种写法结果相同</para>
 		</section>
 		<section id="Query.Collection">
 			<title>Collection</title>
@@ -5768,8 +6036,10 @@ interface UserRepository extends Repository<User, Long> {
 			</programlisting>
 		</section>
 		<section>
-			<title>Query did not return a unique result: 2 results were returned</title>
-			<para>查询 version 表中的最有一条记录，提示 Query did not return a unique result: 2 results were returned</para>
+			<title>Query did not return a unique result: 2 results were returned
+			</title>
+			<para>查询 version 表中的最有一条记录，提示 Query did not return a unique result: 2
+				results were returned</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.domain;
@@ -5822,7 +6092,8 @@ public class Version implements Serializable {
 	
 			]]>
 			</programlisting>
-			<para>接口定义 findOneBy 查询 version 表中存在多条记录，我们只要最后一条，所以不能使用 findOneBy，需要使用 findFirstBy</para>
+			<para>接口定义 findOneBy 查询 version 表中存在多条记录，我们只要最后一条，所以不能使用
+				findOneBy，需要使用 findFirstBy</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.repository;
@@ -5858,7 +6129,7 @@ public interface VersionRepository extends CrudRepository<Version, Integer> {
     Optional<Version> findFirstByProductOrderByIdDesc(String tablet);
 }
 			]]>
-			</programlisting>			
+			</programlisting>
 			<programlisting>
 			<![CDATA[
     @GetMapping("/version/tablet/latest")
