@@ -86,8 +86,23 @@ public User find(Integer id) {
 }			
         ]]>
 		</programlisting>
-		<para>引用对象</para>
-		<programlisting>
+
+		<section>
+			<title>多参数处理</title>
+			<programlisting>
+			<![CDATA[
+    @Cacheable(value = "picture:click", key = "#deviceId+'-'+#pictureId", unless = "#result == null")
+    public AigcResponse click(Integer deviceId, Integer pictureId) {
+        Optional<PictureClick> optional = pictureClickRepository.findByDeviceIdAndPictureId(deviceId, pictureId);
+        return optional.map(AigcResponse::new).orElseGet(() -> new AigcResponse(false, AigcResponse.Code.DataNotFoundException, "数据不存在", null));
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>对象参数</title>
+			<para>引用对象</para>
+			<programlisting>
         <![CDATA[
 @Cacheable(value="users", key="#user.id")
 public User find(User user) {
@@ -96,9 +111,12 @@ return null;
 
 }			
         ]]>
-		</programlisting>
-		<para>条件判断</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<para>条件判断</para>
+			<programlisting>
         <![CDATA[
 @Cacheable(value="messagecache", key="#id", condition="id < 10")
 public String getMessage(int id){
@@ -110,9 +128,12 @@ return "hello"+id;
 @Cacheable(value="test",condition="#userName.length()>2")
 @Cacheable(value={"users"}, key="#user.id", condition="#user.id%2==0")
         ]]>
-		</programlisting>
-		<para>#p0 参数索引，p0表示第一个参数</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>参数索引</title>
+			<para>#p0 参数索引，p0表示第一个参数</para>
+			<programlisting>
         <![CDATA[
 @Cacheable(value="users", key="#p0")
 public User find(Integer id) {
@@ -128,11 +149,16 @@ return null;
 
 }
         ]]>
-		</programlisting>
-		<para>@Cacheable 如果没有任何参数将会自动生成 key ，前提是必须设置 @CacheConfig(cacheNames =
-			"test")
-		</para>
-		<programlisting>
+			</programlisting>
+
+		</section>
+		<section>
+			<title>自动生成 key</title>
+			<para>@Cacheable 如果没有任何参数将会自动生成 key ，前提是必须设置 @CacheConfig(cacheNames
+				=
+				"test")
+			</para>
+			<programlisting>
         <![CDATA[
 @GetMapping("/cache/auto")
 @Cacheable()
@@ -142,13 +168,14 @@ public Attribute auto() {
     return attribute;
 }			
         ]]>
-		</programlisting>
-		<screen>
+			</programlisting>
+			<screen>
         <![CDATA[
 127.0.0.1:6379> keys *
 1) "test::SimpleKey []"			
         ]]>
-		</screen>
+			</screen>
+		</section>
 
 		<section>
 			<title>SpEL表达式</title>
@@ -187,7 +214,8 @@ spring.cache.redis.cache-null-values=false
 		</section>
 		<section>
 			<title>排除 empty</title>
-			<para>List 不会返回 null，怎么不缓存空的 list 呢？使用 unless="#result.empty" 可以实现</para>
+			<para>List 不会返回 null，怎么不缓存空的 list 呢？使用 unless="#result.empty" 可以实现
+			</para>
 			<programlisting>
 			<![CDATA[
 @Cacheable(unless="#result.empty")
@@ -383,6 +411,63 @@ private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
         ]]>
 		</screen>
 	</section>
+	<section>
+		<title>Cannot serialize</title>
+		<para>org.springframework.data.redis.serializer.SerializationException: Cannot serialize</para>
+		<para>Caused by: java.io.InvalidClassException: cn.aigcsst.domain.PictureClick; class invalid for deserialization</para>
+		<para>解决方法</para>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.*;
+
+import java.io.Serializable;
+
+@Entity
+@Table
+@Data
+@DynamicInsert
+@DynamicUpdate
+@Comment("图片点击数据")
+public class PictureClick implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Integer id;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(nullable = false, insertable = true, updatable = false)
+    @JsonIgnore
+    @Comment("设备")
+    private Device device;
+
+    @Comment("图片")
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JoinColumn(name = "picture_id", nullable = false, insertable = true, updatable = false)
+//    @JsonIgnore
+    private Picture picture;
+
+    @Comment("点赞")
+    private Boolean likes = false;
+
+    @Comment("收藏")
+    private Boolean favorites = false;
+
+    @Comment("转发")
+    private Boolean forward = false;
+}
+		
+		]]>
+		</programlisting>
+		<para>public class PictureClick implements Serializable</para>
+	</section>
 
 </chapter>
