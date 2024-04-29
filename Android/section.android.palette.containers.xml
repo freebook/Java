@@ -60,4 +60,48 @@ recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
 			</programlisting>
 		</section>
 	</section>
+	<section id="BottomNavigationView">
+		<title>底部导航</title>
+		<para>只显示图标，不显示文字 app:labelVisibilityMode="unlabeled"</para>
+		<programlisting>
+		<![CDATA[
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@android:color/system_neutral2_50"
+                app:itemIconTint="@drawable/navigation_view"
+                app:labelVisibilityMode="unlabeled"
+                app:menu="@menu/bottom_nav_menu"
+                tools:ignore="NewApi" />		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+		]]>
+		</programlisting>
+		<para>图标不显示原始颜色</para>
+		<programlisting>
+		<![CDATA[
+setItemIconTintList(null)		
+		]]>
+		</programlisting>
+		<para>文字上下移动，app:itemPaddingBottom="15dp"，app:itemPaddingTop="0dp"</para>
+		<programlisting>
+		<![CDATA[
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@android:color/system_neutral2_50"
+                android:gravity="center"
+                app:itemPaddingBottom="15dp"
+                app:itemTextColor="@color/black"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/bottom_nav_menu"
+                tools:ignore="NewApi" />
+		]]>
+		</programlisting>
+	</section>
 </section>
