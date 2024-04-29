@@ -2551,7 +2551,7 @@ CREATE TABLE `profile` (
 					]]>
 				</programlisting>
 			</section>
-			<section>
+			<section id="@PrimaryKeyJoinColumn">
 				<title>共享主键</title>
 				<programlisting>
 					<![CDATA[
@@ -2704,9 +2704,7 @@ public class PicturePsychoanalysis implements Serializable {
 }
 					]]>
 				</programlisting>
-				<para>讲 @OneToOne 增加 @OneToOne(cascade = CascadeType.MERGE) 参数，如果
-					CascadeType.ALL 需要改为 CascadeType.MERGE
-				</para>
+				<para>讲 @OneToOne 增加 @OneToOne(cascade = CascadeType.MERGE) 参数，如果 CascadeType.ALL 需要改为 CascadeType.MERGE </para>
 				<programlisting>
 					<![CDATA[
 	@Id

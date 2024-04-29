@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="3rdparty">
+	<title>第三方开发库</title>
+	<section id="Glide">
+		<title>Glide</title>
+		<section>
+			<title>禁止缓存</title>
+			<programlisting>
+			<![CDATA[
+Glide.with(getActivity()).load(data.avatar).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(binding.imageButtonAvatar);
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+String updateTime = String.valueOf(System.currentTimeMillis()); 
+Glide.load(url)
+  .signature(new StringSignature(updateTime))
+  .into(image);
+			]]>
+			</programlisting>
+			<para>失败默认图片</para>
+			<programlisting>
+			<![CDATA[
+Glide.with(fragment).
+    load(iconUrl).error( R.drawable.error) //异常时候显示的图片
+    .placeholder( R.drawable.default) //加载成功前显示的图片
+    .fallback( R.drawable.blank) //url为空的时候,显示的图片
+    .into(Icon);
+			]]>
+			</programlisting>
+		</section>
+	</section>
+</chapter>

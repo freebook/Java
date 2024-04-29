@@ -541,7 +541,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="静态广播接收不到信息">
 		<title>静态广播接收不到信息</title>
 		<para>StaticBroadcastReceiver 接收不到消息</para>
 		<programlisting>

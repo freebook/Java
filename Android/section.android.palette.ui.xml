@@ -215,6 +215,37 @@ textView.setMovementMethod(ScrollingMovementMethod.getInstance());
         />
         ]]>
         </programlisting>
+        <section>
+        	<title>禁止编辑</title>
+        	<programlisting>
+        	<![CDATA[
+android:editable="false"
+android:focusable="false"
+
+
+设置不可编辑状态：
+editText.setFocusable(false);
+editText.setFocusableInTouchMode(false);
+
+
+设置可编辑状态：
+editText.setFocusableInTouchMode(true);
+editText.setFocusable(true);
+editText.requestFocus();        	
+        	]]>
+        	</programlisting>
+        </section>
+        <section>
+        	<title>禁止选择文本</title>
+        	<programlisting>
+        	<![CDATA[
+
+android:cursorVisible="false"//不显示光标
+android:textIsSelectable="false"        	
+        	]]>
+        	</programlisting>
+        </section>
+     
     </section>
 </section>
 <section id="Button">
