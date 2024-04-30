@@ -173,11 +173,11 @@ neo@MacBook-Pro-M2 album %
 	</section>
 	
 	<section>
-		<title>从 Android API 30 废弃 setSystemUiVisibility(uiOptions) </title>
-		<para>替代方案</para>
+		<title>package does not have vibrate permission</title>
+		<para>解决方案</para>
 		<programlisting>
 		<![CDATA[
-		
+    <uses-permission android:name="android.permission.VIBRATE" />
 		]]>
 		</programlisting>
 	</section>
