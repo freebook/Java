@@ -119,7 +119,7 @@ taskZ.dependsOn(taskX,taskY)
 			applicationVariants.all {
 				outputs.all {
 					if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-						this.outputFileName = "aigcsst-${baseName}-v$versionName.apk"
+						this.outputFileName = "netkiller-${baseName}-v$versionName.apk"
 						println("OutputFileName: $this.outputFileName")
 					}
 				}
@@ -144,9 +144,9 @@ taskZ.dependsOn(taskX,taskY)
 					outputs.all {
 						if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
 							if (buildType == "debug") {
-								this.outputFileName = "aigcsst-${baseName}-v${versionName}-${versionCode}.apk"
+								this.outputFileName = "netkiller-${baseName}-v${versionName}-${versionCode}.apk"
 							} else {
-								this.outputFileName = "aigcsst-${baseName}-v${versionName}.apk"
+								this.outputFileName = "netkiller-${baseName}-v${versionName}.apk"
 							}
 							println("OutputFileName: $this.outputFileName")
 						}

@@ -1473,7 +1473,7 @@ public class TestRestController {
 		<title>CacheService</title>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.service;
+package cn.netkiller.service;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

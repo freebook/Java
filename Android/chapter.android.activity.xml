@@ -553,7 +553,7 @@ public class HotelActivity extends AppCompatActivity {
 		<para>以 MainActivity 为例，为 MainActivity 添加 DataBinding</para>
 		<programlisting>
 		<![CDATA[
-import cn.aigcsst.student.databinding.ActivityMainBinding;
+import cn.netkiller.student.databinding.ActivityMainBinding;
 		]]>
 		</programlisting>
 		<programlisting>

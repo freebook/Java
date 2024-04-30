@@ -24,7 +24,7 @@
         </programlisting>
         <programlisting>
         <![CDATA[
-        package cn.aigcsst.student.ui;
+        package cn.netkiller.student.ui;
 
         import android.os.Bundle;
         import android.view.LayoutInflater;
@@ -39,7 +39,7 @@
         import androidx.annotation.Nullable;
         import androidx.fragment.app.Fragment;
         
-        import cn.aigcsst.student.databinding.FragmentNotificationFullscreenBinding;
+        import cn.netkiller.student.databinding.FragmentNotificationFullscreenBinding;
         
         /**
          * An example full-screen activity that shows and hides the system UI (i.e.

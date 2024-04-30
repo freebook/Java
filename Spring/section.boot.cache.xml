@@ -414,11 +414,11 @@ private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
 	<section>
 		<title>Cannot serialize</title>
 		<para>org.springframework.data.redis.serializer.SerializationException: Cannot serialize</para>
-		<para>Caused by: java.io.InvalidClassException: cn.aigcsst.domain.PictureClick; class invalid for deserialization</para>
+		<para>Caused by: java.io.InvalidClassException: cn.netkiller.domain.PictureClick; class invalid for deserialization</para>
 		<para>解决方法</para>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.domain;
+package cn.netkiller.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Table;

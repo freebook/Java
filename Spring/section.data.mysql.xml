@@ -3264,7 +3264,7 @@ private List<Staff> staffList;
 				<title>CascadeType.MERGE</title>
 				<programlisting>
 				<![CDATA[
-package cn.aigcsst.domain;
+package cn.netkiller.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -3347,7 +3347,7 @@ public class Consumer implements Serializable {
 				</programlisting>
 				<programlisting>
 				<![CDATA[
-package cn.aigcsst.domain;
+package cn.netkiller.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
