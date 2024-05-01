@@ -4700,6 +4700,14 @@ public interface LoraRepository extends CrudRepository<Lora, Integer> {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>TRUE / FALSE</title>
+			<programlisting>
+			<![CDATA[
+    Page<Picture> findByShareTrueAndImageIsNotNullAndStoryIsNotNullAndAudioIsNotNull(Pageable pageable);
+			]]>
+			</programlisting>
+		</section>
 		<section id="OrderBy">
 			<title>OrderBy</title>
 			<programlisting>
@@ -6002,6 +6010,17 @@ List<User> findUserByNameList(@Param("names") Collection<String> names);
 		]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>更新数据，返回值</title>
+			<para>返回 0 表示更新失败，返回 1 表示更新成功</para>
+			<programlisting>
+			<![CDATA[
+    @Query("UPDATE Picture SET share = :status WHERE id=:id")
+    @Modifying
+    int updateShareStatus(@Param("id") Long id, @Param("status") boolean status);
+			]]>
+			</programlisting>
+		</section>
 		<section id="@Lock">
 			<title>锁 @Lock</title>
 			<programlisting>
@@ -6142,6 +6161,52 @@ public interface VersionRepository extends CrudRepository<Version, Integer> {
     }
 			]]>
 			</programlisting>
+		</section>
+		<section>
+			<title>Executing an update/delete query</title>
+			<para>org.springframework.dao.InvalidDataAccessApiUsageException: Executing an update/delete query</para>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.repository;
+
+
+import cn.aigcsst.domain.Picture;
+import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface PictureRepository extends JpaRepository<Picture, Long> {
+    @Query("UPDATE Picture SET share = :status WHERE id=:id")
+    @Modifying
+    int updateShareStatus(@Param("id") Long id, @Param("status") boolean status);
+}
+			]]>
+			</programlisting>
+			<para>Service</para>
+			<programlisting>
+			<![CDATA[
+    public int share(Long id, boolean status) {
+        return pictureRepository.updateShareStatus(id, status);
+    }
+			]]>
+			</programlisting>
+			<para>解决方案，再 Server 方法增加事务注解</para>
+			<programlisting>
+			<![CDATA[
+    @Transactional(rollbackFor = Exception.class)
+    public int share(Long id, boolean status) {
+        return pictureRepository.updateShareStatus(id, status);
+    }
+			]]>
+			</programlisting>
+			
 		</section>
 	</section>
 </chapter>
