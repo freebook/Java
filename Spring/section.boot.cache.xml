@@ -37,20 +37,21 @@ spring.data.redis.port=6379
 spring.data.redis.password=passw0rd
 spring.data.redis.database=10
 spring.data.redis.timeout=30000
-spring.data.redis.lettuce.pool.max-active=8
+spring.data.redis.lettuce.pool.max-active=32
 spring.data.redis.lettuce.pool.max-wait=-1
 spring.data.redis.lettuce.pool.max-idle=8
-spring.data.redis.lettuce.pool.min-idle=0
-
+spring.data.redis.lettuce.pool.min-idle=2
 spring.cache.type=redis
-spring.cache.redis.time-to-live=3600000
-spring.cache.redis.cache-null-values=true
+spring.cache.redis.key-prefix=spring:
+spring.cache.redis.use-key-prefix=true
+spring.cache.redis.time-to-live=604800000
+spring.cache.redis.cache-null-values=false
     	]]>
 			</programlisting>
 		</section>
 	</section>
 	<section id="@EnableCaching">
-		<title>启用 Cache</title>
+		<title>启用缓存 @EnableCaching</title>
 		<para>添加 @EnableCaching </para>
 		<screen>
         <![CDATA[
@@ -75,7 +76,7 @@ public class Application {
 
 
 	<section id="@Cacheable">
-		<title>@Cacheable 的用法</title>
+		<title>设置缓存 @Cacheable</title>
 		<programlisting>
         <![CDATA[
 @Cacheable(value="users", key="#id")
@@ -227,7 +228,7 @@ public List<Object> getList() {
 		</section>
 	</section>
 	<section id="@CachePut">
-		<title>@CachePut 用法</title>
+		<title>更新缓存 @CachePut</title>
 		<para>@CachePut 每次都会执行方法，都会将结果存入指定key的缓存中，@CachePut 不会判断是否 key
 			已经存在，二是始终覆盖。
 		</para>
@@ -243,7 +244,7 @@ return null;
 		</programlisting>
 	</section>
 	<section id="@CacheEvict">
-		<title>清空缓存</title>
+		<title>删除缓存 @CacheEvict</title>
 		<para>缓存返回结果</para>
 		<programlisting>
             <![CDATA[
@@ -271,7 +272,7 @@ public void expire() {
 		</programlisting>
 	</section>
 	<section id="@Caching">
-		<title>@Caching</title>
+		<title>组合操作 @Caching</title>
 		<programlisting>
     	<![CDATA[
     @Caching(
