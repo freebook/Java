@@ -124,7 +124,6 @@ public class Picture implements Serializable {
     private Date mtime;
 
 }
-			
 			]]>
 			</screen>
 			<para></para>
@@ -245,6 +244,12 @@ scale		int	列的精度，仅对十进制数值有效，表示小数位的总位
     @Column(name="Price", columnDefinition="Decimal(10,2) default '100.00'")			
 				]]>
 				</screen>
+				<programlisting>
+				<![CDATA[
+@Column(name = "totalAmount", precision = 10, scale = 2, nullable = false)
+private BigDecimal totalAmount;				
+				]]>
+				</programlisting>
 			</section>
 			<section id="@Column.insertable">
 				<title>创建于更新控制</title>
