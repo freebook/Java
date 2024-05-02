@@ -1533,14 +1533,19 @@ public class CacheService {
     }
 
 }		
-		]>
+		]]>
 		</programlisting>
 	</section>
 	<section id="spring.data.redis.faq">
 		<title>FAQ</title>
 		<section>
 			<title>Spring Data Redis</title>
-			<para>Spring Data Redis - Could not safely identify store assignment for repository candidate interface cn.netkiller.repository.ChatRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository</para>
+			<para></para>
+			<screen>
+			<![CDATA[
+Spring Data Redis - Could not safely identify store assignment for repository candidate interface cn.netkiller.repository.ChatRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository			
+			]]>
+			</screen>
 			<programlisting>
 			<![CDATA[
 spring.data.redis.repositories.enabled=false
