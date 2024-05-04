@@ -3,5 +3,4 @@
 	&chapter.mvc.xml;
 	&chapter.webflux.xml;
 	&section.mvc.service.xml;
-	&section.mvc.template.xml;
 	&chapter.mvc.tomcat.xml;

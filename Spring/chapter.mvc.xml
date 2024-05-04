@@ -5,8 +5,9 @@
 	<para>两种方式各有优缺点，Tomcat 方式配置繁琐，但是可以使用虚拟机，同一个IP地址使用不同域名访问，出现不同的内容。而Spring Boot一个应用一个容器一个端口，比不得不通过端口来区分应用。</para>
 
 	&section.mvc.xml;
-	&section.mvc.controller.xml;	
+	&section.mvc.controller.xml;
 	&section.mvc.view.xml;
+	&section.mvc.template.xml;
 	&section.mvc.validation.xml;
 	&section.mvc.interceptor.xml;
 	

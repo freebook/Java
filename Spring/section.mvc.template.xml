@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="jsp" ?>
+<section id="index"><?dbhtml dir="jsp" ?>
 	<title>Spring boot with Webpage</title>
 	<subtitle> ViewResolver </subtitle>
 	<section>
@@ -149,8 +149,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		</programlisting>
 	</section>
 
-</chapter>
-<chapter id="index"><?dbhtml dir="velocity" ?>
+</section>
+<section id="index"><?dbhtml dir="velocity" ?>
 	<title>Spring boot with Velocity template</title>
 	<section>
 		<title>Maven</title>
@@ -490,8 +490,8 @@ $ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X P
 			]]>
 		</programlisting>
 	</section>
-</chapter>
-<chapter id="index"><?dbhtml dir="thymeleaf" ?>
+</section>
+<section id="index"><?dbhtml dir="thymeleaf" ?>
 	<title>Spring boot with Thymeleaf</title>
 	<section id="thymeleaf.maven">
 		<title>Maven</title>
@@ -586,4 +586,4 @@ public class HelloController {
 			]]>
 		</programlisting>
 	</section>
-</chapter>
+</section>
