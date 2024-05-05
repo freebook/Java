@@ -2227,6 +2227,15 @@ public class ResponseJson implements Serializable {
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title>默认值</title>
+				<para>当 dish 为空，将返回 new Dish()</para>
+				<screen>
+				<![CDATA[
+Optional<Dish> dish1 = Optional.of(dish).orElse(new Dish());
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 </chapter>
