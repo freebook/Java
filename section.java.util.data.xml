@@ -1526,7 +1526,8 @@ List<String> list = Arrays.asList("Neo", "Tom", "Jerry");
 	<section id="ListIterator">
 		<title>ListIterator</title>
 		<para>ListIterator 可以实现添加/删除和向前/向后访问数据</para>
-		<para>Iterator 可以用于 List / Set / Vector / Map 数据结构，ListIterator 只能用于 List</para>
+		<para>Iterator 可以用于 List / Set / Vector / Map 数据结构，ListIterator 只能用于
+			List</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
@@ -2235,6 +2236,18 @@ public class ResponseJson implements Serializable {
 Optional<Dish> dish1 = Optional.of(dish).orElse(new Dish());
 				]]>
 				</screen>
+			</section>
+			<section>
+				<title>返回数据</title>
+				<programlisting>
+				<![CDATA[
+    @GetMapping("get/{id}")
+    public AigcResponse query(@PathVariable("id") int id) {
+        Optional<Account> optional = accountService.findById(id);
+        return optional.map(AigcResponse::new).orElseGet(() -> new AigcResponse(new Account()));
+    }				
+				]]>
+				</programlisting>
 			</section>
 		</section>
 	</section>
