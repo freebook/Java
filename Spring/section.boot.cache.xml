@@ -295,6 +295,18 @@ public void expire() {
     	
     	]]>
 		</programlisting>
+		
+		<programlisting>
+    	<![CDATA[
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "picture:click", key = "#deviceId+'-'+#pictureId"),
+                    @CacheEvict(cacheNames = "picture:share:previous", key = "#pictureId"),
+                    @CacheEvict(cacheNames = "picture:share:next", key = "#pictureId")
+            }
+    )
+    	]]>
+		</programlisting>
 	</section>
 	<section id="解决Expire 和 TTL 过期时间">
 		<title>解决Expire 和 TTL 过期时间</title>

@@ -4708,7 +4708,7 @@ public interface LoraRepository extends CrudRepository<Lora, Integer> {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="find.true">
 			<title>TRUE / FALSE</title>
 			<programlisting>
 			<![CDATA[
@@ -4745,11 +4745,23 @@ public interface CmsTrashRepository extends CrudRepository<CmsTrash, Integer> {
 	Iterable<CmsTrash> findBySiteIdAndTypeAndCtimeGreaterThanOrderByCtimeASC(int siteId, String string, Date date);
 
 }
-			
+			]]>
+			</programlisting>
+			<para>复杂的 GreaterThan / LessThan 应用</para>
+			<programlisting>
+			<![CDATA[
+    @Cacheable(value = "picture:share:next", key = "#cursor", unless = "#result == null")
+    public Optional<Picture> shareNext(int cursor) {
+        return pictureRepository.findFirstByShareTrueAndImageIsNotNullAndStoryIsNotNullAndAudioIsNotNullAndIdGreaterThan(cursor);
+    }
+
+    @Cacheable(value = "picture:share:previous", key = "#cursor", unless = "#result == null")
+    public Optional<Picture> sharePrevious(int cursor) {
+        return pictureRepository.findFirstByShareTrueAndImageIsNotNullAndStoryIsNotNullAndAudioIsNotNullAndIdLessThanOrderByIdDesc(cursor);
+    }			
 			]]>
 			</programlisting>
 		</section>
-
 
 		<section id="sort">
 			<title>Sort 排序操作操作</title>
