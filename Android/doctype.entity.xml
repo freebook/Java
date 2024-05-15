@@ -9,6 +9,7 @@
 <!ENTITY section.android.display.xml 		SYSTEM "section.android.display.xml">
 <!ENTITY section.android.res.xml	 		SYSTEM "section.android.res.xml">
 <!ENTITY chapter.android.palette.xml 		SYSTEM "chapter.android.palette.xml">
+<!ENTITY section.android.palette.xml 		SYSTEM "section.android.palette.xml">
 <!ENTITY section.android.palette.layouts.xml 		SYSTEM "section.android.palette.layouts.xml">
 <!ENTITY section.android.palette.containers.xml		SYSTEM "section.android.palette.containers.xml">
 <!ENTITY section.android.palette.ui.xml	 			SYSTEM "section.android.palette.ui.xml">

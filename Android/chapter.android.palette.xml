@@ -128,4 +128,5 @@ android:angle="270"	//效果是：是从上到下，按照开始颜色到结束�
 	</section>
 	
 	&section.android.display.xml;
+	&section.android.palette.xml;
 </chapter>
