@@ -5808,6 +5808,44 @@ interface UserRepository extends Repository<User, Long> {
 			]]>
 			</programlisting>
 		</section>
+		<section id="JPQL.SUM">
+			<title>Sum 求和</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository;
+
+import cn.aigcsst.domain.PictureClick;
+import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface PictureClickRepository extends CrudRepository<PictureClick, Integer> {
+
+    @Query("SELECT SUM(favorites) AS favorites FROM PictureClick WHERE device.id = :deviceId")
+    Optional<Integer> query(@Param("deviceId") Integer deviceId);
+		
+	@Query(value = "SELECT sum(quantity) FROM Product")
+    public Long sumQuantities();
+
+	@Query(value = "SELECT sum(quantity * price) FROM Product")
+    public BigDecimal total();	
+}	
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    @Query("SELECT SUM(favorites) AS favorites, SUM(likes) AS likes FROM PictureClick WHERE device.id = :deviceId")
+    Optional<List<Integer[]>> query(@Param("deviceId") Integer deviceId);
+    
+    @Query("SELECT new map(SUM(favorites) AS favorites, SUM(likes) AS likes) FROM PictureClick WHERE device.id = :deviceId")
+    Optional<Map<String, Integer>> query(@Param("deviceId") Integer deviceId);
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="@Transactional">
 			<title>事务 @Transactional</title>
