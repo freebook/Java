@@ -508,6 +508,29 @@ public class Future {
 
 	<section id="CompletableFuture">
 		<title>CompletableFuture</title>
+		<section id="CompletableFuture.new">
+			<title>创建 CompletableFuture 实例，并且其他线程中使用</title>
+			<programlisting>
+			<![CDATA[
+		public Future<Double> getPriceAsync(String product) {
+        //创建 CompletableFuture 对象，对象中包含异步计算结果
+        CompletableFuture<Double> futurePrice = new CompletableFuture<>();
+        //新建线程计算商品价格
+        new Thread(() -> {
+            try {
+                double price = calculatePrice(product);
+                //将异步计算得到的结果设置到 CompletableFuture 中，
+                futurePrice.complete(price);
+            } catch (Exception e) {
+                futurePrice.completeExceptionally(e);
+            }
+        }).start();
+        //无需等待计算结果，直接返回 CompletableFuture 对象
+        return futurePrice;
+    }			
+			]]>
+			</programlisting>
+		</section>
 		<section id="runAsync">
 			<title>runAsync 创建没有返回值的异步任务</title>
 			<para>runAsync
@@ -618,6 +641,47 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
+		<section id="thenRun / thenRunAsync">
+			<title>thenRun / thenRunAsync</title>
+			<para>thenRun/thenRunAsync 功能是什么？完成前置任务之后，自己在执行。</para>
+			<para>thenRun/thenRunAsync 区别是什么？thenRun 使用同一个线程执行任务，thenRunAsync
+				会再开一个新线程执行任务。
+			</para>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/completableFutureRun")
+    public String completableFutureRun() {
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + " - CompletableFuture 前置任务");
+            try {
+                Thread.sleep(5 * 1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        CompletableFuture thenRun = completableFuture.thenRun(() -> {
+            System.out.println(Thread.currentThread().getName() + " - 接着执行第二个 thenRun 任务");
+        });
+        CompletableFuture thenRunAsync = completableFuture.thenRunAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + " - 接着执行第二个 thenRunAsync 任务");
+        });
+        return "Done";
+    }			
+			]]>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
+			<![CDATA[
+ForkJoinPool.commonPool-worker-1 - CompletableFuture 前置任务
+ForkJoinPool.commonPool-worker-1 - 接着执行第二个 thenRun 任务
+ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
+			]]>
+			</screen>
+			<para>这里可以看到 thenRunAsync 的线程变化，开启新线程
+				ForkJoinPool.commonPool-worker-2 处理任务
+			</para>
+		</section>
+
 		<section id="supplyAsync">
 			<title>supplyAsync 创建带有返回值的异步任务。</title>
 			<para>supplyAsync
@@ -778,99 +842,10 @@ Result ->done
 			]]>
 			</programlisting>
 		</section>
-		<section id="CompletableFuture.new">
-			<title>创建 CompletableFuture 实例，并且其他线程中使用</title>
-			<programlisting>
-			<![CDATA[
-		public Future<Double> getPriceAsync(String product) {
-        //创建 CompletableFuture 对象，对象中包含异步计算结果
-        CompletableFuture<Double> futurePrice = new CompletableFuture<>();
-        //新建线程计算商品价格
-        new Thread(() -> {
-            try {
-                double price = calculatePrice(product);
-                //将异步计算得到的结果设置到 CompletableFuture 中，
-                futurePrice.complete(price);
-            } catch (Exception e) {
-                futurePrice.completeExceptionally(e);
-            }
-        }).start();
-        //无需等待计算结果，直接返回 CompletableFuture 对象
-        return futurePrice;
-    }			
-			]]>
-			</programlisting>
-		</section>
 
-		<section id="get">
-			<title>获取结果</title>
-			<programlisting>
-			<![CDATA[
-        CompletableFuture<String> completableFuture = CompletableFuture.completedFuture("Hello netkiller");
-        if (completableFuture.isDone()) {
-            System.out.println(completableFuture.get());
-        }			
-			]]>
-			</programlisting>
-			<para>Spring Service 用法</para>
-			<programlisting>
-			<![CDATA[
-@Service
-public class MyService {
 
-    @Async
-    public CompletableFuture<String> asyncMethod() {
-        // 异步方法逻辑...
-        return CompletableFuture.completedFuture("Result");
-    }
-}
 
-// 调用异步方法并获取结果
-CompletableFuture<String> future = myService.asyncMethod();
-String result = future.get(); // 阻塞等待结果			
-			]]>
-			</programlisting>
-		</section>
-		<section id="thenRun / thenRunAsync">
-			<title>thenRun / thenRunAsync</title>
-			<para>thenRun/thenRunAsync 功能是什么？完成前置任务之后，自己在执行。</para>
-			<para>thenRun/thenRunAsync 区别是什么？thenRun 使用同一个线程执行任务，thenRunAsync
-				会再开一个新线程执行任务。
-			</para>
-			<programlisting>
-			<![CDATA[
-    @GetMapping("/completableFutureRun")
-    public String completableFutureRun() {
-        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
-            System.out.println(Thread.currentThread().getName() + " - CompletableFuture 前置任务");
-            try {
-                Thread.sleep(5 * 1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        CompletableFuture thenRun = completableFuture.thenRun(() -> {
-            System.out.println(Thread.currentThread().getName() + " - 接着执行第二个 thenRun 任务");
-        });
-        CompletableFuture thenRunAsync = completableFuture.thenRunAsync(() -> {
-            System.out.println(Thread.currentThread().getName() + " - 接着执行第二个 thenRunAsync 任务");
-        });
-        return "Done";
-    }			
-			]]>
-			</programlisting>
-			<para>运行结果</para>
-			<screen>
-			<![CDATA[
-ForkJoinPool.commonPool-worker-1 - CompletableFuture 前置任务
-ForkJoinPool.commonPool-worker-1 - 接着执行第二个 thenRun 任务
-ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
-			]]>
-			</screen>
-			<para>这里可以看到 thenRunAsync 的线程变化，开启新线程
-				ForkJoinPool.commonPool-worker-2 处理任务
-			</para>
-		</section>
+
 		<section id="thenAccept / thenAcceptAsync">
 			<title>thenAccept / thenAcceptAsync</title>
 			<para>thenAccept/thenAcceptAsync 的功能是，前置任务执行完毕之后，将返回值给到
@@ -911,6 +886,35 @@ ForkJoinPool.commonPool-worker-2 - 接着执行第二个 thenRunAsync 任务
 2023-05-10T10:38:53.016+08:00  INFO 96282 --- [onPool-worker-1] c.n.c.test.TestThreadController          : 前置任务返回值：前置任务执行完成			
 			]]>
 			</screen>
+		</section>
+		<section id="get">
+			<title>获取结果</title>
+			<programlisting>
+			<![CDATA[
+        CompletableFuture<String> completableFuture = CompletableFuture.completedFuture("Hello netkiller");
+        if (completableFuture.isDone()) {
+            System.out.println(completableFuture.get());
+        }			
+			]]>
+			</programlisting>
+			<para>Spring Service 用法</para>
+			<programlisting>
+			<![CDATA[
+@Service
+public class MyService {
+
+    @Async
+    public CompletableFuture<String> asyncMethod() {
+        // 异步方法逻辑...
+        return CompletableFuture.completedFuture("Result");
+    }
+}
+
+// 调用异步方法并获取结果
+CompletableFuture<String> future = myService.asyncMethod();
+String result = future.get(); // 阻塞等待结果			
+			]]>
+			</programlisting>
 		</section>
 		<section id="Apply">
 			<title>thenApply / thenApplyAsync</title>

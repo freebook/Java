@@ -2711,7 +2711,8 @@ public class PicturePsychoanalysis implements Serializable {
 					]]>
 				</programlisting>
 				<para>讲 @OneToOne 增加 @OneToOne(cascade = CascadeType.MERGE) 参数，如果
-					CascadeType.ALL 需要改为 CascadeType.MERGE </para>
+					CascadeType.ALL 需要改为 CascadeType.MERGE
+				</para>
 				<programlisting>
 					<![CDATA[
 	@Id
@@ -3525,7 +3526,8 @@ public class Device implements Serializable {
 				]]>
 				</programlisting>
 				<para>向 Consumer 表中增加数据，Device 表受到影响，会修改里面的数据。这就是 CascadeType.MERGE
-					作用，如果不想影响 Device 数据，改为 CascadeType.PERSIST</para>
+					作用，如果不想影响 Device 数据，改为 CascadeType.PERSIST
+				</para>
 				<programlisting>
 				<![CDATA[
 @OneToOne(cascade = CascadeType.MERGE, optional = false)
@@ -4784,6 +4786,13 @@ userRepository.findAll(Sort.by("LENGTH(name)"));
 
 			]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+userRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+userRepository.findAll(Sort.by("LENGTH(name)"));
+
+			]]>
+			</programlisting>
 		</section>
 
 
@@ -5172,7 +5181,7 @@ void updateStateByMoney(Long money, Byte state);
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section id="@Param">
 			<title>参数传递</title>
 			<programlisting>
@@ -5755,7 +5764,8 @@ public interface FollowRepository extends CrudRepository<Follow, Integer> {
 				follower=:follower and followed=:followed", nativeQuery = true)
 			</para>
 			<para>JPQL写法：@Query(value = "DELETE FROM Follow WHERE
-				follower.id=:follower and followed.id=:followed")</para>
+				follower.id=:follower and followed.id=:followed")
+			</para>
 			<para>两种写法结果相同</para>
 		</section>
 		<section id="Query.Collection">
@@ -5846,10 +5856,19 @@ public interface PictureClickRepository extends CrudRepository<PictureClick, Int
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>IFNULL</title>
+			<programlisting>
+			<![CDATA[
+    @Query("SELECT new map(IFNULL(SUM(favorites),0) AS favorites, IFNULL(SUM(likes),0) AS likes) FROM PictureClick WHERE device.id = :deviceId")
+    Optional<Map<String, Integer>> query(@Param("deviceId") Integer deviceId);
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="@Transactional">
-			<title>事务 @Transactional</title>
-			<literallayout>
+		<title>事务 @Transactional</title>
+		<literallayout>
 			<![CDATA[
 下面介绍一下@Transactional注解的参数以及使用：
 
@@ -5881,11 +5900,11 @@ public interface PictureClickRepository extends CrudRepository<PictureClick, Int
 Spring团队的建议是你在具体的类（或类的方法）上使用 @Transactional 注解，而不要使用在类所要实现的任何接口上。你当然可以在接口上使用 @Transactional 注解，但是这将只能当你设置了基于接口的代理时它才生效。因为注解是不能继承的，这就意味着如果你正在使用基于类的代理时，那么事务的设置将不能被基于类的代理所识别，而且对象也将不会被事务代理所包装（将被确认为严重的）。因此，请接受Spring团队的建议并且在具体的类上使用 @Transactional 注解。			
 
 			]]>
-			</literallayout>
-				<section>
-					<title>save() 不需要开启 @Transactional </title>
-					<para>在SimpleJpaRepository中save()已经帮我们实现</para>
-					<programlisting>
+		</literallayout>
+		<section>
+			<title>save() 不需要开启 @Transactional </title>
+			<para>在SimpleJpaRepository中save()已经帮我们实现</para>
+			<programlisting>
 					<![CDATA[
 @Repository
 @Transactional(readOnly = true)
@@ -6141,27 +6160,27 @@ public class SimpleJpaRepository<T, ID> implements JpaRepositoryImplementation<T
     //......
 }			
 					]]>
-					</programlisting>
-				</section>
-				<section>
-					<title>SERIALIZABLE</title>
-					<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>SERIALIZABLE</title>
+			<programlisting>
 					<![CDATA[
 @Transactional(isolation = Isolation.SERIALIZABLE)					
 					]]>
-					</programlisting>
-				</section>
-					<section>
-					<title>readOnly</title>
-					<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>readOnly</title>
+			<programlisting>
 					<![CDATA[
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)			
 					]]>
-					</programlisting>
-				</section>
-			<section>
-				<title>删除更新需要 @Transactional 注解</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>删除更新需要 @Transactional 注解</title>
+			<programlisting>
 				<![CDATA[
 package cn.netkiller.api.repository;
 
@@ -6198,11 +6217,11 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Intege
 
 }				
 				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>回滚操作</title>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>回滚操作</title>
+			<programlisting>
 				<![CDATA[
 	// 指定Exception回滚
 	@Transactional(rollbackFor=Exception.class)
@@ -6218,8 +6237,8 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Intege
         throw new RuntimeException("注释");
     }
 				]]>
-				</programlisting>
-				<programlisting>
+			</programlisting>
+			<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6248,13 +6267,13 @@ public class UserService {
 }
 				
 				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>private、default、protected 和 final 不支持事物 </title>
-				<para>@Transactional 必须与 public 一起使用，不能定义为 private、default、protected
-				</para>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>private、default、protected 和 final 不支持事物 </title>
+			<para>@Transactional 必须与 public 一起使用，不能定义为 private、default、protected
+			</para>
+			<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6264,12 +6283,12 @@ public class UserService {
     }
 }
 				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>Service 注意事项</title>
-				<para>this 调用不支持事物</para>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Service 注意事项</title>
+			<para>this 调用不支持事物</para>
+			<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6289,9 +6308,9 @@ public class UserService {
     }
 }				
 				]]>
-				</programlisting>
-				<para>解决方案</para>
-				<programlisting>
+			</programlisting>
+			<para>解决方案</para>
+			<programlisting>
 				<![CDATA[
 @Servcie
 public class UserService {
@@ -6313,14 +6332,14 @@ public class UserService {
 
 }				
 				]]>
-				</programlisting>
-			</section>
-			<section>
-				<title>需要 @Service 注解配合使用</title>
-				<para>@Transactional 需要在 @Controller、@Service、@Component、@Repository
-					等注解下才能使用
-				</para>
-				<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>需要 @Service 注解配合使用</title>
+			<para>@Transactional 需要在 @Controller、@Service、@Component、@Repository
+				等注解下才能使用
+			</para>
+			<programlisting>
 				<![CDATA[
 // @Servcie
 public class UserService {
@@ -6333,12 +6352,12 @@ public class UserService {
 	}
 }				
 				]]>
-				</programlisting>
-				<para>屏蔽 @Servcie 后观察 save 的 @Transactional 是不生效的。</para>
-			</section>
-			<section>
-				<title></title>
-				<programlisting>
+			</programlisting>
+			<para>屏蔽 @Servcie 后观察 save 的 @Transactional 是不生效的。</para>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6367,9 +6386,9 @@ public class RoleService {
     }
 }				
 				]]>
-				</programlisting>
-			</section>
+			</programlisting>
 		</section>
+	</section>
 	<section id="jpa.mysql.faq">
 		<title>FAQ 常见问题</title>
 		<section>
@@ -6392,7 +6411,8 @@ public class RoleService {
 			<title>Query did not return a unique result: 2 results were returned
 			</title>
 			<para>查询 version 表中的最有一条记录，提示 Query did not return a unique result: 2
-				results were returned</para>
+				results were returned
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.domain;
@@ -6446,7 +6466,8 @@ public class Version implements Serializable {
 			]]>
 			</programlisting>
 			<para>接口定义 findOneBy 查询 version 表中存在多条记录，我们只要最后一条，所以不能使用
-				findOneBy，需要使用 findFirstBy</para>
+				findOneBy，需要使用 findFirstBy
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.repository;
@@ -6500,7 +6521,9 @@ public interface VersionRepository extends CrudRepository<Version, Integer> {
 		</section>
 		<section>
 			<title>Executing an update/delete query</title>
-			<para>org.springframework.dao.InvalidDataAccessApiUsageException: Executing an update/delete query</para>
+			<para>org.springframework.dao.InvalidDataAccessApiUsageException:
+				Executing an update/delete query
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.aigcsst.repository;
@@ -6542,7 +6565,7 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
     }
 			]]>
 			</programlisting>
-			
+
 		</section>
 	</section>
 </chapter>
