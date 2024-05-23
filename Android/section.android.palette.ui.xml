@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="index">
     <?dbhtml dir="ui"?>
-    <title>UI 界面</title>
-    <section id="Toast.default">
-        <title>Toast</title>
-        <programlisting>
+	<title>UI 界面</title>
+	<section id="Toast.default">
+		<title>Toast</title>
+		<programlisting>
 	<![CDATA[
 Toast.makeText(getApplicationContext(), "默认Toast样式", Toast.LENGTH_SHORT).show();	  
 	]]>
 		</programlisting>
 
-        <section id="Toast.define">
-            <title>自定义样式</title>
-            <programlisting>
+		<section id="Toast.define">
+			<title>自定义样式</title>
+			<programlisting>
 		<![CDATA[
 toast = Toast.makeText(getApplicationContext(),"自定义位置Toast", Toast.LENGTH_LONG);
    toast.setGravity(Gravity.CENTER, 0, 0);
    toast.show();
 		]]>
 			</programlisting>
-        </section>
-        <section id="Toast.picture">
-            <title>带有图片的样式</title>
-            <programlisting>
+		</section>
+		<section id="Toast.picture">
+			<title>带有图片的样式</title>
+			<programlisting>
 		<![CDATA[
 toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH_LONG);
    toast.setGravity(Gravity.CENTER, 0, 0);
@@ -33,13 +33,13 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
    toast.show(); 		
 		]]>
 			</programlisting>
-        </section>
-    </section>
+		</section>
+	</section>
 
 
-    <section id="Dialog">
-        <title>Dialog</title>
-        <programlisting>
+	<section id="Dialog">
+		<title>Dialog</title>
+		<programlisting>
 		<![CDATA[
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                 .setTitle("你问的是：")//设置对话框 标题
@@ -70,10 +70,10 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
         builder.create().show();		
 		]]>
 		</programlisting>
-    </section>
-    <section id="DatePicker">
-        <title>DatePicker</title>
-        <programlisting>
+	</section>
+	<section id="DatePicker">
+		<title>DatePicker</title>
+		<programlisting>
         <![CDATA[ 
         <DatePicker
         android:id="@+id/dp_date"
@@ -84,17 +84,17 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
         android:gravity="center"
         android:spinnersShown="true" />
         ]]>
-        </programlisting>
+		</programlisting>
 
 
-    </section>
+	</section>
 </section>
 <section id="Text">
-    <title>Text</title>
+	<title>Text</title>
 
-    <section id="TextView">
-        <title>TextView</title>
-        <programlisting>
+	<section id="TextView">
+		<title>TextView</title>
+		<programlisting>
             <![CDATA[ 
         editText.setEnabled(false); //禁用EditText
         editText.setFocusableInTouchMode(false);//不可编辑
@@ -102,11 +102,11 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
         editText.setClickable(false);//不可点击，但是这个效果我这边没体现出来，不知道怎没用
         editText.setFocusable(false);//不可编辑
         ]]>
-    </programlisting>
-        <section>
-            <title>圆角边框</title>
-            <para>圆角，胶囊形状</para>
-            <programlisting>
+		</programlisting>
+		<section>
+			<title>圆角边框</title>
+			<para>圆角，胶囊形状</para>
+			<programlisting>
     <![CDATA[
     <TextView
         android:id="@+id/hotelClose"
@@ -122,9 +122,9 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
         android:textColor="@color/white"
         android:textSize="16sp" />		
     ]]>
-        </programlisting>
-            <para>drawable/TextViewCornerRadius.xml</para>
-            <programlisting>
+			</programlisting>
+			<para>drawable/TextViewCornerRadius.xml</para>
+			<programlisting>
     <![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
@@ -137,24 +137,26 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
 </item>
 </layer-list>		
     ]]>
-        </programlisting>
-        </section>
+			</programlisting>
+		</section>
 
-        <section>
-            <title>阴影设置</title>
-            <programlisting>
+		<section>
+			<title>阴影设置</title>
+			<programlisting>
         <![CDATA[
 android:shadowColor：	阴影的颜色
 android:shadowDx：		水平方向上的偏移量
 android:shadowDy：		垂直方向上的偏移量
 android:shadowRadius：	是阴影的的半径大少			
         ]]>
-        </programlisting>
-        </section>
-        <section id="textview.scrollbars">
-            <title>滚动条</title>
-            <para>设置滚动条方向 android:scrollbars="vertical"，是隐藏滚动条滑块 android:fadeScrollbars="true"</para>
-            <programlisting>
+			</programlisting>
+		</section>
+		<section id="textview.scrollbars">
+			<title>滚动条</title>
+			<para>设置滚动条方向 android:scrollbars="vertical"，是隐藏滚动条滑块
+				android:fadeScrollbars="true"
+			</para>
+			<programlisting>
         <![CDATA[
                 <TextView
                     android:id="@+id/textView"
@@ -168,18 +170,18 @@ android:shadowRadius：	是阴影的的半径大少
                     android:text="按住麦克风图标说话"
                     android:textSize="24sp" />			
         ]]>
-        </programlisting>
-            <programlisting>
+			</programlisting>
+			<programlisting>
         <![CDATA[
 textView = findViewById(R.id.textView);
 textView.setMovementMethod(ScrollingMovementMethod.getInstance());
         ]]>
-        </programlisting>
-        </section>
-    </section>
-    <section id="EditText">
-        <title>EditText</title>
-        <programlisting>
+			</programlisting>
+		</section>
+	</section>
+	<section id="EditText">
+		<title>EditText</title>
+		<programlisting>
         <![CDATA[ 
         <EditText
         android:inputType="none" 
@@ -214,10 +216,10 @@ textView.setMovementMethod(ScrollingMovementMethod.getInstance());
         android:inputType="time" //时间键盘
         />
         ]]>
-        </programlisting>
-        <section>
-        	<title>禁止编辑</title>
-        	<programlisting>
+		</programlisting>
+		<section>
+			<title>禁止编辑</title>
+			<programlisting>
         	<![CDATA[
 android:editable="false"
 android:focusable="false"
@@ -233,24 +235,31 @@ editText.setFocusableInTouchMode(true);
 editText.setFocusable(true);
 editText.requestFocus();        	
         	]]>
-        	</programlisting>
-        </section>
-        <section>
-        	<title>禁止选择文本</title>
-        	<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>禁止选择文本</title>
+			<programlisting>
         	<![CDATA[
 
 android:cursorVisible="false"//不显示光标
 android:textIsSelectable="false"        	
         	]]>
-        	</programlisting>
-        </section>
-     
-    </section>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>光标移动到行尾</title>
+		<programlisting>
+			<![CDATA[
+binding.editText.setSelection(binding.editText.getText().toString().length());
+			]]>
+		</programlisting>
+	</section>
 </section>
 <section id="Button">
-    <title>Button</title>
-    <programlisting>
+	<title>Button</title>
+	<programlisting>
     <![CDATA[
 public class MainActivity extends AppCompatActivity {
 
@@ -282,8 +291,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 }
     ]]>
-    </programlisting>
-    <programlisting>
+	</programlisting>
+	<programlisting>
     <![CDATA[
 public class SecondActivity extends AppCompatActivity {   
 
@@ -306,18 +315,18 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 }		
     ]]>
-    </programlisting>
-    <section id="Button.setEnabled">
-        <title>启用禁用</title>
-        <programlisting>
+	</programlisting>
+	<section id="Button.setEnabled">
+		<title>启用禁用</title>
+		<programlisting>
         <![CDATA[
 myButton.setEnabled(false);			
         ]]>
-        </programlisting>
-    </section>
-    <section id="OnClickListener">
-        <title>实现 OnClickListener 接口</title>
-        <programlisting>
+		</programlisting>
+	</section>
+	<section id="OnClickListener">
+		<title>实现 OnClickListener 接口</title>
+		<programlisting>
         <![CDATA[
 package cn.netkiller.video;
 
@@ -360,11 +369,11 @@ public void onClick(View v) {
 }
 }			
         ]]>
-        </programlisting>
-    </section>
-    <section id="Fragment 中使用 Button">
-        <title>Fragment 中使用 Button</title>
-        <programlisting>
+		</programlisting>
+	</section>
+	<section id="Fragment 中使用 Button">
+		<title>Fragment 中使用 Button</title>
+		<programlisting>
         <![CDATA[
     Button buttonWifi = root.findViewById(R.id.buttonWifi);
     buttonWifi.setOnClickListener(new View.OnClickListener() {
@@ -380,11 +389,11 @@ public void onClick(View v) {
         }
     });			
         ]]>
-        </programlisting>
-    </section>
-    <section id="圆形按钮">
-        <title>圆形按钮</title>
-        <programlisting>
+		</programlisting>
+	</section>
+	<section id="圆形按钮">
+		<title>圆形按钮</title>
+		<programlisting>
         <![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
@@ -395,8 +404,8 @@ tools:ignore="ResourceName">
 <solid android:color="#FFa500" />
 </shape>			
         ]]>
-        </programlisting>
-        <programlisting>
+		</programlisting>
+		<programlisting>
         <![CDATA[
         <Button
             android:id="@+id/imeButton"
@@ -408,12 +417,13 @@ tools:ignore="ResourceName">
             android:textColor="#ffffff"
             android:textSize="50dp" />			
         ]]>
-        </programlisting>
-    </section><section id="ImageButton">
-    <title>ImageButton</title>
-    <section>
-        <title>触摸事件</title>
-        <programlisting>
+		</programlisting>
+	</section>
+	<section id="ImageButton">
+		<title>ImageButton</title>
+		<section>
+			<title>触摸事件</title>
+			<programlisting>
         <![CDATA[
     ImageButton imageButtonSpeak = findViewById(R.id.imageButtonSpeak);
     imageButtonSpeak.setOnTouchListener(new View.OnTouchListener() {
@@ -433,14 +443,14 @@ tools:ignore="ResourceName">
         }
     });		
         ]]>
-        </programlisting>
-    </section>
-</section>
+			</programlisting>
+		</section>
+	</section>
 </section>
 
 <section id="EditText">
-    <title>EditText</title>
-    <programlisting>
+	<title>EditText</title>
+	<programlisting>
     <![CDATA[
 editText.setEnabled(false);//去掉点击时编辑框下面横线:
 editText.setFocusable(false);//不可编辑
@@ -450,15 +460,15 @@ editText.setClickable(false);//不可点击，
 editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
 
     ]]>
-    </programlisting>
-    <programlisting>
+	</programlisting>
+	<programlisting>
     <![CDATA[
     
     ]]>
-    </programlisting>
-    <section id="Switch">
-        <title>Switch</title>
-        <programlisting>
+	</programlisting>
+	<section id="Switch">
+		<title>Switch</title>
+		<programlisting>
 	<![CDATA[
     <Switch
         android:id="@+id/switchWrite"
@@ -479,7 +489,7 @@ editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
         app:layout_constraintVertical_bias="0.087" />	
 	]]>
 		</programlisting>
-        <programlisting>
+		<programlisting>
 	<![CDATA[
 		final Switch switchWrite = (Switch) findViewById(R.id.switchWrite);
 
@@ -496,12 +506,12 @@ editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
         });	
 	]]>
 		</programlisting>
-        <programlisting>
+		<programlisting>
 	<![CDATA[
 	if(switchWrite.isChecked()){
 
     }	
 	]]>
 		</programlisting>
-    </section>
+	</section>
 </section>
