@@ -6567,5 +6567,54 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
 			</programlisting>
 
 		</section>
+		<section>
+			<title>could not initialize proxy [cn.netkiller.domain.Device#16] - no Session </title>
+			<para>第一种解决方法，捕捉 LazyInitializationException 异常</para>
+			<programlisting>
+			<![CDATA[
+    @Cacheable(value = "picture:click", key = "#deviceId+'-'+#pictureId", unless = "#result == null")
+    public Optional<PictureClick> click(Integer deviceId, Integer pictureId) {
+        Optional<PictureClick> optional = pictureClickRepository.findByDeviceIdAndPictureId(deviceId, pictureId);
+        optional.ifPresent(pictureClick -> {
+            try {
+                log.debug(pictureClick.toString());
+            } catch (LazyInitializationException e) {
+                log.error(e.getMessage());
+            }
+        });
+        return optional;
+    }	
+			]]>
+			</programlisting>
+			<para>第二种解决方法 FetchType.EAGER</para>
+			<programlisting>
+			<![CDATA[
+@ManyToOne(fetch = FetchType.EAGER, optional = false)	
+			]]>
+			</programlisting>
+			<para>第三种解决方法 @Transactional(readOnly = true)</para>
+			<programlisting>
+			<![CDATA[
+    @Transactional(readOnly = true)
+    public Optional<PictureClick> click(Integer deviceId, Integer pictureId) {
+        Optional<PictureClick> optional = pictureClickRepository.queryByDeviceIdAndPictureId(deviceId, pictureId);
+        optional.ifPresent(pictureClick -> {
+            try {
+                log.debug(pictureClick.toString());
+            } catch (LazyInitializationException e) {
+                log.error(e.getMessage());
+            }
+        });
+        return optional;
+    }	
+			]]>
+			</programlisting>
+			<para>第四种解决方法 @Proxy(lazy = false)</para>
+			<programlisting>
+			<![CDATA[
+@Proxy(lazy = false) 的意思和FetchType.EAGER类似	
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>
