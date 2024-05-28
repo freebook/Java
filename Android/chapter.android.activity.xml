@@ -548,7 +548,7 @@ public class HotelActivity extends AppCompatActivity {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="activity.DataBinding">
 		<title>DataBinding</title>
 		<para>以 MainActivity 为例，为 MainActivity 添加 DataBinding</para>
 		<programlisting>
@@ -595,6 +595,93 @@ public class MainActivity extends AppCompatActivity {
     startActivity(intent);
 		]]>
 		</programlisting>
+	</section>
+	<section>
+		<title>键盘事件</title>
+		<section>
+			<title>onKeyDown 键盘按下事件</title>
+			<programlisting>
+			<![CDATA[
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            // 处理向上方向键的操作
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            // 处理向下方向键的操作
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            // 处理向左方向键的操作
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            // 处理向右方向键的操作
+        }
+        Log.d(TAG, "onKeyDown: " + keyCode + " KeyEvent: " + event.toString());
+        broadcastKeyboard(keyCode, event);
+        return super.onKeyDown(keyCode, event);
+    }
+			]]>
+			</programlisting>
+			<para>onKeyDown(int keyCode, KeyEvent event) 只能工作在 Activity 中，Fragment 也需要处理键盘时间，所以我用广播将键盘事件发送给 Fragment， broadcastKeyboard(keyCode, event);</para>
+			<programlisting>
+			<![CDATA[
+    public static void broadcastKeyboard(int keyCode, KeyEvent event) {
+        Log.d(TAG, "onKeyDown: " + keyCode + " KeyEvent: " + event.toString());
+        Context context = MainApplication.getContext();
+        Intent intent = new Intent();
+        intent.setAction("keyboard.event");
+        intent.setPackage(context.getPackageName());
+        intent.putExtra("keyCode", keyCode);
+        intent.putExtra("action", event.getAction());
+        context.sendBroadcast(intent);
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>dispatchKeyEvent</title>
+			<programlisting>
+			<![CDATA[
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+        return handleKeyEvent(action, keyCode) || super.dispatchKeyEvent(event);
+    }
+
+    private boolean handleKeyEvent(int action, int keyCode) {
+        if (action != KeyEvent.ACTION_DOWN)
+            return false;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                Log.d(TAG, "ENTER");
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                //确定键enter
+                Log.d(TAG, "CENTER");
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                //向下键
+                Log.d(TAG, "DOWN");
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                //向上键
+                Log.d(TAG, "UP");
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                //向左键
+                Log.d(TAG, "LEFT");
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                //向右键
+                Log.d(TAG, "RIGHT");
+                break;
+            default:
+                Log.d(TAG, "Key code: " + keyCode);
+                break;
+        }
+        return false;
+    }
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 	&section.android.res.xml;
 </chapter>
