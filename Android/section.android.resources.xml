@@ -4,7 +4,7 @@
 	<section>
 		<title>strings.xml</title>
 		<section>
-			<title></title>
+			<title>字符串</title>
 			<para>字符串</para>
 			<programlisting>
 		<![CDATA[
@@ -17,7 +17,7 @@
 			</programlisting>
 		</section>
 		<section>
-			<title></title>
+			<title>定义数组</title>
 			<para>定义数组</para>
 			<programlisting>
 		<![CDATA[
