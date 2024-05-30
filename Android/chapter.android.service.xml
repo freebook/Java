@@ -568,4 +568,66 @@ handler.post(() -> {
 		]]>
 		</programlisting>
 	</section>
+	
+	<section id="service.Fragment">
+		<title>在 Fragment 中启动 Service</title>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.ui;
+
+public class StoryFullscreenFragment extends Fragment {
+    private static final String TAG = StoryFullscreenFragment.class.getSimpleName();
+
+    private Intent messageQueueService;
+    private MainBroadcastReceiver mainBroadcastReceiver;
+    private FragmentStoryFullscreenBinding binding;
+
+    public StoryFullscreenFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        fullscreen(requireActivity().getWindow());
+        messageQueueService = new Intent(getActivity(), MessageQueueService.class);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        binding = FragmentStoryFullscreenBinding.inflate(inflater, container, false);
+
+        requireActivity().startService(messageQueueService);
+
+        mainBroadcastReceiver = new MainBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("main.mqtt");
+        intentFilter.addAction("main.story");
+        intentFilter.addAction("main.progress");
+        intentFilter.addAction("keyboard.event");
+        intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        requireActivity().getApplicationContext().registerReceiver(mainBroadcastReceiver, intentFilter);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        requireActivity().getApplicationContext().unregisterReceiver(mainBroadcastReceiver);
+        requireActivity().stopService(messageQueueService);
+    }
+
+}	
+		]]>
+		</programlisting>
+	</section>
 </chapter>
