@@ -104,4 +104,77 @@ setItemIconTintList(null)
 		]]>
 		</programlisting>
 	</section>
+	<section id="TabLayout">
+		<title>TabLayout</title>
+		<section>
+			<title>xml 布局</title>
+			<programlisting>
+			<![CDATA[
+		<com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="消息" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="审核" />
+                
+            </com.google.android.material.tabs.TabLayout>
+            
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerViewTabItem"
+            android:name="cn.aigcsst.student.ui.message.NotificationFullscreenFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fitsSystemWindows="true" />
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>OnTabSelectedListener 事件</title>
+			<programlisting>
+			<![CDATA[
+		binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            // 页面被选中
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabSelected: " + tab.getText());
+                Fragment fragment = null;
+                switch (tab.getPosition()) {
+                    // 这里我随便写了两个Fragment
+                    case 0:
+                        fragment = new NotificationFullscreenFragment();
+                        break;
+                    case 1:
+                        fragment = new AuditFragment();
+                        break;
+                }
+
+                if (fragment != null) {
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commit();
+                }
+            }
+
+            // 页面切换到其他
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabUnselected: " + tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabReselected: " + tab.getText());
+            }
+        });
+			]]>
+			</programlisting>
+		</section>
+	</section>
 </section>
