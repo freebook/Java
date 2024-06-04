@@ -256,6 +256,16 @@ binding.editText.setSelection(binding.editText.getText().toString().length());
 			]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>禁止选择文本</title>
+		<programlisting>
+		<![CDATA[
+	android:textIsSelectable="false"
+		]]>
+		</programlisting>
+	</section>
+
+
 </section>
 <section id="Button">
 	<title>Button</title>

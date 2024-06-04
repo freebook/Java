@@ -37,6 +37,15 @@ context.getString(R.string.app_id)
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>Fragment 获取 Resource</title>
+			<programlisting>
+			<![CDATA[
+binding.textViewPrompt.setText(requireActivity().getString(R.string.textViewPrompt));
+			]]>
+			</programlisting>
+		</section>		
+				
 	</section>
 
 </chapter>

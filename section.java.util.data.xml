@@ -861,8 +861,23 @@ public class Test {
 	</section>
 
 	<section id="set">
-		<title>Set 转为 List</title>
-		<programlisting>
+		<title></title>
+		<section>
+			<title>Set 初始化</title>
+			<programlisting>
+			<![CDATA[
+    private List<Fragment> fragmentList = new ArrayList<>() {{
+        add(new ShareFullscreenFragment());
+        add(new StoryFullscreenFragment());
+        add(new MessageFullscreenFragment());
+        add(new MeFullscreenFragment());
+    }};
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Set 转为 List</title>
+			<programlisting>
 			<![CDATA[
 		// 将Map Key 转化为List      
         List<String> mapKeyList = new ArrayList<String>(map.keySet());    
@@ -872,19 +887,21 @@ public class Test {
         List<String> mapValuesList = new ArrayList<String>(map.values());    
         System.out.println("mapValuesList:"+mapValuesList);  			
 			]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
+			</programlisting>
+			<programlisting>
+			<![CDATA[
 Set<Type> set = new Set<>();
 Set<Type> set = new HashSet<>();		
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
+
 		<section id="Set.of()">
 			<title>Set.of()</title>
 			<programlisting>
-		<![CDATA[
+			<![CDATA[
 Set<Integer> ints = Set.of(1, 2, 3);		
-		]]>
+			]]>
 			</programlisting>
 		</section>
 		<section id="Set.toArray">
@@ -1527,7 +1544,8 @@ List<String> list = Arrays.asList("Neo", "Tom", "Jerry");
 		<title>ListIterator</title>
 		<para>ListIterator 可以实现添加/删除和向前/向后访问数据</para>
 		<para>Iterator 可以用于 List / Set / Vector / Map 数据结构，ListIterator 只能用于
-			List</para>
+			List
+		</para>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.test;

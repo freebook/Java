@@ -73,11 +73,12 @@ setContentView(R.layout.view);
 	startActivity(new Intent(MainActivity.this,HomeActivity.class));
 		
 		]]>
-		</programlisting><section id="startActivity">
-		<title>startActivity()</title>
+		</programlisting>
+		<section id="startActivity">
+			<title>startActivity()</title>
 
-		<para></para>
-		<programlisting>
+			<para></para>
+			<programlisting>
 		<![CDATA[
 		Button button = (Button) findViewById(R.id.writeButton);
 
@@ -89,8 +90,8 @@ setContentView(R.layout.view);
             }
         });		
 		]]>
-		</programlisting>
-	</section>
+			</programlisting>
+		</section>
 	</section>
 	<section id="定时关闭">
 		<title>定时关闭</title>
@@ -221,7 +222,7 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		]]>
 		</programlisting>
 	</section>
-	
+
 
 	<section id="Intent">
 		<title>Activity 间数据传递</title>
@@ -288,7 +289,9 @@ Intent.FLAG_ACTIVITY_NEW_TASK = singleInstance
 context.startActivity(new Intent(context, PictureBookFullscreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));				
 				]]>
 				</programlisting>
-				<para>在非Activity（比如Service，BroadcastReceiver）中startActivity需要添加flag Intent.FLAG_ACTIVITY_NEW_TASK</para>
+				<para>在非Activity（比如Service，BroadcastReceiver）中startActivity需要添加flag
+					Intent.FLAG_ACTIVITY_NEW_TASK
+				</para>
 			</section>
 		</section>
 		<section>
@@ -504,7 +507,9 @@ public class HotelActivity extends AppCompatActivity {
 		</programlisting>
 		<section>
 			<title>退出 App</title>
-			<para>AndroidManifest.xml 中 activity 添加 android:launchMode="singleTask"</para>
+			<para>AndroidManifest.xml 中 activity 添加
+				android:launchMode="singleTask"
+			</para>
 			<programlisting>
 			<![CDATA[
         <activity
@@ -596,7 +601,7 @@ public class MainActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="activity.keyboard">
 		<title>键盘事件</title>
 		<section>
 			<title>onKeyDown 键盘按下事件</title>
@@ -619,7 +624,16 @@ public class MainActivity extends AppCompatActivity {
     }
 			]]>
 			</programlisting>
-			<para>onKeyDown(int keyCode, KeyEvent event) 只能工作在 Activity 中，Fragment 也需要处理键盘时间，所以我用广播将键盘事件发送给 Fragment， broadcastKeyboard(keyCode, event);</para>
+			<para>onKeyDown 只能回返 ACTION_DOWN</para>
+			<programlisting>
+			<![CDATA[
+onKeyDown: 62 KeyEvent: KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_SPACE, scanCode=57, metaState=0, flags=0x8, repeatCount=2726, eventTime=24657171386863, downTime=24518384382000, deviceId=59, source=0x101, displayId=-1 }			
+			]]>
+			</programlisting>
+			<para>onKeyDown(int keyCode, KeyEvent event) 只能工作在 Activity
+				中，Fragment 也需要处理键盘时间，所以我用广播将键盘事件发送给 Fragment，
+				broadcastKeyboard(keyCode, event);
+			</para>
 			<programlisting>
 			<![CDATA[
     public static void broadcastKeyboard(int keyCode, KeyEvent event) {
@@ -637,6 +651,12 @@ public class MainActivity extends AppCompatActivity {
 		</section>
 		<section>
 			<title>dispatchKeyEvent</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+	
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
     @Override
@@ -680,8 +700,83 @@ public class MainActivity extends AppCompatActivity {
     }
 			]]>
 			</programlisting>
+			<para>Home 键无法拦截</para>
+			<programlisting>
+			<![CDATA[
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        Log.d(TAG, "dispatchKeyEvent: " + event.toString());
+        if (event.getKeyCode() == KeyEvent.KEYCODE_HOME) {
+            Log.d(TAG, "Home disabled!");
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }			
+			]]>
+			</programlisting>
 		</section>
-		
+		<section>
+			<title>屏蔽 KeyEvent.KEYCODE_BACK</title>
+			<para>KeyEvent.KEYCODE_BACK 键盘事件回让让App进入后台，返回安卓系统。我们不希望程序进入后台，加入如下代码。
+			</para>
+			<programlisting>
+		<![CDATA[
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>判断按下次数</title>
+			<programlisting>
+			<![CDATA[
+@Override
+public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { //按下的如果是BACK，同时没有重复
+           Toast.makeText("test","KEYCODE_BACK",1).show();
+            return true;
+    }
+       return super.onKeyDown(keyCode, event);
+}	
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="activity.mouse">
+		<title>鼠标事件</title>
+		<programlisting>
+		<![CDATA[
+        binding.storyFullscreenFrameLayout.setOnGenericMotionListener(new View.OnGenericMotionListener() {
+            @Override
+            public boolean onGenericMotion(View v, MotionEvent event) {
+                Log.d(TAG, "onGenericMotion: " + event.toString());
+                if (event.getActionButton() == MotionEvent.BUTTON_PRIMARY) {
+//                    Log.d(TAG, "鼠标左键");
+//                    broadcastToast("左键");
+                    if (event.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
+                        microphoneDown();
+//                        broadcastToast(event.toString());
+                    }
+                    if (event.getAction() == MotionEvent.ACTION_BUTTON_RELEASE) {
+                        microphoneUp();
+//                        broadcastToast(event.toString());
+                    }
+                }
+                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    Log.d(TAG, "鼠标右键");
+//                    broadcastToast("右键");
+                }
+                if (event.getButtonState() == MotionEvent.BUTTON_TERTIARY) {
+                    Log.d(TAG, "鼠标中间键");
+//                    broadcastToast("中间键");
+                }
+                return false;
+            }
+        });
+		]]>
+		</programlisting>
 	</section>
 	&section.android.res.xml;
 </chapter>
