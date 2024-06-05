@@ -59,6 +59,21 @@ recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>ItemView 禁止自适应</title>
+			<programlisting>
+			<![CDATA[
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//            View view = View.inflate(MainApplication.getContext(), R.layout.recycler_view_chat, null); 这种方式，Item 不会100%充满屏幕
+            View view = LayoutInflater.from(MainApplication.getContext()).inflate(R.layout.recycler_view_chat, parent, false);
+            ViewHolder viewHolder = new ViewHolder(view);
+            return viewHolder;
+        }
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="BottomNavigationView">
 		<title>底部导航</title>
