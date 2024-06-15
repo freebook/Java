@@ -74,6 +74,66 @@ recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>滚动条</title>
+			<para>判断是否滑动到顶部/底部：</para>
+			<programlisting>
+			<![CDATA[
+@Override
+public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+    if(newState == RecyclerView.SCROLL_STATE_IDLE){//停止滑动
+        if(recyclerView.canScrollVertically(1)){
+            Log.d(TAG, "滑动到顶部");
+        }
+        if(recyclerView.canScrollVertically(-1)){
+            Log.d(TAG, "滑动到底部");
+        }
+    }
+    super.onScrollStateChanged(recyclerView, newState);
+}
+
+recyclerView.canScrollVertically(1);  false表示不能往上滑动，即代表到顶部了；
+recyclerView.canScrollVertically(-1); false表示不能往下滑动，即代表到底部了；
+			]]>
+			</programlisting>
+			<para>判断滑动方向</para>
+			<programlisting>
+			<![CDATA[
+@Override
+public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+    if (dy > 0) {//下滑动作
+    }
+
+    if (dy < 0) {//上滑动作
+    }
+    super.onScrolled(recyclerView, dx, dy);
+}
+
+			]]>
+			</programlisting>
+			<para>保存滚动条位置</para>
+			<programlisting>
+			<![CDATA[
+// Save state
+Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+
+// Todo
+
+// Restore state
+recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>子视图操作</title>
+			<programlisting>
+			<![CDATA[
+    View view = binding.recyclerView.getChildAt(0);
+    TextView textView = view.findViewById(R.id.textViewQuestion);
+    textView.setText("Hello");			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="BottomNavigationView">
 		<title>底部导航</title>
