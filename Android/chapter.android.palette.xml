@@ -116,17 +116,6 @@ android:angle="270"	//效果是：是从上到下，按照开始颜色到结束�
 	&section.android.palette.ui.xml;
 	&section.android.palette.widgets.xml;
 	&section.android.palette.containers.xml;
-
-	<section>
-		<title>Legacy</title>
-		<section id="GardView">
-			<title>GardView</title>
-		</section>
-		<section id="GridView">
-			<title>GridView</title>
-		</section>
-	</section>
-	
 	&section.android.display.xml;
 	&section.android.palette.xml;
 </chapter>

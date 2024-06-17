@@ -89,20 +89,38 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
 
 	</section>
 </section>
+
 <section id="Text">
 	<title>Text</title>
-
-	<section id="TextView">
-		<title>TextView</title>
-		<programlisting>
+	<section>
+		<title>Text 相关属性</title>
+		<section id="TextView.setEnabled">
+			<title>Text 焦点相关属性</title>
+			<programlisting>
             <![CDATA[ 
         editText.setEnabled(false); //禁用EditText
         editText.setFocusableInTouchMode(false);//不可编辑
         editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
         editText.setClickable(false);//不可点击，但是这个效果我这边没体现出来，不知道怎没用
         editText.setFocusable(false);//不可编辑
-        ]]>
-		</programlisting>
+       		 ]]>
+			</programlisting>
+		</section>
+		<section id="TextView.hint">
+			<title>提示信息</title>
+			<programlisting>
+		<![CDATA[
+    android:hint="请输入你的问题"
+    android:textColorHint="#ccc"		
+		]]>
+			</programlisting>
+
+
+		</section>
+	</section>
+	<section id="TextView">
+		<title>TextView</title>
+
 		<section>
 			<title>圆角边框</title>
 			<para>圆角，胶囊形状</para>
@@ -264,6 +282,26 @@ binding.editText.setSelection(binding.editText.getText().toString().length());
 		]]>
 		</programlisting>
 	</section>
+	<section id="EditText">
+		<title>EditText 属性设置</title>
+		<programlisting>
+    <![CDATA[
+editText.setEnabled(false);//去掉点击时编辑框下面横线:
+editText.setFocusable(false);//不可编辑
+editText.setFocusableInTouchMode(false);//不可编辑
+editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
+editText.setClickable(false);//不可点击，
+editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
+
+    ]]>
+		</programlisting>
+		<programlisting>
+    <![CDATA[
+    
+    ]]>
+		</programlisting>
+	
+</section>
 
 
 </section>
@@ -458,27 +496,9 @@ tools:ignore="ResourceName">
 	</section>
 </section>
 
-<section id="EditText">
-	<title>EditText</title>
+<section id="Switch">
+	<title>Switch</title>
 	<programlisting>
-    <![CDATA[
-editText.setEnabled(false);//去掉点击时编辑框下面横线:
-editText.setFocusable(false);//不可编辑
-editText.setFocusableInTouchMode(false);//不可编辑
-editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
-editText.setClickable(false);//不可点击，
-editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
-
-    ]]>
-	</programlisting>
-	<programlisting>
-    <![CDATA[
-    
-    ]]>
-	</programlisting>
-	<section id="Switch">
-		<title>Switch</title>
-		<programlisting>
 	<![CDATA[
     <Switch
         android:id="@+id/switchWrite"
@@ -498,8 +518,8 @@ editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
         app:layout_constraintTop_toBottomOf="@+id/ndefWrite"
         app:layout_constraintVertical_bias="0.087" />	
 	]]>
-		</programlisting>
-		<programlisting>
+	</programlisting>
+	<programlisting>
 	<![CDATA[
 		final Switch switchWrite = (Switch) findViewById(R.id.switchWrite);
 
@@ -515,13 +535,12 @@ editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
             }
         });	
 	]]>
-		</programlisting>
-		<programlisting>
+	</programlisting>
+	<programlisting>
 	<![CDATA[
 	if(switchWrite.isChecked()){
 
     }	
 	]]>
-		</programlisting>
-	</section>
+	</programlisting>
 </section>
