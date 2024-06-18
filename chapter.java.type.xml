@@ -305,7 +305,9 @@ public class Test {
 
 		<section id="replace">
 			<title>字符串替换处理</title>
-			<programlisting>
+			<section>
+				<title>替换转意字符</title>
+				<programlisting>
 			<![CDATA[
 public class Test {
 
@@ -320,15 +322,15 @@ public class Test {
 }
 			
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 {"status":0,"message":"","bankcode":"ABOC;IBC;CCTB;ICBC"}
 转换后
 {\"status\":0,\"message\":\"\",\"bankcode\":\"ABOC;IBC;CCTB;ICBC\"}			
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 package test;
 
@@ -342,7 +344,16 @@ public class str {
 
 }
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>替换控制字符</title>
+				<programlisting>
+				<![CDATA[
+str.replaceAll("\\p{Cntrl}", "");				
+				]]>
+				</programlisting>
+			</section>
 			<section>
 				<title>正则表达式查找与替换</title>
 				<para>查找特定字符并替换为找到的内容</para>
