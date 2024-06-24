@@ -162,7 +162,8 @@ recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
 setItemIconTintList(null)		
 		]]>
 		</programlisting>
-		<para>文字上下移动，app:itemPaddingBottom="15dp"，app:itemPaddingTop="0dp"</para>
+		<para>文字上下移动，app:itemPaddingBottom="15dp"，app:itemPaddingTop="0dp"
+		</para>
 		<programlisting>
 		<![CDATA[
             <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -204,7 +205,7 @@ setItemIconTintList(null)
             
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerViewTabItem"
-            android:name="cn.aigcsst.student.ui.message.NotificationFullscreenFragment"
+            android:name="cn.netkiller.student.ui.message.NotificationFullscreenFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -248,6 +249,310 @@ setItemIconTintList(null)
                 Log.d(TAG, "onTabReselected: " + tab.getText());
             }
         });
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="ViewPager2">
+		<title>ViewPager2</title>
+		<programlisting>
+		<![CDATA[
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+		]]>
+		</programlisting>
+		<para>view_page_layout.xml 文件</para>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="TextView" />
+</LinearLayout>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	private List<String> items = List.of("A", "B", "C");		
+		
+	@Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        binding.viewPager2.setAdapter(new ViewPagerAdapter());
+    }
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.CardViewHolder> {
+
+        @NonNull
+        @Override
+        public ViewPagerAdapter.CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new CardViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_page_layout, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewPagerAdapter.CardViewHolder holder, int position) {
+            holder.textView.setText(items.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return items.size();
+        }
+
+        public class CardViewHolder extends RecyclerView.ViewHolder {
+
+            public TextView textView;
+
+            public CardViewHolder(@NonNull View itemView) {
+                super(itemView);
+                textView = itemView.findViewById(R.id.textView);
+            }
+        }
+    }
+		]]>
+		</programlisting>
+		<section>
+			<title>ViewPager2 with Fragments</title>
+			<programlisting>
+			<![CDATA[
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="推荐" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.student.fragment.library;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.google.gson.Gson;
+
+import java.util.List;
+
+import cn.netkiller.student.cloud.PictureBook;
+import cn.netkiller.student.databinding.FragmentLibraryFullscreenBinding;
+
+public class LibraryFullscreenFragment extends Fragment {
+    private static final String TAG = LibraryFullscreenFragment.class.getSimpleName();
+    private final Gson gson = new Gson();
+    private FragmentLibraryFullscreenBinding binding;
+    private List<PictureBook.DataResponse.Data> categories;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        binding = FragmentLibraryFullscreenBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        PictureBook pictureBook = new PictureBook();
+        pictureBook.category(datas -> {
+            categories = datas;
+            requireActivity().runOnUiThread(() -> {
+                categories.forEach(item -> {
+                    var tab = binding.tabLayout.newTab();
+                    tab.setText(item.name);
+                    binding.tabLayout.addTab(tab);
+                });
+                binding.viewPager2.setAdapter(new ViewPagerFragmentStateAdapter(this));
+            });
+        });
+
+    }
+
+    public class ViewPagerFragmentStateAdapter extends FragmentStateAdapter {
+
+
+        public ViewPagerFragmentStateAdapter(@NonNull Fragment fragment) {
+            super(fragment);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            int id = categories.get(position).id;
+            return BookshelfFragment.newInstance(id);
+        }
+
+        @Override
+        public int getItemCount() {
+            return categories.size();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+}	
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.student.fragment.library;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import cn.netkiller.student.databinding.FragmentBookshelfBinding;
+
+public class BookshelfFragment extends Fragment {
+    private static final String TAG = BookshelfFragment.class.getSimpleName();
+    private FragmentBookshelfBinding binding;
+    private int categoryId;
+
+    public static BookshelfFragment newInstance(int categoryId) {
+        BookshelfFragment fragment = new BookshelfFragment();
+        Bundle args = new Bundle();
+        args.putInt("categoryId", categoryId);
+//        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        binding = FragmentBookshelfBinding.inflate(inflater, container, false);
+
+        if (getArguments() != null) {
+            categoryId = getArguments().getInt("categoryId");
+        }
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Log.d(TAG, "Categroy Id: " + categoryId);
+        binding.fullscreenContent.setText(categoryId + "");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+}	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>TabLayout + ViewPager2 + Fragments</title>
+			<programlisting>
+			<![CDATA[
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        PictureBook pictureBook = new PictureBook();
+        pictureBook.category(datas -> {
+            categories = datas;
+            requireActivity().runOnUiThread(() -> {
+                categories.forEach(item -> {
+                    var tab = binding.tabLayout.newTab();
+                    tab.setText(item.name);
+                    binding.tabLayout.addTab(tab);
+                });
+                binding.viewPager2.setAdapter(new ViewPagerFragmentStateAdapter(this));
+                new TabLayoutMediator(binding.tabLayout, binding.viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
+                    @Override
+                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                        tab.setText(categories.get(position).name);
+                    }
+                }).attach();
+
+            });
+        });
+
+    }
 			]]>
 			</programlisting>
 		</section>
