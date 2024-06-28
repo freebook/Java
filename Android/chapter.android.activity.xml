@@ -778,5 +778,56 @@ public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>重启自己</title>
+		<programlisting>
+		<![CDATA[
+    private boolean privacyAgreement() {
+        String key = "PrivacyAgreement";
+        Cache cache = new Cache();
+//        cache.remove(key);
+        boolean status = cache.isCache("PrivacyAgreement");
+        Log.d(TAG, "PrivacyAgreement: " + status);
+        if (status) {
+            return false;
+        }
+
+        setContentView(R.layout.activity_privacy_agreement);
+        WebView webView = findViewById(R.id.webView);
+        webView.loadUrl("http://oss.netkiller.cn/neo/docs/PrivacyAgreement.html");
+
+        Button no = findViewById(R.id.buttonNo);
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        Button yes = findViewById(R.id.buttonYes);
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cache.set(key, true);
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+//                    System.exit(0);
+
+//                    Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+                android.os.Process.killProcess(android.os.Process.myPid());
+
+//                    ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//                    activityManager.restartPackage(getPackageName());
+            }
+        });
+        return true;
+
+
+    }		
+		]]>
+		</programlisting>
+	</section>
 	&section.android.res.xml;
 </chapter>
