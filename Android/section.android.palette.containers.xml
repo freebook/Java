@@ -135,6 +135,109 @@ recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
 			</programlisting>
 		</section>
 	</section>
+	<section id="NavigationView">
+		<title>NavigationView</title>
+		<programlisting>
+		<![CDATA[
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/navigation" />
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--    <group android:checkableBehavior="single">-->
+    <!--        <item-->
+    <!--            android:id="@+id/fragment_05"-->
+    <!--            android:title="界面1" />-->
+    <!--        <item-->
+    <!--            android:id="@+id/fragment_06"-->
+    <!--            android:title="界面2" />-->
+    <!--        <item-->
+    <!--            android:id="@+id/fragment_07"-->
+    <!--            android:title="界面3" />-->
+    <!--    </group>-->
+    <group android:id="@+id/groupAi">
+        <item
+            android:id="@+id/fragment_share"
+            android:icon="@drawable/menu_community"
+            android:title="@string/discovery" />
+        <item
+            android:id="@+id/menu_story"
+            android:icon="@drawable/menu_story"
+            android:title="@string/story" />
+        <item
+            android:id="@+id/menu_chat"
+            android:icon="@drawable/menu_chat"
+            android:title="@string/chat" />
+    </group>
+    <group android:id="@+id/debug" android:visible="false">
+
+        <item
+            android:id="@+id/fragment_09"
+            android:icon="@drawable/menu_like"
+            android:title="点赞作品" />
+        <item
+            android:id="@+id/menu_home"
+            android:icon="@drawable/menu_favorites"
+            android:title="收藏作品"/>
+        <!--    </group>-->
+        <!--    <group android:id="@+id/group_two" >-->
+
+        <item
+            android:id="@+id/menu_pictur_book"
+            android:icon="@drawable/menu_book"
+            android:title="@string/pictur_book"
+            />
+
+    </group>
+    <group android:id="@+id/groupSetting">
+        <item
+            android:id="@+id/fragment_bind"
+            android:icon="@drawable/menu_bind"
+            android:title="@string/device" />
+        <item
+            android:id="@+id/fragment_notification"
+            android:icon="@android:drawable/ic_popup_reminder"
+            android:title="消息通知" />
+        <item
+            android:id="@+id/menu_about"
+            android:icon="?android:attr/actionModeFindDrawable"
+            android:title="@string/about" />
+
+        <item
+            android:id="@+id/menu_quit"
+            android:icon="@drawable/menu_quit"
+            android:title="退出" />
+    </group>
+</menu>
+		]]>
+		</programlisting>
+		<section>
+			<title>菜单的显示/隐藏</title>
+			<para>菜单项目的显示和隐藏</para>
+			<programlisting>
+			<![CDATA[
+            MenuItem menuItem = findViewById(R.id.debug);
+            menuItem.setVisible(true);
+			]]>
+			</programlisting>
+			<para>菜单组的显示/隐藏</para>
+			<programlisting>
+			<![CDATA[
+            Menu menuGroup = navigationView.getMenu();
+            menuGroup.setGroupVisible(R.id.debug, true);
+			]]>
+			</programlisting>
+			
+		</section>
+	</section>
 	<section id="BottomNavigationView">
 		<title>底部导航</title>
 		<para>只显示图标，不显示文字 app:labelVisibilityMode="unlabeled"</para>
