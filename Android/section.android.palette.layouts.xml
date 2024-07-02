@@ -173,62 +173,7 @@ android:layout_alignBottom="@+id/button1" 	与button1控件下边平齐
 			</programlisting>
 		</section>
 	</section>
-	<section id="AnimationDrawable">
-		<title>动画</title>
-		<para></para>
-		<itemizedlist>
-			<title>参数</title>
-			<listitem>android:oneshot 代表播放次数 true 只展示一遍，设置为false会不停的循环播放动画
-			</listitem>
-			<listitem>android:duration 表示展示所用的该图片的时间长度 </listitem>
-		</itemizedlist>
-		<programlisting>
-		<![CDATA[
-<?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
-    android:oneshot="true">
-
-    <item
-        android:drawable="@drawable/hotel1"
-        android:duration="150" />
-    <item
-        android:drawable="@drawable/hotel2"
-        android:duration="150" />
-    <item
-        android:drawable="@drawable/hotel3"
-        android:duration="150" />
-    <item
-        android:drawable="@drawable/hotel4"
-        android:duration="150" />
-    <item
-        android:drawable="@drawable/hotel5"
-        android:duration="150" />
-</animation-list>
-		]]>
-		</programlisting>
-		<para></para>
-		<programlisting>
-		<![CDATA[
-	<ImageView
-    android:id="@+id/load_image"
-    android:layout_width="25dp"
-    android:layout_height="25dp"
-    android:layout_gravity="center_vertical"
-    android:scaleType="centerCrop"
-    android:src="@drawable/loading_anim_image" />		
-		]]>
-		</programlisting>
-		<para></para>
-		<programlisting>
-		<![CDATA[
-    ImageView imageView = findViewById(R.id.imageView);
-    animationDrawable = (AnimationDrawable) imageView.getDrawable();
-    //直接就开始执行，性能不是最佳的。
-    animationDrawable.start();		
-		]]>
-		</programlisting>
-	</section>
-
+	
 	<section id="soundwave">
 		<title>声音波形图</title>
 		<programlisting>

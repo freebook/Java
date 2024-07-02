@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-    <title>Widgets</title>
-    <section id="ImageView">
-        <title>ImageView</title>
-        <para>全屏显示</para>
-        <programlisting>
+	<title>Widgets</title>
+	<section id="ImageView">
+		<title>ImageView</title>
+		<para>全屏显示</para>
+		<programlisting>
 			<![CDATA[
 android:scaleType="matrix"
 			]]>
 		</programlisting>
-        <para>水平居中显示 android:layout_gravity="center"</para>
-        <screen>
+		<para>水平居中显示 android:layout_gravity="center"</para>
+		<screen>
 			<![CDATA[
     <ImageView
         android:id="@+id/imageView"
@@ -21,10 +21,10 @@ android:scaleType="matrix"
         tools:ignore="MissingConstraints" />			
 			]]>
 		</screen>
-        <section>
-            <title>剧中效果</title>
-            <para>android:scaleType="fitCenter"</para>
-            <programlisting>
+		<section>
+			<title>剧中效果</title>
+			<para>android:scaleType="fitCenter"</para>
+			<programlisting>
 			<![CDATA[
     <ImageView
         android:id="@+id/imageView"
@@ -35,19 +35,19 @@ android:scaleType="matrix"
         tools:ignore="MissingConstraints" />			
 			]]>
 			</programlisting>
-        </section>
-        <section>
-            <title>保持长宽比例</title>
-            <programlisting>
+		</section>
+		<section>
+			<title>保持长宽比例</title>
+			<programlisting>
 			<![CDATA[
 android:adjustViewBounds="true" 			
 			]]>
 			</programlisting>
-        </section>
-        <section>
-            <title>ImageView 显示 URL 图片</title>
-            <para>方法一</para>
-            <programlisting>
+		</section>
+		<section>
+			<title>ImageView 显示 URL 图片</title>
+			<para>方法一</para>
+			<programlisting>
 			<![CDATA[
    private Drawable getImageDrawableFromUrl(String url) {
         try {
@@ -71,8 +71,8 @@ android:adjustViewBounds="true"
     imageView.setImageDrawable(drawable);			
 			]]>
 			</programlisting>
-            <para>方法二</para>
-            <programlisting>
+			<para>方法二</para>
+			<programlisting>
 			<![CDATA[
 	imageView = findViewById(R.id.imageView);
        
@@ -112,8 +112,8 @@ android:adjustViewBounds="true"
 	}).start();
 			]]>
 			</programlisting>
-            <para>方法三</para>
-            <programlisting>
+			<para>方法三</para>
+			<programlisting>
 			<![CDATA[
 	try {
 	    URL url = new URL("https://img.netkiller.cn/2d/f4873238-7860-11ee-8344-0242ac12000c.png");
@@ -147,14 +147,69 @@ android:adjustViewBounds="true"
     }
 			]]>
 			</programlisting>
-        </section>
+		</section>
+		<section id="AnimationDrawable">
+			<title>动画</title>
+			<para></para>
+			<itemizedlist>
+				<title>参数</title>
+				<listitem>android:oneshot 代表播放次数 true 只展示一遍，设置为false会不停的循环播放动画
+				</listitem>
+				<listitem>android:duration 表示展示所用的该图片的时间长度 </listitem>
+			</itemizedlist>
+			<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
 
-        <section>
-            <title>唱片播放效果（旋转PNG图片）</title>
-            <para>旋转 PNG 动画效果，用于显示唱片播放效果</para>
-            <section>
-                <title>UI 布局</title>
-                <programlisting>
+    <item
+        android:drawable="@drawable/hotel1"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel2"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel3"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel4"
+        android:duration="150" />
+    <item
+        android:drawable="@drawable/hotel5"
+        android:duration="150" />
+</animation-list>
+		]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+		<![CDATA[
+	<ImageView
+    android:id="@+id/load_image"
+    android:layout_width="25dp"
+    android:layout_height="25dp"
+    android:layout_gravity="center_vertical"
+    android:scaleType="centerCrop"
+    android:src="@drawable/loading_anim_image" />		
+		]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+		<![CDATA[
+    ImageView imageView = findViewById(R.id.imageView);
+    animationDrawable = (AnimationDrawable) imageView.getDrawable();
+    //直接就开始执行，性能不是最佳的。
+    animationDrawable.start();		
+		]]>
+			</programlisting>
+		</section>
+
+		<section>
+			<title>唱片播放效果（旋转PNG图片）</title>
+			<para>旋转 PNG 动画效果，用于显示唱片播放效果</para>
+			<section>
+				<title>UI 布局</title>
+				<programlisting>
 				<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -194,11 +249,11 @@ android:adjustViewBounds="true"
 				]]>
 				</programlisting>
 
-            </section>
-            <section>
-                <title>旋转动画效果文件</title>
-                <para>创建旋转动画效果 res/anim/rotate.xml</para>
-                <programlisting>
+			</section>
+			<section>
+				<title>旋转动画效果文件</title>
+				<para>创建旋转动画效果 res/anim/rotate.xml</para>
+				<programlisting>
 				<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <rotate xmlns:android="http://schemas.android.com/apk/res/android">
@@ -212,10 +267,10 @@ android:adjustViewBounds="true"
 </rotate>				
 				]]>
 				</programlisting>
-            </section>
-            <section>
-                <title>启动旋转效果</title>
-                <programlisting>
+			</section>
+			<section>
+				<title>启动旋转效果</title>
+				<programlisting>
 				<![CDATA[
         Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
         LinearInterpolator linearInterpolator = new LinearInterpolator();
@@ -224,13 +279,148 @@ android:adjustViewBounds="true"
         imageViewWan.startAnimation(rotateAnimation);				
 				]]>
 				</programlisting>
-            </section>
-        </section>
+			</section>
+		</section>
+		<section>
+			<title>动画播放</title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    </section>
-    <section id="TextClock">
-        <title>TextClock</title>
-        <programlisting>
+    <ImageView
+        android:id="@+id/imageViewFigure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/animation_speak"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    <FrameLayout
+        android:id="@+id/frameLayoutFigure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="60dp"
+        android:fitsSystemWindows="true"
+        android:visibility="gone">
+
+        <include
+            layout="@layout/figure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.student.fragment;
+
+import android.graphics.drawable.AnimationDrawable;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
+
+import cn.aigcsst.student.R;
+
+public class AnimationFigure {
+    private static final String TAG = AnimationFigure.class.getSimpleName();
+    private final View view;
+    private final ImageView imageViewFigure;
+    private final FrameLayout frameLayoutFigure;
+    private final AnimationDrawable animationDrawable;
+
+    public AnimationFigure(View view, @DrawableRes int resId) {
+        this.view = view;
+        this.imageViewFigure = view.findViewById(R.id.imageViewFigure);
+//        this.imageViewFigure.setImageResource(resId);
+        this.imageViewFigure.setBackgroundResource(resId);
+        this.frameLayoutFigure = view.findViewById(R.id.frameLayoutFigure);
+//        this.animationDrawable = (AnimationDrawable) this.imageViewFigure.getDrawable();
+        this.animationDrawable = (AnimationDrawable) this.imageViewFigure.getBackground();
+    }
+
+    public void start() {
+        animationDrawable.start();
+        this.frameLayoutFigure.setVisibility(View.VISIBLE);
+
+    }
+
+    public void stop() {
+        animationDrawable.stop();
+        this.frameLayoutFigure.setVisibility(View.INVISIBLE);
+
+    }
+
+    public void animationFigure() {
+
+        AnimationDrawable animationDrawable = (AnimationDrawable) imageViewFigure.getDrawable();
+
+        if (animationDrawable.isRunning()) {
+            animationDrawable.stop();
+            frameLayoutFigure.setVisibility(View.INVISIBLE);
+        } else {
+            animationDrawable.start();
+            frameLayoutFigure.setVisibility(View.VISIBLE);
+        }
+        Log.d(TAG, "animationFigure: " + animationDrawable.isRunning());
+        Log.d(TAG, "animationFigure isActivated: " + imageViewFigure.isActivated());
+    }
+
+
+//    public static void animationFigure(View view, AnimationFigure action) {
+//        ViewSwitcher viewSwitcherFigure = view.findViewById(R.id.viewSwitcherFigure);
+//        ImageView imageViewFigure = null;
+//        if (action == AnimationFigure.SPEAKING) {
+//            viewSwitcherFigure.setDisplayedChild(0);
+//            imageViewFigure = view.findViewById(R.id.imageViewFigureSpeak);
+////            imageViewFigure.setImageResource(R.drawable.animation_loading);
+//        } else {
+//            viewSwitcherFigure.setDisplayedChild(1);
+////            imageViewFigure.setImageResource(R.drawable.animation_speak);
+//            imageViewFigure = view.findViewById(R.id.imageViewFigureListening);
+//        }
+//        AnimationDrawable animationDrawable = (AnimationDrawable) imageViewFigure.getDrawable();
+//
+//        FrameLayout frameLayoutFigure = view.findViewById(R.id.frameLayoutFigure);
+//        Log.d(TAG, "animationFigure: " + animationDrawable.isRunning());
+//        Log.d(TAG, "animationFigure isActivated: " + imageViewFigure.isActivated());
+//
+//        if (animationDrawable.isRunning()) {
+//            animationDrawable.stop();
+//            frameLayoutFigure.setVisibility(View.INVISIBLE);
+//        } else {
+//            animationDrawable.start();
+//            frameLayoutFigure.setVisibility(View.VISIBLE);
+//        }
+//        Log.d(TAG, "animationFigure: " + animationDrawable.isRunning());
+//        Log.d(TAG, "animationFigure isActivated: " + imageViewFigure.isActivated());
+//    }
+
+    public enum Figure {
+        LISTENING, SPEAKING
+    }
+
+
+}
+
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="TextClock">
+		<title>TextClock</title>
+		<programlisting>
 		<![CDATA[
   <TextClock
             android:id="@+id/textClockTime"
@@ -256,7 +446,7 @@ android:adjustViewBounds="true"
             android:textSize="16sp" />		
 		]]>
 		</programlisting>
-        <programlisting>
+		<programlisting>
 		<![CDATA[
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -288,14 +478,14 @@ android:adjustViewBounds="true"
                 </LinearLayout>		
 		]]>
 		</programlisting>
-    </section>
-    <section id="widgets.ProgressBar">
-        <title>进度条</title>
-        <section id="ProgressBar">
-            <title>ProgressBar</title>
+	</section>
+	<section id="widgets.ProgressBar">
+		<title>进度条</title>
+		<section id="ProgressBar">
+			<title>ProgressBar</title>
 
-            <para>style属性：</para>
-            <screen>
+			<para>style属性：</para>
+			<screen>
 		<![CDATA[
 @android:style/Widget.ProgressBar.Horizontal：水平进度条
 @android:style/Widget.ProgressBar.Inverse：普通大小的进度条
@@ -304,9 +494,9 @@ android:adjustViewBounds="true"
 @android:style/Widget.ProgressBar.Small：小环形进度条
 @android:style/Widget.ProgressBar.Small.Inverse：小环形进度条		
 		]]>
-		</screen>
-            <para>案例</para>
-            <programlisting>
+			</screen>
+			<para>案例</para>
+			<programlisting>
 		<![CDATA[
     <ProgressBar
         android:id="@+id/progressBar"
@@ -320,11 +510,11 @@ android:adjustViewBounds="true"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="179dp" />		
 		]]>
-		</programlisting>
-        </section>
-        <section>
-            <title>定义进度条样式</title>
-            <programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>定义进度条样式</title>
+			<programlisting>
 			<![CDATA[
     <ProgressBar
         android:id="@+id/progressBar"
@@ -344,7 +534,7 @@ android:adjustViewBounds="true"
         tools:layout_editor_absoluteX="179dp" />	
 			]]>
 			</programlisting>
-            <programlisting>
+			<programlisting>
 			<![CDATA[
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
@@ -371,13 +561,13 @@ android:adjustViewBounds="true"
 </layer-list>	
 			]]>
 			</programlisting>
-        </section>
-    </section>
-    <section id="ListView">
-        <title>ListView</title>
-        <section id="ListView.array">
-            <title>Array</title>
-            <programlisting>
+		</section>
+	</section>
+	<section id="ListView">
+		<title>ListView</title>
+		<section id="ListView.array">
+			<title>Array</title>
+			<programlisting>
 			<![CDATA[
         String[] list = Arrays.asList("Apple", "Banana", "Orange", "Watermelon",
                 "Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango";
@@ -386,7 +576,7 @@ android:adjustViewBounds="true"
         listView.setAdapter(adapter);	
 			]]>
 			</programlisting>
-            <programlisting>
+			<programlisting>
 			<![CDATA[
     <ListView
         android:id="@+id/history"
@@ -397,10 +587,10 @@ android:adjustViewBounds="true"
         tools:layout_editor_absoluteY="59dp" />	
 			]]>
 			</programlisting>
-        </section>
-        <section id="ListView.List">
-            <title>List</title>
-            <programlisting>
+		</section>
+		<section id="ListView.List">
+			<title>List</title>
+			<programlisting>
 			<![CDATA[
 		List<String> list = Arrays.asList("Apple", "Banana", "Orange", "Watermelon","Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,list);
@@ -408,10 +598,10 @@ android:adjustViewBounds="true"
         listView.setAdapter(adapter);        		
 			]]>
 			</programlisting>
-        </section>
-        <section id="setOnItemClickListener">
-            <title>setOnItemClickListener()</title>
-            <programlisting>
+		</section>
+		<section id="setOnItemClickListener">
+			<title>setOnItemClickListener()</title>
+			<programlisting>
 			<![CDATA[
         List<String> list = Arrays.asList("Text 文本", "URL 网址", "电话号码", "短信","开启应用", "地址", "日历", "图片", "邮箱", "GPS 坐标");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,list);
@@ -429,15 +619,15 @@ android:adjustViewBounds="true"
         });	
 			]]>
 			</programlisting>
-        </section>
-        <section id="ListView.implements">
-            <title>用接口方法实现</title>
-            <programlisting>
+		</section>
+		<section id="ListView.implements">
+			<title>用接口方法实现</title>
+			<programlisting>
 		<![CDATA[
 public class MainActivity extends Activity implements OnItemClickListener, OnScrollListener
 		]]>
 			</programlisting>
-            <programlisting>
+			<programlisting>
 		<![CDATA[
 		List<String> list = Arrays.asList("Text 文本", "URL 网址", "电话号码", "短信","开启应用", "地址", "日历", "图片", "邮箱", "GPS 坐标");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,list);
@@ -448,7 +638,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
         listView.setOnScrollListener(this);		
 		]]>
 			</programlisting>
-            <programlisting>
+			<programlisting>
 		<![CDATA[
 	@Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -457,7 +647,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
     }		
 		]]>
 			</programlisting>
-            <programlisting>
+			<programlisting>
 		<![CDATA[
 	@Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -481,6 +671,6 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
     }		
 		]]>
 			</programlisting>
-        </section>
-    </section>
+		</section>
+	</section>
 </section>
