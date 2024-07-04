@@ -4,15 +4,29 @@
 	<section>
 		<title>通用设置</title>
 		<section>
-			<title>背景色</title>
-			<para>Color.TRANSPARENT 透明</para>
+			<title>颜色设置</title>
+			<para>文本颜色 setTextColor</para>
 			<programlisting>
 			<![CDATA[
 btn=(Button)findViewById(R.id.button);
 btn.setTextColor(Color.WHITE);
-btn.setBackgroundColor(Color.TRANSPARENT);			
+
+
+setTextColor(this.getResources().getColor(R.color.blue));
+
+static final int COLOR1 = Color.parseColor("#FFB032");
+textview.setTextColor(COLOR1);
 			]]>
 			</programlisting>
+			<para>setBackgroundColor用法</para>
+			<programlisting>
+			<![CDATA[
+btn.setBackgroundColor(Color.TRANSPARENT);
+setBackgroundColor(Color.parseColor("#F5F5DC"));
+setBackgroundColor(Color.argb(0,79,79,79));  //0完全透明  255不透明
+			]]>
+			</programlisting>
+			<para>Color.TRANSPARENT 透明</para>
 		</section>
 
 		<section>

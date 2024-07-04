@@ -134,6 +134,30 @@ recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>水平布局</title>
+			<programlisting>
+			<![CDATA[
+	LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+	binding.recyclerView.setLayoutManager(linearLayoutManager);
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>遍历所有子试图</title>
+			<programlisting>
+			<![CDATA[
+	RecyclerView.LayoutManager layoutManager = binding.loraRecyclerView.getLayoutManager();
+    int childCount = layoutManager.getChildCount();
+    for (int i = 0; i < childCount; i++) {
+        View childView = layoutManager.getChildAt(i);
+        TextView nameTextView = childView.findViewById(R.id.nameTextView);
+        nameTextView.setBackgroundColor(Color.WHITE);
+        nameTextView.setTextColor(Color.BLACK);
+    }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="NavigationView">
 		<title>NavigationView</title>
@@ -282,6 +306,14 @@ setItemIconTintList(null)
                 tools:ignore="NewApi" />
 		]]>
 		</programlisting>
+		<section>
+			<title>选中菜单</title>
+			<programlisting>
+			<![CDATA[
+binding.bottomNavigationView.setSelectedItemId(binding.bottomNavigationView.getMenu().getItem(3).getItemId());			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="TabLayout">
 		<title>TabLayout</title>
