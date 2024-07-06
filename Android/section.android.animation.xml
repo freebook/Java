@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="AnimationSet">
+	<title>动画</title>
+
+	<section id="ScaleAnimation">
+		<title>ScaleAnimation</title>
+		<screen>
+		<![CDATA[
+ScaleAnimation (float fromX, float toX, float fromY, float toY, int pivotXType, float pivotXValue, int pivotYType, float pivotYValue)
+
+参数说明
+fromX：起始X坐标上的伸缩尺寸。
+toX：结束X坐标上的伸缩尺寸。
+fromY：起始Y坐标上的伸缩尺寸。
+toY：结束Y坐标上的伸缩尺寸。
+pivotXType：X轴的伸缩模式，可以取值为ABSOLUTE、RELATIVE_TO_SELF、RELATIVE_TO_PARENT。
+pivotXValue：X坐标的伸缩值。
+pivotYType：Y轴的伸缩模式，可以取值为ABSOLUTE、RELATIVE_TO_SELF、RELATIVE_TO_PARENT。
+pivotYValue：Y坐标的伸缩值。		
+		]]>
+		</screen>
+		<para>放大图片 1.5 倍率</para>
+		<programlisting>
+		<![CDATA[
+   final ScaleAnimation scaleAnimation = new ScaleAnimation(1f, 1.5f, 1f, 1.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(5000);
+        scaleAnimation.setStartOffset(1000);
+        scaleAnimation.setFillAfter(true);
+        imageViewFigure.startAnimation(scaleAnimation);
+
+		]]>
+		</programlisting>
+	</section>
+	<section id="AlphaAnimation">
+		<title>AlphaAnimation</title>
+		<para>透明度动画</para>
+		<programlisting>
+	<![CDATA[
+	    AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0.8f);
+	    alphaAnimation.setDuration(1000);
+	    alphaAnimation.setRepeatCount(1);
+	    alphaAnimation.setRepeatMode(Animation.REVERSE);
+	    alphaAnimation.setFillAfter(true);
+	]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>AnimationSet</title>
+		<para>AnimationSet 用于多组动画管理</para>
+		<programlisting>
+		<![CDATA[
+AnimationSet animationSet = new AnimationSet(true);
+
+         final ScaleAnimation scaleAnimation = new ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+         ScaleAnimation scale = new ScaleAnimation(1, 0, 1, 1, 1, 1);
+         animationSet.setDuration(1000);
+         animationSet.addAnimation(scaleAnimation);
+         imageViewFigure.startAnimation(animationSet);
+]]>
+		</programlisting>
+	</section>
+</section>

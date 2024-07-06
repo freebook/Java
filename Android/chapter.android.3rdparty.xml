@@ -17,6 +17,59 @@ Glide.with(fragment).
 			</programlisting>
 		</section>
 		<section>
+			<title>缩略图</title>
+			<programlisting>
+			<![CDATA[
+     ImageView imageViewPreview = view.findViewById(R.id.image_preview);
+            Image image = images.get(position);
+            Glide.with(getActivity()).load(image.getLarge())
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageViewPreview);
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>修改尺寸</title>
+			<programlisting>
+			<![CDATA[
+Glide
+    .with(context)
+    .load(UsageExampleListViewAdapter.eatFoodyImages[0])
+    .override(600, 200) // resizes the image to these dimensions (in pixel). does not respect aspect ratio
+    .into(imageViewResize);
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>让图片充满整个ImageView的边框，然后裁掉超出的部分</title>
+			<programlisting>
+			<![CDATA[
+Glide
+    .with(context)
+    .load(UsageExampleListViewAdapter.eatFoodyImages[0])
+    .override(600, 200) // resizes the image to these dimensions (in pixel)
+    .centerCrop() // this cropping technique scales the image so that it fills the requested bounds and then crops the extra.
+    .into(imageViewResizeCenterCrop);
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>图片会再ImageView中完整显示，但不一定填充整个ImageView</title>
+			<programlisting>
+			<![CDATA[
+Glide
+    .with(context)
+    .load(UsageExampleListViewAdapter.eatFoodyImages[0])
+    .override(600, 200)
+    .fitCenter() 
+    .into(imageViewResizeFitCenter);
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>禁止缓存</title>
 			<programlisting>
 			<![CDATA[
@@ -25,10 +78,12 @@ Glide.with(getActivity()).load(data.avatar).skipMemoryCache(true).diskCacheStrat
 			</programlisting>
 			<programlisting>
 			<![CDATA[
-String updateTime = String.valueOf(System.currentTimeMillis()); 
-Glide.load(url)
-  .signature(new StringSignature(updateTime))
-  .into(image);
+Glide
+    .with(context)
+    .load(UsageExampleListViewAdapter.eatFoodyImages[0])
+    .override(600, 200)
+    .fitCenter() 
+    .into(imageViewResizeFitCenter);
 			]]>
 			</programlisting>
 		</section>
