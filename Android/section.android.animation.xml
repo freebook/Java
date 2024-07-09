@@ -44,6 +44,86 @@ pivotYValue：Y坐标的伸缩值。
 	]]>
 		</programlisting>
 	</section>
+		<section id="ObjectAnimator">
+		<title>ObjectAnimator</title>
+		<para>透明度动画</para>
+		<programlisting>
+		<![CDATA[
+// 创建一个ObjectAnimator对象，指定动画目标为ImageView的scaleX属性，实现水平缩放
+ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 1.5f, 1f);
+// 设置动画持续时间为500毫秒
+scaleXAnimator.setDuration(500);
+
+// 创建一个ObjectAnimator对象，指定动画目标为ImageView的scaleY属性，实现垂直缩放
+ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(imageView, "scaleY", 1f, 1.5f, 1f);
+// 设置动画持续时间为500毫秒
+scaleYAnimator.setDuration(500);
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+// 设置动画重复次数为无限循环
+scaleXAnimator.setRepeatCount(ValueAnimator.INFINITE);
+scaleYAnimator.setRepeatCount(ValueAnimator.INFINITE);
+
+// 设置动画重复模式为反向重复
+scaleXAnimator.setRepeatMode(ValueAnimator.REVERSE);
+scaleYAnimator.setRepeatMode(ValueAnimator.REVERSE);
+
+// 设置动画插值器为加速插值器
+scaleXAnimator.setInterpolator(new AccelerateInterpolator());
+scaleYAnimator.setInterpolator(new AccelerateInterpolator());
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>AnimatorListener</title>
+		<para>AnimatorListener 动画监听器</para>
+		<programlisting>
+		<![CDATA[
+animator.addListener(new Animator.AnimatorListener() {
+    @Override
+    public void onAnimationStart(Animator animator) {
+        // 动画开始时执行的操作
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animator) {
+        // 动画结束时执行的操作
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animator) {
+        // 动画被取消时执行的操作
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animator) {
+        // 动画重复时执行的操作
+    }
+});
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>变速曲线</title>
+		<para>scaleAnimation.setInterpolator(new AccelerateInterpolator());</para>
+		<programlisting>
+		<![CDATA[
+java类	xml资源id	说明
+AccelerateDecelerateInterpolator	@android:anim/accelerate_decelerate_interpolator	其变化开始和结束速率较慢，中间加速
+AccelerateInterpolator	@android:anim/accelerate_interpolator	其变化开始速率较慢，后面加速
+DecelerateInterpolator	@android:anim/decelerate_interpolator	其变化开始速率较快，后面减速
+LinearInterpolator	@android:anim/linear_interpolator	其变化速率恒定
+AnticipateInterpolator	@android:anim/anticipate_interpolator	其变化开始向后甩，然后向前
+AnticipateOvershootInterpolator	@android:anim/anticipate_overshoot_interpolator	其变化开始向后甩，然后向前甩，过冲到目标值，最后又回到了终值
+OvershootInterpolator	@android:anim/overshoot_interpolator	其变化开始向前甩，过冲到目标值，最后又回到了终值
+BounceInterpolator	@android:anim/bounce_interpolator	其变化在结束时反弹
+CycleInterpolator	@android:anim/cycle_interpolator	循环播放，其速率为正弦曲线
+TimeInterpolator	 	一个接口，可以自定义插值器
+		]]>
+		</programlisting>
+	</section>
 	<section>
 		<title>AnimationSet</title>
 		<para>AnimationSet 用于多组动画管理</para>

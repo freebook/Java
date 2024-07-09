@@ -632,7 +632,9 @@ public class Test {
 		<para>java.util.Date, java.sql.Date, java.sql.Time, java.sql.Timestamp
 			区别
 		</para>
-		<programlisting>
+		<section id="date.new">
+			<title>String to Date</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.java.date;
 
@@ -664,15 +666,23 @@ public class App {
 }
 
 		]]>
-		</programlisting>
-		<screen>
+			</programlisting>
+			<screen>
 		<![CDATA[
 The Java Date is:Thu Aug 24 16:51:57 CST 2017
 The SQL DATE is: 2017-08-24
 The SQL TIME is: 16:51:57
 The SQL TIMESTAMP is: 2017-08-24 16:51:57.234		
 		]]>
-		</screen>
+			</screen>
+			<programlisting>
+			<![CDATA[
+        Date currentDate = new Date();
+        int month = currentDate.getMonth() + 1;
+        System.out.println("当前月份为：" + month);			
+			]]>
+			</programlisting>
+		</section>
 		<section id="DateTimeFormatter">
 			<title>DateTimeFormatter 格式化日期和时间</title>
 			<programlisting>
@@ -726,6 +736,39 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.example;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class StringToDate {
+
+	public StringToDate() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = "2008-8-8 8:8:8";
+
+		try {
+
+			Date date = formatter.parse(dateString);
+			System.out.println(date);
+			System.out.println(formatter.format(date));
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+}			
 			]]>
 			</programlisting>
 			<programlisting>
@@ -892,42 +935,7 @@ public class TimeZoneTest {
 			]]>
 			</screen>
 		</section>
-		<section id="date.string">
-			<title>String to Date</title>
-			<programlisting>
-			<![CDATA[
-package cn.netkiller.example;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class StringToDate {
-
-	public StringToDate() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String dateString = "2008-8-8 8:8:8";
-
-		try {
-
-			Date date = formatter.parse(dateString);
-			System.out.println(date);
-			System.out.println(formatter.format(date));
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-	}
-
-}			
-			]]>
-			</programlisting>
-		</section>
+		
 		<section id="date.compare">
 			<title>比较两个日期与时间</title>
 			<programlisting>
@@ -1019,6 +1027,82 @@ public class DateCompare {
 		System.out.println(year + "年 " + month + "月");
 			]]>
 			</programlisting>
+			<section>
+				<title>日期加法操作</title>
+				<programlisting>
+				<![CDATA[
+//获取当前日期
+Date date = new Date();
+ 
+//创建Calendar实例
+Calendar cal = Calendar.getInstance();
+cal.setTime(date);   //设置当前时间
+cal.add(Calendar.YEAR, 1);  //在当前时间基础上加一年
+ 
+//将时间格式化成yyyy-MM-dd HH:mm:ss的格式
+SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+System.out.println(format.format(cal.getTime()));
+ 
+ 
+ 
+//同理增加一个月和一天的方法：
+cal.add(Calendar.MONTH, 1);
+cal.add(Calendar.DAY, 1);				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>计算起始日期与终止日期之间的月份</title>
+				<programlisting>
+				<![CDATA[
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+
+        Date d1 = new SimpleDateFormat("yyyy-MM").parse("2020-02-01");//定义起始日期
+        Date d2 = new SimpleDateFormat("yyyy-MM").parse("2024-03-02");//定义结束日期
+
+        calendar.setTime(d2);
+        calendar.add(Calendar.MONTH, 1);
+        d2 = calendar.getTime();
+
+        calendar.setTime(d1);//设置日期起始时间
+
+        while (calendar.getTime().before(d2)) {//判断是否到结束日期
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+            String str = sdf.format(calendar.getTime());
+            System.out.println(str);//输出日期结果
+            calendar.add(Calendar.MONTH, 1);//进行当前日期月份加1
+        }				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>取日期范围</title>
+				<programlisting>
+				<![CDATA[
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+
+        Date d1 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-03-10");//定义起始日期
+        Date d2 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-03-20");//定义结束日期
+
+        calendar.setTime(d2);
+        calendar.add(Calendar.DATE, 1);
+        d2 = calendar.getTime();
+
+        calendar.setTime(d1);//设置日期起始时间
+
+        while (calendar.getTime().before(d2)) {//判断是否到结束日期
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String str = sdf.format(calendar.getTime());
+            System.out.println(str);//输出日期结果
+            calendar.add(Calendar.DATE, 1);//进行当前日期月份加1
+        }				
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="date.today">
 			<title>getToday</title>
