@@ -11,6 +11,16 @@
         paint.setStrokeWidth(1);
 		]]>
 		</programlisting>
+		<section>
+			<title>Paint.setTextSize() SP to PX</title>
+			<programlisting>
+			<![CDATA[
+final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+textSize = 18 * fontScale + 0.5f;			
+Paint.setTextSize(textSize)
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section>
 		<title>AnimationDrawable</title>

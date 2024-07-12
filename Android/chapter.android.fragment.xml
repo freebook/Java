@@ -275,4 +275,14 @@ public class ClockFragment extends Fragment {
 		</programlisting>
 		
 	</section>
+	<section>
+		<title>Fragment 加载报错 java.lang.IllegalArgumentException: No view found for id ...</title>
+		<programlisting>
+		<![CDATA[
+requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commit();
+换成
+getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commitAllowingStateLoss();
+		]]>
+		</programlisting>
+	</section>
 </chapter>

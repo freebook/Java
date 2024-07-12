@@ -83,4 +83,102 @@
 		]]>
 		</programlisting>
 	</section>
+		<section>
+		<title>Notification 给 Activity 传值</title>
+		<para>Notification 跳转 MainActivity 会执行 onStop() 和 onDestroy() 导致 Services 退出</para>
+		<programlisting>
+		<![CDATA[
+private int createNotification(String title, String text) {
+
+        String channelId = "NORMAL"; // IMPORTANT
+        String channelName = "消息";
+        String description = "站内消息通知";
+        String group = "group";
+        int notificationId = new Random().nextInt(1000);
+
+        Intent intent = new Intent(this, MainActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("Notification", true);
+
+//        PendingIntent.FLAG_IMMUTABLE
+        int notifyId = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notifyId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription(description);
+        notificationManagerCompat.createNotificationChannel(channel);
+
+//        Bundle bundle = new Bundle();
+//        bundle.putBoolean("Notification", true);
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelId)
+                .setContentTitle(title).setContentText(text)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+//                .setExtras(bundle)
+                .setAutoCancel(true);
+//                .setGroup(group);
+//                .setFullScreenIntent(fullScreenPendingIntent, true);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+        }
+        notificationManagerCompat.notify(notificationId, notification.build());
+        return notificationId;
+    }
+		]]>
+		</programlisting>
+
+		<section>
+		<title>通过 isNotification 判断是否需要执行 onStop() 和 onDestroy()</title>
+		<programlisting>
+		<![CDATA[
+	private boolean isNotification = false;
+	
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            boolean isExit = intent.getBooleanExtra("QUIT", false);
+            if (isExit) {
+                this.finish();
+            }
+            isNotification = intent.getBooleanExtra("Notification", false);
+        }
+        Log.d(TAG, "onNewIntent()");
+    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (isNotification) return;
+        if (messageQueueService != null) {
+            stopService(messageQueueService);
+        }
+        aigcSpeech.stopSpeech();
+        Log.d(TAG, "onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isNotification) return;
+        if (messageQueueService != null) {
+            stopService(messageQueueService);
+        }
+        if (mainBroadcastReceiver != null) {
+            unregisterReceiver(mainBroadcastReceiver);
+        }
+        aigcSpeech.stopSpeech();
+        Log.d(TAG, "onDestroy()");
+    }    
+		]]>
+		</programlisting>
+	</section>
 </chapter>

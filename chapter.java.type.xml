@@ -1076,6 +1076,40 @@ cal.add(Calendar.DAY, 1);
         }				
 				]]>
 				</programlisting>
+				<programlisting>
+				<![CDATA[
+private List<Date> getMonthRange(String startDate, String endDate) {
+        List<Date> monthList = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+
+        try {
+
+
+            Date d1 = new SimpleDateFormat("yyyy-MM").parse(startDate);//定义起始日期
+            Date d2 = new SimpleDateFormat("yyyy-MM").parse(endDate);//定义结束日期
+
+            calendar.setTime(d2);
+            calendar.add(Calendar.MONTH, 1);
+            d2 = calendar.getTime();
+
+            calendar.setTime(d1);//设置日期起始时间
+
+            while (calendar.getTime().before(d2)) {//判断是否到结束日期
+                monthList.add(calendar.getTime());
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+//            String str = sdf.format(calendar.getTime());
+//            System.out.println(str);//输出日期结果
+                calendar.add(Calendar.MONTH, 1);//进行当前日期月份加1
+            }
+        } catch (ParseException e) {
+
+        }
+        return monthList;
+
+    }				
+				]]>
+				</programlisting>
 			</section>
 			<section>
 				<title>取日期范围</title>

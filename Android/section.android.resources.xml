@@ -44,8 +44,24 @@ context.getString(R.string.app_id)
 binding.textViewPrompt.setText(requireActivity().getString(R.string.textViewPrompt));
 			]]>
 			</programlisting>
-		</section>		
-				
-	</section>
+		</section>
 
+	</section>
+	<section>
+		<title>dimens.xml</title>
+		<para>在app/src/main/res/values/dimens.xml中定义尺寸如下：</para>
+		<programlisting>
+			<![CDATA[
+<dimen name="font1">18sp</dimen>
+			]]>
+		</programlisting>
+		<programlisting>
+			<![CDATA[
+mText.setTextSize(18);  // 方法1
+mText.setTextSize(getResources().getDimension(R.dimen.font1));  // 方法2
+mText.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.font1));  // 方法3
+mText.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);  // 方法4
+			]]>
+		</programlisting>
+	</section>
 </chapter>

@@ -295,14 +295,18 @@ editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
 
     ]]>
 		</programlisting>
-		<programlisting>
-    <![CDATA[
-    
-    ]]>
-		</programlisting>
-	
-</section>
 
+
+	</section>
+
+	<section>
+		<title>设置 app:backgroundTint</title>
+		<programlisting>
+	    <![CDATA[
+someTextView.getBackground().setTint(yourIntColor);
+	    ]]>
+		</programlisting>
+	</section>
 
 </section>
 <section id="Button">
