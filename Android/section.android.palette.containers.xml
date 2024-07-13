@@ -387,6 +387,137 @@ binding.bottomNavigationView.setSelectedItemId(binding.bottomNavigationView.getM
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>防止快速点击切换</title>
+			<programlisting>
+			<![CDATA[
+binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            private boolean isOnTabSelectedListener = false;
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                if (isOnTabSelectedListener) {
+                    Log.e(TAG, "onTabSelected: 暴击 " + tab.getText());
+                    return;
+                } else {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        public void run() {
+                            isOnTabSelectedListener = false;
+                            Log.e(TAG, "Tab 释放");
+                        }
+                    }, 5000);
+                    isOnTabSelectedListener = true;
+                }
+                Log.d(TAG, "onTabSelected: " + tab.getText());
+                Fragment fragment = null;
+                switch (tab.getPosition()) {
+                    case 0:
+                        fragment = new NoticeFragment();
+                        break;
+                    case 1:
+                        fragment = new MessageFragment();
+                        break;
+                    case 2:
+                        fragment = new AuditFragment();
+                        break;
+                }
+
+                if (fragment != null) {
+                    try {
+                        if (!isAdded()) return;
+//                        requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commit();
+                        getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commitAllowingStateLoss();
+                    } catch (Exception e) {
+                        Log.d(TAG, "Tab 切换出错" + e.getMessage());
+                    }
+
+                }
+            }
+
+            // 页面切换到其他
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabUnselected: " + tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabReselected: " + tab.getText());
+            }
+        });
+			]]>
+			</programlisting>
+			<para>增加间隔时间，并且恢复最后一次点击位置的操作</para>
+			<programlisting>
+			<![CDATA[
+    private void switchTabLayout(int position) {
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new NoticeFragment();
+                break;
+            case 1:
+                fragment = new MessageFragment();
+                break;
+            case 2:
+                fragment = new AuditFragment();
+                break;
+        }
+
+        if (fragment != null) {
+            try {
+                if (!isAdded()) return;
+//                        requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commit();
+                getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commitAllowingStateLoss();
+            } catch (Exception e) {
+                Log.d(TAG, "Tab 切换出错" + e.getMessage());
+            }
+
+        }
+    }			
+			
+		binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            private final long interval = 1000L;
+            private boolean isOnTabSelectedListener = false;
+            private int index = 0;
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                index = tab.getPosition();
+                if (isOnTabSelectedListener) {
+                    Log.e(TAG, "onTabSelected: 暴击 " + tab.getText() + " 位置: " + index);
+                    return;
+                } else {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        public void run() {
+                            isOnTabSelectedListener = false;
+                            switchTabLayout(index);
+
+                            Log.e(TAG, "Tab 释放，并且切换最后一次点击位置: " + index + " - " + tab.getPosition());
+                        }
+                    }, interval);
+
+                    isOnTabSelectedListener = true;
+                }
+                Log.d(TAG, "onTabSelected: " + tab.getText());
+                switchTabLayout(tab.getPosition());
+            }
+
+            // 页面切换到其他
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabUnselected: " + tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabReselected: " + tab.getText());
+            }
+        });	
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ViewPager2">
 		<title>ViewPager2</title>

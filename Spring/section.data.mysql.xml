@@ -6162,7 +6162,7 @@ public class SimpleJpaRepository<T, ID> implements JpaRepositoryImplementation<T
 					]]>
 			</programlisting>
 		</section>
-		<section>
+		<section >
 			<title>SERIALIZABLE</title>
 			<programlisting>
 					<![CDATA[
@@ -6354,9 +6354,6 @@ public class UserService {
 				]]>
 			</programlisting>
 			<para>屏蔽 @Servcie 后观察 save 的 @Transactional 是不生效的。</para>
-		</section>
-		<section>
-			<title></title>
 			<programlisting>
 				<![CDATA[
 @Service
@@ -6385,6 +6382,49 @@ public class RoleService {
         ...
     }
 }				
+				]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>事务回滚</title>
+			<programlisting>
+				<![CDATA[
+    @Transactional
+    public void test(SysConfigEntity entity) throws Exception {
+        //不会回滚
+        this.saveSysConfig(entity);
+        throw new Exception("rollback test");
+         
+    }
+     
+    @Transactional(rollbackFor = Exception.class)
+    public void test1(SysConfigEntity entity) throws Exception {
+        //会回滚
+        this.saveSysConfig(entity);
+        throw new Exception("rollback test");
+         
+    }
+     
+    @Transactional
+    public void test2(SysConfigEntity entity) throws Exception {
+        //会回滚
+        this.saveSysConfig(entity);
+        throw new RuntimeException("rollback test");
+         
+    }
+     
+    @Transactional
+    public void test3(SysConfigEntity entity) throws Exception {
+        //事务仍然会被提交
+        this.test4(entity);
+        throw new Exception("rollback test");
+    }
+     
+    @Transactional(rollbackFor = Exception.class)
+    public void test4(SysConfigEntity entity) throws Exception {
+         
+        this.saveSysConfig(entity);
+    }			
 				]]>
 			</programlisting>
 		</section>
