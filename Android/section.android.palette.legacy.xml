@@ -2,8 +2,54 @@
 <section id="Legacy">
     <title>Legacy</title>
     <section id="ListView">
-        <title>ListView</title>
-        <programlisting>
+		<title>ListView</title>
+		 <section>
+            <title>去掉横线</title>
+            <para>方法一，设置为@null</para>
+            <programlisting>
+            <![CDATA[
+            <ListView
+            android:id="@+id/listViewNotification"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null" />
+            ]]>
+            </programlisting>
+            <para>方法二，设置颜色</para>
+            <programlisting>
+            <![CDATA[
+            <ListView
+            android:id="@+id/listViewNotification"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#00000000" />
+            ]]>
+            </programlisting>
+        </section>
+		<section id="ListView.array">
+			<title>Array</title>
+			<programlisting>
+			<![CDATA[
+        String[] list = Arrays.asList("Apple", "Banana", "Orange", "Watermelon",
+                "Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango";
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,data);
+        ListView listView = (ListView) findViewById(R.id.history);
+        listView.setAdapter(adapter);	
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    <ListView
+        android:id="@+id/history"
+        android:layout_width="368dp"
+        android:layout_height="444dp"
+        android:scrollbars="horizontal"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="59dp" />	
+			]]>
+			</programlisting>
+			
+			 <programlisting>
         <![CDATA[
         <?xml version="1.0" encoding="utf-8"?>
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -101,29 +147,247 @@
         }    
         ]]>
         </programlisting>
+			
+			
+		</section>
+		<section id="ListView.List">
+			<title>List</title>
+			<programlisting>
+			<![CDATA[
+		List<String> list = Arrays.asList("Apple", "Banana", "Orange", "Watermelon","Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,list);
+        ListView listView = (ListView) findViewById(R.id.history);
+        listView.setAdapter(adapter);        		
+			]]>
+			</programlisting>
+		</section>
+		<section id="setOnItemClickListener">
+			<title>setOnItemClickListener()</title>
+			<programlisting>
+			<![CDATA[
+        List<String> list = Arrays.asList("Text 文本", "URL 网址", "电话号码", "短信","开启应用", "地址", "日历", "图片", "邮箱", "GPS 坐标");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,list);
+        final ListView listView = (ListView) findViewById(R.id.schemaList);
+        listView.setAdapter(adapter);
 
-        <section>
-            <title>去掉横线</title>
-            <para>方法一，设置为@null</para>
-            <programlisting>
-            <![CDATA[
-            <ListView
-            android:id="@+id/listViewNotification"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null" />
-            ]]>
-            </programlisting>
-            <para>方法二，设置颜色</para>
-            <programlisting>
-            <![CDATA[
-            <ListView
-            android:id="@+id/listViewNotification"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="#00000000" />
-            ]]>
-            </programlisting>
-        </section>
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String text = listView.getItemAtPosition(position)+"";
+                Log.e("WRITE","position="+position+", text="+text);
+            }
+        });	
+			]]>
+			</programlisting>
+		</section>
+		<section id="ListView.implements">
+			<title>用接口方法实现</title>
+			<programlisting>
+		<![CDATA[
+public class MainActivity extends Activity implements OnItemClickListener, OnScrollListener
+		]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
+		List<String> list = Arrays.asList("Text 文本", "URL 网址", "电话号码", "短信","开启应用", "地址", "日历", "图片", "邮箱", "GPS 坐标");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,list);
+        final ListView listView = (ListView) findViewById(R.id.schemaList);
+        listView.setAdapter(adapter);
+        
+        listView.setOnItemClickListener(this);
+        listView.setOnScrollListener(this);		
+		]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
+	@Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String text = listView.getItemAtPosition(position)+"";
+        Log.e("WRITE","position="+position+", text="+text);
+    }		
+		]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
+	@Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+        switch (scrollState) {
+        case SCROLL_STATE_FLING:
+            Log.i("tag", "用户手指离开屏幕后，因惯性继续滑动");
+            Map<String,Object>map = new HashMap<String,Object>();
+            map.put("icon", R.drawable.ic_launcher);
+            map.put("text", "新增加项目");
+            dataList.add(map);  
+            adapter.notifyDataSetChanged(); 
+            break;
+        case SCROLL_STATE_IDLE:
+            Log.i("tag","已经停止滑动");
+            break;      
+        case SCROLL_STATE_TOUCH_SCROLL:
+            Log.i("tag", "手指未离开屏幕，屏幕继续滑动");
+            break;
+        }   
+    }		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+    <section id="GridView">
+        <title>GridView</title>
+        <programlisting>
+        <![CDATA[
+package cn.netkiller.student.fragment.library;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+
+import cn.aigcsst.student.R;
+import cn.aigcsst.student.cloud.PictureBook;
+import cn.aigcsst.student.databinding.FragmentBookshelfBinding;
+import cn.aigcsst.student.view.CustomOnScrollListener;
+
+public class BookshelfFragment extends Fragment {
+    private static final String TAG = BookshelfFragment.class.getSimpleName();
+    private FragmentBookshelfBinding binding;
+    private int categoryId;
+
+    public static BookshelfFragment newInstance(int categoryId) {
+        BookshelfFragment fragment = new BookshelfFragment();
+        Bundle args = new Bundle();
+        args.putInt("categoryId", categoryId);
+//        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        binding = FragmentBookshelfBinding.inflate(inflater, container, false);
+
+        if (getArguments() != null) {
+            categoryId = getArguments().getInt("categoryId");
+        }
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "Categroy Id: " + categoryId);
+        binding.bookshelfGridView.setOnScrollListener(new CustomOnScrollListener() {
+            @Override
+            protected void onLoading() {
+                Log.e(TAG, "数据加载");
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        PictureBook pictureBook = new PictureBook();
+        pictureBook.bookshelf(categoryId, data -> {
+//            data.content.forEach(item -> {
+//                Log.d(TAG, item.title);
+//            });
+            if (!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                try {
+                    binding.bookshelfGridView.setAdapter(new BaseAdapter() {
+                        @Override
+                        public int getCount() {
+                            return data.content.size();
+                        }
+
+                        @Override
+                        public Object getItem(int position) {
+                            return data.content.get(position);
+                        }
+
+                        @Override
+                        public long getItemId(int position) {
+                            return data.content.get(position).id;
+                        }
+
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            if (convertView == null) {
+                                convertView = LayoutInflater.from(requireContext()).inflate(R.layout.gridview_bookshelf, null);
+                            }
+                            TextView titleTextView = convertView.findViewById(R.id.titleTextView);
+                            titleTextView.setText(data.content.get(position).title);
+
+
+                            if (data.content.get(position).cover != null) {
+                                ImageView imageViewCover = convertView.findViewById(R.id.imageViewPicture);
+                                Glide.with(requireContext()).load(data.content.get(position).cover).into(imageViewCover);
+                            }
+                            return convertView;
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        binding.bookshelfGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(requireContext(), "你点击了~" + position + "~项", Toast.LENGTH_SHORT).show();
+                requireActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainerView, PictureBookFullscreenFragment.newInstance((int) id)).commit();
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+}
+        ]]>
+        </programlisting>
+        <programlisting>
+        <![CDATA[
+ 
+
+        ]]>
+        </programlisting>
+
+       
     </section>
 </section>
