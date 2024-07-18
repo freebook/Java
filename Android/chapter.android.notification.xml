@@ -83,9 +83,11 @@
 		]]>
 		</programlisting>
 	</section>
-		<section>
+	<section>
 		<title>Notification 给 Activity 传值</title>
-		<para>Notification 跳转 MainActivity 会执行 onStop() 和 onDestroy() 导致 Services 退出</para>
+		<para>Notification 跳转 MainActivity 会执行 onStop() 和 onDestroy() 导致
+			Services 退出
+		</para>
 		<programlisting>
 		<![CDATA[
 private int createNotification(String title, String text) {
@@ -134,8 +136,8 @@ private int createNotification(String title, String text) {
     }
 		]]>
 		</programlisting>
-
-		<section>
+	</section>
+	<section>
 		<title>通过 isNotification 判断是否需要执行 onStop() 和 onDestroy()</title>
 		<programlisting>
 		<![CDATA[
@@ -181,4 +183,5 @@ private int createNotification(String title, String text) {
 		]]>
 		</programlisting>
 	</section>
+
 </chapter>
