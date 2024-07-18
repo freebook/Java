@@ -954,7 +954,7 @@ WeakHashMap类
 　　WeakHashMap是一种改进的HashMap，它对key实行“弱引用”，如果一个key不再被外部所引用，那么该key可以被GC回收。
 		]]>
 		</screen>
-		<section>
+		<section id="Map.of">
 			<title>初始化</title>
 			<programlisting>
 		<![CDATA[

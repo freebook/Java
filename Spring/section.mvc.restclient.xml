@@ -143,6 +143,20 @@ ResponseEntity<List> responseEntity = restClient.get()
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>Timeout 超时设置</title>
+		<programlisting>
+		<![CDATA[
+        SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+        simpleClientHttpRequestFactory.setConnectTimeout(Duration.ofSeconds(60L));
+        simpleClientHttpRequestFactory.setReadTimeout(Duration.ofSeconds(60L));
+        
+        RestClient restClient = RestClient.builder()
+                .requestFactory(simpleClientHttpRequestFactory).baseUrl(url)
+                .build();		
+		]]>
+		</programlisting>
+	</section>
 	<section id="RestClient.bytes">
 		<title>下载二进制流</title>
 		<programlisting>
