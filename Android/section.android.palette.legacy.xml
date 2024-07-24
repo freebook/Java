@@ -234,6 +234,27 @@ public class MainActivity extends Activity implements OnItemClickListener, OnScr
 		]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>设置选中颜色</title>
+			<programlisting>
+			<![CDATA[
+            <ListView
+                android:id="@+id/storyListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="10dp"
+                android:listSelector="@color/cardview_light_background"
+                android:padding="10dp" />
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+        Drawable drawable = getResources().getDrawable(R.color.light_blue_600);
+        binding.storyListView.setSelector(drawable);			
+			]]>
+			</programlisting>
+		</section>
 	</section>
     <section id="GridView">
         <title>GridView</title>
