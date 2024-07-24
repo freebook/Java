@@ -4071,6 +4071,136 @@ CREATE TABLE `picture` (
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>只要外键，不要数据结构</title>
+			<para>@ManyToOne 关系 PictureGroup 加载后会出很多数据，在网上传输比较占用带宽，我们要精简 JSON
+				数据，实现的方式是讲 pictureGroup 影射给 groupId</para>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.domain.story;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+@Entity
+@Table
+@DynamicUpdate
+@DynamicInsert
+@Data
+@Comment("图片表")
+public class Picture implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "bigint unsigned")
+    @Comment("主键")
+    private Long id;
+
+    @Comment("设备")
+    private String device;
+
+    @Column(unique = true, nullable = false, insertable = true, updatable = false, length = 36)
+    @Comment("会话")
+    private String session;
+
+    @Comment("提示词")
+    private String prompt;
+
+    @Comment("英文提示词")
+    @Column(length = 1024)
+    private String translate;
+
+    @Column(nullable = true)
+    @Comment("缩图")
+    private String thumbnail;
+
+    @Column(nullable = true)
+    @Comment("原图")
+    private String image;
+
+    @Column(nullable = true)
+    @Comment("故事音频")
+    private String audio;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = true, columnDefinition = "text")
+    @Comment("故事")
+    private String story;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = true, columnDefinition = "text")
+    @Comment("拼音")
+    private String pinyin;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = true, columnDefinition = "text")
+    @Comment("英文")
+    private String english;
+
+    @Comment("共享")
+    private boolean share;
+
+    @Column(columnDefinition = "int unsigned NOT NULL DEFAULT '0'")
+    @Comment("点赞数")
+    private Integer likes;
+
+    @Column(columnDefinition = "int unsigned NOT NULL DEFAULT '0'")
+    @Comment("收藏数")
+    private Integer favorites;
+
+    @Column(columnDefinition = "int unsigned NOT NULL DEFAULT '0'")
+    @Comment("转发数")
+    private Integer forward;
+
+    @Comment("人工审核，NULL 未审核，true 通过，false 未通过")
+    private Boolean audit;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JsonIgnore
+    @JoinColumn(nullable = true)
+    private PictureGroup pictureGroup;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("创建时间")
+    private Date ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("修改时间")
+    private Date mtime;
+
+    @JsonProperty
+    private Integer groupId;
+
+    private void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
+    private Integer getGroupId() {
+        groupId = pictureGroup.getId();
+        return groupId;
+    }
+
+}
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="indexes">
 		<title>索引</title>
@@ -6383,7 +6513,7 @@ public class SimpleJpaRepository<T, ID> implements JpaRepositoryImplementation<T
 					]]>
 			</programlisting>
 		</section>
-		<section >
+		<section>
 			<title>SERIALIZABLE</title>
 			<programlisting>
 					<![CDATA[
@@ -6829,7 +6959,8 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
 
 		</section>
 		<section>
-			<title>could not initialize proxy [cn.netkiller.domain.Device#16] - no Session </title>
+			<title>could not initialize proxy [cn.netkiller.domain.Device#16] -
+				no Session </title>
 			<para>第一种解决方法，捕捉 LazyInitializationException 异常</para>
 			<programlisting>
 			<![CDATA[
@@ -6874,6 +7005,32 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
 			<programlisting>
 			<![CDATA[
 @Proxy(lazy = false) 的意思和FetchType.EAGER类似	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>this is incompatible with sql_mode=only_full_group_by</title>
+			<screen>
+			<![CDATA[
+JDBC exception executing SQL [select p1_0.id,p1_0.audio,p1_0.audit,p1_0.bmp,p1_0.ctime,p1_0.device,p1_0.english,p1_0.favorites,p1_0.forward,p1_0.group_id,p1_0.image,p1_0.likes,p1_0.mtime,p1_0.picture_group_id,p1_0.pinyin,p1_0.prompt,p1_0.session,p1_0.share,p1_0.story,p1_0.thumbnail,p1_0.translate from picture p1_0 where p1_0.audit=1 and p1_0.share=1 group by coalesce(p1_0.picture_group_id,p1_0.session) limit ?,?] [Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'watch.p1_0.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by] [n/a]; SQL [n/a]
+			]]>
+			</screen>
+			<para>解决方案一，使用 ANY_VALUE() 函数</para>
+			<programlisting>
+			<![CDATA[
+	@Query(" SELECT ANY_VALUE(p.id), ANY_VALUE(p.story), ANY_VALUE(p.image) FROM Picture p WHERE p.audit = true AND p.share = true GROUP BY IFNULL(p.pictureGroup.id,p.session)")
+    Page<Picture> queryGroup(Pageable pageable);
+			]]>
+			</programlisting>
+			<para>解决方案二，修改数据库配置</para>
+			<programlisting>
+			<![CDATA[
+	SET sql_mode='';
+	SELECT id,name,group_id FROM test.photograph group by group_id;
+			
+			
+	SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+    SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 			]]>
 			</programlisting>
 		</section>
