@@ -2,7 +2,47 @@
 <chapter id="index"><?dbhtml dir="storage" ?>
 	<title>存储</title>
 	<section>
-		<title>存储目录</title>
+		<title>内部存储</title>
+		<programlisting>
+		<![CDATA[
+Environment.getDataDirectory():      /data
+Context.getCacheDir():               /data/data/cn.netkiller.test/cache
+Context.getFilesDir():               /data/data/cn.netkiller.test/files
+Context.getFileStreamPath(""):       /data/data/cn.netkiller.test/files
+Context.getFileStreamPath("test"):   /data/data/cn.netkiller.test/files/test
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>扩展存储</title>
+		<programlisting>
+		<![CDATA[
+Environment.getExternalStorageDirectory():               /storage/emulated/0
+Context.getExternalCacheDir():                           /storage/emulated/0/Android/data/cn.netkiller.test/cache
+Context.getExternalFilesDir(""):                         /storage/emulated/0/Android/data/cn.netkiller.test/files
+Context.getExternalFilesDir("test"):                     /storage/emulated/0/Android/data/cn.netkiller.test/files/test
+Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES):    /storage/emulated/0/Android/data/cn.netkiller.test/files/Pictures		
+		]]>
+		</programlisting>
+	</section>	
+	<section>
+		<title>文件夹类型</title>
+		<screen>
+		<![CDATA[
+public static String DIRECTORY_MUSIC = "Music";
+public static String DIRECTORY_ALARMS = "Alarms";
+public static String DIRECTORY_NOTIFICATIONS = "Notifications";
+public static String DIRECTORY_PICTURES = "Pictures";
+public static String DIRECTORY_MOVIES = "Movies";
+public static String DIRECTORY_DOWNLOADS = "Download";
+public static String DIRECTORY_DCIM = "DCIM";
+public static String DIRECTORY_DOCUMENTS = "Documents";
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>获得存储目录</title>
 		<screen>
 		<![CDATA[
 Log.d(TAG, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
@@ -13,6 +53,15 @@ Log.d(TAG, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString());
 /storage/emulated/0/Android/data/cn.netkiller.album.education/files/Pictures		
 		]]>
 		</screen>
+		<para>公共存储目录</para>
+		<programlisting>
+		<![CDATA[
+Environment.getExternalStorageDirectory():                     /storage/emulated/0
+Environment.getExternalStoragePublicDirectory(""):             /storage/emulated/0
+Environment.getExternalStoragePublicDirectory("test"):         /storage/emulated/0/test
+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)：  /storage/emulated/0/Pictures		
+		]]>
+		</programlisting>
 	</section>
 	<section>
 		<title>FileProvider 配置</title>
