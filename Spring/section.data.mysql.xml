@@ -3841,7 +3841,7 @@ private List<Student> studentList;
 		</section>
 		<section id="@JsonIgnoreProperties">
 			<title>@JsonIgnoreProperties</title>
-
+			<para>当使用 @OneToMany 与 @ManyToOne 相互引用时，你会发现产生了循环调用，此时可以使用 @JsonIgnoreProperties 避免出现循环，此时加入 @Transient 或 @JsonIgnore 注解可以解决，但要该字段就没有外键数据了。</para> 
 			<programlisting>
 			<![CDATA[
 @Entity
@@ -4077,7 +4077,7 @@ CREATE TABLE `picture` (
 				数据，实现的方式是讲 pictureGroup 影射给 groupId</para>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.domain.story;
+package cn.netkiller.domain.story;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -5045,6 +5045,67 @@ public interface LoraRepository extends CrudRepository<Lora, Integer> {
 			<programlisting>
 			<![CDATA[
     Page<Picture> findByShareTrueAndImageIsNotNullAndStoryIsNotNullAndAudioIsNotNull(Pageable pageable);
+			]]>
+			</programlisting>
+		</section>
+		<section id="">
+			<title>Before/After</title>
+			<programlisting>
+			<![CDATA[
+//        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime lastDay = now.minusDays(1);
+        LocalDateTime start = now.minusDays(1);
+        LocalDateTime end = now.minusMinutes(5);
+        log.info("Query picture from {} to {}", start, end);
+//        iterable = pictureService.findBySrtIsNullAndCtimeAfter(end);
+        iterable = pictureService.findBySrtIsNullAndCtimeBefore(end);
+        iterable.forEach(picture -> {
+            String appId = businessService.queryAppIdByDevice(picture.getDevice());
+            aigcPipeline.setAigc(Aigc.builder().appId(appId).device(picture.getDevice()).session(picture.getSession()).prompt(picture.getPrompt()).story(picture.getStory()).audio(picture.getAudio()).build());
+            aigcPipeline.subtitles(srt -> {
+                pictureService.updateSrt(aigcPipeline.getAigc().getSession(), srt);
+                sessionStatusService.progress(aigcPipeline.getAigc().getSession(), "识别字幕", srt);
+            });
+        });
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    public Iterable<Picture> findBySrtIsNullAndCtimeBefore(LocalDateTime lastDay) {
+        Iterable<Picture> iterable = pictureRepository.findBySrtIsNullAndCtimeBefore(lastDay);
+        return iterable;
+    }
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository;
+
+
+import cn.netkiller.domain.story.Picture;
+import cn.netkiller.repository.model.PictureGroupList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+@Repository
+public interface PictureRepository extends CrudRepository<Picture, Long> {
+    Picture findAllBySession(String session);
+
+    Optional<Picture> findBySession(String session);
+
+    Page<Picture> findAll(Pageable pageable);
+
+    Iterable<Picture> findBySrtIsNullAndCtimeBefore(LocalDateTime lastDay);
+}		
 			]]>
 			</programlisting>
 		</section>
