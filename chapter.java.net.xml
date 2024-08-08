@@ -4,8 +4,55 @@
 	<para>Java 网络相关操作</para>
 	<section id="url">
 		<title>URL</title>
-		<programlisting>
-		<![CDATA[
+		<section>
+			<title>获取路径/文件名</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.net.URL;
+
+public class Test {
+
+
+    public Test() {
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        // url  object
+        URL url = null;
+
+        try {
+            // create a URL
+            url = new URL("http://oss.netkiller.cn/book/d730dfb8-1ef2-49af-a728-ff68dc7c9f6e/3.mp3");
+            // display the URL
+            System.out.println("URL=" + url);
+
+            // display the  Path
+            System.out.println("Path=" + url.getPath());
+            System.out.println("File=" + url.getFile());
+            System.out.println("directory=" + url.getFile().substring(0, url.getFile().lastIndexOf("/")));
+            System.out.println("Filename=" + url.getFile().substring(url.getFile().lastIndexOf("/") + 1));
+
+        }
+        // if any error occurs
+        catch (Exception e) {
+
+            // display the error
+            System.out.println(e);
+        }
+
+    }
+
+}	
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>打开 URL</title>
+			<programlisting>
+			<![CDATA[
 import java.net.*;
 import java.io.*;
 
@@ -21,8 +68,9 @@ public class URLReader {
         in.close();
     }
 }
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section>
 		<title>获取IP地址何机器名</title>
@@ -41,7 +89,7 @@ public class URLReader {
             return ResponseEntity.ok(e.toString());
         }
     }		
-		]]>		
+		]]>
 		</programlisting>
 	</section>
 </chapter>
