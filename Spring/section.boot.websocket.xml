@@ -2,7 +2,8 @@
 <section id="WebSocket">
 	<title>WebSocket</title>
 	<section>
-		<title></title>
+		<title>Maven 依赖</title>
+		<para>WebSocket服务端依赖</para>
 		<programlisting>
 		<![CDATA[
 		<!-- WebSocket服务端依赖-->
@@ -15,26 +16,147 @@
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>ServerEndpoint 端点</title>
+		<para>ServerEndpoint 是 WebSocket 的核心业务逻辑代码。下面实现一个 Echo Server</para>
 		<programlisting>
 		<![CDATA[
-		
+package cn.aigcsst.controller.websocket;
+
+import jakarta.websocket.*;
+import jakarta.websocket.server.ServerEndpoint;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.time.Instant;
+
+@ServerEndpoint(value = "/test/websocket/echo")
+@Slf4j
+public class EchoServerEndpoint {
+    
+    private Session session;
+
+    // 连接打开
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
+        // 保存 session 到对象
+        this.session = session;
+        log.info("[websocket] 建立连接：session={}", this.session.getId());
+    }
+
+    // 收到消息
+    @OnMessage
+    public void onMessage(String message) throws IOException {
+
+        log.info("[websocket] 收到消息：session={}，message={}", this.session.getId(), message);
+
+        if (message.equalsIgnoreCase("bye")) {
+            // 由服务器主动关闭连接。状态码为 NORMAL_CLOSURE（正常关闭）。
+            this.session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Bye"));
+            return;
+        }
+
+
+        this.session.getAsyncRemote().sendText("[" + Instant.now().toEpochMilli() + "] " + message);
+    }
+
+    // 连接关闭
+    @OnClose
+    public void onClose(CloseReason closeReason) {
+        log.info("[websocket] 连接断开：session={}，reason={}", this.session.getId(), closeReason);
+    }
+
+    // 连接异常
+    @OnError
+    public void onError(Throwable throwable) throws IOException {
+
+        log.info("[websocket] 连接异常：session={}，throwable={}", this.session.getId(), throwable.getMessage());
+
+        // 关闭连接。状态码为 UNEXPECTED_CONDITION（意料之外的异常）
+        this.session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, throwable.getMessage()));
+    }
+}
 		]]>
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>注册端点</title>
+		<para>创建 WebSocketConfiguration 配置文件，</para>
 		<programlisting>
 		<![CDATA[
-		
+package cn.aigcsst.config;
+
+import cn.aigcsst.controller.websocket.EchoServerEndpoint;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
+
+@Configuration
+public class WebSocketConfiguration {
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+
+        ServerEndpointExporter exporter = new ServerEndpointExporter();
+
+        // 手动注册 WebSocket 端点
+        exporter.setAnnotatedEndpointClasses(EchoServerEndpoint.class);
+
+        return exporter;
+    }
+}
 		]]>
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>H5 测试</title>
 		<programlisting>
 		<![CDATA[
-		
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket</title>
+</head>
+<body>
+<script type="text/javascript">
+    let websocket = new WebSocket("ws://localhost:8080/test/websocket/echo");
+
+    // 连接断开
+    websocket.onclose = e => {
+        console.log(`连接关闭: code=${e.code}, reason=${e.reason}`)
+    }
+    // 收到消息
+    websocket.onmessage = e => {
+        console.log(`收到消息：${e.data}`);
+    }
+    // 异常
+    websocket.onerror = e => {
+        console.log("连接异常")
+        console.error(e)
+    }
+    // 连接打开
+    websocket.onopen = e => {
+        console.log("连接打开");
+
+        // 创建连接后，往服务器连续写入一条消息
+        websocket.send("www.netkiller.cn");
+
+        // 最后发送 bye，由服务器断开连接
+        websocket.send("bye");
+
+        // 也可以由客户端主动断开
+        // websocket.close();
+    }
+</script>
+</body>
+</html>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+2024-08-11 08:21:17.100  INFO  --- [tomcat-handler-0] c.a.c.websocket.EchoServerEndpoint       : [websocket] 建立连接：session=0 <- onOpen:23
+2024-08-11 08:21:17.102  INFO  --- [tomcat-handler-0] c.a.c.websocket.EchoServerEndpoint       : [websocket] 收到消息：session=0，message=www.netkiller.cn <- onMessage:30
+2024-08-11 08:21:17.107  INFO  --- [tomcat-handler-0] c.a.c.websocket.EchoServerEndpoint       : [websocket] 收到消息：session=0，message=bye <- onMessage:30
+2024-08-11 08:21:17.107  INFO  --- [tomcat-handler-0] c.a.c.websocket.EchoServerEndpoint       : [websocket] 连接断开：session=0，reason=CloseReason: code [1000], reason [Bye] <- onClose:45
 		]]>
 		</programlisting>
 	</section>
