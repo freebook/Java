@@ -531,7 +531,28 @@ picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg
 			]]>
 			</programlisting>
 		</section>
-
+		<section>
+			<title>Boolean 值</title>
+			<para>@RequestParam(value = "secondary", required = false, defaultValue = "false") Boolean secondary</para>
+			<programlisting>
+			<![CDATA[
+    @PostMapping("create/premium")
+    @TokenPass
+    public AigcResponse pictureBookPremium(@RequestParam("title") String title,
+                                           @RequestParam("backstory") String backstory,
+                                           @RequestParam(value = "character", required = false) String character,
+                                           @RequestParam(value = "sence", required = false) Integer sence,
+                                           @RequestParam(value = "storyline", required = false) String storyline,
+                                           @RequestParam(value = "style", required = false) String style,
+                                           @RequestParam(value = "voice", required = false) String voice,
+                                           @RequestParam(value = "secondary", required = false, defaultValue = "false") Boolean secondary
+    ) {
+        Optional<String> optional = pictureBookService.pictureBookPremium(title, backstory, character, sence, storyline, style, voice, secondary);
+        return optional.map(AigcResponse::new).orElseGet(() -> new AigcResponse(null));
+    }			
+			]]>
+			</programlisting>
+		</section>
 
 	</section>
 
