@@ -37,5 +37,36 @@ Paint.setTextSize(textSize)
 		</programlisting>
 	</section>
 	
-	
+	<section>
+		<title>矩形</title>
+		<programlisting>
+		<![CDATA[
+    Paint milestonesPaint = new Paint();
+    milestonesPaint.setStyle(Paint.Style.FILL);
+    milestonesPaint.setColor(Color.BLUE);
+
+    RectF rect = new RectF(startCoordinates.x + 5, startY + 5, startCoordinates.x + calendarFontSpacing - 5, stopY - 5);
+    canvas.drawRect(rect, milestonesPaint);		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>路径</title>
+		<para>下面用 Path 画一个菱形</para>
+		<programlisting>
+		<![CDATA[
+      Paint milestonesPaint = new Paint();
+      milestonesPaint.setStyle(Paint.Style.FILL);
+      milestonesPaint.setColor(Color.BLACK);
+
+      Path path = new Path();
+      path.moveTo(startCoordinates.x + calendarFontSpacing / 2, startY);
+      path.lineTo(startCoordinates.x + calendarFontSpacing, stopY - calendarFontSpacing / 2);
+      path.lineTo(startCoordinates.x + calendarFontSpacing / 2, stopY);
+      path.lineTo(startCoordinates.x, stopY - calendarFontSpacing / 2);
+      path.close();//封闭
+      canvas.drawPath(path, milestonesPaint);		
+		]]>
+		</programlisting>
+	</section>
 </chapter>
