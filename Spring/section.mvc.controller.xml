@@ -553,7 +553,18 @@ picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg
 			]]>
 			</programlisting>
 		</section>
-
+		<section>
+			<title>Optional 值</title>
+			<programlisting>
+			<![CDATA[
+@GetMapping("/api/foos")
+@ResponseBody
+public String getFoos(@RequestParam Optional<String> id){
+    return "ID: " + id.orElseGet(() -> "not provided");
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="@RequestHeader">
