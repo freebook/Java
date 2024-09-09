@@ -859,7 +859,7 @@ public class Test {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="Vector">
 		<title>Vector</title>
 		<programlisting>
 		<![CDATA[
@@ -895,7 +895,7 @@ public class VectorToArray {
 	</section>
 
 	<section id="set">
-		<title></title>
+		<title>Set</title>
 		<section>
 			<title>Set 初始化</title>
 			<programlisting>
