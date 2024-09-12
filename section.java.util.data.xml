@@ -1677,8 +1677,8 @@ SynchronousQueue ：基于 CAS 的阻塞队列。
 			</literallayout>
 
 		</section>
-		<section>
-			<title></title>
+		<section id="LinkedBlockingQueue">
+			<title>LinkedBlockingQueue</title>
 			<programlisting>
 			<![CDATA[
         LinkedBlockingQueue<Integer> sequence = new LinkedBlockingQueue<Integer>() {{

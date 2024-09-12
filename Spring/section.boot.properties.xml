@@ -4,10 +4,12 @@
 	<section id="application.properties">
 		<title>application.properties 配置文件</title>
 		<para>
-			<ulink url="https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html" />
+			<ulink
+				url="https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html" />
 		</para>
 		<para>
-			<ulink url="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html" />
+			<ulink
+				url="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html" />
 		</para>
 		<section id="faq.application.properties">
 			<title>application.properties 参考</title>
@@ -1465,7 +1467,8 @@ spring..mockmvc.print=default # MVC Print option.
 
 		<section id="spring.config.location">
 			<title>启动指定参数</title>
-			<para>配置资源文件位置，默认application.properties是放在jar包中的，通过spring.config.location可以制定外部配置文件，这样更便于运维。</para>
+			<para>配置资源文件位置，默认application.properties是放在jar包中的，通过spring.config.location可以制定外部配置文件，这样更便于运维。
+			</para>
 
 			<section>
 				<title>--spring.config.location 指定配置文件</title>
@@ -1700,7 +1703,9 @@ server.tomcat.max-threads=2048 # 最大线程数
 			</section>
 			<section id="server.tomcat.basedir">
 				<title>server.tomcat.basedir</title>
-				<para>设置 Tomcat 工作目录，默认 /tmp/tomcat-docbase.7057591687859485145.7000 通过下面配置修改</para>
+				<para>设置 Tomcat 工作目录，默认 /tmp/tomcat-docbase.7057591687859485145.7000
+					通过下面配置修改
+				</para>
 				<screen>
 			<![CDATA[
 server.tomcat.basedir=/tmp/your_project
@@ -1892,7 +1897,9 @@ spring.redis.jedis.pool.min-idle=0
 		</section>
 		<section id="datasource">
 			<title>datasource</title>
-			<para>启用/禁用 导入 schema.sql 和 data.sql / data-${platform}.sql 其中 platform 是 spring.datasource.platform 所定义的平台</para>
+			<para>启用/禁用 导入 schema.sql 和 data.sql / data-${platform}.sql 其中
+				platform 是 spring.datasource.platform 所定义的平台
+			</para>
 			<screen>
 				spring.datasource.initialize=false
 				spring.datasource.platform=MYSQL
@@ -1934,7 +1941,9 @@ spring.redis.jedis.pool.min-idle=0
 				security.headers.hsts
 				security.headers.xss
 			</screen>
-			<para> 参考 https://github.com/spring-projects/spring-boot/blob/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java#L171</para>
+			<para> 参考
+				https://github.com/spring-projects/spring-boot/blob/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java#L171
+			</para>
 		</section>
 		<section id="mvc">
 			<title>MVC 配置</title>
@@ -2057,7 +2066,9 @@ server.host=192.168.0.1,172.16.0.1
 
 		<section id="ConfigurationProperties">
 			<title>@EnableConfigurationProperties 引用自定义 *.properties 配置文件</title>
-			<para>Application.java 配置NetkillerProperties.java是 @ComponentScan 扫描范围，可以不用声明下面注解。</para>
+			<para>Application.java 配置NetkillerProperties.java是 @ComponentScan
+				扫描范围，可以不用声明下面注解。
+			</para>
 			<screen>
 			<![CDATA[
 @EnableConfigurationProperties(NetkillerProperties.class)	
@@ -2201,7 +2212,8 @@ netkiller.home=http://www.netkiller.cn
 			<para>@ConfigurationProperties 默认配置是 application.properties</para>
 			<para>你可以通过 locations 指向特定配置文件</para>
 			<screen>
-				@ConfigurationProperties(prefix = "message.api",locations = "classpath:config/message.properties")
+				@ConfigurationProperties(prefix = "message.api",locations =
+				"classpath:config/message.properties")
 			</screen>
 			<para>@EnableConfigurationProperties 可以导入多个配置文件</para>
 			<screen>
@@ -2348,7 +2360,10 @@ this.environment.containsProperty("spring.jpa.database-platform")
 	</section>
 	<section>
 		<title>手工载入 *.properties 文件</title>
-		<programlisting>
+		<section>
+			<title>家在 resources 目录中的指定文件</title>
+
+			<programlisting>
 			<![CDATA[
 	@RequestMapping("/config")
 	@ResponseBody
@@ -2365,7 +2380,27 @@ this.environment.containsProperty("spring.jpa.database-platform")
 		}
 	}	
 			]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>从 InputStreamReader 打开 application.properties</title>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/properties")
+    public String properties() {
+        Properties properties = new Properties();
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("application.properties")), StandardCharsets.UTF_8);
+            properties.load(inputStreamReader);
+            return properties.getProperty("app.id");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
+    }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section>
 		<title>命令行注入配置项</title>
@@ -2419,25 +2454,7 @@ SpringApplication.setAddCommandLineProperties(false)
 
 
 	</section>
-	<section>
-		<title></title>
-		<programlisting>
-			<![CDATA[
-    @GetMapping("/properties")
-    public String properties() {
-        Properties properties = new Properties();
-        try {
-            InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("application.properties")), StandardCharsets.UTF_8);
-            properties.load(inputStreamReader);
-            return properties.getProperty("app.id");
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return "";
-    }			
-			]]>
-		</programlisting>
-	</section>
+
 	<section id="PropertyResolver">
 		<title>PropertyResolver 获取配置</title>
 		<programlisting>
@@ -2635,9 +2652,9 @@ my.lists=aa;bb;cc;dd
 		]]>
 		</screen>
 	</section>
-	
 
-	
+
+
 
 	<section>
 		<title>List 列表类型</title>
@@ -2654,7 +2671,9 @@ netkiller.book[1].title=Netkiller Spring 手札
 netkiller.book[1].author=netkiller
 		]]>
 		</screen>
-		<para>注意：在Spring Boot 2.0中对于List类型数组下标的配置必须是连续的，否则会抛出UnboundConfigurationPropertiesException异常，所以如下配置是不允许的：</para>
+		<para>注意：在Spring Boot
+			2.0中对于List类型数组下标的配置必须是连续的，否则会抛出UnboundConfigurationPropertiesException异常，所以如下配置是不允许的：
+		</para>
 		<screen>
 		<![CDATA[
 foo[0]=a
