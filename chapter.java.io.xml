@@ -1181,4 +1181,210 @@ public class PngFile {
 			</section>
 		</section>
 	</section>
+	<section id="java.io.path">
+		<title>路径操作汇总</title>
+		<section>
+			<title>URI/相对/拒绝/路径/文件</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.io.File;
+
+public class Test {
+
+
+    public Test() {
+    }
+    
+    public static void main(String[] args) throws Exception {
+        String path = "src/java/resources";
+        File file = new File(path);
+        System.out.println("toURI: " + file.toURI());
+        System.out.println("toURL: " + file.toURI().toURL());
+
+        System.out.println("getParent: " + file.getParent());
+        System.out.println("getParentFile: " + file.getParentFile());
+
+        System.out.println("getAbsolutePath: " + file.getAbsolutePath());
+        System.out.println("getAbsoluteFile: " + file.getAbsoluteFile());
+
+        System.out.println("getCanonicalPath: " + file.getCanonicalPath());
+        System.out.println("getCanonicalFile: " + file.getCanonicalFile());
+
+        System.out.println("getPath: " + file.getPath());
+        System.out.println("getName: " + file.getName());
+
+        System.out.println("getFreeSpace: " + file.getFreeSpace());
+        System.out.println("getTotalSpace: " + file.getTotalSpace());
+        System.out.println("getUsableSpace: " + file.getUsableSpace());
+    }
+
+}
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+toURI: file:/Users/neo/workspace/watch/src/java/resources
+toURL: file:/Users/neo/workspace/watch/src/java/resources
+getParent: src/java
+getParentFile: src/java
+getAbsolutePath: /Users/neo/workspace/watch/src/java/resources
+getAbsoluteFile: /Users/neo/workspace/watch/src/java/resources
+getCanonicalPath: /Users/neo/workspace/watch/src/java/resources
+getCanonicalFile: /Users/neo/workspace/watch/src/java/resources
+getPath: src/java/resources
+getName: resources
+getFreeSpace: 0
+getTotalSpace: 0
+getUsableSpace: 0			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>URL 操作汇总</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.io.InputStream;
+import java.net.URL;
+
+public class Test {
+    public Test() {
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        URL url = new URL("https://neo:password@www.netkiller.cn/linux/index.html?id=1&cid=2#openssh");
+
+        System.out.println("getProtocol: " + url.getProtocol());
+        System.out.println("getUserInfo: " + url.getUserInfo());
+        System.out.println("getHost: " + url.getHost());
+        System.out.println("getDefaultPort: " + url.getDefaultPort());
+        System.out.println("getFile: " + url.getFile());
+
+        System.out.println("getPath: " + url.getPath());
+        System.out.println("getQuery: " + url.getQuery());
+        System.out.println("getRef: " + url.getRef());
+
+        System.out.println("getAuthority: " + url.getAuthority());
+        System.out.println("toExternalForm: " + url.toExternalForm());
+        System.out.println("toURI: " + url.toURI());
+
+        InputStream inputStream = (InputStream) url.getContent();
+        System.out.println("getContent: " + new String(inputStream.readAllBytes()));
+
+    }
+
+}
+			]]>
+			</programlisting>
+			<para>结果输出</para>
+			<screen>
+			<![CDATA[
+getProtocol: https
+getUserInfo: neo:password
+getHost: www.netkiller.cn
+getDefaultPort: 443
+getFile: /linux/index.html?id=1&cid=2
+getPath: /linux/index.html
+getQuery: id=1&cid=2
+getRef: openssh
+getAuthority: neo:password@www.netkiller.cn
+toExternalForm: https://neo:password@www.netkiller.cn/linux/index.html?id=1&cid=2#openssh
+toURI: https://neo:password@www.netkiller.cn/linux/index.html?id=1&cid=2#openssh
+getContent: <?xml version="1.0" encoding="UTF-8" standalone="no"?>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>nio 路径库</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class Test {
+    public Test() {
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        Path resourceDirectory = Paths.get("src", "main", "resources");
+        System.out.println("toURL: " + resourceDirectory.toUri().toURL());
+        System.out.println("getParent: " + resourceDirectory.getParent());
+        System.out.println("getFileName: " + resourceDirectory.getFileName());
+
+        System.out.println("-".repeat(20));
+
+        Path directory = Paths.get("src/java/resources");
+        System.out.println("toURL: " + directory.toUri().toURL());
+        System.out.println("getFileName: " + directory.getFileName());
+        System.out.println("getParent: " + directory.getParent());
+        System.out.println("getNameCount: " + directory.getNameCount());
+        System.out.println("getName: " + directory.getName(2));
+        System.out.println("getRoot: " + directory.getRoot());
+        System.out.println("getFileSystem: " + directory.getFileSystem().getSeparator());
+        System.out.println("toFile: " + directory.toFile());
+
+        System.out.println("-".repeat(20));
+
+        Path path = Path.of("src/java/resources", "netkiller.png");
+        System.out.println("getParent: " + path.getParent());
+    }
+
+}			
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+toURL: file:/Users/neo/workspace/watch/src/main/resources/
+getParent: src/main
+getFileName: resources
+--------------------
+toURL: file:/Users/neo/workspace/watch/src/java/resources
+getFileName: resources
+getParent: src/java
+getNameCount: 3
+getName: resources
+getRoot: null
+getFileSystem: /
+toFile: src/java/resources
+--------------------
+getParent: src/java/resources			
+			]]>
+			</screen>
+			<para>FileSystems 例子</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.nio.file.FileSystems;
+
+public class Test {
+    public Test() {
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        String baseUrl = FileSystems
+                .getDefault()
+                .getPath("src", "main", "resources")
+                .toUri()
+                .toURL()
+                .toString();
+
+        System.out.println("url: " + baseUrl);
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 </chapter>

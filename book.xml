@@ -84,7 +84,6 @@
 	<!-- &chapter.framework.xml; -->
 	&chapter.servlet.xml;	
 	&chapter.log.xml;
-	&chapter.json.xml;
 	&chapter.ampq.xml;
 	&chapter.nosql.mongodb.xml;
 	&chapter.elasticsearch.xml;
