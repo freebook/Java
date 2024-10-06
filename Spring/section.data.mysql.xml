@@ -5910,6 +5910,78 @@ public List<MyModel> getAllRecord();
 			</programlisting>
 
 		</section>
+		<section id="通过定义接口返回指定字段">
+			<title>通过定义接口，返回指定字段</title>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("discovery/group")
+//    @Deprecated(since = "v4.0.0", forRemoval = true)
+    public AigcResponse group(Pageable pageable) {
+        Page<DiscoveryPictureGroup> iterable = pictureGroupService.discoveryPictureGroup(pageable);
+        return new AigcResponse(iterable);
+    }			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import cn.netkiller.repository.PictureGroupRepository;
+import cn.netkiller.repository.model.DiscoveryPictureGroup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PictureGroupService {
+    @Autowired
+    private PictureGroupRepository pictureGroupRepository;
+
+    public Page<DiscoveryPictureGroup> discoveryPictureGroup(Pageable pageable) {
+        return pictureGroupRepository.discoveryPictureGroup(pageable);//        UpIsNotNull
+    }
+}
+
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository;
+
+import cn.netkiller.domain.story.PictureGroup;
+import cn.netkiller.repository.model.DiscoveryPictureGroup;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface PictureGroupRepository extends CrudRepository<PictureGroup, Integer> {
+    Page<PictureGroup> findByOrderByUpDescIdDesc(Pageable pageable);
+
+    @Query(value = "select pg.id, pg.name, p.thumbnail,pg.up from picture_group pg, picture p where pg.id = p.picture_group_id group by pg.id order by pg.up desc, pg.id desc", nativeQuery = true)
+    Page<DiscoveryPictureGroup> discoveryPictureGroup(Pageable pageable);
+
+}
+			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository.model;
+
+public interface DiscoveryPictureGroup {
+    Integer getId();
+    String getName();
+    String getThumbnail();
+    Integer getUp();
+}
+			
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>@Query 与 @ManyToOne</title>
 			<programlisting>
