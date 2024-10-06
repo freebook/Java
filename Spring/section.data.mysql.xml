@@ -5983,6 +5983,28 @@ public interface DiscoveryPictureGroup {
 			</programlisting>
 		</section>
 		<section>
+			<title>修改返回数据</title>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("discovery/group")
+//    @Deprecated(since = "v4.0.0", forRemoval = true)
+    public AigcResponse group(Pageable pageable) {
+
+        Page<Map<String, Object>> page = pictureGroupService.discoveryPictureGroup(pageable);
+        List<Map<String, Object>> newList = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> contents = page.getContent();
+        contents.forEach(content -> {
+            Map<String, Object> map = new HashMap<String, Object>(content);
+            map.put("thumbnail", url.concat((String) map.get("thumbnail")));
+            newList.add(map);
+        });
+        Page<Map<String, Object>> newPage = new PageImpl<>(newList, pageable, page.getTotalElements());
+
+        return new AigcResponse(newPage);
+    }			
+			]]>
+			</programlisting>
+		<section>
 			<title>@Query 与 @ManyToOne</title>
 			<programlisting>
 			<![CDATA[
@@ -7164,6 +7186,29 @@ JDBC exception executing SQL [select p1_0.id,p1_0.audio,p1_0.audit,p1_0.bmp,p1_0
 			
 	SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
     SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>A TupleBackedMap cannot be modified</title>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("discovery/group")
+//    @Deprecated(since = "v4.0.0", forRemoval = true)
+    public AigcResponse group(Pageable pageable) {
+
+        Page<Map<String, Object>> page = pictureGroupService.discoveryPictureGroup(pageable);
+        List<Map<String, Object>> newList = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> contents = page.getContent();
+        contents.forEach(content -> {
+            Map<String, Object> map = new HashMap<String, Object>(content);
+            map.put("thumbnail", url.concat((String) map.get("thumbnail")));
+            newList.add(map);
+        });
+        Page<Map<String, Object>> newPage = new PageImpl<>(newList, pageable, page.getTotalElements());
+
+        return new AigcResponse(newPage);
+    }			
 			]]>
 			</programlisting>
 		</section>
