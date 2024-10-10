@@ -70,6 +70,30 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
         builder.create().show();		
 		]]>
 		</programlisting>
+		<section>
+			<title>只要确认按钮，不要取消按钮</title>
+			<programlisting>
+			<![CDATA[
+				//通过AlertDialog.Builder创建出一个AlertDialog的实例
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                dialog.setTitle("修改用户信息");//设置对话框的标题
+                dialog.setMessage("您的提交已经收到，正在审核中，请耐心等待。");//设置对话框的内容
+                dialog.setCancelable(false);//设置对话框是否可以取消
+                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {//确定按钮的点击事件
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, new MeFullscreenFragment()).commit();
+                    }
+                });
+//                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {//取消按钮的点击事件
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+                dialog.show();//显示对话框			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="DatePicker">
 		<title>DatePicker</title>
