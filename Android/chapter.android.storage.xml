@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="storage" ?>
 	<title>存储</title>
+	
 	<section>
+		<title>获得存储目录</title>
+		<section>
+			<title>公共存储目录</title>
+			<screen>
+			<![CDATA[
+Log.d(TAG, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
+Log.d(TAG, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString());
+            		
+/storage/emulated/0/Pictures
+
+/storage/emulated/0/Android/data/cn.netkiller.album.education/files/Pictures		
+			]]>
+			</screen>
+			<para>公共存储目录不会因为APP卸载而删除</para>
+			<programlisting>
+		<![CDATA[
+Environment.getExternalStorageDirectory():                     /storage/emulated/0
+Environment.getExternalStoragePublicDirectory(""):             /storage/emulated/0
+Environment.getExternalStoragePublicDirectory("test"):         /storage/emulated/0/test
+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)：  /storage/emulated/0/Pictures		
+		]]>
+			</programlisting>
+		</section>
+		<section>
 		<title>内部存储</title>
 		<programlisting>
 		<![CDATA[
@@ -25,7 +50,7 @@ Context.getExternalFilesDir("test"):                     /storage/emulated/0/And
 Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES):    /storage/emulated/0/Android/data/cn.netkiller.test/files/Pictures		
 		]]>
 		</programlisting>
-	</section>	
+	</section>
 	<section>
 		<title>文件夹类型</title>
 		<screen>
@@ -41,27 +66,6 @@ public static String DIRECTORY_DOCUMENTS = "Documents";
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>获得存储目录</title>
-		<screen>
-		<![CDATA[
-Log.d(TAG, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
-Log.d(TAG, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString());
-            		
-/storage/emulated/0/Pictures
-
-/storage/emulated/0/Android/data/cn.netkiller.album.education/files/Pictures		
-		]]>
-		</screen>
-		<para>公共存储目录</para>
-		<programlisting>
-		<![CDATA[
-Environment.getExternalStorageDirectory():                     /storage/emulated/0
-Environment.getExternalStoragePublicDirectory(""):             /storage/emulated/0
-Environment.getExternalStoragePublicDirectory("test"):         /storage/emulated/0/test
-Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)：  /storage/emulated/0/Pictures		
-		]]>
-		</programlisting>
 	</section>
 	<section>
 		<title>FileProvider 配置</title>
@@ -112,13 +116,15 @@ Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)：
 		
 		]]>
 		</programlisting>
-		
+
 	</section>
 	<section id="SharedPreferences">
 		<title>SharedPreferences</title>
 
 		<para>SharedPreferences是Android中的数据存储技术，常用来存储一些轻量级的数据。</para>
-		<para>实际上SharedPreferences是 NoSQL 数据库，用于处理的key-value键值对存储，类似Windows 系统的注册表，Linux 系统里的 Berkeley DB (bdb) 以及衍生出的 dba,mdb 这类 hash 表数据库。</para>
+		<para>实际上SharedPreferences是 NoSQL 数据库，用于处理的key-value键值对存储，类似Windows
+			系统的注册表，Linux 系统里的 Berkeley DB (bdb) 以及衍生出的 dba,mdb 这类 hash 表数据库。
+		</para>
 		<section id="SharedPreferences.Mode">
 			<title>操作模式</title>
 			<programlisting>
@@ -329,6 +335,7 @@ File xmlFile = new File("/data/data/<package name>/shared_prefs/<name>.xml");
 			</programlisting>
 		</section>
 	</section>
+	&section.android.download.xml;
 	<section>
 		<title>android.os.FileUriExposedException</title>
 		<para>下载 apk 文件，抛出 android.os.FileUriExposedException 异常</para>

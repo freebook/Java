@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.schedule">
+<chapter id="index"><?dbhtml dir="schedule" ?>
 	<title>Schedule 计划任务</title>
 	<section id="延迟执行">
 		<title>延迟执行</title>

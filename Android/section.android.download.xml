@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.download">
+<section id="android.download">
 	<title>下载管理</title>
 	<section>
 		<title>从 URL 下来文件</title>
@@ -124,4 +124,4 @@ fun installApk(apkPath: Uri?) {
 		</programlisting>
 	</section>
 	
-</chapter>
+</section>

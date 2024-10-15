@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="android.resources">
+<chapter id="index"><?dbhtml dir="resources" ?>
 	<title>Resources</title>
 	<section>
 		<title>strings.xml</title>
