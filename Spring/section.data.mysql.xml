@@ -3841,7 +3841,9 @@ private List<Student> studentList;
 		</section>
 		<section id="@JsonIgnoreProperties">
 			<title>@JsonIgnoreProperties</title>
-			<para>当使用 @OneToMany 与 @ManyToOne 相互引用时，你会发现产生了循环调用，此时可以使用 @JsonIgnoreProperties 避免出现循环，此时加入 @Transient 或 @JsonIgnore 注解可以解决，但要该字段就没有外键数据了。</para> 
+			<para>当使用 @OneToMany 与 @ManyToOne 相互引用时，你会发现产生了循环调用，此时可以使用
+				@JsonIgnoreProperties 避免出现循环，此时加入 @Transient 或 @JsonIgnore
+				注解可以解决，但要该字段就没有外键数据了。</para>
 			<programlisting>
 			<![CDATA[
 @Entity
@@ -4074,7 +4076,8 @@ CREATE TABLE `picture` (
 		<section>
 			<title>只要外键，不要数据结构</title>
 			<para>@ManyToOne 关系 PictureGroup 加载后会出很多数据，在网上传输比较占用带宽，我们要精简 JSON
-				数据，实现的方式是讲 pictureGroup 影射给 groupId</para>
+				数据，实现的方式是讲 pictureGroup 影射给 groupId
+			</para>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.domain.story;
@@ -6004,9 +6007,9 @@ public interface DiscoveryPictureGroup {
     }			
 			]]>
 			</programlisting>
-		<section>
-			<title>@Query 与 @ManyToOne</title>
-			<programlisting>
+			<section>
+				<title>@Query 与 @ManyToOne</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.domain;
 
@@ -6045,9 +6048,9 @@ public class Follow implements Serializable {
 }
 			
 			]]>
-			</programlisting>
+				</programlisting>
 
-			<programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.domain;
 
@@ -6128,9 +6131,9 @@ public class Consumer implements Serializable {
 }
 			
 			]]>
-			</programlisting>
+				</programlisting>
 
-			<programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.service;
 
@@ -6196,8 +6199,8 @@ public class FollowService {
 }
 			
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.controller;
 
@@ -6235,8 +6238,8 @@ public class FollowController {
     }
 }			
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.repository;
 
@@ -6265,56 +6268,56 @@ public interface FollowRepository extends CrudRepository<Follow, Integer> {
     void followByFollowerAndFollowed(Integer follower, Integer followed);
 }			
 			]]>
-			</programlisting>
-			<para>原生写法：@Query(value = "DELETE FROM Follow WHERE
-				follower=:follower and followed=:followed", nativeQuery = true)
-			</para>
-			<para>JPQL写法：@Query(value = "DELETE FROM Follow WHERE
-				follower.id=:follower and followed.id=:followed")
-			</para>
-			<para>两种写法结果相同</para>
-		</section>
-		<section id="Query.Collection">
-			<title>Collection</title>
-			<para>返回集合</para>
-			<programlisting>
+				</programlisting>
+				<para>原生写法：@Query(value = "DELETE FROM Follow WHERE
+					follower=:follower and followed=:followed", nativeQuery = true)
+				</para>
+				<para>JPQL写法：@Query(value = "DELETE FROM Follow WHERE
+					follower.id=:follower and followed.id=:followed")
+				</para>
+				<para>两种写法结果相同</para>
+			</section>
+			<section id="Query.Collection">
+				<title>Collection</title>
+				<para>返回集合</para>
+				<programlisting>
 				<![CDATA[
 @Query("SELECT u FROM User u WHERE u.status = 1")
 Collection<User> findAllActiveUsers();				
 				]]>
-			</programlisting>
-			<para>处理子查询 IN</para>
-			<programlisting>
+				</programlisting>
+				<para>处理子查询 IN</para>
+				<programlisting>
 			<![CDATA[
 @Query(value = "SELECT u FROM User u WHERE u.name IN :names")
 List<User> findUserByNameList(@Param("names") Collection<String> names);			
 			]]>
-			</programlisting>
-		</section>
+				</programlisting>
+			</section>
 
-		<section id="Sort">
-			<title>Sort</title>
-			<programlisting>
+			<section id="Sort">
+				<title>Sort</title>
+				<programlisting>
 		<![CDATA[
 	@Query(value = "SELECT u FROM User u")
 	List<User> findAllUsers(Sort sort);		
 		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>更新数据，返回值</title>
-			<para>返回 0 表示更新失败，返回 1 表示更新成功</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>更新数据，返回值</title>
+				<para>返回 0 表示更新失败，返回 1 表示更新成功</para>
+				<programlisting>
 			<![CDATA[
     @Query("UPDATE Picture SET share = :status WHERE id=:id")
     @Modifying
     int updateShareStatus(@Param("id") Long id, @Param("status") boolean status);
 			]]>
-			</programlisting>
-		</section>
-		<section id="@Lock">
-			<title>锁 @Lock</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="@Lock">
+				<title>锁 @Lock</title>
+				<programlisting>
 			<![CDATA[
 interface UserRepository extends Repository<User, Long> {
 
@@ -6322,11 +6325,11 @@ interface UserRepository extends Repository<User, Long> {
   @Lock(LockModeType.READ)
   List<User> findByLastname(String lastname);			
 			]]>
-			</programlisting>
-		</section>
-		<section id="JPQL.SUM">
-			<title>Sum 求和</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section id="JPQL.SUM">
+				<title>Sum 求和</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller.repository;
 
@@ -6351,8 +6354,8 @@ public interface PictureClickRepository extends CrudRepository<PictureClick, Int
     public BigDecimal total();	
 }	
 			]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 			<![CDATA[
     @Query("SELECT SUM(favorites) AS favorites, SUM(likes) AS likes FROM PictureClick WHERE device.id = :deviceId")
     Optional<List<Integer[]>> query(@Param("deviceId") Integer deviceId);
@@ -6360,21 +6363,21 @@ public interface PictureClickRepository extends CrudRepository<PictureClick, Int
     @Query("SELECT new map(SUM(favorites) AS favorites, SUM(likes) AS likes) FROM PictureClick WHERE device.id = :deviceId")
     Optional<Map<String, Integer>> query(@Param("deviceId") Integer deviceId);
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>IFNULL</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>IFNULL</title>
+				<programlisting>
 			<![CDATA[
     @Query("SELECT new map(IFNULL(SUM(favorites),0) AS favorites, IFNULL(SUM(likes),0) AS likes) FROM PictureClick WHERE device.id = :deviceId")
     Optional<Map<String, Integer>> query(@Param("deviceId") Integer deviceId);
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section>
-	<section id="@Transactional">
-		<title>事务 @Transactional</title>
-		<literallayout>
+		<section id="@Transactional">
+			<title>事务 @Transactional</title>
+			<literallayout>
 			<![CDATA[
 下面介绍一下@Transactional注解的参数以及使用：
 
@@ -6406,11 +6409,11 @@ public interface PictureClickRepository extends CrudRepository<PictureClick, Int
 Spring团队的建议是你在具体的类（或类的方法）上使用 @Transactional 注解，而不要使用在类所要实现的任何接口上。你当然可以在接口上使用 @Transactional 注解，但是这将只能当你设置了基于接口的代理时它才生效。因为注解是不能继承的，这就意味着如果你正在使用基于类的代理时，那么事务的设置将不能被基于类的代理所识别，而且对象也将不会被事务代理所包装（将被确认为严重的）。因此，请接受Spring团队的建议并且在具体的类上使用 @Transactional 注解。			
 
 			]]>
-		</literallayout>
-		<section>
-			<title>save() 不需要开启 @Transactional </title>
-			<para>在SimpleJpaRepository中save()已经帮我们实现</para>
-			<programlisting>
+			</literallayout>
+			<section>
+				<title>save() 不需要开启 @Transactional </title>
+				<para>在SimpleJpaRepository中save()已经帮我们实现</para>
+				<programlisting>
 					<![CDATA[
 @Repository
 @Transactional(readOnly = true)
@@ -6666,27 +6669,27 @@ public class SimpleJpaRepository<T, ID> implements JpaRepositoryImplementation<T
     //......
 }			
 					]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>SERIALIZABLE</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>SERIALIZABLE</title>
+				<programlisting>
 					<![CDATA[
 @Transactional(isolation = Isolation.SERIALIZABLE)					
 					]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>readOnly</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>readOnly</title>
+				<programlisting>
 					<![CDATA[
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)			
 					]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>删除更新需要 @Transactional 注解</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>删除更新需要 @Transactional 注解</title>
+				<programlisting>
 				<![CDATA[
 package cn.netkiller.api.repository;
 
@@ -6723,11 +6726,11 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Intege
 
 }				
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>回滚操作</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>回滚操作</title>
+				<programlisting>
 				<![CDATA[
 	// 指定Exception回滚
 	@Transactional(rollbackFor=Exception.class)
@@ -6743,8 +6746,8 @@ public interface RecentReadRepostitory extends CrudRepository<RecentRead, Intege
         throw new RuntimeException("注释");
     }
 				]]>
-			</programlisting>
-			<programlisting>
+				</programlisting>
+				<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6773,13 +6776,13 @@ public class UserService {
 }
 				
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>private、default、protected 和 final 不支持事物 </title>
-			<para>@Transactional 必须与 public 一起使用，不能定义为 private、default、protected
-			</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>private、default、protected 和 final 不支持事物 </title>
+				<para>@Transactional 必须与 public 一起使用，不能定义为 private、default、protected
+				</para>
+				<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6789,12 +6792,12 @@ public class UserService {
     }
 }
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Service 注意事项</title>
-			<para>this 调用不支持事物</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>Service 注意事项</title>
+				<para>this 调用不支持事物</para>
+				<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6814,9 +6817,9 @@ public class UserService {
     }
 }				
 				]]>
-			</programlisting>
-			<para>解决方案</para>
-			<programlisting>
+				</programlisting>
+				<para>解决方案</para>
+				<programlisting>
 				<![CDATA[
 @Servcie
 public class UserService {
@@ -6838,14 +6841,14 @@ public class UserService {
 
 }				
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>需要 @Service 注解配合使用</title>
-			<para>@Transactional 需要在 @Controller、@Service、@Component、@Repository
-				等注解下才能使用
-			</para>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>需要 @Service 注解配合使用</title>
+				<para>@Transactional 需要在 @Controller、@Service、@Component、@Repository
+					等注解下才能使用
+				</para>
+				<programlisting>
 				<![CDATA[
 // @Servcie
 public class UserService {
@@ -6858,9 +6861,9 @@ public class UserService {
 	}
 }				
 				]]>
-			</programlisting>
-			<para>屏蔽 @Servcie 后观察 save 的 @Transactional 是不生效的。</para>
-			<programlisting>
+				</programlisting>
+				<para>屏蔽 @Servcie 后观察 save 的 @Transactional 是不生效的。</para>
+				<programlisting>
 				<![CDATA[
 @Service
 public class UserService {
@@ -6889,11 +6892,11 @@ public class RoleService {
     }
 }				
 				]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>事务回滚</title>
-			<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>事务回滚</title>
+				<programlisting>
 				<![CDATA[
     @Transactional
     public void test(SysConfigEntity entity) throws Exception {
@@ -6932,7 +6935,8 @@ public class RoleService {
         this.saveSysConfig(entity);
     }			
 				]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
 	</section>
 	<section id="jpa.mysql.faq">
@@ -7115,7 +7119,8 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
 		</section>
 		<section>
 			<title>could not initialize proxy [cn.netkiller.domain.Device#16] -
-				no Session </title>
+				no Session
+			</title>
 			<para>第一种解决方法，捕捉 LazyInitializationException 异常</para>
 			<programlisting>
 			<![CDATA[
