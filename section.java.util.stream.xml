@@ -44,6 +44,32 @@ numbers.stream().map( i -> i*i).forEach(System.out::println);
 		]]>
 		</programlisting>
 	</section>
+	<section id="stream.peek">
+		<title>peek 打印调试信息</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+
+import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@Data
+public class Test {
+    public static void main(String[] args) throws IOException {
+        Stream.of("one", "two", "three", "four").filter(e -> e.length() > 3)
+                .peek(e -> System.out.println("Before value: " + e))
+                .map(String::toUpperCase)
+                .peek(e -> System.out.println("After value: " + e))
+                .collect(Collectors.toList());
+    }
+}
+	
+		]]>
+		</programlisting>
+	</section>
 	<section id="stream.limit">
 		<title>limit/skip</title>
 		<para>limit 返回 Stream 的前面 n 个元素；skip 则是扔掉前 n 个元素。以下代码片段使用 limit

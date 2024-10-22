@@ -37,10 +37,32 @@ if (!dirname.isDirectory())
 			]]>
 			</programlisting>
 		</section>
-	</section>
-	<section id="File.createTempFile">
-		<title>临时文件</title>
-		<programlisting>
+		<section>
+			<title>文件删除</title>
+			<programlisting>
+			<![CDATA[
+    public static boolean delete(String pathname) {
+        boolean status = false;
+        File file = new File(pathname);
+        if (file.isFile() && file.exists()) {
+            status = file.delete();
+        }
+        return status;
+    }			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    public static void deleteOnExit(String pathname) {
+        File file = new File(pathname);
+        file.deleteOnExit();
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section id="File.createTempFile">
+			<title>临时文件</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.file;
 
@@ -68,10 +90,12 @@ public class CreateTempFileExample
     }
 }
 		]]>
-		</programlisting>
-		<para>Temp file : C:\Users\neo\AppData\Local\Temp\temp-file-name623426.tmp</para>
-		<para>指定目录创建临时文件，运行之后将会在 /tmp/convert 目录中创建文件</para>
-		<programlisting>
+			</programlisting>
+			<para>Temp file :
+				C:\Users\neo\AppData\Local\Temp\temp-file-name623426.tmp
+			</para>
+			<para>指定目录创建临时文件，运行之后将会在 /tmp/convert 目录中创建文件</para>
+			<programlisting>
 		<![CDATA[
 	@SneakyThrows
     public InputStream convertInputStreamAmrToPcm(InputStream inputStreamAmr) {
@@ -100,8 +124,10 @@ public class CreateTempFileExample
         return inputStream;
     }		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
+	
 	<section id="java.io.FileWriter">
 		<title>FileWriter 文本写入文件</title>
 		<programlisting>
@@ -130,6 +156,76 @@ public class Main {
 
 		</programlisting>
 	</section>
+	<section id="java.nio.file">
+		<title>Files</title>
+		<section>
+			<title>删除文件</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class FileDirectory {
+    public static void main(String[] args) throws IOException {
+        //如果文件不存在，抛出NoSuchFileException
+        //如果文件夹里面包含文件，抛出DirectoryNotEmptyException
+        Path path = Paths.get("D:\\data\test");
+        Files.delete(path);   //返回值void
+        
+    }
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    //如果文件不存在，返回false，表示删除失败(文件不存在)
+	//如果文件夹里面包含文件，抛出DirectoryNotEmptyException
+    private static void deleteIfExists() throws IOException {
+        Path path = Paths.get("D:\data\test1");
+        boolean result = Files.deleteIfExists(path);
+        System.out.println(result);
+    }
+
+    private static void deleteDirectoryStream(Path path) {
+        try {
+            Files.delete(path);
+            System.out.printf("删除文件成功：%s%n",path.toString());
+        } catch (IOException e) {
+            System.err.printf("无法删除的路径 %s%n%s", path, e);
+        }
+    }
+    
+    // 递归删除目录，使用Files.walk遍历文件夹，然后返回 Stream<Path>，接着递归调用删除目录方法
+    private static void testDeleteFileDir6() throws IOException {
+        createMoreFiles();
+        Path path = Paths.get("D:\data\");
+
+        try (Stream<Path> walk = Files.walk(path)) {
+            walk.sorted(Comparator.reverseOrder())
+                    .forEach(DeleteFileDir::deleteDirectoryStream);
+        }
+
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>创建目录和文件</title>
+			<programlisting>
+			<![CDATA[
+    private  void createMoreFiles() throws IOException {
+        Files.createDirectories(Paths.get("D:\data\test1\test2\test3\test4\test5\"));
+        Files.write(Paths.get("D:\data\test1\test2\test2.log"), "hello".getBytes());
+        Files.write(Paths.get("D:\data\test1\test2\test3\test3.log"), "hello".getBytes());
+    }			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="BufferedWriter">
 		<title>BufferedWriter</title>
 		<programlisting>
@@ -149,37 +245,8 @@ public class Main {
 		]]>
 		</programlisting>
 	</section>
-	<section id="inputStream.transferTo()">
-		<title>inputStream.transferTo()</title>
-		<screen>
-		<![CDATA[
 
-var classLoader = ClassLoader.getSystemClassLoader();
-var inputStream = classLoader.getResourceAsStream("hello.txt");
-var tmp = File.createTempFile("tmp", "txt");
-try (var outputStream = new FileOutputStream(tmp)) {
-    inputStream.transferTo(outputStream);
-}
-		]]>
-		</screen>
-	</section>
-	<section id="InputStreamReader">
-		<title>InputStreamReader</title>
-		<programlisting>
-		<![CDATA[
-InputStreamReader stream = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));		
-		]]>
-		</programlisting>
-	</section>
-	<section id="resources.path">
-		<title>获得 Resource 下文件路径</title>
-		<programlisting>
-		<![CDATA[
-String path = Main.class.getClassLoader().getResource("netkiller-config.yaml").getPath();
-String path = Main.class.getClassLoader().getResource("netkiller-config.yaml").getPath();
-		]]>
-		</programlisting>
-	</section>
+
 	<section id="PrintWriter">
 		<title>PrintWriter</title>
 		<programlisting>
@@ -206,17 +273,7 @@ public class PrintWriterTest {
 		]]>
 		</programlisting>
 	</section>
-	<section id="OutputStreamWriter">
-		<title>OutputStreamWriter</title>
-		<programlisting>
-		<![CDATA[
-		File file = new File("/tmp" + File.separator + "netkiller.txt");
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
-		outputStreamWriter.write("Netkiller Java 手札");
-		outputStreamWriter.close();		
-		]]>
-		</programlisting>
-	</section>
+
 	<section id="FileOutputStream">
 		<title>FileOutputStream</title>
 		<programlisting>
@@ -229,6 +286,17 @@ fos.flush();
 fos.close();		
 		]]>
 		</programlisting>
+		<section id="OutputStreamWriter">
+			<title>OutputStreamWriter</title>
+			<programlisting>
+		<![CDATA[
+		File file = new File("/tmp" + File.separator + "netkiller.txt");
+		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
+		outputStreamWriter.write("Netkiller Java 手札");
+		outputStreamWriter.close();		
+		]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="FileInputStream">
 		<title>FileInputStream</title>
@@ -241,6 +309,28 @@ fis.read(data, 0, data.length);
 fis.close();		
 		]]>
 		</programlisting>
+		<section id="InputStreamReader">
+			<title>InputStreamReader</title>
+			<programlisting>
+		<![CDATA[
+InputStreamReader stream = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));		
+		]]>
+			</programlisting>
+		</section>
+		<section id="inputStream.transferTo()">
+			<title>inputStream.transferTo()</title>
+			<screen>
+		<![CDATA[
+
+var classLoader = ClassLoader.getSystemClassLoader();
+var inputStream = classLoader.getResourceAsStream("hello.txt");
+var tmp = File.createTempFile("tmp", "txt");
+try (var outputStream = new FileOutputStream(tmp)) {
+    inputStream.transferTo(outputStream);
+}
+		]]>
+			</screen>
+		</section>
 	</section>
 	<section id="java.util.Scanner">
 		<title>Scanner</title>
@@ -301,7 +391,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -b netkiller.bin
 00000000: 00000000 00000000 00000000 00000001                    ....			
 			]]>
 			</screen>
-			<para>可以看到一串二进制 00000000 00000000 00000000 00000001，运行下面程序可以讲二进制转换为十进制，注意替换掉空格。</para>
+			<para>可以看到一串二进制 00000000 00000000 00000000
+				00000001，运行下面程序可以讲二进制转换为十进制，注意替换掉空格。</para>
 			<programlisting>
 			<![CDATA[
 		int n = Integer.valueOf("00000000 00000000 00000000 00000001".replaceAll(" ", ""), 2);
@@ -341,7 +432,9 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -b netkiller.bin
 		System.out.println(Integer.MAX_VALUE + 1);			
 			]]>
 			</programlisting>
-			<para>输出结果是 -2147483648，正确应该是 2147483648 这就是整形溢出。整形变量得二进制表示方法是4个字节长度32位 00000000 00000000 00000000 00000000 到 01111111 11111111 11111111 11111111 ， 其中第一位0表示正数1表示负数。</para>
+			<para>输出结果是 -2147483648，正确应该是 2147483648
+				这就是整形溢出。整形变量得二进制表示方法是4个字节长度32位 00000000 00000000 00000000 00000000 到
+				01111111 11111111 11111111 11111111 ， 其中第一位0表示正数1表示负数。</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -b netkiller.bin
@@ -429,7 +522,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
 00000000: 00000001   			
 			]]>
 			</screen>
-			<para>如果写入 -1 结果是，由此得出 第一位 0 是正数，1 是负数，可以得出他的取值范围 -128 ~ 127。超出范围也会溢出。</para>
+			<para>如果写入 -1 结果是，由此得出 第一位 0 是正数，1 是负数，可以得出他的取值范围 -128 ~
+				127。超出范围也会溢出。</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
@@ -489,7 +583,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 00000010: 01101100 01101100 01100101 01110010 00101110 01100011 01101110           ller.cn			
 			]]>
 			</screen>
-			<para>读取二进制文件中的 byte 字符串，readAllBytes() 可以一次读取所有 byte 到 byte[] 中。</para>
+			<para>读取二进制文件中的 byte 字符串，readAllBytes() 可以一次读取所有 byte 到 byte[] 中。
+			</para>
 			<programlisting>
 			<![CDATA[
 		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)));
@@ -521,7 +616,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 		}			
 			]]>
 			</programlisting>
-			<para>现在我们已经掌握了 byte 的操作方法，现在我们来做一个例子，读取 int 数据，int 是由 4 个字节组成一组。所以我们每次取 4个字节。</para>
+			<para>现在我们已经掌握了 byte 的操作方法，现在我们来做一个例子，读取 int 数据，int 是由 4
+				个字节组成一组。所以我们每次取 4个字节。</para>
 			<programlisting>
 			<![CDATA[
 		// 这个例子中，我们写入三个数值到 netkiller.bin 文件，分别是 1024，-128，2147483647
@@ -577,7 +673,9 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
 		out.close();			
 			]]>
 			</programlisting>
-			<para>运行结果可以看出 boolean 使用了一个字节，最后一位 1 表示true, 0 表示 false。所以对于二进制文件最小单位就是 byte 字节，虽然boolean型只需要一个 1 bit 位，但是存储的最小单位是字节，所以前面需要补7个零 0000000。</para>
+			<para>运行结果可以看出 boolean 使用了一个字节，最后一位 1 表示true, 0 表示
+				false。所以对于二进制文件最小单位就是 byte 字节，虽然boolean型只需要一个 1 bit
+				位，但是存储的最小单位是字节，所以前面需要补7个零 0000000。</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 1 -b netkiller.bin
@@ -615,7 +713,8 @@ neo@MacBook-Pro ~/workspace/netkiller % ll netkiller.bin
 		out.close();			
 			]]>
 			</programlisting>
-			<para>有了上面 int 型数据的经验，下面一看你就会明白。long 型采用 8 个字节保存数据，是 int 的一倍。取值范围这里就不多说了，也会存在溢出现象。</para>
+			<para>有了上面 int 型数据的经验，下面一看你就会明白。long 型采用 8 个字节保存数据，是 int
+				的一倍。取值范围这里就不多说了，也会存在溢出现象。</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
@@ -659,7 +758,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 			<title>char 类型</title>
 			<para>有符号 signed char 类型的范围为 -128~127</para>
 			<para>无符号 unsigned char 的范围为0~ 255</para>
-			<para>char 与 byte 操作类似，我们首先去 ASCII 表查找字符 A 对应 65，我们将 65 写入二进制文件。然后读取该字符，输出结果是 A。</para>
+			<para>char 与 byte 操作类似，我们首先去 ASCII 表查找字符 A 对应 65，我们将 65
+				写入二进制文件。然后读取该字符，输出结果是 A。</para>
 			<programlisting>
 			<![CDATA[
 		String filename = "netkiller.bin";
@@ -709,7 +809,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 2 -b netkiller.bin
 
 			]]>
 			</programlisting>
-			<para>二进制文件如下，你会发现第一个字节没有用到，很多 00000000 所以如果存储英文 byte 更适合，char 是双倍 byte 开销。</para>
+			<para>二进制文件如下，你会发现第一个字节没有用到，很多 00000000 所以如果存储英文 byte 更适合，char 是双倍
+				byte 开销。</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin 
@@ -831,7 +932,8 @@ neo@MacBook-Pro ~/workspace/netkiller % hexdump netkiller.txt
 0000005					
 			]]>
 			</screen>
-			<para>我们在网上查询 “峰” 字的汉字内码，可以看到UTF-8 内码是 E5 B3 B0。这是因为UTF8使用三个字节存储汉字。 00000000 00000011 可能是 UTF 标志位，具体我也不太清楚，总之不是 BOM 信息。</para>
+			<para>我们在网上查询 “峰” 字的汉字内码，可以看到UTF-8 内码是 E5 B3 B0。这是因为UTF8使用三个字节存储汉字。
+				00000000 00000011 可能是 UTF 标志位，具体我也不太清楚，总之不是 BOM 信息。</para>
 			<para>我们现在写入一个字符串试试</para>
 			<programlisting>
 			<![CDATA[
@@ -947,7 +1049,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 2 -b netkiller.bin
 		}			
 			]]>
 			</programlisting>
-			<para>float 使用 4 字节 32 为表示浮点类型，float 不同于前面数据类型，无法直接读取浮点数，需要经过计算才能得出，有点复杂。</para>
+			<para>float 使用 4 字节 32 为表示浮点类型，float
+				不同于前面数据类型，无法直接读取浮点数，需要经过计算才能得出，有点复杂。</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
@@ -1092,7 +1195,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 		System.out.println(in.readUTF());		
 				]]>
 				</programlisting>
-				<para>需要注意的一点是 out.writeChars("陈景峰"); 写入char字符串，在读取的时候你需要知道字符串的长度。然后循环取出char数据。</para>
+				<para>需要注意的一点是 out.writeChars("陈景峰");
+					写入char字符串，在读取的时候你需要知道字符串的长度。然后循环取出char数据。</para>
 				<para>二进制文件内容</para>
 				<screen>
 				<![CDATA[
@@ -1183,6 +1287,15 @@ public class PngFile {
 	</section>
 	<section id="java.io.path">
 		<title>路径操作汇总</title>
+		<section id="resources.path">
+			<title>获得 Resource 下文件路径</title>
+			<programlisting>
+		<![CDATA[
+String path = Main.class.getClassLoader().getResource("netkiller-config.yaml").getPath();
+String path = Main.class.getClassLoader().getResource("netkiller-config.yaml").getPath();
+		]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>URI/相对/拒绝/路径/文件</title>
 			<programlisting>
@@ -1383,6 +1496,232 @@ public class Test {
     }
 
 }			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>遍历目录和文件</title>
+		<section>
+			<title>listFiles()</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.path;
+
+import lombok.Data;
+
+import java.io.File;
+import java.io.IOException;
+
+@Data
+public class FileDirectory {
+    public static void main(String[] args) throws IOException {
+//        String path = "D:\\TMP";/     //要遍历的路径 windows
+        String path = "/etc";        	//要遍历的路径 linux/mac
+        File file = new File(path);     //获取其file对象
+        listFiles(file);
+    }
+
+    private static void listFiles(File file) {
+        File[] files = file.listFiles();
+        if (files == null) return;
+        for (File f : files) {
+            if (f.isDirectory())    //若是目录，则递归打印该目录下的文件
+                listFiles(f);
+            if (f.isFile())         //若是文件，直接打印
+                System.out.println(f);
+        }
+    }
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    public static Set<String> listFilesStream(String dir) {
+        return Stream.of(Objects.requireNonNull(new File(dir).listFiles()))
+                .filter(file -> file.isFile())
+                .map(File::toString)
+                .collect(Collectors.toSet());
+    }
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Files.newDirectoryStream</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+
+public class FileDirectory {
+    public static void main(String[] args) throws IOException {
+        String path = "/etc";        //要遍历的路径
+        listDirectoryStream(path).forEach(file -> {
+            System.out.println(file);
+        });
+    }
+
+
+    public static Set<String> listDirectoryStream(String dir) throws IOException {
+        Set<String> fileSet = new HashSet<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) {
+                    fileSet.add(path.toString());
+                }
+            }
+        }
+        return fileSet;
+    }
+}			
+			]]>
+			</programlisting>
+			<para>递归遍历目录</para>
+			<programlisting>
+			<![CDATA[
+    public static Set<String> listDirectoryStream(String dir) {
+        Set<String> fileSet = new HashSet<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) {
+                    fileSet.add(path.toString());
+                } else {
+                    listDirectoryStream(path.toString()).forEach(file -> {
+                        fileSet.add(file);
+                    });
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileSet;
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Files.list</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class FileDirectory {
+    public static void main(String[] args) throws IOException {
+
+        String path = "/etc";        //要遍历的路径
+        filesList(path).forEach(file -> {
+            System.out.println(file);
+        });
+    }
+
+    public static Set<String> filesList(String dir) throws IOException {
+        try (Stream<Path> stream = Files.list(Paths.get(dir))) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+//                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toSet());
+        }
+    }
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Files.walk 递归遍历目录</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class FileDirectory {
+    public static void main(String[] args) throws IOException {
+
+        String path = "/tmp/test";        //要遍历的路径
+        filesWalk(path).forEach(file -> {
+            System.out.println(file);
+        });
+    }
+
+    public static Set<String> filesWalk(String dir) {
+        try (Stream<Path> stream = Files.walk(Paths.get(dir))) {
+//            stream.toList().forEach(path -> {
+//                System.out.println(path.toString());
+//            });
+//            return stream.sorted().map(Path::toString).collect(Collectors.toSet());
+            return stream.sorted().filter(file -> !Files.isDirectory(file))
+//                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toSet());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new HashSet<>();
+    }
+}
+			]]>
+			</programlisting>
+			<para>指定目录深度 5 层</para>
+			<programlisting>
+			<![CDATA[
+Stream<Path> stream = Files.walk(Paths.get(dir), 5)			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    public Set<String> listFilesWalk(String dir, int depth) throws IOException {
+        try (Stream<Path> stream = Files.walk(Paths.get(dir), depth)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toSet());
+        }
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>SimpleFileVisitor</title>
+			<programlisting>
+			<![CDATA[
+    public Set<String> listFilesWalkAndVisitor(String dir) throws IOException {
+        Set<String> fileList = new HashSet<>();
+        Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                if (!Files.isDirectory(file)) {
+                    fileList.add(file.getFileName().toString());
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return fileList;
+    }			
 			]]>
 			</programlisting>
 		</section>
