@@ -212,6 +212,37 @@ public class FileDirectory {
     }
 			]]>
 			</programlisting>
+			<para>walkFileTree与FileVisitor配合使用，walkFileTree方法遍历整个文件目录树，使用FileVisitor处理遍历结果（文件或文件夹）</para>
+			<programlisting>
+			<![CDATA[
+	// FileVisitor的postVisitDirectory方法，注意方法中的“post”表示“后去做……”的意思，所以用来文件都处理完成之后再去处理文件夹，所以使用这个方法删除文件夹就可以有效避免文件夹内容不为空的异常，因为在去删除文件夹之前，该文件夹里面的文件已经被删除了。
+    private static void walkFileTree() throws IOException {
+        Path path = Paths.get("D:\\data");
+
+        Files.walkFileTree(path,
+                new SimpleFileVisitor<Path>() {
+                    // 先去遍历删除文件
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.delete(file);
+                        System.out.printf("删除文件 : %s%n", file);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    // 再去遍历删除目录
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        Files.delete(dir);
+                        System.out.printf("删除文件夹: %s%n", dir);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                }
+        );
+
+    }			
+			]]>
+			</programlisting>
 		</section>
 		<section>
 			<title>创建目录和文件</title>
