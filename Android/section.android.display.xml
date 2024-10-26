@@ -111,6 +111,59 @@ fullscreen(getActivity().getWindow().getDecorView().getRootView());
     }		
 		]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+        binding.imageView.setOnTouchListener(new View.OnTouchListener() {
+            private TouchEvent.Point downPoint;
+            private TouchEvent.Point upPoint;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                Log.d(TAG, motionEvent.toString());
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        downPoint = new TouchEvent.Point(motionEvent.getX(), motionEvent.getY());
+                        Log.d("MotionEvent", "ACTION_DOWN: " + downPoint);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        upPoint = new TouchEvent.Point(motionEvent.getX(), motionEvent.getY());
+                        Log.d("MotionEvent", "ACTION_UP: " + upPoint);
+                        if (downPoint.getY() - upPoint.getY() > 100) {
+
+                            aigc.next();
+                            Log.d("MotionEvent", "UP: " + upPoint);
+                        } else if (upPoint.getY() - downPoint.getY() > 100) {
+
+
+                            aigc.previous();
+                            Log.d("MotionEvent", "DOWN: " + upPoint);
+                        } else if (downPoint.getX() - upPoint.getX() > 100) {
+//                    Toast.makeText(MainActivity.this, "共享作品", Toast.LENGTH_SHORT).show();
+                            Log.d("MotionEvent", "LEFT: " + upPoint);
+//                    Intent intent = new Intent(MainActivity.this, ShareFullscreenActivity.class);
+//                    startActivity(intent);
+
+                        } else if (upPoint.getX() - downPoint.getX() > 100) {
+                            Log.d("MotionEvent", "RIGHT: " + upPoint);
+//                            aigc.latest();
+//                            PictureSkillComponent.say("进入轮播");
+                        } else {
+                            if (audio != null) {
+                                aigcSpeech.Player().play(audio, binding.progressBar, binding.storyToggleButtonPlayer);
+                                Log.d(TAG, "重播: " + audio);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+//                        fullscreen(getActivity().getWindow().getDecorView().getRootView());
+                        break;
+                }
+
+                return false;
+            }
+        });
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="android.Gesture">
