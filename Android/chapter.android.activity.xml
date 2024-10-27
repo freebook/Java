@@ -125,7 +125,7 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		</section>
 	</section>
 
-	
+
 
 
 	<section id="显式四种跳转方式">
@@ -168,8 +168,8 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 			</programlisting>
 		</section>
 		<section id="App间跳转">
-		<title>App 间跳转</title>
-		<programlisting>
+			<title>App 间跳转</title>
+			<programlisting>
 		<![CDATA[
     Intent intent = new Intent(Intent.ACTION_MAIN);
     //前提：知道要跳转应用的包名、类名
@@ -177,11 +177,11 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     intent.setComponent(componentName);
     startActivity(intent);
 		]]>
-		</programlisting>
-	</section>
-	<section id="intentActivityResultLauncher">
-		<title>intentActivityResultLauncher 跳转</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="intentActivityResultLauncher">
+			<title>intentActivityResultLauncher 跳转</title>
+			<programlisting>
 		<![CDATA[
 // 定义跳转
 ActivityResultLauncher<Intent> intentActivityResultLauncher =
@@ -199,11 +199,12 @@ Intent intent = new Intent(this,跳转到的.class);
 // 执行跳转
 intentActivityResultLauncher.launch(intent);		
 		]]>
-		</programlisting>
-	</section><section id="startActivityForResult">
-		<title>startActivityForResult 替代方案</title>
-		<para>startActivityForResult 即将废弃</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="startActivityForResult">
+			<title>startActivityForResult 替代方案</title>
+			<para>startActivityForResult 即将废弃</para>
+			<programlisting>
 		<![CDATA[
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -214,9 +215,9 @@ intentActivityResultLauncher.launch(intent);
         }
     }		
 		]]>
-		</programlisting>
-		<para>替代方案是</para>
-		<programlisting>
+			</programlisting>
+			<para>替代方案是</para>
+			<programlisting>
 		<![CDATA[
    //拍照
     private final ActivityResultLauncher<Void> mLauncherCamera = registerForActivityResult(
@@ -229,10 +230,10 @@ intentActivityResultLauncher.launch(intent);
         mLauncherCamera.launch(null);
     }		
 		]]>
-		</programlisting>
-		<section>
-			<title>返回值</title>
-			<programlisting>
+			</programlisting>
+			<section>
+				<title>返回值</title>
+				<programlisting>
 			<![CDATA[
 package cn.netkiller;
  
@@ -258,10 +259,10 @@ public class SubActivity extends Activity{
 
 			
 			]]>
-			</programlisting>
+				</programlisting>
 
 
-			<programlisting>
+				<programlisting>
 		<![CDATA[
 package cn.netkiller;
  
@@ -308,15 +309,16 @@ public class IntentActivity extends Activity {
     
 }
 		]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section></section>
+	</section>
 
 	<section id="Activity生命周期">
 		<title>生命周期</title>
-			<section id="定时关闭">
-		<title>定时关闭</title>
-		<programlisting>
+		<section id="定时关闭">
+			<title>定时关闭</title>
+			<programlisting>
 		<![CDATA[
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -333,9 +335,9 @@ public class IntentActivity extends Activity {
 
     }
 		]]>
-		</programlisting>
-		<para></para>
-		<programlisting>
+			</programlisting>
+			<para></para>
+			<programlisting>
 		<![CDATA[
 	new Handler().postDelayed(new Runnable() {
         @Override
@@ -344,13 +346,13 @@ public class IntentActivity extends Activity {
         }
     }, 10000);		
 		]]>
-		</programlisting>
-	</section>
+			</programlisting>
+		</section>
 
-	<section id="恢复触发">
-		<title>恢复触发</title>
-		<para>程序回到桌面，例如设置WI-FI，让步在回到程序，安卓会调用 onResume()</para>
-		<programlisting>
+		<section id="恢复触发">
+			<title>恢复触发</title>
+			<para>程序回到桌面，例如设置WI-FI，让步在回到程序，安卓会调用 onResume()</para>
+			<programlisting>
 		<![CDATA[
     @Override
     public void onResume() {
@@ -358,11 +360,11 @@ public class IntentActivity extends Activity {
         this.other();
     }		
 		]]>
-		</programlisting>
-	</section>
+			</programlisting>
+		</section>
 		<section id="返回触发">
-		<title>返回触发</title>
-		<programlisting>
+			<title>返回触发</title>
+			<programlisting>
 		<![CDATA[
     @Override
     public void onBackPressed() {
@@ -371,11 +373,11 @@ public class IntentActivity extends Activity {
         ...
     }		
 		]]>
-		</programlisting>
-	</section>
-	<section id="Activity.finish()">
-		<title>Activity 关闭</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="Activity.finish()">
+			<title>Activity 关闭</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.album;
 
@@ -404,13 +406,13 @@ public class HotelActivity extends AppCompatActivity {
     }
 }		
 		]]>
-		</programlisting>
-		<section>
-			<title>退出 App</title>
-			<para>AndroidManifest.xml 中 activity 添加
-				android:launchMode="singleTask"
-			</para>
-			<programlisting>
+			</programlisting>
+			<section>
+				<title>退出 App</title>
+				<para>AndroidManifest.xml 中 activity 添加
+					android:launchMode="singleTask"
+				</para>
+				<programlisting>
 			<![CDATA[
         <activity
             android:name=".MainActivity"
@@ -425,9 +427,9 @@ public class HotelActivity extends AppCompatActivity {
             </intent-filter>
         </activity>			
 			]]>
-			</programlisting>
-			<para>MainActivity 中添加 onNewIntent(Intent intent)</para>
-			<programlisting>
+				</programlisting>
+				<para>MainActivity 中添加 onNewIntent(Intent intent)</para>
+				<programlisting>
 			<![CDATA[
   	@Override
     protected void onNewIntent(Intent intent) {
@@ -440,9 +442,9 @@ public class HotelActivity extends AppCompatActivity {
         }
     }			
 			]]>
-			</programlisting>
-			<para>调用 quit 方法即可正常退出主程序</para>
-			<programlisting>
+				</programlisting>
+				<para>调用 quit 方法即可正常退出主程序</para>
+				<programlisting>
 			<![CDATA[
     public void quit(View v) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -450,12 +452,12 @@ public class HotelActivity extends AppCompatActivity {
         startActivity(intent);
     }			
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
-	</section>
-	<section>
-		<title>重启自己</title>
-		<programlisting>
+		<section>
+			<title>重启自己</title>
+			<programlisting>
 		<![CDATA[
     private boolean privacyAgreement() {
         String key = "PrivacyAgreement";
@@ -502,9 +504,10 @@ public class HotelActivity extends AppCompatActivity {
 
     }		
 		]]>
-		</programlisting>
-	</section></section>
-	
+			</programlisting>
+		</section>
+	</section>
+
 
 	<section id="Intent">
 		<title>Activity 间数据传递</title>
@@ -622,9 +625,9 @@ finish();
 			</programlisting>
 		</section>
 	</section>
-	
-	
-	
+
+
+
 	<section id="activity.DataBinding">
 		<title>DataBinding</title>
 		<para>以 MainActivity 为例，为 MainActivity 添加 DataBinding</para>
@@ -661,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="activity.keyboard">
 		<title>键盘事件</title>
 		<section>
@@ -889,7 +892,7 @@ startActivity(Intent.createChooser(shareIntent, "对话框标题"));
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="ClipboardManager">
 		<title>剪切板</title>
 		<programlisting>
 		<![CDATA[
@@ -904,6 +907,37 @@ startActivity(Intent.createChooser(shareIntent, "对话框标题"));
         } catch (Exception e) {
             e.printStackTrace();
         }		
+		]]>
+		</programlisting>
+	</section>
+	<section id="InputMethodManager">
+		<title>软键盘控制</title>
+		<programlisting>
+		<![CDATA[
+    public static void showKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            view.requestFocus();
+            imm.showSoftInput(view, 0);
+        }
+    }
+
+    public static void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static void toggleSoftInput(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.toggleSoftInput(0, 0);
+        }
+    }
 		]]>
 		</programlisting>
 	</section>
