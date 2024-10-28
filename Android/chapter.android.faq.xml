@@ -181,5 +181,14 @@ neo@MacBook-Pro-M2 album %
 		]]>
 		</programlisting>
 	</section>
-	
+	<section>
+		<title>Can't create handler inside thread Thread[...,5,main] that has not called Looper.prepare()</title>
+		<programlisting>
+		<![CDATA[
+        Looper.prepare();//增加部分
+        fragment = new CreationFullscreenFragment();
+        Looper.loop();		
+		]]>
+		</programlisting>
+	</section>
 </chapter>

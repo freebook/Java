@@ -141,6 +141,22 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
 
 
 		</section>
+		<section>
+			<title>EditText 属性设置</title>
+			<programlisting>
+    <![CDATA[
+editText.setEnabled(false);//去掉点击时编辑框下面横线:
+editText.setFocusable(false);//不可编辑
+editText.setFocusableInTouchMode(false);//不可编辑
+editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
+editText.setClickable(false);//不可点击，
+editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
+
+    ]]>
+			</programlisting>
+
+
+		</section>
 	</section>
 	<section id="TextView">
 		<title>TextView</title>
@@ -306,22 +322,7 @@ binding.editText.setSelection(binding.editText.getText().toString().length());
 		]]>
 		</programlisting>
 	</section>
-	<section id="EditText">
-		<title>EditText 属性设置</title>
-		<programlisting>
-    <![CDATA[
-editText.setEnabled(false);//去掉点击时编辑框下面横线:
-editText.setFocusable(false);//不可编辑
-editText.setFocusableInTouchMode(false);//不可编辑
-editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
-editText.setClickable(false);//不可点击，
-editText.setKeyListener(null);//不可粘贴，长按不会弹出粘贴框
-
-    ]]>
-		</programlisting>
-
-
-	</section>
+	
 
 	<section>
 		<title>设置 app:backgroundTint</title>
@@ -332,6 +333,32 @@ someTextView.getBackground().setTint(yourIntColor);
 		</programlisting>
 	</section>
 
+	<section>
+		<title>禁止滚动条</title>
+		<para>临时禁止滚动条，让滚动失效</para>
+		<para>OnTouchListener 返回 true 禁止滚动</para>
+		<programlisting>
+	    <![CDATA[
+        binding.recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+	    ]]>
+		</programlisting>
+		<para>OnTouchListener 返回 false 恢复滚动</para>
+		<programlisting>
+	    <![CDATA[
+        binding.recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return false;
+            }
+        });
+	    ]]>
+		</programlisting>
+	</section>
 </section>
 <section id="Button">
 	<title>Button</title>
