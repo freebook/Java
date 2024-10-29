@@ -3878,6 +3878,25 @@ public class SubareaSet {
 			<para>optional = true 允许外键为空</para>
 			<programlisting>
 			<![CDATA[
+    @Comment("合作商")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "business_id", updatable = false)
+    @JsonIgnore
+    private Business business;			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    @Comment("合作商")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "business_id", updatable = false)
+    @JsonIgnore
+    private Business business;			
+			]]>
+			</programlisting>
+			
+			<programlisting>
+			<![CDATA[
 package cn.netkiller.domain.story;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
