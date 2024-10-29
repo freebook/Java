@@ -407,7 +407,7 @@ persons
 		</programlisting>
 	</section>
 	<section id="IntStream">
-		<title>IntStream / LongStream / DoubleStream</title>
+		<title>IntStream</title>
 		<programlisting>
 		<![CDATA[
 		List<Picture> list = new ArrayList<Picture>();
@@ -444,6 +444,30 @@ public class StreamOfDemo {
   }
 } 
 	
+		]]>
+		</programlisting>
+	</section>
+	<section id="LongStream">
+		<title>LongStream</title>
+		<programlisting>
+		<![CDATA[
+	LongStream longStream = LongStream.generate(() -> new Random().nextLong()).limit(5);
+	longStream.forEach(v -> System.out.println(v));
+		]]>
+		</programlisting>
+	</section>
+	<section id="DoubleStream">
+		<title>DoubleStream</title>
+		<programlisting>
+		<![CDATA[
+	System.out.println("--- DoubleStream ---");	
+	DoubleStream doubleStream = DoubleStream.of(123.56, 456.87, 789.65);
+	doubleStream.forEach(e -> System.out.println(e));	
+	
+	System.out.println("--- DoubleStream.generate() ---");
+	DoubleStream doubleStream = DoubleStream.generate(() -> new Random().nextDouble()).limit(5);
+	doubleStream.forEach(v -> System.out.println(v));
+
 		]]>
 		</programlisting>
 	</section>

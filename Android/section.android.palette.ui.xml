@@ -305,6 +305,15 @@ android:textIsSelectable="false"
         	]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>输入长度</title>
+			<programlisting>
+		    <![CDATA[
+android:maxLength="11"
+		    ]]>
+			</programlisting>
+		</section>
+		
 	</section>
 	<section>
 		<title>光标移动到行尾</title>
