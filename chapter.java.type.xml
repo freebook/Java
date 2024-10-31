@@ -641,6 +641,109 @@ public class Test {
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>String.format 字符串格式化</title>
+			<section>
+				<title>前补零</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+
+import java.io.IOException;
+
+@Data
+public class Test {
+    public static void main(String[] args) throws IOException {
+        System.out.printf("%02d%n", 1);
+        System.out.printf("%04d%n", 90);
+
+        System.out.println(String.format("%02d", 1));
+        System.out.println(String.format("%04d", 90));
+    }
+}			
+				]]>
+				</programlisting>
+				<screen>
+				<![CDATA[
+01
+0090
+01
+0090				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>前补零</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+
+@Data
+public class Test {
+    public static void main(String[] args) throws IOException {
+        int test = 520;
+
+        String paddedStr = String.format("%-6s", test).replace(' ', '0');
+        System.out.println("后补零：" + paddedStr);
+    }
+}			
+				]]>
+				</programlisting>
+				<screen>
+				<![CDATA[
+后补零：520000			
+				]]>
+				</screen>
+			</section>			
+		</section>
+		<section id="java.text.DecimalFormat">
+			<title>DecimalFormat 文本格式化</title>
+			<programlisting>
+			<![CDATA[
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+
+@Data
+public class Test {
+    public static void main(String[] args) throws IOException {
+        int test = 520;
+        System.out.println("================  前补零   =================");
+        DecimalFormat decimalFormat = new DecimalFormat("000000");
+        String before = decimalFormat.format(test);
+        System.out.println("前补零：" + before);
+
+        DecimalFormat decimalFormat1 = new DecimalFormat("0.000");
+        System.out.println("================  小数点后补零   =================");
+        String after = decimalFormat1.format(test);
+        System.out.println("后补零：" + after);
+    }
+}			
+				]]>
+				</programlisting>
+				<screen>
+				<![CDATA[
+================  前补零   =================
+前补零：000520
+================  小数点后补零   =================
+后补零：520.000
+				]]>
+				</screen>		
+			]]>
+			</programlisting>
+		</section>
 		<section id="stream().anyMatch()">
 			<title>通过 stream() 匹配一组字符串</title>
 			<programlisting>
