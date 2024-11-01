@@ -285,4 +285,211 @@ getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewT
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>使用 TabLayout 切换 Fragment</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/fullscreenBackgroundColor"
+    android:theme="@style/ThemeOverlay.犀慕.FullscreenContainer"
+    tools:context=".fragment.message.NotificationFullscreenFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="0"
+            app:cardBackgroundColor="#FFDDDDDD"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabTextAppearance="@style/tabTextAppearance">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="通知" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="消息" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="审核" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="#EEEEEEEE"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp">
+
+	        <androidx.fragment.app.FragmentContainerView
+	            android:id="@+id/fragmentContainerViewTabItem"
+	            android:name="cn.netkiller.student.fragment.message.NoticeFragment"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:fitsSystemWindows="true" />
+     </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</FrameLayout>
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.student.fragment.message;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.List;
+
+import cn.netkiller.student.databinding.FragmentNotificationFullscreenBinding;
+
+
+public class NotificationFullscreenFragment extends Fragment {
+    private static final String TAG = NotificationFullscreenFragment.class.getSimpleName();
+
+    private FragmentNotificationFullscreenBinding binding;
+
+    private static Fragment switchTabLayout(int position) {
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new NoticeFragment();
+                break;
+            case 1:
+                fragment = new MessageFragment();
+                break;
+            case 2:
+                fragment = new AuditFragment();
+                break;
+        }
+
+        if (fragment != null) {
+            return fragment;
+            try {
+                if (!isAdded()) return;
+//                        requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commit();
+                getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerViewTabItem, fragment).commitAllowingStateLoss();
+            } catch (Exception e) {
+                Log.d(TAG, "Tab 切换出错" + e.getMessage());
+            }
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        binding = FragmentNotificationFullscreenBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            private final long interval = 1000L;
+            private boolean isOnTabSelectedListener = false;
+            private int index = 0;
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                index = tab.getPosition();
+                if (isOnTabSelectedListener) {
+                    Log.e(TAG, "onTabSelected: 暴击 " + tab.getText() + " 位置: " + index);
+                    return;
+                } else {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        public void run() {
+                            isOnTabSelectedListener = false;
+                            switchTabLayout(index);
+                            Log.e(TAG, "Tab 释放，并且切换最后一次点击位置: " + index);
+                        }
+                    }, interval);
+
+                    isOnTabSelectedListener = true;
+                }
+                Log.d(TAG, "onTabSelected: " + tab.getText());
+                switchTabLayout(tab.getPosition());
+            }
+
+            // 页面切换到其他
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabUnselected: " + tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabReselected: " + tab.getText());
+            }
+        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+}
+		]]>
+		</programlisting>
+
+	</section>
 </chapter>

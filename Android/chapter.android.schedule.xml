@@ -46,6 +46,29 @@ new Timer().schedule(new TimerTask() {
 		</programlisting>
 		<programlisting>
 		<![CDATA[
+    private final Timer timer = new Timer();
+    private final TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            ArrayList<String> list = Picture.pictureLoopList;
+            if (list != null && list.size() > 0) {
+                int index = (int) (Math.random() * list.size());
+                String image = list.get(index);
+                Log.i(TAG, "轮播更换图片 " + image);
+                showImage(image);
+            }
+//            else {
+//                Toast.makeText(MainActivity.this, "跳过轮播", Toast.LENGTH_SHORT).show();
+//            }
+        }
+    };
+    
+    //        timer.schedule(timerTask, 600000, 30000);
+    timer.schedule(timerTask, 30000, 30000);
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
 package cn.netkiller.okhttp;
 
 import android.os.Handler;
@@ -118,6 +141,7 @@ public class ScheduleActivity extends AppCompatActivity {
 		
 		]]>
 		</programlisting>
+
 	</section>
 	<section id="Handler.Runnable">
 		<title>使用 Runnable 和 Handler 实现定时执行</title>

@@ -5070,7 +5070,7 @@ public interface LoraRepository extends CrudRepository<Lora, Integer> {
 			]]>
 			</programlisting>
 		</section>
-		<section id="">
+		<section id="BeforeAfter">
 			<title>Before/After</title>
 			<programlisting>
 			<![CDATA[
@@ -5610,8 +5610,14 @@ void updateStateByMoney(Long money, Byte state);
 			</programlisting>
 			<programlisting>
 			<![CDATA[
-
   @Modifying(clearAutomatically=true, flushAutomatically = true)			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+    @Modifying
+    @Query(value = "INSERT INTO notification_status(consumer_id,notification_id) VALUES( :consumerId, :notificationId)", nativeQuery = true)
+    void read(@Param("consumerId") int consumerId, @Param("notificationId") int notificationId);			
 			]]>
 			</programlisting>
 		</section>
@@ -6956,6 +6962,33 @@ public class RoleService {
 				]]>
 				</programlisting>
 			</section>
+		</section>
+		<section id="jpql.in">
+			<title>IN / NOT 子查询</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.repository;
+
+
+import cn.netkiller.domain.device.NotificationStatus;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface NotificationStatusRepository extends CrudRepository<NotificationStatus, Integer> {
+
+    @Query(value = "SELECT count(n) FROM Notification n WHERE n.id NOT IN (SELECT ns.notification.id FROM NotificationStatus ns, Consumer c WHERE ns.consumer.id = c.id AND c.wechat = :wechat)")
+    int queryCountByWechat(@Param("wechat") String wechat);
+
+    @Modifying
+    @Query(value = "INSERT INTO notification_status(consumer_id,notification_id) VALUES( :consumerId, :notificationId)", nativeQuery = true)
+    void read(@Param("consumerId") int consumerId, @Param("notificationId") int notificationId);
+}			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="jpa.mysql.faq">
