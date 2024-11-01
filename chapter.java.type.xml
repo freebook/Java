@@ -528,7 +528,7 @@ Hello world!
 				]]>
 				</screen>
 			</section>
-			
+
 		</section>
 		<section id="substring">
 			<title>substring</title>
@@ -701,14 +701,12 @@ public class Test {
 后补零：520000			
 				]]>
 				</screen>
-			</section>			
+			</section>
 		</section>
 		<section id="java.text.DecimalFormat">
 			<title>DecimalFormat 文本格式化</title>
 			<programlisting>
 			<![CDATA[
-				<programlisting>
-				<![CDATA[
 package cn.netkiller.test;
 
 import lombok.Data;
@@ -732,17 +730,15 @@ public class Test {
     }
 }			
 				]]>
-				</programlisting>
-				<screen>
+			</programlisting>
+			<screen>
 				<![CDATA[
 ================  前补零   =================
 前补零：000520
 ================  小数点后补零   =================
 后补零：520.000
 				]]>
-				</screen>		
-			]]>
-			</programlisting>
+			</screen>
 		</section>
 		<section id="stream().anyMatch()">
 			<title>通过 stream() 匹配一组字符串</title>
@@ -1084,7 +1080,7 @@ public class TimeZoneTest {
 			]]>
 			</screen>
 		</section>
-		
+
 		<section id="date.compare">
 			<title>比较两个日期与时间</title>
 			<programlisting>
