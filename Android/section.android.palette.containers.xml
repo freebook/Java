@@ -518,6 +518,244 @@ binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>TabLayout + BadgeDrawable 给 Tab 增加小红点</title>
+			<para>继承 Theme.MaterialComponents.Light.NoActionBar 主题，Theme.AppCompat.Light.NoActionBar 和 Theme.Design.Light.NoActionBar 将会抛出异常 The style on this component requires your app theme to be Theme.MaterialComponents (or a descendant). </para>
+			<programlisting>
+			<![CDATA[
+<resources>
+    <style name="ThemeOverlay.Netkiller.Fullscreen" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="fullscreenBackgroundColor">@color/white</item>
+        <item name="fullscreenTextColor">@color/black</item>
+    </style>
+</resources>			
+			]]>
+			</programlisting>
+			<para>常规布局，没什么好说的</para>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/fullscreenBackgroundColor"
+    android:theme="@style/ThemeOverlay.Netkiller.Fullscreen"
+    tools:context=".fragment.message.NotificationFullscreenFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="0"
+            app:cardBackgroundColor="#FFDDDDDD"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabTextAppearance="@style/tabTextAppearance">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="通知" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="消息" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="审核" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="#EEEEEEEE"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</FrameLayout>			
+			]]>
+			</programlisting>
+			<para>通过下面代码，给 TabLayout 增加小红点</para>
+			<programlisting>
+			<![CDATA[
+                BadgeDrawable badge = tab.getOrCreateBadge();
+                badge.setNumber(8);
+                badge.setBadgeTextColor(Color.WHITE);
+                badge.setBackgroundColor(Color.RED);			
+			]]>
+			</programlisting>
+			<para>完成的代码</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.student.fragment.message;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.ExperimentalBadgeUtils;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.List;
+
+import cn.netkiller.student.databinding.FragmentNotificationFullscreenBinding;
+
+
+public class NotificationFullscreenFragment extends Fragment {
+    private static final String TAG = NotificationFullscreenFragment.class.getSimpleName();
+
+    private FragmentNotificationFullscreenBinding binding;
+
+    private static Fragment switchTabLayout(int position) {
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new NoticeFragment();
+                break;
+            case 1:
+                fragment = new MessageFragment();
+                break;
+            case 2:
+                fragment = new AuditFragment();
+                break;
+            case 3:
+                fragment = new ConsumerAuditFragment();
+                break;
+        }
+        return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        binding = FragmentNotificationFullscreenBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.viewPager2.setAdapter(new ViewPagerFragmentStateAdapter(requireActivity()));
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
+            final List<String> tabMenuItem = List.of("通知", "消息", "作品审核", "资料审核");
+
+            @Override
+            @OptIn(markerClass = ExperimentalBadgeUtils.class)
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                tab.setText(tabMenuItem.get(position));
+                
+                BadgeDrawable badge = tab.getOrCreateBadge();
+                badge.setNumber(8);
+                badge.setBadgeTextColor(Color.WHITE);
+                badge.setBackgroundColor(Color.RED);
+
+//                BadgeDrawable badgeDrawable = BadgeDrawable.create(getActivity());
+//                badgeDrawable.setVisible(true);
+//                BadgeUtils.attachBadgeDrawable(badgeDrawable, binding.tabLayout);
+
+            }
+        }).attach();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    private static class ViewPagerFragmentStateAdapter extends FragmentStateAdapter {
+
+        public ViewPagerFragmentStateAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            // 每个页面对应的fragment
+//            switch (position) {
+//                // 这里我随便写了两个Fragment
+//                case 0:
+//                    return new NotificationFullscreenFragment();
+//                case 1:
+//                    return new AuditFragment();
+//            }
+            return switchTabLayout(position);
+
+//            return null;
+        }
+
+        @Override
+        public int getItemCount() {
+            // 有几个页面就返回几
+            return 4;
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ViewPager2">
 		<title>ViewPager2</title>

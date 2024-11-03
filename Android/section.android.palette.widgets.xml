@@ -331,7 +331,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
 
-import cn.aigcsst.student.R;
+import cn.netkiller.student.R;
 
 public class AnimationFigure {
     private static final String TAG = AnimationFigure.class.getSimpleName();
@@ -563,5 +563,53 @@ public class AnimationFigure {
 			</programlisting>
 		</section>
 	</section>
-	
+	<section id="NestedScrollView">
+		<title>NestedScrollView + </title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.message.ConsumerAuditFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:text="@string/large_text" />
+</androidx.core.widget.NestedScrollView>		
+		]]>
+		</programlisting>
+		
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.student.fragment.message;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import cn.netkiller.student.R;
+
+class ConsumerAuditFragment extends Fragment {
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_consumer_audit, container, false);
+    }
+}		
+		]]>
+		</programlisting>
+		
+	</section>
 </section>
