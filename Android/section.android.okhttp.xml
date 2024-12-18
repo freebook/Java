@@ -489,6 +489,7 @@ if (forceCacheResponse.code() != 504) {
 	</section>
 	<section id="okhttp.auth">
 		<title>HTTP Base Auth</title>
+		<para>OkHttpClient 方案</para>
 		<programlisting>
 		<![CDATA[
         OkHttpClient client = new OkHttpClient.Builder().authenticator(
@@ -501,6 +502,33 @@ if (forceCacheResponse.code() != 504) {
         ).build();		
 		]]>
 		</programlisting>
+		<para>Request 方案</para>
+		<programlisting>
+		<![CDATA[
+public void post(String function, File file, Callback responseCallback) {
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(address).newBuilder();
+        urlBuilder.addPathSegments(function);
+//            urlBuilder.addQueryParameter("sentence", question);
+        String url = urlBuilder.build().toString();
+        Log.i(TAG, "Post URL: " + url);
+        OkHttpClient client = this.client();
+        String credential = Credentials.basic(username, password);
+
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(), RequestBody.create(file, MediaType.parse("multipart/form-data")))
+                .build();
+        Request request = new Request.Builder().url(url)
+//                .addHeader("token", token)
+                .addHeader("Authorization", credential)
+                .post(requestBody).build();
+        client.newCall(request).enqueue(responseCallback);
+
+    }		
+		]]>
+		</programlisting>
+		
 	</section>
 	<section id="HttpUrl.Builder">
 		<title>HttpUrl.Builder 组装 URL 地址参数</title>

@@ -1061,4 +1061,23 @@ public class BookshelfFragment extends Fragment {
 			</programlisting>
 		</section>
 	</section>
+	<section id="Navigation">
+		<title>Navigation</title>
+		<section>
+			<title>切换菜单</title>
+			<programlisting>
+			<![CDATA[
+Navigation.findNavController(requireView()).navigate(R.id.nav_gallery);		
+Navigation.createNavigateOnClickListener(R.id.nav_gallery);	
+			]]>
+			</programlisting>
+			<para>传递参数</para>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	
 </section>

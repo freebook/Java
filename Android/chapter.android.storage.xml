@@ -12,7 +12,6 @@ Log.d(TAG, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_P
 Log.d(TAG, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString());
             		
 /storage/emulated/0/Pictures
-
 /storage/emulated/0/Android/data/cn.netkiller.album.education/files/Pictures		
 			]]>
 			</screen>
