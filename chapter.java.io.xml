@@ -127,7 +127,7 @@ public class CreateTempFileExample
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section id="java.io.FileWriter">
 		<title>FileWriter 文本写入文件</title>
 		<programlisting>
@@ -401,6 +401,133 @@ public class PrintWriterTest {
 }
 		]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+@Test
+void testReadFile1() throws IOException {
+
+   String fileName = "D:\\test\\netkiller\\neo.txt";
+
+   try (Scanner sc = new Scanner(new FileReader(fileName))) {
+      while (sc.hasNextLine()) {  //按行读取字符串
+         String line = sc.nextLine();
+         System.out.println(line);
+      }
+   }
+
+   try (Scanner sc = new Scanner(new FileReader(fileName))) {
+      sc.useDelimiter("\\|");  //分隔符
+      while (sc.hasNext()) {   //按分隔符读取字符串
+         String str = sc.next();
+         System.out.println(str);
+      }
+   }
+
+   //sc.hasNextInt() 、hasNextFloat() 、基础数据类型等等等等。
+   fileName = "D:\\netkiller\\test\\neo.txt";
+   try (Scanner sc = new Scanner(new FileReader(fileName))) {
+      sc.useDelimiter("\\|");  //分隔符
+      while (sc.hasNextInt()) {   //按分隔符读取Int
+          int intValue = sc.nextInt();
+         System.out.println(intValue);
+      }
+   }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="Files">
+		<title>Files</title>
+		<section>
+			<title>Files.lines</title>
+			<programlisting>	
+			<![CDATA[
+@Test
+void testReadFile2() throws IOException {
+   String fileName = "D:\\test\\netkiller\\neo.txt";
+
+   // 读取文件内容到Stream流中，按行读取
+   Stream<String> lines = Files.lines(Paths.get(fileName));
+
+   // 随机行顺序进行数据处理
+   lines.forEach(line -> {
+      System.out.println(line);
+   });
+}		
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+// 按文件行顺序进行处理
+lines.forEachOrdered(System.out::println);
+
+// 利用CPU多和的能力，进行数据的并行处理parallel()，适合比较大的文件。
+lines.parallel().forEachOrdered(System.out::println);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Files.readAllLines</title>
+			<programlisting>
+			<![CDATA[
+@Test
+void testReadFile3() throws IOException {
+   String fileName = "D:\\test\\netkiller\\neo.txt";
+
+   // 转换成List<String>, 要注意java.lang.OutOfMemoryError: Java heap space
+   List<String> lines = Files.readAllLines(Paths.get(fileName),
+               StandardCharsets.UTF_8);
+   lines.forEach(System.out::println);
+
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Files.readAllBytes</title>
+			<programlisting>
+			<![CDATA[
+@Test
+void testReadFile5() throws IOException {
+   String fileName = "D:\\test\\netkiller\\neo.txt";
+
+   //如果是JDK11用上面的方法，如果不是用这个方法也很容易
+   byte[] bytes = Files.readAllBytes(Paths.get(fileName));
+
+   String content = new String(bytes, StandardCharsets.UTF_8);
+   System.out.println(content);
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Files.newBufferedReader</title>
+			<programlisting>
+			<![CDATA[
+@Test
+void testReadFile6() throws IOException {
+   String fileName = "D:\\test\\netkiller\\neo.txt";
+
+   // 带缓冲的流读取，默认缓冲区8k
+   try (BufferedReader br = new BufferedReader(new FileReader(fileName))){
+      String line;
+      while ((line = br.readLine()) != null) {
+         System.out.println(line);
+      }
+   }
+
+   //java 8中这样写也可以
+   try (BufferedReader br = Files.newBufferedReader(Paths.get(fileName))){
+      String line;
+      while ((line = br.readLine()) != null) {
+         System.out.println(line);
+      }
+   }
+
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="file.binary">
 		<title>二进制文件</title>
@@ -423,7 +550,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -b netkiller.bin
 			]]>
 			</screen>
 			<para>可以看到一串二进制 00000000 00000000 00000000
-				00000001，运行下面程序可以讲二进制转换为十进制，注意替换掉空格。</para>
+				00000001，运行下面程序可以讲二进制转换为十进制，注意替换掉空格。
+			</para>
 			<programlisting>
 			<![CDATA[
 		int n = Integer.valueOf("00000000 00000000 00000000 00000001".replaceAll(" ", ""), 2);
@@ -465,7 +593,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -b netkiller.bin
 			</programlisting>
 			<para>输出结果是 -2147483648，正确应该是 2147483648
 				这就是整形溢出。整形变量得二进制表示方法是4个字节长度32位 00000000 00000000 00000000 00000000 到
-				01111111 11111111 11111111 11111111 ， 其中第一位0表示正数1表示负数。</para>
+				01111111 11111111 11111111 11111111 ， 其中第一位0表示正数1表示负数。
+			</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -b netkiller.bin
@@ -554,7 +683,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
 			]]>
 			</screen>
 			<para>如果写入 -1 结果是，由此得出 第一位 0 是正数，1 是负数，可以得出他的取值范围 -128 ~
-				127。超出范围也会溢出。</para>
+				127。超出范围也会溢出。
+			</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
@@ -648,7 +778,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 			]]>
 			</programlisting>
 			<para>现在我们已经掌握了 byte 的操作方法，现在我们来做一个例子，读取 int 数据，int 是由 4
-				个字节组成一组。所以我们每次取 4个字节。</para>
+				个字节组成一组。所以我们每次取 4个字节。
+			</para>
 			<programlisting>
 			<![CDATA[
 		// 这个例子中，我们写入三个数值到 netkiller.bin 文件，分别是 1024，-128，2147483647
@@ -706,7 +837,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
 			</programlisting>
 			<para>运行结果可以看出 boolean 使用了一个字节，最后一位 1 表示true, 0 表示
 				false。所以对于二进制文件最小单位就是 byte 字节，虽然boolean型只需要一个 1 bit
-				位，但是存储的最小单位是字节，所以前面需要补7个零 0000000。</para>
+				位，但是存储的最小单位是字节，所以前面需要补7个零 0000000。
+			</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 1 -b netkiller.bin
@@ -745,7 +877,8 @@ neo@MacBook-Pro ~/workspace/netkiller % ll netkiller.bin
 			]]>
 			</programlisting>
 			<para>有了上面 int 型数据的经验，下面一看你就会明白。long 型采用 8 个字节保存数据，是 int
-				的一倍。取值范围这里就不多说了，也会存在溢出现象。</para>
+				的一倍。取值范围这里就不多说了，也会存在溢出现象。
+			</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
@@ -790,7 +923,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 			<para>有符号 signed char 类型的范围为 -128~127</para>
 			<para>无符号 unsigned char 的范围为0~ 255</para>
 			<para>char 与 byte 操作类似，我们首先去 ASCII 表查找字符 A 对应 65，我们将 65
-				写入二进制文件。然后读取该字符，输出结果是 A。</para>
+				写入二进制文件。然后读取该字符，输出结果是 A。
+			</para>
 			<programlisting>
 			<![CDATA[
 		String filename = "netkiller.bin";
@@ -841,7 +975,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 2 -b netkiller.bin
 			]]>
 			</programlisting>
 			<para>二进制文件如下，你会发现第一个字节没有用到，很多 00000000 所以如果存储英文 byte 更适合，char 是双倍
-				byte 开销。</para>
+				byte 开销。
+			</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin 
@@ -964,7 +1099,8 @@ neo@MacBook-Pro ~/workspace/netkiller % hexdump netkiller.txt
 			]]>
 			</screen>
 			<para>我们在网上查询 “峰” 字的汉字内码，可以看到UTF-8 内码是 E5 B3 B0。这是因为UTF8使用三个字节存储汉字。
-				00000000 00000011 可能是 UTF 标志位，具体我也不太清楚，总之不是 BOM 信息。</para>
+				00000000 00000011 可能是 UTF 标志位，具体我也不太清楚，总之不是 BOM 信息。
+			</para>
 			<para>我们现在写入一个字符串试试</para>
 			<programlisting>
 			<![CDATA[
@@ -1081,7 +1217,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 2 -b netkiller.bin
 			]]>
 			</programlisting>
 			<para>float 使用 4 字节 32 为表示浮点类型，float
-				不同于前面数据类型，无法直接读取浮点数，需要经过计算才能得出，有点复杂。</para>
+				不同于前面数据类型，无法直接读取浮点数，需要经过计算才能得出，有点复杂。
+			</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/netkiller % xxd -c 4 -b netkiller.bin
@@ -1227,7 +1364,8 @@ neo@MacBook-Pro ~/workspace/netkiller % xxd -c 8 -b netkiller.bin
 				]]>
 				</programlisting>
 				<para>需要注意的一点是 out.writeChars("陈景峰");
-					写入char字符串，在读取的时候你需要知道字符串的长度。然后循环取出char数据。</para>
+					写入char字符串，在读取的时候你需要知道字符串的长度。然后循环取出char数据。
+				</para>
 				<para>二进制文件内容</para>
 				<screen>
 				<![CDATA[

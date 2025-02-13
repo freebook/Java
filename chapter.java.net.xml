@@ -2,7 +2,7 @@
 <chapter id="index"><?dbhtml dir="net" ?>
 	<title>Network</title>
 	<para>Java 网络相关操作</para>
-	<section id="url">
+	<section id="URL">
 		<title>URL</title>
 		<section>
 			<title>获取路径/文件名</title>
@@ -72,7 +72,277 @@ public class URLReader {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="URLConnection">
+		<title>URLConnection</title>
+		<programlisting>
+		<![CDATA[
+URL url = new URL("https://www.netkiller.cn");
+URLConnection connection = url.openConnection();
+System.out.println(connection.getContentType());
+System.out.println(connection.getContentLength());
+System.out.println(connection.getContentEncoding());
+System.out.println(connection.getDate());
+System.out.println(connection.getExpiration());
+System.out.println(connection.getLastModified());		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+URL url = new URL("https://www.netkiller.cn");
+URLConnection connection = url.openConnection();
+
+try (InputStream in = connection.getInputStream();) {
+
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    byte[] buffer = new byte[1024];
+    int len = -1;
+    while ((len = in.read(buffer)) != -1) {
+        output.write(buffer, 0, len);
+    }
+
+    System.out.println(new String(output.toByteArray()));
+
+} catch (IOException e) {
+    e.printStackTrace();
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section id="HttpURLConnection">
+		<title>HttpURLConnection</title>
+		<section>
+			<title>GET 请求</title>
+			<para>GET 请求</para>
+			<para>BufferedReader 方案</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+@Data
+@Slf4j
+public class Test {
+
+
+    public static void main(String[] args) throws IOException {
+
+        try {
+            // 访问URL地址的
+            URL url = new URL("https://www.netkiller.cn/index.html");
+            // java.net.HttpURLConnection 网络访问对象
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // 设置是否向HttpURLConnection输出
+            connection.setDoOutput(false);
+            // 设置是否从HttpUrlConnection读入
+            connection.setDoInput(true);
+            // 设置请求方式
+            connection.setRequestMethod("GET");
+            // 设置是否使用缓存
+            connection.setUseCaches(true);
+            // 否应该自动执行 HTTP 重定向
+            connection.setInstanceFollowRedirects(true);
+            // 设置超时时间
+            connection.setConnectTimeout(3000);
+            // 连接
+            connection.connect();
+            // 如果返回值正常，数据在网络中是以流的形式得到服务端返回的数据
+            String msg = "";
+            // 得到响应状态码的返回值
+            if (connection.getResponseCode() == 200) { // 正常响应
+                // 从流中读取响应信息
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line = null;
+                while ((line = reader.readLine()) != null) { // 循环从流中读取
+                    msg += line + "\n";
+                }
+                reader.close(); // 关闭流
+            }
+            // 断开连接，释放资源
+            connection.disconnect();
+
+            // 显示响应结果
+            System.out.println(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}		
+			]]>
+			</programlisting>
+			<para>ByteArrayOutputStream 方案</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import io.netty.handler.codec.http.HttpMethod;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+@Data
+@Slf4j
+public class Test {
+
+
+    public static void main(String[] args) throws IOException {
+
+        try {
+            // 访问URL地址的
+            URL url = new URL("https://www.netkiller.cn/index.html");
+            // java.net.HttpURLConnection 网络访问对象
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // 设置是否向HttpURLConnection输出
+            connection.setDoOutput(false);
+            // 设置是否从HttpUrlConnection读入
+            connection.setDoInput(true);
+            // 设置请求方式
+            connection.setRequestMethod(HttpMethod.GET.name());
+            // 设置是否使用缓存
+            connection.setUseCaches(true);
+            // 否应该自动执行 HTTP 重定向
+            connection.setInstanceFollowRedirects(true);
+            // 设置超时时间
+            connection.setConnectTimeout(3000);
+            connection.setReadTimeout(60000);
+            // 连接
+            connection.connect();
+            // 如果返回值正常，数据在网络中是以流的形式得到服务端返回的数据
+            String msg = "";
+
+            // 定义一个临时字节输出流
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            // 得到响应状态码的返回值
+            if (connection.getResponseCode() == 200) { // 正常响应
+                // 获取输入流
+                InputStream inputStream = connection.getInputStream();
+                try {
+                    // 开始读取数据
+                    byte[] buffer = new byte[256];
+                    int len = 0;
+                    while ((len = inputStream.read(buffer)) > 0) {
+                        baos.write(buffer, 0, len);
+                    }
+                    msg = baos.toString(StandardCharsets.UTF_8);
+                } finally {
+                    // 关闭输入、输出流
+                    inputStream.close();
+                    baos.close();
+                }
+
+            }
+            // 断开连接，释放资源
+            connection.disconnect();
+
+            // 显示响应结果
+            System.out.println(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+	}		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>POST 请求</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+@Data
+@Slf4j
+public class Test {
+
+
+    public static void main(String[] args) throws IOException {
+
+        try {
+            // 获取访问URL地址
+            URL url = new URL("https://www.netkiller.cn/test/");
+            // 创建HttpURLConnection对象
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // POST 请求方式
+            connection.setRequestMethod("POST");
+            // 设置连接超时时间
+            connection.setConnectTimeout(3000);
+            // 设置是否向 HttpUrlConnection 输出，对于post请求，参数要放在 http 正文内，因此需要设为true，默认为false。
+            connection.setDoOutput(true);
+            // 设置是否从 HttpUrlConnection读入，默认为true
+            connection.setDoInput(true);
+            // 设置是否使用缓存
+            connection.setUseCaches(false);
+            // 设置此 HttpURLConnection 实例是否应该自动执行 HTTP 重定向
+            connection.setInstanceFollowRedirects(true);
+            // 设置使用标准编码 application/x-www-form-urlencoded 格式参数编码
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            // 添加 HTTP HEAD 中的一些参数。
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            // 连接
+            connection.connect();
+            // POST 参数
+            String params = "username=neo&password=netkiller";
+            OutputStream out = connection.getOutputStream();
+            out.write(params.getBytes());
+            out.flush();
+            out.close();
+            // 从连接中读取响应信息
+            String msg = "";
+            int code = connection.getResponseCode();
+            if (code == 200) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    msg += line + "\n";
+                }
+                reader.close();
+            }
+            // 断开连接
+            connection.disconnect();
+
+            // 处理结果
+            System.out.println(msg);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	
+	<section id="InetAddress">
 		<title>获取IP地址何机器名</title>
 		<para>改变java.io.tmpdir的默认值</para>
 		<programlisting>
