@@ -626,43 +626,111 @@ finish();
 		</section>
 	</section>
 
-
-
 	<section id="activity.DataBinding">
 		<title>DataBinding</title>
-		<para>以 MainActivity 为例，为 MainActivity 添加 DataBinding</para>
-		<programlisting>
-		<![CDATA[
+		<section>
+			<title>启用 DataBinding</title>
+			<screen>
+			<![CDATA[
+	buildFeatures {
+        dataBinding = true
+        viewBinding=true
+    }			
+			]]>
+			</screen>
+			<para>viewBinding=true 是开启 Layout DataBinding 的关键</para>
+			<programlisting>
+			<![CDATA[
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace = "cn.netkiller.webrtc"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "cn.netkiller.webrtc"
+        minSdk = 35
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        dataBinding = true
+        viewBinding=true
+    }
+}
+
+dependencies {
+
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
+//    implementation(libs.webrtc)
+    implementation(libs.camera.view)
+    implementation(libs.camera.lifecycle)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    implementation(files("libs/google-webrtc-1.0.32006.aar"))
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>MainActivity 中使用 ActivityMainBinding</title>
+			<para>以 MainActivity 为例，为 MainActivity 添加 DataBinding</para>
+			<programlisting>
+			<![CDATA[
 import cn.netkiller.student.databinding.ActivityMainBinding;
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<para>定义 binding 变量</para>
+			<programlisting>
+			<![CDATA[
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private ActivityMainBinding binding;
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 	}
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-		
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-		
-		]]>
-		</programlisting>
+			]]>
+			</programlisting>
+			
+		</section>
+		<section>
+			<title>ViewDataBinding 例子</title>
+			<programlisting>
+			<![CDATA[
+ViewDataBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="activity.keyboard">

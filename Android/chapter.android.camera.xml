@@ -413,21 +413,6 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    //    void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
-//        Preview preview = new Preview.Builder()
-//                .build();
-//
-////        CameraSelector cameraSelector = new CameraSelector.Builder()
-//////                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-////                .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
-////                .build();
-//
-//        CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-//        preview.setSurfaceProvider(binding.previewView.getSurfaceProvider());
-//
-//        Camera camera = cameraProvider.bindToLifecycle(getViewLifecycleOwner(), cameraSelector, preview);
-//    }
-
 
     @Override
     public void onDestroyView() {
