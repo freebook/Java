@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	</section>
 	<section>
 		<title>相机开发</title>
+		<para>https://developer.android.google.cn/codelabs/camerax-getting-started?hl=zh-cn#0</para>
 		<section>
 			<title>页面布局</title>
 			<programlisting>

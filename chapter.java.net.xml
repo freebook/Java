@@ -340,6 +340,86 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>POST JSON</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+@Data
+@Slf4j
+public class Test {
+    
+    public static void main(String[] args) throws IOException {
+
+        try {
+            // 获取访问URL地址
+            URL url = new URL("https://www.netkiller.cn/test/");
+            // 创建HttpURLConnection对象
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // POST 请求方式
+            connection.setRequestMethod("POST");
+            // 设置连接超时时间
+            connection.setConnectTimeout(3000);
+            // 设置是否向 HttpUrlConnection 输出，对于post请求，参数要放在 http 正文内，因此需要设为true，默认为false。
+            connection.setDoOutput(true);
+            // 设置是否从 HttpUrlConnection读入，默认为true
+            connection.setDoInput(true);
+            // 设置是否使用缓存
+            connection.setUseCaches(false);
+            // 设置此 HttpURLConnection 实例是否应该自动执行 HTTP 重定向
+            connection.setInstanceFollowRedirects(true);
+            // 设置使用 JSON 编码 application/json 格式参数编码
+            connection.setRequestProperty("Content-Type", "application/json");
+            // 添加 HTTP HEAD 中的一些参数。
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            // 连接
+            connection.connect();
+            // POST 参数
+            String jsonString = "{}";
+            OutputStream out = connection.getOutputStream();
+            out.write(jsonString.getBytes());
+            out.flush();
+            out.close();
+            // 从连接中读取响应信息
+            String msg = "";
+            int code = connection.getResponseCode();
+            if (code == 200) {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    msg += line + "\n";
+                }
+                bufferedReader.close();
+            }
+            // 断开连接
+            connection.disconnect();
+
+            // 处理结果
+            System.out.println(msg);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	
 	<section id="InetAddress">

@@ -1,0 +1,1220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="webrtc">
+	<title>WebRTC</title>
+	<section id="WebRTC.ICE">
+		<title>ICE Server</title>
+		<programlisting>
+		<![CDATA[
+		LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<>();
+//        iceServers.add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
+        PeerConnection.IceServer iceServer = PeerConnection.IceServer.builder("turn:ice.netkiller.cn:3478").setUsername("neo").setPassword("netkiller").createIceServer();
+        iceServers.add(iceServer);		
+		]]>
+		</programlisting>
+		<para>下面方法已经过时，不推荐</para>
+		<programlisting>
+		<![CDATA[
+        iceServers.add(new PeerConnection.IceServer("turn:api.netkiller.cn:3478", "neo", "netkiller"));		
+		]]>
+		</programlisting>
+	</section>
+	<section id="WebRTC.PeerConnectionFactory">
+		<title>PeerConnectionFactory</title>
+		<programlisting>
+		<![CDATA[
+        LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<>();
+        PeerConnection.IceServer iceServer = PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer();
+        iceServers.add(iceServer);
+
+        PeerConnection.RTCConfiguration config = new PeerConnection.RTCConfiguration(iceServers);
+        peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();		
+		]]>
+		</programlisting>
+		<section>
+			<title>InitializationOptions</title>
+			<programlisting>
+			<![CDATA[
+            InitializationOptions initializationOptions = InitializationOptions.builder(this)
+                    .setEnableInternalTracer(true)
+                    .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
+                    .createInitializationOptions();
+            PeerConnectionFactory.initialize(initializationOptions);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Options</title>
+			<programlisting>
+			<![CDATA[
+PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
+            options.disableEncryption = true;
+            options.disableNetworkMonitor = true;			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>EglBase</title>
+			<programlisting>
+			<![CDATA[
+			InitializationOptions initializationOptions = InitializationOptions.builder(this)
+                    .setEnableInternalTracer(true)
+                    .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
+                    .createInitializationOptions();
+            PeerConnectionFactory.initialize(initializationOptions);
+
+            eglBase = EglBase.create();
+            PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
+            options.disableEncryption = true;
+            options.disableNetworkMonitor = true;
+            peerConnectionFactory = PeerConnectionFactory.builder()
+                    .setVideoDecoderFactory(new DefaultVideoDecoderFactory(eglBase.getEglBaseContext()))
+                    .setVideoEncoderFactory(new DefaultVideoEncoderFactory(eglBase.getEglBaseContext(), true, true))
+                    .setOptions(options)
+                    .createPeerConnectionFactory();			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="SurfaceViewRenderer">
+		<title>SurfaceViewRenderer</title>
+		<screen>
+		<![CDATA[
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/localSurfaceView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1" />		
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+		SurfaceViewRenderer localSurfaceView = findViewById(R.id.localSurfaceView);
+        localSurfaceView.init(eglBase.getEglBaseContext(), null);
+        localSurfaceView.setMirror(true);
+        localSurfaceView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+        localSurfaceView.setKeepScreenOn(true);
+        localSurfaceView.setZOrderMediaOverlay(true);
+        localSurfaceView.setEnableHardwareScaler(false);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="WebRTC.MediaConstraints">
+		<title>MediaConstraints</title>
+		<programlisting>
+		<![CDATA[
+MediaConstraints audioConstraints = new MediaConstraints();
+//回声消除
+audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googEchoCancellation", "true"));
+//自动增益 
+audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googAutoGainControl", "true"));
+//高音过滤 
+audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googHighpassFilter", "true"));
+//噪音处理
+audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googNoiseSuppression", "true"));
+		]]>
+		</programlisting>
+	</section>
+	<section id="WebRTC.SDP">
+		<title>SDP 协议</title>
+		<section>
+			<title>WebRTC 中 DTLS 参数</title>
+			<para>RFC5763，SDP</para>
+			<para>a=setup 表示 DTLS 的协商过程中角色，有三个可能值：</para>
+			<programlisting>
+			<![CDATA[
+a=setup:actpass 既可以是 client 角色，也可以是 server 角色
+a=setup:active client 角色
+a=setup:passive server 角色
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>安全参数</title>
+			<para>a=fingerprint 的内容是证书的摘要签名，用于验证证书的有效性，防止冒充。</para>
+		</section>
+	</section>
+	<section id="WebRTC.example">
+		<title>WebRTC 推流/拉流</title>
+		<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature android:name="android.hardware.camera.any" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.WebRTC"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DownActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>		
+		]]>
+		</programlisting>
+		<section>
+			<title>WebRTC 拉流</title>
+			<para>主要流程，A(local)和B(remote)代表两个人或者两个端，本地跟远程,</para>
+			<screen>
+		<![CDATA[
+A 创建 Offer
+A 保存 Offer(set local description)
+A 发送 Offer 给 B
+B 保存 Offer(set remote description)
+B 创建 Answer
+B 保存 Answer(set local description)
+B 发送 Answer给 A
+A 保存 Answer(set remote description)
+A 发送 Ice Candidates 给 B
+B 发送 Ice Candidates 给 A
+A,B 收到对方的媒体流并播放
+		]]>
+			</screen>
+			<para>总共11步, 分成交换 offer/answer, 交换 Ice Candidates，建立通信三个部分, 双方流程基本是对称的，主要代码如下，初始化PeerConnectionFactory并分别创建PeerConnection , 并向PeerConnection 添加本地媒体流.</para>
+			<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DownActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/remoteSurfaceView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="bottom|center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/upStreaming"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:text="拉流" />
+
+        <Button
+            android:id="@+id/video_capture_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:text="停止" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+		]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.webrtc;
+
+import static cn.netkiller.webrtc.HttpUtils.post;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.webrtc.AudioSource;
+import org.webrtc.AudioTrack;
+import org.webrtc.Camera1Enumerator;
+import org.webrtc.Camera2Enumerator;
+import org.webrtc.CameraEnumerator;
+import org.webrtc.DataChannel;
+import org.webrtc.DefaultVideoDecoderFactory;
+import org.webrtc.DefaultVideoEncoderFactory;
+import org.webrtc.EglBase;
+import org.webrtc.IceCandidate;
+import org.webrtc.MediaConstraints;
+import org.webrtc.MediaStream;
+import org.webrtc.PeerConnection;
+import org.webrtc.PeerConnectionFactory;
+import org.webrtc.RendererCommon;
+import org.webrtc.RtpReceiver;
+import org.webrtc.SdpObserver;
+import org.webrtc.SessionDescription;
+import org.webrtc.SurfaceTextureHelper;
+import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.VideoCapturer;
+import org.webrtc.VideoSource;
+import org.webrtc.VideoTrack;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class DownActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_down);
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//            return insets;
+//        });
+
+        ActionBar actionBar = getSupportActionBar();  // 获取ActionBar
+//        ActionBar actionBar = getActionBar();  // 获取ActionBar
+        if (actionBar != null) {
+            actionBar.setTitle("关于");  // 设置ActionBar的标题
+            actionBar.setSubtitle("请详细阅读");  // 副标题
+            actionBar.setDisplayHomeAsUpEnabled(true);  // 设置返回按钮
+        }
+
+        webrtc();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void webrtc() {
+
+        LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<>();
+//        PeerConnection.IceServer iceServer = PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer();
+        PeerConnection.IceServer iceServer = PeerConnection.IceServer.builder("turn:api.netkiller.cn:3478").setUsername("neo").setPassword("netkiller").createIceServer();
+        iceServers.add(iceServer);
+        PeerConnection.RTCConfiguration config = new PeerConnection.RTCConfiguration(iceServers);
+        config.enableDtlsSrtp = true;
+        //创建EglBase对象
+        eglBase = EglBase.create();
+
+        // 初始化 PeerConnectionFactory
+        PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory
+                .InitializationOptions.builder(this)
+                .setEnableInternalTracer(true)
+                .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
+                .createInitializationOptions();
+        PeerConnectionFactory.initialize(initializationOptions);
+
+        PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
+        options.disableEncryption = false;
+        options.disableNetworkMonitor = true;
+        peerConnectionFactory = PeerConnectionFactory.builder()
+                .setVideoDecoderFactory(new DefaultVideoDecoderFactory(eglBase.getEglBaseContext()))
+                .setVideoEncoderFactory(new DefaultVideoEncoderFactory(eglBase.getEglBaseContext(), true, true))
+                .setOptions(options)
+                .createPeerConnectionFactory();
+
+        peerConnection = peerConnectionFactory.createPeerConnection(config, new MyPeerConnectionObserver());
+
+        // 初始化Surface
+        initSurface();
+        // 初始化Sdp回调
+
+//        DataChannel.Init init = new DataChannel.Init();
+//        if (peerConnection != null) {
+//            DataChannel channel = peerConnection.createDataChannel("CHANNEL", init);
+//        }
+//        DateChannelObserver channelObserver = new DateChannelObserver();
+//        connectionObserver.setObserver(channelObserver);
+
+        constraints = new MediaConstraints();
+        constraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
+        constraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
+        constraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+        peerConnection.createOffer(new MySdpObserver(), constraints);
+
+    }
+
+    public void initSurface() {
+        // 设置视频显示
+//        SurfaceViewRenderer localSurfaceView = findViewById(R.id.localSurfaceView);
+        remoteSurfaceView = findViewById(R.id.remoteSurfaceView);
+//        initSurfaceView(localSurfaceView);
+        initSurfaceView(remoteSurfaceView);
+//        startLocalVideoCapture(localSurfaceView);
+//        startLocalAudioCapture();
+    }
+
+    private void initSurfaceView(SurfaceViewRenderer localSurfaceView) {
+        localSurfaceView.init(eglBase.getEglBaseContext(), null);
+        localSurfaceView.setMirror(false);
+        localSurfaceView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+        localSurfaceView.setKeepScreenOn(true);
+        localSurfaceView.setZOrderMediaOverlay(true);
+        localSurfaceView.setEnableHardwareScaler(false);
+    }
+
+
+    private PeerConnectionFactory peerConnectionFactory;
+    private PeerConnection peerConnection;
+
+    private EglBase eglBase;
+
+    private SurfaceViewRenderer remoteSurfaceView;
+    private MediaConstraints constraints;
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        peerConnection.close();
+    }
+
+
+    private class MySdpObserver implements SdpObserver {
+
+        @Override
+        public void onCreateSuccess(SessionDescription sessionDescription) {
+            Log.d(TAG, String.format("onCreateSuccess %s %s", sessionDescription.type, sessionDescription.description));
+            SessionDescription.Type type = sessionDescription.type;
+
+            // 将offer发送给服务器
+            if (type == SessionDescription.Type.OFFER) {
+
+//                offer(sessionDescription);
+                // 将会话描述设置在本地
+                peerConnection.setLocalDescription(new MySdpObserver(), sessionDescription);
+                JSONObject jsonObject = new JSONObject();
+
+                try {
+//                    jsonObject.put("type", localDescription.type.name().toLowerCase());
+                    //            SessionDescription localDescription = peerConnection.getLocalDescription();
+                    jsonObject.put("type", sessionDescription.type.canonicalForm());
+                    jsonObject.put("sdp", sessionDescription.description);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                Log.d(TAG, "OFFER " + jsonObject.toString());
+
+                // 发送呼叫
+                String jsonString = post("http://139.9.54.211:5349/offer", jsonObject.toString());
+
+                if (!jsonString.equals("")) {
+                    Log.d(TAG, "onCreateSuccess ANSWER " + jsonString);
+                    try {
+                        jsonObject = new JSONObject(jsonString);
+                        String description = jsonObject.getString("sdp");
+                        SessionDescription answer = new SessionDescription(SessionDescription.Type.ANSWER, description);
+                        peerConnection.setRemoteDescription(new MySdpObserver(), answer);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    Log.d(TAG, "onCreateSuccess Remote server disconnect!");
+                }
+//                peerConnection.createAnswer(new MySdpObserver(), constraints);
+
+            } else if (type == SessionDescription.Type.ANSWER) {
+                // 发送应答
+//                answer(sessionDescription);
+
+            } else if (type == SessionDescription.Type.PRANSWER) {
+                // 发送再次应答
+            }
+        }
+
+        @Override
+        public void onSetSuccess() {
+            Log.d(TAG, "onSetSuccess");
+        }
+
+        @Override
+        public void onCreateFailure(String s) {
+            Log.d(TAG, "onCreateFailure " + s);
+        }
+
+        @Override
+        public void onSetFailure(String s) {
+            Log.d(TAG, "onSetFailure " + s);
+        }
+    }
+
+    private class MyPeerConnectionObserver implements PeerConnection.Observer {
+        @Override
+        public void onSignalingChange(PeerConnection.SignalingState signalingState) {
+            Log.d(TAG, "onSignalingChange " + signalingState.toString());
+        }
+
+        @Override
+        public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+            Log.d(TAG, "onIceConnectionChange " + iceConnectionState.toString());
+        }
+
+        @Override
+        public void onIceConnectionReceivingChange(boolean b) {
+            Log.d(TAG, "onIceConnectionReceivingChange " + b);
+        }
+
+        @Override
+        public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
+            Log.d(TAG, "onIceGatheringChange " + iceGatheringState.toString());
+        }
+
+        @Override
+        public void onIceCandidate(org.webrtc.IceCandidate iceCandidate) {
+            // 收到ICE候选
+            Log.d(TAG, "onIceCandidate " + iceCandidate.toString());
+            // setIceCandidate(iceCandidate);
+            // 添加对方的ice
+            peerConnection.addIceCandidate(iceCandidate);
+        }
+
+        @Override
+        public void onIceCandidatesRemoved(IceCandidate[] iceCandidates) {
+            Log.d(TAG, "onIceCandidatesRemoved " + iceCandidates.toString());
+        }
+
+        @Override
+        public void onAddStream(org.webrtc.MediaStream mediaStream) {
+            // 收到远程音视频流
+            Log.d(TAG, "onAddStream : " + mediaStream.toString());
+            List<VideoTrack> videoTracks = mediaStream.videoTracks;
+            if (videoTracks != null && videoTracks.size() > 0) {
+                VideoTrack videoTrack = videoTracks.get(0);
+                if (videoTrack != null) {
+                    videoTrack.addSink(remoteSurfaceView);
+                }
+            }
+            List<AudioTrack> audioTracks = mediaStream.audioTracks;
+            if (audioTracks != null && audioTracks.size() > 0) {
+                AudioTrack audioTrack = audioTracks.get(0);
+                if (audioTrack != null) {
+                    audioTrack.setVolume(Config.VOLUME);
+                }
+            }
+        }
+
+        @Override
+        public void onRemoveStream(MediaStream mediaStream) {
+            Log.d(TAG, "onRemoveStream " + mediaStream.toString());
+        }
+
+        @Override
+        public void onDataChannel(DataChannel dataChannel) {
+            Log.d(TAG, "onDataChannel " + dataChannel.toString());
+        }
+
+        @Override
+        public void onRenegotiationNeeded() {
+            Log.d(TAG, "onRenegotiationNeeded ");
+        }
+
+        @Override
+        public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
+            List<String> tmp = new ArrayList<>();
+            for (MediaStream mediaStream : mediaStreams) {
+                tmp.add(mediaStream.getId());
+            }
+
+            Log.d(TAG, "onAddTrack rtpReceiver " + rtpReceiver.id() + " MediaStream " + tmp);
+        }
+
+    }
+
+}		
+		]]>
+			</programlisting>
+
+		</section>
+		<section>
+			<title>WebRTC 推流</title>
+			<para></para>
+			<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpActivity">
+
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/localSurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:id="@+id/control"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom|center_vertical"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="推流" />
+
+            <Button
+                android:id="@+id/stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="停止" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>		
+		]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.webrtc;
+
+import static cn.netkiller.webrtc.HttpUtils.post;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.webrtc.AudioSource;
+import org.webrtc.AudioTrack;
+import org.webrtc.Camera1Enumerator;
+import org.webrtc.Camera2Enumerator;
+import org.webrtc.CameraEnumerator;
+import org.webrtc.CameraVideoCapturer;
+import org.webrtc.DataChannel;
+import org.webrtc.DefaultVideoDecoderFactory;
+import org.webrtc.DefaultVideoEncoderFactory;
+import org.webrtc.EglBase;
+import org.webrtc.IceCandidate;
+import org.webrtc.MediaConstraints;
+import org.webrtc.MediaStream;
+import org.webrtc.PeerConnection;
+import org.webrtc.PeerConnectionFactory;
+import org.webrtc.RendererCommon;
+import org.webrtc.RtpReceiver;
+import org.webrtc.SdpObserver;
+import org.webrtc.SessionDescription;
+import org.webrtc.SurfaceTextureHelper;
+import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.VideoCapturer;
+import org.webrtc.VideoSource;
+import org.webrtc.VideoTrack;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+import okio.ByteString;
+
+public class UpActivity extends AppCompatActivity {
+    private static final String TAG = UpActivity.class.getSimpleName();
+    private WebSocket websocket;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_up);
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//            return insets;
+//        });
+
+        ActionBar actionBar = getSupportActionBar();  // 获取ActionBar
+//        ActionBar actionBar = getActionBar();  // 获取ActionBar
+        if (actionBar != null) {
+            actionBar.setTitle("关于");  // 设置ActionBar的标题
+            actionBar.setSubtitle("请详细阅读");  // 副标题
+            actionBar.setDisplayHomeAsUpEnabled(true);  // 设置返回按钮
+        }
+
+
+        Button button = findViewById(R.id.start);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webrtc();
+                signaling();
+            }
+        });
+        Button stop = findViewById(R.id.stop);
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                peerConnection.close();
+            }
+        });
+    }
+
+    // 监听返回按钮，如果点击返回按钮则关闭当前Activity
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void signaling() {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.SECONDS)//设置读取超时时间
+                .writeTimeout(30, TimeUnit.SECONDS)//设置写的超时时间
+                .connectTimeout(30, TimeUnit.SECONDS)//设置连接超时时间
+                .pingInterval(30, TimeUnit.SECONDS)
+                .build();
+
+        //连接地址
+//        String url = "ws://172.20.10.3:5349";
+        String url = "ws://www.netkiller.cn:5349";
+//构建一个连接请求对象
+        Request request = new Request.Builder().url(url).build();
+
+        websocket = client.newWebSocket(request, new WebSocketListener() {
+            @Override
+            public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+                super.onClosed(webSocket, code, reason);
+                Log.d(TAG, "onClosed code=" + code + " reason=" + reason);
+            }
+
+            @Override
+            public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+                super.onClosing(webSocket, code, reason);
+                Log.d(TAG, "onClosing code=" + code + " reason=" + reason);
+            }
+
+            @Override
+            public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable Response response) {
+                super.onFailure(webSocket, t, response);
+                Log.d(TAG, "onFailure " + response);
+                t.printStackTrace();
+            }
+
+            @Override
+            public void onMessage(@NonNull WebSocket webSocket, @NonNull String text) {
+                super.onMessage(webSocket, text);
+
+                Log.d(TAG, "onMessage " + text);
+                try {
+                    JSONObject jsonObject = new JSONObject(text);
+                    String description = jsonObject.getString("sdp");
+                    SessionDescription offer = new SessionDescription(SessionDescription.Type.ANSWER, description);
+                    peerConnection.setRemoteDescription(new MySdpObserver(), offer);
+//                    peerConnection.createAnswer(new MySdpObserver(), constraints);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onMessage(@NonNull WebSocket webSocket, @NonNull ByteString bytes) {
+                super.onMessage(webSocket, bytes);
+                Log.d(TAG, "onMessage ByteString " + bytes.toString());
+            }
+
+            @Override
+            public void onOpen(@NonNull WebSocket webSocket, @NonNull Response response) {
+                super.onOpen(webSocket, response);
+                Log.d(TAG, "onOpen " + response.toString());
+            }
+        });
+
+        peerConnection.createOffer(new MySdpObserver(), constraints);
+
+
+    }
+
+    private PeerConnectionFactory peerConnectionFactory;
+    private PeerConnection peerConnection;
+
+    private EglBase eglBase;
+
+    private List<String> streamIds = new ArrayList<>();
+
+    private SurfaceViewRenderer localSurfaceView;
+    private MediaConstraints constraints = new MediaConstraints();
+    ;
+
+    private void webrtc() {
+
+        LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<>();
+//        PeerConnection.IceServer iceServer = PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer();
+        PeerConnection.IceServer iceServer = PeerConnection.IceServer.builder("turn:api.netkiller.cn:3478").setUsername("neo").setPassword("netkiller").createIceServer();
+        iceServers.add(iceServer);
+        PeerConnection.RTCConfiguration config = new PeerConnection.RTCConfiguration(iceServers);
+        config.enableDtlsSrtp = true;
+        //创建EglBase对象
+        eglBase = EglBase.create();
+
+//        // 初始化 PeerConnectionFactory
+        PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory
+                .InitializationOptions.builder(this)
+                .setEnableInternalTracer(true)
+                .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
+                .createInitializationOptions();
+        PeerConnectionFactory.initialize(initializationOptions);
+
+        PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
+        options.disableEncryption = false;
+        options.disableNetworkMonitor = true;
+        peerConnectionFactory = PeerConnectionFactory.builder()
+                .setVideoDecoderFactory(new DefaultVideoDecoderFactory(eglBase.getEglBaseContext()))
+                .setVideoEncoderFactory(new DefaultVideoEncoderFactory(eglBase.getEglBaseContext(), true, true))
+                .setOptions(options)
+                .createPeerConnectionFactory();
+
+//        peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
+        peerConnection = peerConnectionFactory.createPeerConnection(config, new MyPeerConnectionObserver());
+
+        // 初始化Surface
+        initSurface();
+
+//        DataChannel.Init init = new DataChannel.Init();
+//        if (peerConnection != null) {
+//            DataChannel channel = peerConnection.createDataChannel("CHANNEL", init);
+//        }
+//        DateChannelObserver channelObserver = new DateChannelObserver();
+//        connectionObserver.setObserver(channelObserver);
+
+        constraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
+        constraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
+        constraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+
+//        startLocalVideoCapture(localSurfaceView);
+//        startLocalAudioCapture();
+    }
+
+    public void initSurface() {
+        // 设置视频显示
+        localSurfaceView = findViewById(R.id.localSurfaceView);
+        initSurfaceView(localSurfaceView);
+        startLocalVideoCapture(localSurfaceView);
+        startLocalAudioCapture();
+    }
+
+    private void initSurfaceView(SurfaceViewRenderer localSurfaceView) {
+
+//        if (localSurfaceView.isActivated()) {
+        localSurfaceView.release();
+//        }
+
+        localSurfaceView.init(eglBase.getEglBaseContext(), null);
+        localSurfaceView.setMirror(false);
+        localSurfaceView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+        localSurfaceView.setKeepScreenOn(true);
+        localSurfaceView.setZOrderMediaOverlay(true);
+        localSurfaceView.setEnableHardwareScaler(false);
+    }
+
+    private void startLocalVideoCapture(SurfaceViewRenderer localSurfaceView) {
+        CameraVideoCapturer videoCapturer = createVideoCapture();
+        VideoSource videoSource = peerConnectionFactory.createVideoSource(true);
+        SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create(Thread.currentThread().getName(), eglBase.getEglBaseContext());
+        videoCapturer.initialize(surfaceTextureHelper, this, videoSource.getCapturerObserver());
+        videoCapturer.startCapture(Config.VIDEO_RESOLUTION_WIDTH, Config.VIDEO_RESOLUTION_HEIGHT, Config.VIDEO_FPS);
+        // width, height, frame per second
+        VideoTrack videoTrack = peerConnectionFactory.createVideoTrack(Config.VIDEO_TRACK_ID, videoSource);
+        videoTrack.addSink(localSurfaceView);
+        MediaStream localMediaStream = peerConnectionFactory.createLocalMediaStream(Config.LOCAL_VIDEO_STREAM);
+        localMediaStream.addTrack(videoTrack);
+        peerConnection.addTrack(videoTrack, streamIds);
+        peerConnection.addStream(localMediaStream);
+    }
+
+    private CameraVideoCapturer createVideoCapture() {
+        CameraEnumerator enumerator;
+        if (Camera2Enumerator.isSupported(this)) {
+            enumerator = new Camera2Enumerator(this);
+        } else {
+            enumerator = new Camera1Enumerator(true);
+        }
+        final String[] deviceNames = enumerator.getDeviceNames();
+
+        for (String deviceName : deviceNames) {
+            if (enumerator.isFrontFacing(deviceName)) {
+                CameraVideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
+
+                if (videoCapturer != null) {
+                    return videoCapturer;
+                }
+            }
+        }
+
+        for (String deviceName : deviceNames) {
+            if (!enumerator.isFrontFacing(deviceName)) {
+                CameraVideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
+                if (videoCapturer != null) {
+                    return videoCapturer;
+                }
+            }
+        }
+        return null;
+    }
+
+//    private void startLocalVideoCapture(SurfaceViewRenderer localSurfaceView) {
+//        VideoSource videoSource = peerConnectionFactory.createVideoSource(true);
+//        SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create(Thread.currentThread().getName(), eglBase.getEglBaseContext());
+//        VideoCapturer videoCapturer = createCameraCapturer();
+//        videoCapturer.initialize(surfaceTextureHelper, this, videoSource.getCapturerObserver());
+//        videoCapturer.startCapture(Config.VIDEO_RESOLUTION_WIDTH, Config.VIDEO_RESOLUTION_HEIGHT, Config.VIDEO_FPS);
+//        // width, height, frame per second
+//        VideoTrack videoTrack = peerConnectionFactory.createVideoTrack(Config.VIDEO_TRACK_ID, videoSource);
+//        videoTrack.addSink(localSurfaceView);
+//        MediaStream localMediaStream = peerConnectionFactory.createLocalMediaStream(Config.LOCAL_VIDEO_STREAM);
+//        localMediaStream.addTrack(videoTrack);
+//        peerConnection.addTrack(videoTrack, streamIds);
+//        peerConnection.addStream(localMediaStream);
+//    }
+
+    /**
+     * 判断使用Camera1还是Camera2
+     *
+     * @return VideoCapturer
+     */
+    private VideoCapturer createCameraCapturer() {
+        if (Camera2Enumerator.isSupported(this)) {
+            return createCameraCapturer(new Camera2Enumerator(this));
+        } else {
+            return createCameraCapturer(new Camera1Enumerator(true));
+        }
+    }
+
+    private VideoCapturer createCameraCapturer(CameraEnumerator enumerator) {
+        final String[] deviceNames = enumerator.getDeviceNames();
+
+        // 首先，尝试找到前置摄像头
+        Log.d(TAG, "尝试查找前置摄像头...");
+        for (String deviceName : deviceNames) {
+            if (enumerator.isFrontFacing(deviceName)) {
+                Log.d(TAG, "前置摄像头捕捉器创建成功");
+                VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
+                if (videoCapturer != null) {
+                    return videoCapturer;
+                }
+            }
+        }
+
+        // 没有找到前置摄像头，试试别的
+        Log.d(TAG, "Looking for other cameras.");
+        for (String deviceName : deviceNames) {
+            if (!enumerator.isFrontFacing(deviceName)) {
+                Log.d(TAG, "Creating other camera capturer.");
+                VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
+                if (videoCapturer != null) {
+                    return videoCapturer;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void startLocalAudioCapture() {
+        //语音
+        MediaConstraints audioConstraints = new MediaConstraints();
+        //回声消除
+        audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googEchoCancellation", "true"));
+        //自动增益
+        audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googAutoGainControl", "true"));
+        //高音过滤
+        audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googHighpassFilter", "true"));
+        //噪音处理
+        audioConstraints.mandatory.add(new MediaConstraints.KeyValuePair("googNoiseSuppression", "true"));
+        AudioSource audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
+        AudioTrack audioTrack = peerConnectionFactory.createAudioTrack(Config.AUDIO_TRACK_ID, audioSource);
+        MediaStream localMediaStream = peerConnectionFactory.createLocalMediaStream(Config.LOCAL_AUDIO_STREAM);
+        localMediaStream.addTrack(audioTrack);
+        audioTrack.setVolume(Config.VOLUME);
+        peerConnection.addTrack(audioTrack, streamIds);
+        peerConnection.addStream(localMediaStream);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        peerConnection.close();
+    }
+
+
+    private class MySdpObserver implements SdpObserver {
+
+        @Override
+        public void onCreateSuccess(SessionDescription sessionDescription) {
+            Log.d(TAG, String.format("onCreateSuccess %s %s", sessionDescription.type, sessionDescription.description));
+            SessionDescription.Type type = sessionDescription.type;
+
+            // 将offer发送给服务器
+            if (type == SessionDescription.Type.OFFER) {
+
+//                JSONObject jsonObject = new JSONObject();
+//                try {
+//                    jsonObject.put("type", );
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+
+
+//
+////                offer(sessionDescription);
+//                // 将会话描述设置在本地
+                peerConnection.setLocalDescription(new MySdpObserver(), sessionDescription);
+                Log.d(TAG, "setLocalDescription");
+
+
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("type", sessionDescription.type.canonicalForm());
+                    jsonObject.put("sdp", sessionDescription.description);
+
+                    boolean status = websocket.send(jsonObject.toString());
+                    Log.d(TAG, "Send offer status=" + status + " json=" + jsonObject.toString());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+//                // 发送呼叫
+//                String jsonString = post("http://139.9.54.211:5349/offer", jsonObject.toString());
+//
+//                if (!jsonString.equals("")) {
+//                    Log.d(TAG, "onCreateSuccess ANSWER " + jsonString);
+//                    try {
+//                        jsonObject = new JSONObject(jsonString);
+//                        String description = jsonObject.getString("sdp");
+//                        SessionDescription answer = new SessionDescription(SessionDescription.Type.ANSWER, description);
+//                        peerConnection.setRemoteDescription(new MySdpObserver(), answer);
+//                    } catch (JSONException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                } else {
+//                    Log.d(TAG, "onCreateSuccess Remote server disconnect!");
+//                }
+
+            } else if (type == SessionDescription.Type.ANSWER) {
+                // 发送应答
+//                answer(sessionDescription);
+                Log.d(TAG, "setRemoteDescription");
+                peerConnection.setLocalDescription(new MySdpObserver(), sessionDescription);
+                Log.d(TAG, "setLocalDescription");
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("type", sessionDescription.type.canonicalForm());
+                    jsonObject.put("sdp", sessionDescription.description);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                boolean status = websocket.send(jsonObject.toString());
+                Log.d(TAG, "Status " + status + " ANSWER " + jsonObject.toString());
+
+                jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("type", "quit");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                status = websocket.send(jsonObject.toString());
+
+            } else if (type == SessionDescription.Type.PRANSWER) {
+                // 发送再次应答
+            }
+        }
+
+        @Override
+        public void onSetSuccess() {
+            Log.d(TAG, "onSetSuccess");
+        }
+
+        @Override
+        public void onCreateFailure(String s) {
+            Log.d(TAG, "onCreateFailure " + s);
+        }
+
+        @Override
+        public void onSetFailure(String s) {
+            Log.d(TAG, "onSetFailure " + s);
+        }
+    }
+
+    private class MyPeerConnectionObserver implements PeerConnection.Observer {
+        @Override
+        public void onSignalingChange(PeerConnection.SignalingState signalingState) {
+            Log.d(TAG, "onSignalingChange " + signalingState.toString());
+        }
+
+        @Override
+        public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+            Log.d(TAG, "onIceConnectionChange " + iceConnectionState.toString());
+        }
+
+        @Override
+        public void onIceConnectionReceivingChange(boolean b) {
+            Log.d(TAG, "onIceConnectionReceivingChange " + b);
+        }
+
+        @Override
+        public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
+            Log.d(TAG, "onIceGatheringChange " + iceGatheringState.toString());
+        }
+
+        @Override
+        public void onIceCandidate(org.webrtc.IceCandidate iceCandidate) {
+            // 收到ICE候选
+            Log.d(TAG, "onIceCandidate " + iceCandidate.toString());
+            // setIceCandidate(iceCandidate);
+            // 添加对方的ice
+            peerConnection.addIceCandidate(iceCandidate);
+        }
+
+        @Override
+        public void onIceCandidatesRemoved(IceCandidate[] iceCandidates) {
+            Log.d(TAG, "onIceCandidatesRemoved " + iceCandidates.toString());
+        }
+
+        @Override
+        public void onAddStream(org.webrtc.MediaStream mediaStream) {
+//            // 收到远程音视频流
+            Log.d(TAG, "onAddStream : " + mediaStream.toString());
+//            List<VideoTrack> videoTracks = mediaStream.videoTracks;
+//            if (videoTracks != null && videoTracks.size() > 0) {
+//                VideoTrack videoTrack = videoTracks.get(0);
+//                if (videoTrack != null) {
+//                    videoTrack.addSink(localSurfaceView);
+//                }
+//            }
+//            List<AudioTrack> audioTracks = mediaStream.audioTracks;
+//            if (audioTracks != null && audioTracks.size() > 0) {
+//                AudioTrack audioTrack = audioTracks.get(0);
+//                if (audioTrack != null) {
+//                    audioTrack.setVolume(Config.VOLUME);
+//                }
+//            }
+
+            VideoTrack remoteVideoTrack = mediaStream.videoTracks.get(0);
+            remoteVideoTrack.addSink(localSurfaceView);
+
+        }
+
+        @Override
+        public void onRemoveStream(MediaStream mediaStream) {
+            Log.d(TAG, "onRemoveStream " + mediaStream.toString());
+        }
+
+        @Override
+        public void onDataChannel(DataChannel dataChannel) {
+            Log.d(TAG, "onDataChannel id=" + dataChannel.id() + " label=" + dataChannel.label() + " state=" + dataChannel.state());
+        }
+
+        @Override
+        public void onRenegotiationNeeded() {
+            Log.d(TAG, "onRenegotiationNeeded ");
+        }
+
+        @Override
+        public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
+            List<String> tmp = new ArrayList<>();
+            for (MediaStream mediaStream : mediaStreams) {
+                tmp.add(mediaStream.getId());
+            }
+
+            Log.d(TAG, "onAddTrack rtpReceiver " + rtpReceiver.id() + " MediaStream " + tmp);
+        }
+
+    }
+
+}		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	
+</chapter>

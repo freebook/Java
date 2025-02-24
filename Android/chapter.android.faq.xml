@@ -191,4 +191,21 @@ neo@MacBook-Pro-M2 album %
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>java.lang.SecurityException: Permission denied (missing INTERNET permission?)</title>
+		<programlisting>
+		<![CDATA[
+<uses-permission android:name="android.permission.INTERNET" />		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>java.io.IOException: Cleartext HTTP traffic to **** not permitted</title>
+		<para>在AndroidManifest.xml配置文件的<application>标签中直接插入</para>
+		<screen>
+		<![CDATA[
+    android:usesCleartextTraffic="true"		
+		]]>
+		</screen>
+	</section>
 </chapter>

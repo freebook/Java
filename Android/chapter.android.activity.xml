@@ -125,12 +125,27 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		</section>
 	</section>
 
+	<section id="startActivity">
+		<title>切换 Activity</title>
+		<section id="startActivity.intent">
+			<title>startActivity()</title>
 
+			<para></para>
+			<programlisting>
+		<![CDATA[
+		Button button = (Button) findViewById(R.id.writeButton);
 
-
-	<section id="显式四种跳转方式">
-		<title>显式四种跳转方式</title>
-		<programlisting>
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                setContentView(R.layout.activity_write);
+                Intent intent = new Intent(MainActivity.this,WriteActivity.class);
+                startActivity(intent);
+            }
+        });		
+		]]>
+			</programlisting>
+			<para>四种 Activity 切换方式</para>
+			<programlisting>
 		<![CDATA[
     Intent intent = new Intent(MainActivity.this,HomeActivity.class);
     startActivity(intent);
@@ -149,23 +164,6 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		]]>
 		</programlisting>
-		<section id="startActivity">
-			<title>startActivity()</title>
-
-			<para></para>
-			<programlisting>
-		<![CDATA[
-		Button button = (Button) findViewById(R.id.writeButton);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setContentView(R.layout.activity_write);
-                Intent intent = new Intent(MainActivity.this,WriteActivity.class);
-                startActivity(intent);
-            }
-        });		
-		]]>
-			</programlisting>
 		</section>
 		<section id="App间跳转">
 			<title>App 间跳转</title>

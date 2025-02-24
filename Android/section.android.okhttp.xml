@@ -530,7 +530,7 @@ public void post(String function, File file, Callback responseCallback) {
 		</programlisting>
 		
 	</section>
-	<section id="HttpUrl.Builder">
+	<section id="okhttp.HttpUrl.Builder">
 		<title>HttpUrl.Builder 组装 URL 地址参数</title>
 		<para>使用字符串拼接 URL地址特别容易出错</para>
 		<programlisting>
