@@ -201,7 +201,7 @@ neo@MacBook-Pro-M2 album %
 	</section>
 	<section>
 		<title>java.io.IOException: Cleartext HTTP traffic to **** not permitted</title>
-		<para>在AndroidManifest.xml配置文件的<application>标签中直接插入</para>
+		<para>在AndroidManifest.xml配置文件的 application 标签中直接插入</para>
 		<screen>
 		<![CDATA[
     android:usesCleartextTraffic="true"		
