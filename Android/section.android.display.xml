@@ -2,6 +2,57 @@
 <section id="android.display">
 	<title>屏幕</title>
 	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+        DisplayManager displayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+        Display[] displays = displayManager.getDisplays();
+        for (Display display : displays) {
+            Log.d(TAG, String.valueOf(display.getDisplayId()));
+//            if (display.getType() == Display.TYPE_HDMI) {
+//                // 处理HDMI显示逻辑
+//            }
+        }
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+ 	DisplayManager displayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+	Display[] displays = displayManager.getDisplays();
+	for (Display display : displays) {
+		if (display.getType() == Display.TYPE_HDMI) {
+		    Surface surface = display.getSurface();
+		    mediaPlayer.setSurface(surface);
+		}
+	}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>媒体路由</title>
+		<programlisting>
+		<![CDATA[
+	MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
+   	MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
+   	if (route != null) {
+       // 处理视频路由逻辑
+   	}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>分辨率</title>
+		<programlisting>
+		<![CDATA[
+Display display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+Point size = new Point();
+display.getSize(size);
+int width = size.x;
+int height = size.y;
+		]]>
+		</programlisting>
+	</section>
+	<section>
 		<title>尺寸</title>
 		<programlisting>
 		<![CDATA[
@@ -18,7 +69,7 @@ getCurrentWindowMetrics: DisplayMetrics{density=1.5, width=1536, height=1964, sc
 		</screen>
 
 	</section>
-	<section>
+	<section id="全屏显示">
 		<title>全屏显示</title>
 		<programlisting>
 		<![CDATA[
@@ -42,6 +93,22 @@ fullscreen(this.getWindow().getDecorView().getRootView());
 
 # Fragment 中调用
 fullscreen(getActivity().getWindow().getDecorView().getRootView());
+		]]>
+		</programlisting>
+	</section>
+	<section id="音频处理">
+		<title>音频处理</title>
+		<programlisting>
+		<![CDATA[
+AudioTrack audioTrack = new AudioTrack(
+	AudioManager.STREAM_MUSIC,
+	sampleRate,
+	AudioFormat.CHANNEL_OUT_STEREO,
+	AudioFormat.ENCODING_PCM_16BIT,
+	bufferSize,
+	AudioTrack.MODE_STREAM
+);
+audioTrack.play();		
 		]]>
 		</programlisting>
 	</section>
