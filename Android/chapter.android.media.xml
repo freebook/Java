@@ -896,6 +896,15 @@ public class SoundPoolUtil {
     }		
 		]]>
 		</programlisting>
+		<para>关闭扬声器</para>
+		<programlisting>
+		<![CDATA[
+audioManager = (AudioManager) mcontext.getSystemService(Context.AUDIO_SERVICE);
+audioManager.setSpeakerphoneOn(false);
+audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 0, AudioManager.STREAM_VOICE_CALL);
+audioManager.setMode(AudioManager.MODE_IN_CALL);
+		]]>
+		</programlisting>
 	</section>
 	<section id="SurfaceView">
 		<title>SurfaceView</title>
