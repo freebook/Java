@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="aliyun">
+	<title>阿里云</title>
+	<section>
+		<title>CosyVoice 语音合成</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.conference.ai.aliyun;
+
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+
+import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
+import com.alibaba.dashscope.audio.ttsv2.SpeechSynthesisParam;
+import com.alibaba.dashscope.audio.ttsv2.SpeechSynthesizer;
+import com.alibaba.dashscope.common.ResultCallback;
+
+import java.io.FileNotFoundException;
+import java.util.concurrent.CountDownLatch;
+
+import cn.aigcsst.conference.ai.aigc.AigcSpeechSynthesizer;
+
+public class AliyunCosyVoiceSpeechSynthesizer implements AigcSpeechSynthesizer {
+    private static final String TAG = AliyunCosyVoiceSpeechSynthesizer.class.getSimpleName();
+
+    int sampleRate = 44100;
+    int channelConfig = AudioFormat.CHANNEL_OUT_MONO;
+    int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+
+    int buffersize = AudioTrack.getMinBufferSize(16000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_MP3);
+    private final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 16000, AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_MP3, buffersize, AudioTrack.MODE_STREAM);
+
+    public synchronized void playTrack(byte[] buffer) {
+        if (audioTrack != null && audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
+            audioTrack.write(buffer, 0, buffer.length);
+        }
+    }
+
+    @Override
+    public void stopSpeechRecognizer() {
+
+    }
+
+    @Override
+    public void startSpeechRecognizer() throws FileNotFoundException {
+
+
+        String textToSynthesize = "想不到时间过得这么快！昨天和你视频聊天，看到你那自豪又满意的笑容，我的心里呀，就如同喝了一瓶蜜一样甜呢！真心为你开心呢！";
+
+        SpeechSynthesisParam param =
+                SpeechSynthesisParam.builder()
+                        .model("cosyvoice-v1")
+                        .voice("loongstella")
+                        .apiKey("sk-56c7bc69e1c2407b9244e0895f603afe")
+                        .build();
+        System.out.println("init params done");
+
+        // Start the player
+        audioTrack.play();
+
+        class ReactCallback extends ResultCallback<SpeechSynthesisResult> {
+            public final CountDownLatch latch = new CountDownLatch(1);
+//            final File file = new File("result.mp3");
+//            final FileOutputStream fos = new FileOutputStream(file);
+
+            ReactCallback() throws FileNotFoundException {
+            }
+
+            @Override
+            public void onEvent(SpeechSynthesisResult message) {
+                // Write Audio to player
+                if (message.getAudioFrame() != null) {
+//                    audioPlayer.write(message.getAudioFrame());
+                    //                        fos.write(message.getAudioFrame().array());
+                    playTrack(message.getAudioFrame().array());
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                audioTrack.stop();
+                audioTrack.release();
+                System.out.println("synthesis onComplete!");
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                System.out.println("synthesis onError!");
+                e.printStackTrace();
+            }
+
+            public void waitForComplete() throws InterruptedException {
+                latch.await();
+            }
+        }
+        // Create a speech synthesizer
+        ReactCallback callback = new ReactCallback();
+        SpeechSynthesizer synthesizer = new SpeechSynthesizer(param, callback);
+
+        // Start the synthesizer with Text
+        System.out.printf("start synthesizer : %s \n", textToSynthesize);
+        synthesizer.call(textToSynthesize);
+        try {
+            callback.waitForComplete();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("[Metric] requestId: " + synthesizer.getLastRequestId() + ", first package delay ms: " + synthesizer.getFirstPackageDelay());
+    }
+
+    @Override
+    public void say(String text) {
+
+    }
+}
+		
+		]]>
+		</programlisting>
+	</section>
+</section>

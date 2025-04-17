@@ -55,12 +55,23 @@ Button btn = getView().findViewById(R.id.btn);
 		</tip>
 	</section>
 	<section>
-		<title>在 Fragment 中使用 Intent 跳转</title>
+		<title>在 Fragment 跳转 Activity</title>
 		<programlisting>
 			<![CDATA[
 Intent intent = new Intent(getActivity(), MyService.class);
 startActivity(intent);			
 			]]>
+		</programlisting>
+		
+	</section>
+	<section>
+		<title>在 Fragment 跳转 Activity 同时携带 Intent 参数</title>
+		<programlisting>
+		<![CDATA[
+	Intent intent = new Intent(getContext(), TestActivity.class);
+	intent.putExtra("page", State.Discovery.page);
+	startActivity(intent);		
+		]]>
 		</programlisting>
 	</section>
 	<section>

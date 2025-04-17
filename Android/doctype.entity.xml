@@ -48,7 +48,8 @@
 <!ENTITY chapter.android.misc.xml			SYSTEM "chapter.android.misc.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">
 
-<!ENTITY chapter.xfyun.xml				 	SYSTEM "chapter.xfyun.xml">
+<!ENTITY chapter.cloud.xml				 	SYSTEM "chapter.cloud.xml">
 <!ENTITY section.xfyun.aiui.xml				SYSTEM "section.xfyun.aiui.xml">
 <!ENTITY section.xfyun.tts.xml				SYSTEM "section.xfyun.tts.xml">
 <!ENTITY section.xfyun.wakeup.xml			SYSTEM "section.xfyun.wakeup.xml">
+<!ENTITY section.aliyun.xml					SYSTEM "section.aliyun.xml">

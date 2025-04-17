@@ -1,226 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="voice" ?>
-	<title>麦克风与录音</title>
-	<section id="RECORD_AUDIO">
-		<title>开启麦克风和SD卡权限</title>
+<chapter id="index"><?dbhtml dir="sip" ?>
+	<title>SIP(Session initialization Protocol) </title>
+	<subtitle></subtitle>
+	<para>SIP（Session initialization Protocol，会话初始协议）是由IETF（Internet Engineering Task Force，因特网工程任务组）制定的多媒体通信协议。</para>
+	<ulink url="https://developer.android.google.cn/guide/topics/connectivity/sip?hl=zh-cn#java" />
+	<section id="sip.AndroidManifest.xml">
+		<title>AndroidManifest.xml</title>
 		<programlisting>
 		<![CDATA[
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.netkiller.voice">
-
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
-
-</manifest>		
+  <uses-permission android:name="android.permission.USE_SIP" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-feature android:name="android.software.sip.voip" android:required="true" />
+  <uses-feature android:name="android.hardware.wifi" android:required="true" />
+  <uses-feature android:name="android.hardware.microphone" android:required="true" />
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+<uses-feature android:name="android.software.sip.voip" />		
 		]]>
 		</programlisting>
 	</section>
-	<section id="android.voice.layout">
-		<title>layout</title>
+	<section id="isVoipSupported">
+		<title>查看设备是否支持 voip 和 api</title>
 		<programlisting>
 		<![CDATA[
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+            sipManager = SipManager.newInstance(this);
 
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="http://www.netkiller.cn"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="1dp"
-        android:onClick="onClick"
-        android:text="Record"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="7dp"
-        android:text="Play"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</android.support.constraint.ConstraintLayout>		
+            boolean isVoipSupported = SipManager.isVoipSupported(this);
+            boolean isApiSupported = SipManager.isApiSupported(this);
+            Log.d(TAG, "isVoipSupported: " + isVoipSupported + " isApiSupported: " + isApiSupported);		
+		]]>
+		</programlisting>
+		<para>如果返回 isVoipSupported: false isApiSupported: false 表示设备不支持</para>
+	</section>
+	<section id="SipProfile">
+		<title>SipProfile</title>
+		<programlisting>
+		<![CDATA[
+        SipProfile sipProfile = new SipProfile.Builder(username, domain)
+                .setPassword(password)
+                .setOutboundProxy("139.9.54.211")
+                .setPort(5060)
+                .build();
+        Log.d(TAG, "sipProfile " + sipProfile.getUriString());		
 		]]>
 		</programlisting>
 	</section>
-	<section id="android.voice.Activity">
-		<title>Activity</title>
+	<section id="sipManager.register">
+		<title>sipManager.register</title>
 		<programlisting>
 		<![CDATA[
-package cn.netkiller.voice;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private static final int RECORD_AUDIO = 10;
-    private Button record;
-    private Button play;
-    private MediaRecorder mediaRecorder;
-    private TextView status;
-
-    private MediaPlayer mediaPlayer;
-    private String filename;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        status = (TextView) findViewById(R.id.status);
-        record = (Button) findViewById(R.id.record);
-        play = (Button) findViewById(R.id.play);
-
-        record.setOnClickListener(this);
-        play.setOnClickListener(this);
+		sipManager.open(sipProfile);
+		        
+        sipManager.register(sipProfile, 3600, new SipRegistrationListener() {
 
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
-        }
+            @Override
+            public void onRegistering(String localProfileUri) {
+                Log.d(TAG, localProfileUri);
+            }
 
+            @Override
+            public void onRegistrationDone(String localProfileUri, long expiryTime) {
+                Log.d(TAG, localProfileUri + " " + expiryTime);
+            }
+
+            @Override
+            public void onRegistrationFailed(String localProfileUri, int errorCode, String errorMessage) {
+                Log.d(TAG, localProfileUri + " " + errorCode + " " + errorMessage);
+            }
+        });
+
+        boolean status = sipManager.isRegistered(sipProfile.getUriString());
+
+        Log.d(TAG, "SIP Register: " + status);		
+		]]>
+		</programlisting>
+	</section>
+	<section id="sipManager.setRegistrationListener">
+		<title>sipManager.setRegistrationListener</title>
+		<programlisting>
+		<![CDATA[
+        sipManager.setRegistrationListener(sipProfile.getUriString(), new SipRegistrationListener() {
+
+            public void onRegistering(String localProfileUri) {
+                Log.d(TAG, "Registering with SIP Server...");
+            }
+
+            public void onRegistrationDone(String localProfileUri, long expiryTime) {
+                Log.d(TAG, "Ready");
+            }
+
+            public void onRegistrationFailed(String localProfileUri, int errorCode,
+                                             String errorMessage) {
+                Log.d(TAG, "Registration failed.  Please check settings.");
+            }
+        });
+
+        boolean status = sipManager.isRegistered(sipProfile.getUriString());
+
+        Log.d(TAG, "SIP Register: " + status);        
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>拨打 SIP 电话</title>
+		<programlisting>
+		<![CDATA[
+    public SipAudioCall audioCall(String sipAddress) throws SipException {
+        SipAudioCall.Listener listener = new SipAudioCall.Listener() {
+
+            @Override
+            public void onCallEstablished(SipAudioCall call) {
+                call.startAudio();
+                call.setSpeakerMode(true);
+                call.toggleMute();
+            }
+
+            @Override
+
+            public void onCallEnded(SipAudioCall call) {
+                // Do something.
+            }
+        };
+        SipAudioCall call = sipManager.makeAudioCall(sipProfile.getUriString(), sipAddress, listener, 30);
+        return call;
     }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.record:
-                if (record.getText().equals("Record")) {
-                    this.start();
-                } else {
-                    this.stop();
-                }
-                break;
-            case R.id.play:
-                play();
-                status.setText("播放录音");
-                break;
-        }
-    }
-
-    private void start() {
-
-        record.setText("Stop");
-        status.setText("开启录音，请对准话筒讲话");
-
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        String dir = Environment.getExternalStorageDirectory().getPath();
-        String date = new SimpleDateFormat("yyyy-MM-ddhhmmss").format(new Date());
-
-        filename = String.format("%s/%s.3gp", dir, date);
-
-        Log.e("Voice", "voice path " + filename);
-
-        mediaRecorder.setOutputFile(filename);
-
-        try {
-            mediaRecorder.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaRecorder.start();
-
-    }
-
-    private void stop() {
-        record.setText("Record");
-        status.setText("录音停止");
-
-        if (mediaRecorder != null) {
-            mediaRecorder.stop();
-            mediaRecorder.release();
-            mediaRecorder = null;
-        }
-    }
-
-    private void play() {
-        this.stop();
-        if (filename == null) {
-            Toast.makeText(getApplicationContext(), "请先录音", Toast.LENGTH_SHORT).show();
+		]]>
+		</programlisting>
+	</section>
+	<section id="sipManager.close">
+		<title>挂断电话</title>
+		<programlisting>
+		<![CDATA[
+    public void closeLocalProfile() {
+        if (sipManager == null) {
             return;
         }
         try {
-
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                mediaPlayer.reset();
-            } else {
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setDataSource(filename);
-                mediaPlayer.prepare();
-                mediaPlayer.start();
+            if (sipProfile != null) {
+                sipManager.close(sipProfile.getUriString());
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ee) {
+            Log.d(TAG, "Failed to close local profile.", ee);
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
-    }
-
-}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+		
 		]]>
 		</programlisting>
 	</section>

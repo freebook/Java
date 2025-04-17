@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="cloud">
+	<title>云服务</title>
+	
+	<section id="xfyun">
+		<title>讯飞云</title>
+		&section.xfyun.aiui.xml;
+		&section.xfyun.tts.xml;
+		&section.xfyun.wakeup.xml;
+	</section>
+	&section.aliyun.xml;
+</chapter>

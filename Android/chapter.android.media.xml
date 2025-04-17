@@ -226,6 +226,70 @@ public class Bible {
 			</programlisting>
 		</section>
 	</section>
+	<section id="AudioPlayer">
+		<title>AudioPlayer</title>
+		<programlisting>
+		<![CDATA[
+	private final AudioPlayer audioPlayer = new AudioPlayer(new AudioPlayerCallback() {
+        @Override
+        public void playStart() {
+            Log.i(TAG, "start play");
+        }
+
+        @Override
+        public void playOver() {
+            Log.i(TAG, "play over");
+        }
+
+        @Override
+        public void playSoundLevel(int level) {
+        }
+    });		
+    
+        // Start the player
+        audioPlayer.play();
+        
+        audioPlayer.setAudioData(audioFrame);
+        
+        audioPlayer.stop();
+        audioPlayer.releaseAudioTrack();
+		]]>
+		</programlisting>
+	</section>
+	<section id="AudioTrack">
+		<title>AudioTrack</title>
+		<programlisting>
+		<![CDATA[
+    int sampleRate = 44100;
+    int channelConfig = AudioFormat.CHANNEL_OUT_MONO;
+    int audioFormat = AudioFormat.ENCODING_PCM_16BIT;		
+		
+    int buffersize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
+    private final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig,
+            audioFormat, buffersize, AudioTrack.MODE_STREAM);
+
+    public synchronized void playTrack(byte[] buffer) {
+        if (audioTrack != null && audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
+            audioTrack.write(buffer, 0, buffer.length);
+        }
+    }	
+		]]>
+		</programlisting>
+		<para>MP3 流</para>
+		<programlisting>
+		<![CDATA[
+    int buffersize = AudioTrack.getMinBufferSize(16000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_MP3);
+    private final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 16000, AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_MP3, buffersize, AudioTrack.MODE_STREAM);
+
+    public synchronized void playTrack(byte[] buffer) {
+        if (audioTrack != null && audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
+            audioTrack.write(buffer, 0, buffer.length);
+        }
+    }		
+		]]>
+		</programlisting>
+	</section>
 	<section id="VideoView">
 		<title>VideoView 开发</title>
 		<para>VideoView，用于播放一段视频媒体，它继承了SurfaceView，位于"android.widget.VideoView"，是一个视频控件。
@@ -906,10 +970,258 @@ audioManager.setMode(AudioManager.MODE_IN_CALL);
 		]]>
 		</programlisting>
 	</section>
-	<section id="SurfaceView">
-		<title>SurfaceView</title>
+	<section id="microphone">
+		<title>麦克风</title>
+		<section id="AudioRecord">
+			<title>AudioRecord</title>
+			<programlisting>
+		<![CDATA[
+    private AudioRecord getAudioRecord() {
+        final int SAMPLE_RATE = 16000;
+        final int WAVE_FRAM_SIZE = 20 * 2 * 16000 / 1000; //20ms audio for 16k/16bit/mono
+        try {
+            int bufferSize = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+//            AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, 16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+
+            AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, SAMPLE_RATE,
+                    AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, WAVE_FRAM_SIZE * 4);
+
+            if (recorder.getState() == AudioRecord.STATE_INITIALIZED) {
+                return recorder;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in Audio Record");
+        }
+        return null;
+    }		
+		]]>
+			</programlisting>
+		</section>
 	</section>
-	<section id="Vitamio">
-		<title>Vitamio</title>
+	<section id="android.record">
+		<title>麦克风与录音</title>
+		<section id="RECORD_AUDIO">
+			<title>开启麦克风和SD卡权限</title>
+			<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.netkiller.voice">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+		]]>
+			</programlisting>
+		</section>
+		<section id="android.voice.layout">
+			<title>layout</title>
+			<programlisting>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="http://www.netkiller.cn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="1dp"
+        android:onClick="onClick"
+        android:text="Record"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="7dp"
+        android:text="Play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</android.support.constraint.ConstraintLayout>		
+		]]>
+			</programlisting>
+		</section>
+		<section id="android.voice.Activity">
+			<title>Activity</title>
+			<programlisting>
+		<![CDATA[
+package cn.netkiller.voice;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final int RECORD_AUDIO = 10;
+    private Button record;
+    private Button play;
+    private MediaRecorder mediaRecorder;
+    private TextView status;
+
+    private MediaPlayer mediaPlayer;
+    private String filename;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        status = (TextView) findViewById(R.id.status);
+        record = (Button) findViewById(R.id.record);
+        play = (Button) findViewById(R.id.play);
+
+        record.setOnClickListener(this);
+        play.setOnClickListener(this);
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
+        }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+            case R.id.record:
+                if (record.getText().equals("Record")) {
+                    this.start();
+                } else {
+                    this.stop();
+                }
+                break;
+            case R.id.play:
+                play();
+                status.setText("播放录音");
+                break;
+        }
+    }
+
+    private void start() {
+
+        record.setText("Stop");
+        status.setText("开启录音，请对准话筒讲话");
+
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        String dir = Environment.getExternalStorageDirectory().getPath();
+        String date = new SimpleDateFormat("yyyy-MM-ddhhmmss").format(new Date());
+
+        filename = String.format("%s/%s.3gp", dir, date);
+
+        Log.e("Voice", "voice path " + filename);
+
+        mediaRecorder.setOutputFile(filename);
+
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaRecorder.start();
+
+    }
+
+    private void stop() {
+        record.setText("Record");
+        status.setText("录音停止");
+
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+    }
+
+    private void play() {
+        this.stop();
+        if (filename == null) {
+            Toast.makeText(getApplicationContext(), "请先录音", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                mediaPlayer.reset();
+            } else {
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setDataSource(filename);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+    }
+
+}		
+		]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>

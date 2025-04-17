@@ -6,6 +6,16 @@
 		<title>多线程 Lambda 表达式</title>
 		<programlisting>
 		<![CDATA[
+	new Thread(new Runnable() {
+	    @Override
+	    public void run() {
+	        getPermission();
+	    }
+	}).start();	
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
 	new Thread(() -> {
 		Thread.sleep(millis);
 	});		

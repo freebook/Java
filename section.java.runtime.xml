@@ -96,8 +96,18 @@ user.dir 用户的当前工作目录
 		]]>
 		</screen>
 		<section id="System">
-			<title>user.dir</title>
-			<programlisting>
+			<title>System</title>
+			<section>
+				<title>退出码</title>
+				<programlisting>
+				<![CDATA[
+	System.exit(0);				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>user.dir</title>
+						<programlisting>
 		<![CDATA[
 public class Test {
 
@@ -112,23 +122,25 @@ public class Test {
 }
 		]]>
 			</programlisting>
-		</section>
+			</section>
 
-		<section>
-			<title>java.io.tmpdir</title>
-			<para>改变java.io.tmpdir的默认值</para>
-			<programlisting>
-				System.setProperty("java.io.tmpdir", "/vat/tmp");
-				System.out.println(System.getProperty("java.io.tmpdir"));
-			</programlisting>
-			<para>如果你希望从外部修改这个系统属性的话，你可以使用-D这个参数，例如 java -Djava.io.tmpdir=/path/to/tmpdir</para>
-			<programlisting>
-				System.out.println(System.getProperty("java.io.tmpdir"));
-			</programlisting>
-		</section>
-		<section id="file.encoding">
-			<title>打印当前 Java 文件的默认编码</title>
-			<programlisting>
+
+			<section>
+				<title>java.io.tmpdir</title>
+				<para>改变java.io.tmpdir的默认值</para>
+				<programlisting>
+					System.setProperty("java.io.tmpdir", "/vat/tmp");
+					System.out.println(System.getProperty("java.io.tmpdir"));
+				</programlisting>
+				<para>如果你希望从外部修改这个系统属性的话，你可以使用-D这个参数，例如 java
+					-Djava.io.tmpdir=/path/to/tmpdir</para>
+				<programlisting>
+					System.out.println(System.getProperty("java.io.tmpdir"));
+				</programlisting>
+			</section>
+			<section id="file.encoding">
+				<title>打印当前 Java 文件的默认编码</title>
+				<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
 
@@ -149,12 +161,12 @@ public class Test {
 
 }
 		]]>
-			</programlisting>
-		</section>
+				</programlisting>
+			</section>
 
-		<section>
-			<title>自定义</title>
-			<programlisting>
+			<section>
+				<title>自定义</title>
+				<programlisting>
 		<![CDATA[
 	public static void main(String[] args) {
 		try {
@@ -169,13 +181,14 @@ public class Test {
 
 	}
 		]]>
-			</programlisting>
-			<para>上面程序编译打包后运行</para>
-			<screen>
+				</programlisting>
+				<para>上面程序编译打包后运行</para>
+				<screen>
 		<![CDATA[
 neo@netkiller:~/project/Oracle$ java -jar -Dconfig=jdbc.properties target/oracle-0.0.1-SNAPSHOT.jar
 		]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>System.in 标准输入(Stdin)</title>
