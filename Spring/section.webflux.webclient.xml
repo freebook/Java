@@ -584,7 +584,9 @@ client.execute(url, session ->
 		</programlisting>
 	</section>
 	<section id="webclient.sse">
-		<title>订阅 SSE</title>
+		<title>SSE（Server-Sent Events）</title>
+		<section>
+			<title>订阅 SSE</title>
 		<programlisting>
 		<![CDATA[
 public void consumeServerSentEvent() {
@@ -667,6 +669,115 @@ public Flux<String> stream(String prompt) {
     }		
 		]]>
 		</programlisting>
+		
+		</section>
+		<section>
+			<title>SSE（Server-Sent Events） 传输空格和回车问题</title>
+			<para>服务端</para>
+			<programlisting>
+			<![CDATA[
+public Flux<String> deepseek(String device, String taskId, String speakId, List<Map<String, String>> messages) {
+
+        WebClient webClient = WebClient.builder()
+                .baseUrl(url)
+                .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("Authorization", "Bearer " + authorization)
+                .build();
+
+//        List<Map<String, String>> messages = new ArrayList<Map<String, String>>();
+//        messages.add(Map.of("role", "user", "content", content));
+
+        log.debug(messages.toString());
+
+        Map<String, Object> requestBody = Map.of(
+                "model", model,
+                "messages", messages,
+                "stream", true
+        );
+
+        return webClient.post()
+                .uri("/chat/completions")
+                .bodyValue(requestBody)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .retrieve()
+                .bodyToFlux(String.class)
+//                .filter(chunk -> !chunk.trim().isEmpty())
+                .map(chunk -> {
+//                    if (chunk.trim().equals("data: [DONE]")) {
+//                        return "[END]";
+//                    }
+                    try {
+//                        log.debug("chunk: " + chunk);
+                        String jsonString = chunk.replaceFirst("^data: ", "");
+                        JsonNode jsonNode = new ObjectMapper().readTree(jsonString);
+                        String result = jsonNode.path("choices").path(0).path("delta").path("content").asText();
+                        result = result.replace(" ", "\\x20").replace("\n", "\\x0A");
+//                        return result != null ? result : "";
+                        log.debug("[" + result + "]");
+                        return result;
+                    } catch (JsonProcessingException e) {
+                        return "";
+                    }
+                })
+//                .filter(text -> text != null && !text.equals("null") && !text.isEmpty())
+                .onErrorResume(e -> {
+                    log.error("Error processing stream", e);
+                    return Flux.just("[ERROR]");
+                });
+    }			
+			]]>
+			</programlisting>
+			<para>解决方案</para>
+			<programlisting>
+			<![CDATA[
+# 传输前
+result = result.replace(" ", "\\x20").replace("\n", "\\x0A");
+
+# 接收端
+
+String text = data.replace("\\x20", " ").replace("\\x0A", "\n"); 			
+			]]>
+			</programlisting>
+			<para>客户端</para>
+			<programlisting>
+			<![CDATA[
+    public void summary(Map<String, String> messages, BiConsumer<String, String> biConsumer) throws InterruptedException {
+
+        String jsonString = gson.toJson(messages);
+
+        httpRestful.postStream("meeting/" + Config.Cloud.appId + "/" + Config.Android.androidId + "/summary", null, jsonString, new EventSourceListener() {
+            @Override
+            public void onClosed(@NonNull EventSource eventSource) {
+                super.onClosed(eventSource);
+                biConsumer.accept("onClosed", "");
+            }
+
+            @Override
+            public void onEvent(@NonNull EventSource eventSource, @Nullable String id, @Nullable String type, @NonNull String data) {
+                super.onEvent(eventSource, id, type, data);
+                Log.d(TAG, "Stream Id: " + id + " Type: " + type + " Data: [" + data + "]");   // 请求到的数据
+                String text = data.replace("\\x20", " ").replace("\\x0A", "\n");
+                biConsumer.accept(type, text);
+            }
+
+            @Override
+            public void onFailure(@NonNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
+                super.onFailure(eventSource, t, response);
+                networkFailure();
+                Log.w(TAG, "Throwable: " + t + " Response: " + response);
+            }
+
+            @Override
+            public void onOpen(@NonNull EventSource eventSource, @NonNull Response response) {
+                super.onOpen(eventSource, response);
+                biConsumer.accept("onOpen", "");
+            }
+        });
+
+    }			
+			]]>
+			</programlisting>
+		</section>	
 	</section>
 
 	<section id="webclient.timeout">
