@@ -1,9 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="storage" ?>
 	<title>存储</title>
-	
 	<section>
 		<title>获得存储目录</title>
+		<section>
+			<title>用户存储目录</title>
+			<programlisting>
+			<![CDATA[
+Log.d(TAG, getContext().getFilesDir().toString());	
+			]]>
+			</programlisting>
+			<para>遍历目录</para>
+			<programlisting>
+			<![CDATA[
+        AssetManager assetManager = MainApplication.getContext().getApplicationContext().getAssets();
+        try {
+            String[] filelists = assetManager.list("");
+            for (int i = 0; i < filelists.length; i++) {
+                Log.d(TAG, filelists[i]);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }			
+			]]>
+			</programlisting>
+			<para>复制 Assets 到指定目录</para>
+			<programlisting>
+			<screen>
+			<![CDATA[
+	private synchronized boolean copyAssetsData() {
+
+        AssetManager assetManager = MainApplication.getContext().getApplicationContext().getAssets();
+
+        try {
+            List<String> files = List.of(assetManager.list(""));
+
+            for (String file : files) {
+                Log.d(TAG, "coping " + file);
+
+                String target = workspace.concat("/").concat(file);
+                InputStream in = null;
+                OutputStream out = null;
+
+                try {
+
+                    Log.i(TAG, "copying asset files from [" + file + "] to [" + target + "]");
+                    in = assetManager.open(file);
+                    (new File(target)).createNewFile();
+                    out = new FileOutputStream(target);
+
+
+                    byte[] data = new byte[1024];
+                    int length = -1;
+
+                    while ((length = in.read(data)) != -1) {
+                        out.write(data, 0, length);
+                    }
+
+                    out.flush();
+
+                } catch (Exception e) {
+                    Log.e(TAG, "skip asset files from [" + file + "] to [" + target + "]", e);
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            Log.e(TAG, "" + e);
+                        }
+                    }
+
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            Log.e(TAG, "", e);
+                        }
+                    }
+
+                }
+
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        Log.d(TAG, "Copy assets files");
+        return true;
+    }			
+			]]>
+			</screen>
+			</programlisting>
+		</section>
 		<section>
 			<title>公共存储目录</title>
 			<screen>
@@ -26,8 +117,8 @@ Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)：
 			</programlisting>
 		</section>
 		<section>
-		<title>内部存储</title>
-		<programlisting>
+			<title>内部存储</title>
+			<programlisting>
 		<![CDATA[
 Environment.getDataDirectory():      /data
 Context.getCacheDir():               /data/data/cn.netkiller.test/cache
@@ -36,11 +127,11 @@ Context.getFileStreamPath(""):       /data/data/cn.netkiller.test/files
 Context.getFileStreamPath("test"):   /data/data/cn.netkiller.test/files/test
 		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>扩展存储</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>扩展存储</title>
+			<programlisting>
 		<![CDATA[
 Environment.getExternalStorageDirectory():               /storage/emulated/0
 Context.getExternalCacheDir():                           /storage/emulated/0/Android/data/cn.netkiller.test/cache
@@ -48,11 +139,11 @@ Context.getExternalFilesDir(""):                         /storage/emulated/0/And
 Context.getExternalFilesDir("test"):                     /storage/emulated/0/Android/data/cn.netkiller.test/files/test
 Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES):    /storage/emulated/0/Android/data/cn.netkiller.test/files/Pictures		
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>文件夹类型</title>
-		<screen>
+			</programlisting>
+		</section>
+		<section>
+			<title>文件夹类型</title>
+			<screen>
 		<![CDATA[
 public static String DIRECTORY_MUSIC = "Music";
 public static String DIRECTORY_ALARMS = "Alarms";
@@ -63,8 +154,8 @@ public static String DIRECTORY_DOWNLOADS = "Download";
 public static String DIRECTORY_DCIM = "DCIM";
 public static String DIRECTORY_DOCUMENTS = "Documents";
 		]]>
-		</screen>
-	</section>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>FileProvider 配置</title>
@@ -103,11 +194,6 @@ public static String DIRECTORY_DOCUMENTS = "Documents";
 <!--    <external-media-path name="externalmedia" path="files" />-->
 
 </paths>
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-
 		]]>
 		</programlisting>
 		<programlisting>

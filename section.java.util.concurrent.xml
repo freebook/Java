@@ -12,22 +12,58 @@
 		]]>
 		</programlisting>
 	</section>
-	<section id="AtomicInteger">
-		<title>AtomicInteger / AtomicLong / AtomicBoolean</title>
-		<programlisting>
+	<section id="java.util.concurrent.atomic">
+		<title>原子变量</title>
+
+		<section id="AtomicInteger">
+			<title>AtomicInteger / AtomicLong</title>
+			<programlisting>
 		<![CDATA[
 AtomicInteger sequence = new AtomicInteger(1);
 sequence.getAndIncrement(); // 加1操作
 		]]>
-		</programlisting>
-	</section>
-	<section id="AtomicReference">
-		<title>AtomicReference</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="AtomicBoolean">
+			<title>AtomicBoolean</title>
+			<programlisting>
+		<![CDATA[
+package cn.aigcsst.conference.config;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+		
+public class AtomicService {
+    private AtomicBoolean isRunning = new AtomicBoolean(false);
+
+    // 开启服务  
+    public void start() {
+        isRunning.set(true);
+        System.out.println("Service started.");
+    }
+
+    // 关闭服务  
+    public void stop() {
+        isRunning.set(false);
+        System.out.println("Service stopped.");
+    }
+
+    // 检查服务是否正在运行  
+    public boolean isRunning() {
+        return isRunning.get();
+    }
+    
+} 		
+		]]>
+			</programlisting>
+		</section>
+		<section id="AtomicReference">
+			<title>AtomicReference</title>
+			<programlisting>
 		<![CDATA[
 private static AtomicReference<BankCard> bankCardRef = new AtomicReference<>(new BankCard("Neo",100));		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
 	<section id="ReentrantLock">
 		<title>ReentrantLock 锁</title>
@@ -275,14 +311,57 @@ private final ConcurrentLinkedQueue<Story> queue = new ConcurrentLinkedQueue();
 		</programlisting>
 		<programlisting>
 		<![CDATA[
-		
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class NonBlockingQueueExample {
+    public static void main(String[] args) {
+        Queue<String> queue = new ConcurrentLinkedQueue<>();
+        
+        // 生产者线程
+        Thread producer = new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                String message = "Msg " + i;
+                queue.offer(message); // 非阻塞添加
+                System.out.println("Produced: " + message);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        
+        // 消费者线程
+        Thread consumer = new Thread(() -> {
+            int count = 0;
+            while (count < 10) {
+                String message = queue.poll(); // 非阻塞获取
+                if (message != null) {
+                    System.out.println("Consumed: " + message);
+                    count++;
+                }
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+    }
+}
 		]]>
 		</programlisting>
 	</section>
-	
-	<section id="ArrayBlockingQueue">
-		<title>ArrayBlockingQueue</title>
-		<programlisting>
+	<section id="BlockingQueue">
+		<title>阻塞队列</title>
+
+		<section id="ArrayBlockingQueue">
+			<title>ArrayBlockingQueue</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
 
@@ -382,7 +461,111 @@ public class QueueTest {
 }
 
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section id="LinkedBlockingQueue">
+			<title>LinkedBlockingQueue</title>
+			<para>LinkedBlockingQueue是一种线程安全的阻塞队列，可以用于生产者-消费者模式，实现线程同步。</para>
+			<programlisting>
+		<![CDATA[
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class BlockingSynchronizedThread {
+private final LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
+
+	public void produce(int item) throws InterruptedException {
+		queue.put(item);
+	}
+	
+	public int consume() throws InterruptedException {
+		return queue.take();
+	}
+}		
+		]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class QueueThreadCommunication {
+    public static void main(String[] args) {
+        // 创建一个阻塞队列，容量为10
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>(10);
+        
+        // 生产者线程
+        Thread producer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    String message = "Message " + i;
+                    queue.put(message); // 如果队列满，会阻塞
+                    System.out.println("Produced: " + message);
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        
+        // 消费者线程
+        Thread consumer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    String message = queue.take(); // 如果队列空，会阻塞
+                    System.out.println("Consumed: " + message);
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="PriorityBlockingQueue">
+			<title>PriorityBlockingQueue</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+import java.util.concurrent.PriorityBlockingQueue;
+
+public class PriorityQueueExample {
+    public static void main(String[] args) {
+        PriorityBlockingQueue<Integer> queue = new PriorityBlockingQueue<>();
+        
+        // 生产者
+        Thread producer = new Thread(() -> {
+            queue.put(5);
+            queue.put(1);
+            queue.put(3);
+            queue.put(2);
+            queue.put(4);
+        });
+        
+        // 消费者
+        Thread consumer = new Thread(() -> {
+            try {
+                while (!queue.isEmpty()) {
+                    System.out.println("Consumed: " + queue.take());
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="Future">
 		<title>Future</title>

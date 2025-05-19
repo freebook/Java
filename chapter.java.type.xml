@@ -1474,6 +1474,17 @@ String string = String.join(",", array)
 			]]>
 			</programlisting>
 		</section>
+		<section id="string.split">
+			<title>字符串转数组</title>
+			<programlisting>
+			<![CDATA[
+    private String[] SplitWords(String wakeup) {
+        String[] parts = wakeup.split("[;；]");
+        return parts;
+    }
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="float">
 		<title>float 浮点</title>
