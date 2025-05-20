@@ -265,7 +265,7 @@ handler.removeCallbacksAndMessages(null);
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="Timer">
 		<title>TimerTask 实现循环播放</title>
 		<programlisting>
 		<![CDATA[
@@ -419,7 +419,7 @@ public class AlbumSkillComponent {
 			</programlisting>
 		</example>
 	</section>
-	<section>
+	<section id="TimerTask">
 		<title>TimerTask 更新 UI</title>
 		<programlisting>
 		<![CDATA[

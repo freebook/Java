@@ -63,6 +63,52 @@ public class AtomicService {
 private static AtomicReference<BankCard> bankCardRef = new AtomicReference<>(new BankCard("Neo",100));		
 		]]>
 			</programlisting>
+			<section>
+				<title>AtomicReference</title>
+				<programlisting>
+				<![CDATA[
+AtomicReference<String> atomicRef = new AtomicReference<>("Initial Value");
+
+// 获取值
+String value = atomicRef.get(); // "Initial Value"
+
+// 设置值
+atomicRef.set("New Value");
+
+// CAS 操作
+boolean success = atomicRef.compareAndSet("New Value", "Updated Value");
+System.out.println(success); // true（如果当前值仍然是 "New Value"）
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>线程安全的单例模式</title>
+				<programlisting>
+				<![CDATA[
+class Singleton {
+    private static final AtomicReference<Singleton> INSTANCE = new AtomicReference<>();
+
+    public static Singleton getInstance() {
+        while (true) {
+            Singleton instance = INSTANCE.get();
+            if (instance != null) {
+                return instance;
+            }
+            instance = new Singleton();
+            if (INSTANCE.compareAndSet(null, instance)) {
+                return instance;
+            }
+        }
+    }
+
+    private Singleton() {
+        // 私有构造方法
+    }
+}
+				]]>
+				</programlisting>
+			</section>
+
 		</section>
 	</section>
 	<section id="ReentrantLock">

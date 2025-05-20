@@ -82,7 +82,7 @@ public class MyThread extends Thread {
 		]]>
 		</programlisting>
 
-		<section>
+		<section id="thread.getName">
 			<title>设置线程名称</title>
 			<para></para>
 			<programlisting>
@@ -175,6 +175,83 @@ public class DemoThreadName {
     }
 }
 
+			]]>
+			</programlisting>
+		</section>
+		<section id="thread.isAlive">
+			<title>判断线程是否存活</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+@Data
+@Slf4j
+public class Test {
+
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000); // 模拟任务执行
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        System.out.println("启动前是否存活: " + thread.isAlive()); // false (NEW)
+        thread.start();
+        System.out.println("启动后是否存活: " + thread.isAlive()); // true (RUNNABLE)
+
+        Thread.sleep(500);
+        System.out.println("运行中是否存活: " + thread.isAlive()); // true (TIMED_WAITING)
+
+        thread.join(); // 等待线程结束
+        System.out.println("结束后是否存活: " + thread.isAlive()); // false (TERMINATED)
+
+        Thread thread1 = new Thread();
+        System.out.println("启动前是否存活: " + thread1.isAlive()); // false 
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section id="thread.getState">
+			<title>获取线程状态</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+@Data
+@Slf4j
+public class Test {
+
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000); // TIMED_WAITING
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        System.out.println(thread.getState()); // NEW (before start)
+        thread.start();
+        System.out.println(thread.getState()); // RUNNABLE (after start)
+
+        Thread.sleep(100);
+        System.out.println(thread.getState()); // TIMED_WAITING (sleeping)
+
+        thread.join();
+        System.out.println(thread.getState()); // TERMINATED (after completion)
+    }
+
+}			
 			]]>
 			</programlisting>
 		</section>

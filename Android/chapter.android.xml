@@ -16,10 +16,10 @@
 	&chapter.android.phone.xml;
 	&chapter.android.broadcast.xml;
 	&chapter.android.service.xml;
+	&chapter.android.thread.xml;
 	&chapter.android.notification.xml;
 	&chapter.android.nfc.xml;
 	&chapter.android.graphics.xml;
-	&chapter.android.thread.xml;
 	&chapter.android.eventbus.xml;
 	&section.android.mqtt.xml;
 	&chapter.android.board.xml;
