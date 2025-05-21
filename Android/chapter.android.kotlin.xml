@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="kotlin" ?>
+	<title>从 Java 到 Kotlin</title>
+	<section>
+		<title>数据结构</title>
+		<section>
+			<title>List 列表</title>
+			<section>
+				<title>List.of</title>
+
+				<programlisting>
+				<![CDATA[
+listOf("debug", "dev").contains(BuildConfig.BUILD_TYPE)			
+				]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
+	<section>
+		<title>界面操作</title>
+
+		<section>
+			<title>findViewById</title>
+			<programlisting>
+			<![CDATA[
+		var frameLayoutDebug = findViewById<FrameLayout>(R.id.frameLayoutDebug)
+        frameLayoutDebug.visibility=View.VISIBLE
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+var textViewBuildType = findViewById<TextView>(R.id.textViewBuildType)
+textViewBuildType.text = BuildConfig.BUILD_TYPE + " 内测版"			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>runOnUiThread</title>
+			<para>Java 用法</para>
+			<programlisting>
+			<![CDATA[
+runOnUiThread(() -> {
+
+});			
+			]]>
+			</programlisting>
+			<para>切到 Kotlin</para>
+			<programlisting>
+			<![CDATA[
+	runOnUiThread {
+       	qrcodeFrameLayout.visibility = View.VISIBLE
+    }			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+
+</chapter>

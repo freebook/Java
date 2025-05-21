@@ -43,10 +43,11 @@
 
 <!ENTITY chapter.android.eventbus.xml		SYSTEM "chapter.android.eventbus.xml">
 <!ENTITY section.android.mqtt.xml			SYSTEM "section.android.mqtt.xml">
-<!ENTITY chapter.android.board.xml			SYSTEM "chapter.android.board.xml">
 <!ENTITY chapter.android.thread.xml			SYSTEM "chapter.android.thread.xml">
 <!ENTITY chapter.android.misc.xml			SYSTEM "chapter.android.misc.xml">
 <!ENTITY chapter.android.faq.xml		 	SYSTEM "chapter.android.faq.xml">
+
+<!ENTITY chapter.android.kotlin.xml			SYSTEM "chapter.android.kotlin.xml">
 
 <!ENTITY chapter.cloud.xml				 	SYSTEM "chapter.cloud.xml">
 <!ENTITY section.xfyun.aiui.xml				SYSTEM "section.xfyun.aiui.xml">
