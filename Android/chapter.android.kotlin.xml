@@ -2,7 +2,20 @@
 <chapter id="index"><?dbhtml dir="kotlin" ?>
 	<title>从 Java 到 Kotlin</title>
 	<section>
-		<title>数据结构</title>
+		<title>数据类型与数据结构</title>
+		<section>
+			<title>字符串</title>
+			<section>
+				<title>字符串转数字</title>
+				<programlisting>
+				<![CDATA[
+"1".toInt()			
+				]]>
+				</programlisting>
+			</section>
+		</section>
+
+
 		<section>
 			<title>List 列表</title>
 			<section>
