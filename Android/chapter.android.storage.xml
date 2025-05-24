@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="storage" ?>
 	<title>存储</title>
-	<section>
+	<section id="storage.directory">
 		<title>获得存储目录</title>
 		<section>
 			<title>用户存储目录</title>
@@ -10,6 +10,10 @@
 Log.d(TAG, getContext().getFilesDir().toString());	
 			]]>
 			</programlisting>
+			
+		</section>
+		<section id="storage.Assets">
+			<title>Assets 目录</title>
 			<para>遍历目录</para>
 			<programlisting>
 			<![CDATA[
@@ -136,6 +140,7 @@ Context.getFileStreamPath("test"):   /data/data/cn.netkiller.test/files/test
 Environment.getExternalStorageDirectory():               /storage/emulated/0
 Context.getExternalCacheDir():                           /storage/emulated/0/Android/data/cn.netkiller.test/cache
 Context.getExternalFilesDir(""):                         /storage/emulated/0/Android/data/cn.netkiller.test/files
+Context.getExternalFilesDir(null):                         /storage/emulated/0/Android/data/cn.netkiller.test/files
 Context.getExternalFilesDir("test"):                     /storage/emulated/0/Android/data/cn.netkiller.test/files/test
 Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES):    /storage/emulated/0/Android/data/cn.netkiller.test/files/Pictures		
 		]]>
@@ -157,7 +162,7 @@ public static String DIRECTORY_DOCUMENTS = "Documents";
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="FileProvider">
 		<title>FileProvider 配置</title>
 		<programlisting>
 		<![CDATA[
@@ -455,7 +460,7 @@ android.os.FileUriExposedException: file:///storage/emulated/0/Download/netkille
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="storage.download">
 		<title>下载工具类</title>
 		<para></para>
 		<programlisting>
