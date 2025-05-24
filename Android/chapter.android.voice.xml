@@ -2,11 +2,461 @@
 <chapter id="index"><?dbhtml dir="sip" ?>
 	<title>SIP(Session initialization Protocol) </title>
 	<subtitle></subtitle>
-	<para>SIP（Session initialization Protocol，会话初始协议）是由IETF（Internet Engineering Task Force，因特网工程任务组）制定的多媒体通信协议。</para>
-	<ulink url="https://developer.android.google.cn/guide/topics/connectivity/sip?hl=zh-cn#java" />
-	<section id="sip.AndroidManifest.xml">
-		<title>AndroidManifest.xml</title>
-		<programlisting>
+
+	<section id="pjsip">
+		<title>VoIP - SIP(Session initialization Protocol)</title>
+		<section>
+			<title>依赖库</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+implementation("com.pjdroid:pjdroid:2.2.4")
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>SIP 核心代码</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.sip;
+
+import android.content.Context;
+import android.util.Log;
+
+import org.pjsip.pjsua2.Account;
+import org.pjsip.pjsua2.AccountConfig;
+import org.pjsip.pjsua2.AudDevManager;
+import org.pjsip.pjsua2.AudioMedia;
+import org.pjsip.pjsua2.AuthCredInfo;
+import org.pjsip.pjsua2.Call;
+import org.pjsip.pjsua2.CallInfo;
+import org.pjsip.pjsua2.CallMediaInfo;
+import org.pjsip.pjsua2.CallOpParam;
+import org.pjsip.pjsua2.Endpoint;
+import org.pjsip.pjsua2.EpConfig;
+import org.pjsip.pjsua2.OnCallMediaStateParam;
+import org.pjsip.pjsua2.OnCallStateParam;
+import org.pjsip.pjsua2.OnIncomingCallParam;
+import org.pjsip.pjsua2.OnRegStateParam;
+import org.pjsip.pjsua2.TransportConfig;
+import org.pjsip.pjsua2.pj_qos_type;
+import org.pjsip.pjsua2.pjmedia_type;
+import org.pjsip.pjsua2.pjsip_inv_state;
+import org.pjsip.pjsua2.pjsip_status_code;
+import org.pjsip.pjsua2.pjsip_transport_type_e;
+import org.pjsip.pjsua2.pjsua_call_media_status;
+
+public class SipService {
+    private static final String TAG = "SipService";
+    private final SipEventListener listener;
+    private final String server = "sip.netkiller.cn:5060";
+    private final String username = "1000";
+    private final String password = "******";
+    private Endpoint endpoint;
+    private Account account;
+    private Call currentCall;
+
+    public SipService(Context context, SipEventListener listener) {
+        this.listener = listener;
+        try {
+            // 初始化 PJSIP
+            endpoint = new Endpoint();
+            endpoint.libCreate();
+
+            // 配置 Endpoint
+            EpConfig epConfig = new EpConfig();
+
+//            // 配置编解码器优先级 - 强制使用 G722
+//            CodecInfoVector2 codecConfig = new CodecInfoVector2();
+//
+//            // 禁用所有编解码器
+//            CodecConfig disableAll = new CodecConfig();
+//            disableAll.setPriority((short) 0);
+//            codecConfig.add(disableAll);
+//
+//            // 启用 G722 并设置为最高优先级
+//            CodecConfig g722Config = new CodecConfig();
+//            g722Config.setCodecId("G722/16000/1");
+//            g722Config.setPriority((short) 255); // 最高优先级
+//            codecConfig.add(g722Config);
+
+            // 可选: 启用备用编解码器
+
+//            CodecConfig pcmuConfig = new CodecConfig();
+//            pcmuConfig.setCodecId("PCMU/8000/1");
+//            pcmuConfig.setPriority((short) 128);
+//            codecConfig.add(pcmuConfig);
+//
+//            CodecConfig pcmaConfig = new CodecConfig();
+//            pcmaConfig.setCodecId("PCMA/8000/1");
+//            pcmaConfig.setPriority((short) 127);
+//            codecConfig.add(pcmaConfig);
+//
+//
+//            epConfig.getMedConfig().setCodecConfigVector(codecConfig);
+
+
+            // 设置音频参数 - 使用16kHz采样率以匹配G722
+            epConfig.getMedConfig().setAudioFramePtime(20);
+            epConfig.getMedConfig().setMaxMediaPorts(32);
+            epConfig.getMedConfig().setHasIoqueue(true);
+            epConfig.getMedConfig().setClockRate(16000);
+            epConfig.getMedConfig().setSndClockRate(16000);
+
+            endpoint.libInit(epConfig);
+
+            // 创建 SIP transport
+            TransportConfig transportConfig = new TransportConfig();
+            transportConfig.setPort(5060);
+            transportConfig.setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);
+            endpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_UDP, transportConfig);
+
+            // 启动库
+            endpoint.libStart();
+
+            // 启用并设置G722为最高优先级
+            try {
+                endpoint.codecSetPriority("G722/16000/1", (short) 255);
+                Log.d(TAG, "Enabled G722 with priority 255");
+            } catch (Exception e) {
+                Log.e(TAG, "G722 not available: " + e.getMessage());
+                // 如果没有G722，可以启用备用编解码器
+                endpoint.codecSetPriority("PCMU/8000/1", (short) 255);
+                endpoint.codecSetPriority("PCMA/8000/1", (short) 254);
+            }
+
+            // 配置账户
+            AccountConfig accountCfg = new AccountConfig();
+            accountCfg.setIdUri("sip:" + username + "@" + server);
+            accountCfg.getRegConfig().setRegistrarUri("sip:" + server);
+
+            AuthCredInfo cred = new AuthCredInfo("digest", "*", username, 0, password);
+            accountCfg.getSipConfig().getAuthCreds().add(cred);
+
+            // 启用呼入通话支持
+            accountCfg.getCallConfig().setTimerMinSESec(90);
+            accountCfg.getCallConfig().setTimerSessExpiresSec(1800);
+
+            // 对于移动网络，可能需要启用 ICE 和 STUN
+//            accountCfg.getNatConfig().setIceEnabled(true);
+//            accountCfg.getNatConfig().setStunServer("stun.stunprotocol.org");
+//            accountCfg.getNatConfig().setStunTryIpv6(false);
+
+            // 创建账户
+            account = new MyAccount();
+            account.create(accountCfg);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing SIP: " + e.getMessage());
+        }
+    }
+
+    // 发起呼叫
+    public void makeCall(String targetNumber) {
+        try {
+            if (currentCall != null) {
+                hangUp();
+            }
+
+            CallOpParam callParam = new CallOpParam(true);
+            currentCall = new MyCall(account);
+            currentCall.makeCall("sip:" + targetNumber + "@" + server, callParam);
+        } catch (Exception e) {
+            Log.e(TAG, "Error making call: " + e.getMessage());
+        }
+    }
+
+    // 接听来电
+    public void answerCall() {
+        try {
+            if (currentCall != null) {
+                CallOpParam answerParam = new CallOpParam();
+                answerParam.setStatusCode(pjsip_status_code.PJSIP_SC_OK);
+                currentCall.answer(answerParam);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error answering call: " + e.getMessage());
+        }
+    }
+
+    // 挂断电话
+    public void hangUp() {
+        try {
+            if (currentCall != null) {
+                CallOpParam hangupParam = new CallOpParam();
+                hangupParam.setStatusCode(pjsip_status_code.PJSIP_SC_DECLINE);
+                currentCall.hangup(hangupParam);
+                currentCall = null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error hanging up: " + e.getMessage());
+        }
+    }
+
+    // 清理资源
+    public void destroy() {
+        try {
+            if (account != null) {
+                account.delete();
+            }
+            if (endpoint != null) {
+                endpoint.libDestroy();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error destroying SIP: " + e.getMessage());
+        }
+    }
+
+    public interface SipEventListener {
+        void onCallIncoming(CallInfo callInfo);
+
+        void onCallStateChanged(String state);
+
+        void onRegistrationStateChanged(String state);
+    }
+
+    // 自定义 Account 类
+    class MyAccount extends Account {
+        @Override
+        public void onRegState(OnRegStateParam prm) {
+            String status = "Registration state: " + prm.getCode();
+            Log.d(TAG, status);
+            if (listener != null) {
+                listener.onRegistrationStateChanged(status);
+            }
+        }
+
+        @Override
+        public void onIncomingCall(OnIncomingCallParam prm) {
+            try {
+                // 获取来电信息
+                currentCall = new MyCall(this, prm.getCallId());
+                CallInfo ci = currentCall.getInfo();
+
+                Log.d(TAG, "Incoming call from: " + ci.getRemoteUri());
+
+                // 通知UI有来电
+                if (listener != null) {
+                    listener.onCallIncoming(ci);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error handling incoming call: " + e.getMessage());
+            }
+        }
+    }
+
+    // 自定义 Call 类
+    class MyCall extends Call {
+        public MyCall(Account account) {
+            super(account);
+        }
+
+        public MyCall(Account account, int callId) {
+            super(account, callId);
+        }
+
+        @Override
+        public void onCallState(OnCallStateParam prm) {
+            try {
+                CallInfo ci = getInfo();
+                String state = ci.getStateText();
+                Log.d(TAG, "Call state: " + state);
+                Log.d(TAG, "Call state changed: " + ci.getStateText() +
+                        ", last code: " + ci.getLastStatusCode() +
+                        ", reason: " + ci.getLastReason());
+
+                if (listener != null) {
+                    listener.onCallStateChanged(state);
+                }
+
+//                if (ci.getState() == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
+//                    currentCall = null;
+//                }
+                if (ci.getState() == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
+                    Log.d(TAG, "Call disconnected, reason: " + ci.getLastReason());
+                    currentCall = null;
+                } else if (ci.getState() == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED) {
+                    Log.d(TAG, "Call successfully connected");
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error in call state: " + e.getMessage());
+            }
+        }
+
+        @Override
+        public void onCallMediaState(OnCallMediaStateParam prm) {
+            try {
+                CallInfo ci = getInfo();
+
+                // 遍历媒体流
+                for (int i = 0; i < ci.getMedia().size(); i++) {
+                    CallMediaInfo cmi = ci.getMedia().get(i);
+
+                    if (cmi.getType() == pjmedia_type.PJMEDIA_TYPE_AUDIO &&
+                            cmi.getStatus() == pjsua_call_media_status.PJSUA_CALL_MEDIA_ACTIVE) {
+                        // 获取音频媒体
+                        AudioMedia am = getAudioMedia(i);
+
+                        // 这里可以添加音频处理逻辑
+                        // 例如: am.startTransmit(...);
+
+                        // 关键：建立媒体传输
+                        try {
+                            // 获取音频设备
+                            AudDevManager audDevManager = endpoint.audDevManager();
+                            AudioMedia audMed = audDevManager.getPlaybackDevMedia();
+
+                            // 建立双向传输
+                            am.startTransmit(audMed);  // 远端到本地
+                            audMed.startTransmit(am);   // 本地到远端
+
+                            Log.d(TAG, "Audio media transmission established");
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error setting up audio transmission: " + e.getMessage());
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in media state: " + e.getMessage());
+            }
+        }
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>UI布局</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+	 <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/call_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="等待连接..."
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/call_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="呼叫 2000" />
+
+                <Button
+                    android:id="@+id/answer_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="接听" />
+
+                <Button
+                    android:id="@+id/hangup_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="挂断" />
+
+            </LinearLayout>
+        </LinearLayout>
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>拨打/接听/挂断</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+		TextView callStatus = findViewById(R.id.call_status);
+
+        // 初始化 SIP 服务
+        SipService sipService = new SipService(this, new SipService.SipEventListener() {
+            @Override
+            public void onCallIncoming(CallInfo callInfo) {
+                runOnUiThread(() -> {
+                    String incomingCaller = callInfo.getRemoteUri();
+                    callStatus.setText("来电: " + incomingCaller);
+
+                    // 显示接听/拒绝按钮
+                    findViewById(R.id.answer_button).setVisibility(View.VISIBLE);
+                    findViewById(R.id.hangup_button).setVisibility(View.VISIBLE);
+                });
+            }
+
+            @Override
+            public void onCallStateChanged(String state) {
+                runOnUiThread(() -> {
+                    callStatus.setText("状态: " + state);
+
+                    if (state.equals("DISCONNECTED")) {
+                        // 隐藏接听/拒绝按钮
+                        findViewById(R.id.answer_button).setVisibility(View.GONE);
+                        findViewById(R.id.hangup_button).setVisibility(View.GONE);
+                    }
+                });
+            }
+
+            @Override
+            public void onRegistrationStateChanged(String state) {
+                runOnUiThread(() -> {
+                    callStatus.setText("注册状态: " + state);
+                });
+            }
+        });
+
+        // 设置拨号按钮
+        Button callButton = findViewById(R.id.call_button);
+        callButton.setOnClickListener(v -> {
+//            sipService.makeCall("3300");
+            sipService.makeCall("172");
+        });
+
+        // 设置接听按钮
+        Button answerButton = findViewById(R.id.answer_button);
+        answerButton.setOnClickListener(v -> {
+            sipService.answerCall();
+        });
+
+        // 设置挂断按钮
+        Button hangupButton = findViewById(R.id.hangup_button);
+        hangupButton.setOnClickListener(v -> {
+            sipService.hangUp();
+        });
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+		<![CDATA[
+		
+		]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="android.sip">
+		<title>Android 原生 SIP</title>
+
+		<para>SIP（Session initialization Protocol，会话初始协议）是由IETF（Internet
+			Engineering Task Force，因特网工程任务组）制定的多媒体通信协议。
+		</para>
+		<ulink
+			url="https://developer.android.google.cn/guide/topics/connectivity/sip?hl=zh-cn#java" />
+		<section id="sip.AndroidManifest.xml">
+			<title>AndroidManifest.xml</title>
+			<programlisting>
 		<![CDATA[
   <uses-permission android:name="android.permission.USE_SIP" />
   <uses-permission android:name="android.permission.INTERNET" />
@@ -14,16 +464,16 @@
   <uses-feature android:name="android.hardware.wifi" android:required="true" />
   <uses-feature android:name="android.hardware.microphone" android:required="true" />
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 <uses-feature android:name="android.software.sip.voip" />		
 		]]>
-		</programlisting>
-	</section>
-	<section id="isVoipSupported">
-		<title>查看设备是否支持 voip 和 api</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="isVoipSupported">
+			<title>查看设备是否支持 voip 和 api</title>
+			<programlisting>
 		<![CDATA[
             sipManager = SipManager.newInstance(this);
 
@@ -31,12 +481,13 @@
             boolean isApiSupported = SipManager.isApiSupported(this);
             Log.d(TAG, "isVoipSupported: " + isVoipSupported + " isApiSupported: " + isApiSupported);		
 		]]>
-		</programlisting>
-		<para>如果返回 isVoipSupported: false isApiSupported: false 表示设备不支持</para>
-	</section>
-	<section id="SipProfile">
-		<title>SipProfile</title>
-		<programlisting>
+			</programlisting>
+			<para>如果返回 isVoipSupported: false isApiSupported: false 表示设备不支持
+			</para>
+		</section>
+		<section id="SipProfile">
+			<title>SipProfile</title>
+			<programlisting>
 		<![CDATA[
         SipProfile sipProfile = new SipProfile.Builder(username, domain)
                 .setPassword(password)
@@ -45,11 +496,11 @@
                 .build();
         Log.d(TAG, "sipProfile " + sipProfile.getUriString());		
 		]]>
-		</programlisting>
-	</section>
-	<section id="sipManager.register">
-		<title>sipManager.register</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="sipManager.register">
+			<title>sipManager.register</title>
+			<programlisting>
 		<![CDATA[
 		sipManager.open(sipProfile);
 		        
@@ -76,11 +527,11 @@
 
         Log.d(TAG, "SIP Register: " + status);		
 		]]>
-		</programlisting>
-	</section>
-	<section id="sipManager.setRegistrationListener">
-		<title>sipManager.setRegistrationListener</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="sipManager.setRegistrationListener">
+			<title>sipManager.setRegistrationListener</title>
+			<programlisting>
 		<![CDATA[
         sipManager.setRegistrationListener(sipProfile.getUriString(), new SipRegistrationListener() {
 
@@ -102,11 +553,11 @@
 
         Log.d(TAG, "SIP Register: " + status);        
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>拨打 SIP 电话</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>拨打 SIP 电话</title>
+			<programlisting>
 		<![CDATA[
     public SipAudioCall audioCall(String sipAddress) throws SipException {
         SipAudioCall.Listener listener = new SipAudioCall.Listener() {
@@ -128,11 +579,11 @@
         return call;
     }
 		]]>
-		</programlisting>
-	</section>
-	<section id="sipManager.close">
-		<title>挂断电话</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="sipManager.close">
+			<title>挂断电话</title>
+			<programlisting>
 		<![CDATA[
     public void closeLocalProfile() {
         if (sipManager == null) {
@@ -147,14 +598,8 @@
         }
     }
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title></title>
-		<programlisting>
-		<![CDATA[
-		
-		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+
 	</section>
 </chapter>

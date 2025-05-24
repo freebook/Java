@@ -1060,6 +1060,59 @@ AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 16000, 
 			</programlisting>
 		</section>
 		<section>
+			<title>设置蓝牙麦克风为默认麦克风</title>
+			<programlisting>
+			<![CDATA[
+		if (ActivityCompat.checkSelfPermission(MainApplication.getContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+			// https://www.netkiller.cn/android/
+            if (mAudioRecorder == null) {
+
+                AudioManager audioManager = (AudioManager) MainApplication.getContext().getSystemService(Context.AUDIO_SERVICE);
+                // 启动蓝牙SCO连接
+                audioManager.startBluetoothSco();
+                // 启用蓝牙SCO音频路由
+                audioManager.setBluetoothScoOn(true);
+                // 设置音频模式为通信模式（这会优先使用蓝牙麦克风）
+                audioManager.setMode(AudioManager.MODE_COMMUNICATION_REDIRECT);
+
+                // 获取所有音频输入设备
+                AudioDeviceInfo[] devices = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS);
+
+                // 查找蓝牙设备
+                AudioDeviceInfo bluetoothDevice = null;
+                for (AudioDeviceInfo device : devices) {
+                    if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
+                            device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP) {
+                        bluetoothDevice = device;
+                        break;
+                    }
+                }
+
+                mAudioRecorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION, SAMPLE_RATE,
+                        AudioFormat.CHANNEL_IN_MONO,
+                        AudioFormat.ENCODING_PCM_16BIT,
+                        WAVE_FRAM_SIZE * 4);
+
+                if (bluetoothDevice != null) {
+                    if (mAudioRecorder.setPreferredDevice(bluetoothDevice)) {
+                        Log.i(TAG, "成功设置蓝牙麦克风为首选设备 " + bluetoothDevice.getProductName());
+                    }
+
+                    AudioDeviceInfo currentDevice = mAudioRecorder.getRoutedDevice();
+                    if (currentDevice != null) {
+                        Log.d(TAG, "当前音频输入设备: " + currentDevice.getProductName());
+                    }
+                }
+            } else {
+                Log.w(TAG, "AudioRecord has been new ...");
+            }
+        } else {
+            Log.e(TAG, "未获得录音权限 RECORD_AUDIO permission!");
+        }			
+			]]>
+			</programlisting>
+		</section>
+		<section id="AudioRecord.file">
 			<title>录音例子</title>
 			<programlisting>
 			<![CDATA[
