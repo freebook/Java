@@ -12,6 +12,39 @@
 		]]>
 		</programlisting>
 	</section>
+	<section id="ThreadLocalRandom">
+		<title>ThreadLocalRandom</title>
+		<programlisting>
+		<![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class RandomListElement {
+    public static void main(String[] args) {
+        // 初始化一个列表
+        List<String> list = new ArrayList<>();
+        list.add("元素1");
+        list.add("元素2");
+        list.add("元素3");
+        list.add("元素4");
+        list.add("元素5");
+
+        // 方法1：使用 Random 类
+        Random random = new Random();
+        String randomElement1 = list.get(random.nextInt(list.size()));
+        System.out.println("随机选取的元素 (使用 Random): " + randomElement1);
+
+        // 方法2：使用 ThreadLocalRandom (Java 8+)
+        String randomElement2 = list.get(
+                java.util.concurrent.ThreadLocalRandom.current().nextInt(list.size())
+        );
+        System.out.println("随机选取的元素 (使用 ThreadLocalRandom): " + randomElement2);
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="java.util.concurrent.atomic">
 		<title>原子变量</title>
 
