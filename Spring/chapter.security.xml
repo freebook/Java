@@ -465,7 +465,53 @@ public class WebSecurityConfig {
 }
 			]]>
 		</programlisting>
+		<section>
+			<title>禁止 HTTP Auth</title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+/**
+ * @author Neo
+ * @description Security 配置类
+ * @date 2025-06-03
+ */
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class WebSecurityConfig {
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        manager.createUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
+        manager.createUser(User.withDefaultPasswordEncoder().username("neo").password("chen").roles("USER").build());
+        return manager;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf((csrf) -> csrf.disable());
+        http.httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable());
+        return http.build();
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
+	
 	<section>
 		<title>InvalidClaimException: The Token can't be used before</title>
 		<para>.withNotBefore(new Date())</para>
