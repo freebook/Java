@@ -188,7 +188,10 @@ redis 127.0.0.1:6379> get key
 		]]>
 			</screen>
 			<tip>
-				<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到 "\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过 redisTemplate.setKeySerializer(new StringRedisSerializer()); 实现 </para>
+				<para>Spring Redis 默认使用 Byte数据类型存储Key，在redis-cli中会看到
+					"\xac\xed\x00\x05t\x00\x04" 前缀不方便get操作，所以我们会设置使用字符串，通过
+					redisTemplate.setKeySerializer(new StringRedisSerializer()); 实现
+				</para>
 			</tip>
 		</section>
 
@@ -246,14 +249,14 @@ public class TestController {
 			]]>
 		</programlisting>
 	</section>
-	<section id="stringRedisTemplate">
-		<title>stringRedisTemplate 基本用法</title>
+	<section id="StringRedisTemplate">
+		<title>StringRedisTemplate 基本用法</title>
 		<screen>
 			<![CDATA[
 @Autowired
 private final StringRedisTemplate stringRedisTemplate;
 			
-stringRedisTemplate.opsForValue().set("test", "100",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
+
 stringRedisTemplate.opsForValue().get("test")									//根据key获取缓存中的val
 stringRedisTemplate.getExpire("test")											//根据key获取过期时间
 stringRedisTemplate.getExpire("test",TimeUnit.SECONDS)							//根据key获取过期时间并换算成指定单位
@@ -262,8 +265,25 @@ stringRedisTemplate.hasKey("546545");											//检查key是否存在，返回
 stringRedisTemplate.expire("test",1000 , TimeUnit.MILLISECONDS);				//设置过期时间	
 			]]>
 		</screen>
-
-	</section><section id="RedisTemplate">
+		<section>
+			<title>存储数据</title>
+			<programlisting>
+			<![CDATA[
+stringRedisTemplate.opsForValue().set("neo", "netkiller");	//向redis里存入数据
+stringRedisTemplate.opsForValue().set("neo", "netkiller",60*10,TimeUnit.SECONDS);	//向redis里存入数据和设置缓存时间
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>取出数据</title>
+			<programlisting>
+			<![CDATA[
+stringRedisTemplate.getExpire("neo")			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="RedisTemplate">
 		<title>RedisTemplate</title>
 
 
@@ -361,7 +381,9 @@ redisTemplate.expire("key", 30000, TimeUnit.MILLISECONDS);
 redisTemplate.delete("key");		
 		]]>
 			</programlisting>
-			<para>这样存在一个问题，当程序运行一半被强行终止，可能导致setIfAbsent运行完成，但是expire未被执行，这样 key 便永远不会释放。解决方案如下，使用RedisCallback执行原生 Redis 命令。</para>
+			<para>这样存在一个问题，当程序运行一半被强行终止，可能导致setIfAbsent运行完成，但是expire未被执行，这样 key
+				便永远不会释放。解决方案如下，使用RedisCallback执行原生 Redis 命令。
+			</para>
 			<programlisting>
 		<![CDATA[
 String result = redisTemplate.execute(new RedisCallback<String>() {
@@ -374,11 +396,11 @@ String result = redisTemplate.execute(new RedisCallback<String>() {
 		]]>
 			</programlisting>
 		</section>
-		
+
 
 
 	</section>
-	
+
 	<section id="ValueOperations">
 		<title>ValueOperations</title>
 		<programlisting>
@@ -492,7 +514,7 @@ System.out.println(redisTemplate.opsForValue().multiSetIfAbsent(maps2));	// 返�
 			</programlisting>
 
 		</section>
-	<section id="redisTemplate.bit">
+		<section id="redisTemplate.bit">
 			<title>setBit / getBit 二进制位操作</title>
 			<screen>
 			<![CDATA[
@@ -517,13 +539,16 @@ value 位 ture 表示 0，false 表示 1
     System.out.println(redisTemplate.opsForValue().get("bitTest"));			
 			]]>
 			</programlisting>
-			<para>getBit Boolean getBit(K key, long offset); 获取键对应值的ascii码的在offset处位值</para>
+			<para>getBit Boolean getBit(K key, long offset);
+				获取键对应值的ascii码的在offset处位值
+			</para>
 			<programlisting>
 			<![CDATA[
 System.out.println(redisTemplate.opsForValue().getBit("bitTest",7));			
 			]]>
 			</programlisting>
-		</section></section>
+		</section>
+	</section>
 	<section id="ListOperations">
 		<title>列表操作</title>
 		<para>ListOperations</para>
@@ -1552,6 +1577,6 @@ spring.data.redis.repositories.enabled=false
 			]]>
 			</programlisting>
 		</section>
-		
+
 	</section>
 </chapter>

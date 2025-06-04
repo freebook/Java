@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="jvm" ?>
 	<title>JVM</title>
+	<section id="java.21">
+		<title>Java 21</title>
+		<screen>
+		<![CDATA[
+[root@netkiller srv]# dnf install java-21-openjdk
 
-	<section>
+[root@netkiller srv]# dnf install maven-openjdk21
+		]]>
+		</screen>
+	</section>
+	<section id="java.openjdk">
 		<title>Almalinux / RockyLinux</title>
 		<para>安装 Java 1.8 JRE</para>
 		<screen>
@@ -55,7 +64,7 @@ OpenJDK 64-Bit Server VM (build 25.342-b07, mixed mode)
 		</screen>
 	</section>
 
-	<section>
+	<section id="java.14">
 		<title>CentOS 8 Java 14</title>
 		<para>安装 jre</para>
 		<screen>
@@ -97,7 +106,7 @@ OpenJDK 64-Bit Server VM 20.3 (build 14.0.2+12, mixed mode, sharing)
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="java.version">
 		<title>Java 版本切换</title>
 		<para>查看配置</para>
 		<screen>
@@ -854,7 +863,7 @@ oracle.net.jmod
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="java.cmd">
 		<title>Java 相关命令</title>
 		<section>
 			<title>jps</title>

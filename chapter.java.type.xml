@@ -292,7 +292,7 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
-		<section id="random">
+		<section id="string.random">
 			<title>随机字符串</title>
 			<programlisting>
 			<![CDATA[
@@ -322,9 +322,55 @@ public class Test {
     }	
 			]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+import java.util.Random;
+
+public class RandomNumberGenerator {
+    public static void main(String[] args) {
+        Random random = new Random();
+        // 生成1000到9999之间的随机整数
+        int randomNumber = random.nextInt(9000) + 1000;
+        System.out.println("生成的4位随机数字是：" + randomNumber);
+    }
+}
+
+public class RandomNumberGenerator {
+    public static void main(String[] args) {
+        // 生成1000到9999之间的随机整数
+        int randomNumber = (int) (Math.random() * 9000) + 1000;
+        System.out.println("生成的4位随机数字是：" + randomNumber);
+    }
+}
+
+import java.security.SecureRandom;
+
+public class RandomNumberGenerator {
+    public static void main(String[] args) {
+        SecureRandom secureRandom = new SecureRandom();
+        // 生成1000到9999之间的安全随机整数
+        int randomNumber = secureRandom.nextInt(9000) + 1000;
+        System.out.println("生成的4位安全随机数字是：" + randomNumber);
+    }
+}
+
+import java.util.Random;
+// 说明：此方法会生成一个0-9999的随机整数，然后利用String.format("%04d", number)将其格式化为长度为 4 的字符串，若数字不足 4 位，会在前面补0，例如0001、0123等。
+public class RandomNumberGenerator {
+    public static void main(String[] args) {
+        Random random = new Random();
+        // 生成0到9999之间的随机整数
+        int randomNumber = random.nextInt(10000);
+        // 格式化为4位字符串，不足4位时在前面补0
+        String formattedNumber = String.format("%04d", randomNumber);
+        System.out.println("生成的4位随机数字字符串是：" + formattedNumber);
+    }
+}			
+			]]>
+			</programlisting>
 		</section>
 
-		<section id="replace">
+		<section id="string.replace">
 			<title>字符串替换处理</title>
 			<section>
 				<title>替换转意字符</title>
@@ -662,7 +708,7 @@ public class Test {
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="String.format">
 			<title>String.format 字符串格式化</title>
 			<section>
 				<title>前补零</title>

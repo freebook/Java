@@ -23,5 +23,33 @@ SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties.getInt("ro.sf.lc
 		</programlisting>
 	</section>
 	&section.android.device.sound.xml;
-	
+	<section>
+		<title>判断是平板，还是手机</title>
+		<para>通过像素判断，不是太准确</para>
+		<programlisting>
+		<![CDATA[
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
+        Log.e(TAG, "width: " + width + ", height: " + height);
+		]]>
+		</programlisting>
+		<para>通过电话类型判断</para>
+		<programlisting>
+		<![CDATA[
+        TelephonyManager telephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        Log.d(TAG, "Phone type: " + telephony.getPhoneType());
+        if (telephony.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+            Log.d(TAG, "这是平板");
+        } else {
+            Log.d(TAG, "这是手机");
+        }
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>
+	</section>
 </chapter>	
