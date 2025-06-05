@@ -5131,6 +5131,22 @@ public interface PictureRepository extends CrudRepository<Picture, Long> {
 			]]>
 			</programlisting>
 		</section>
+		<section id="jpa.Exists">
+			<title>Exists</title>
+			<programlisting>
+			<![CDATA[
+boolean exists = repository.existsById(searchId)			
+			]]>
+			</programlisting>
+			<para>SQL EXISTS 函数用法</para>		
+			<programlisting>
+			<![CDATA[
+	@Query(value = "SELECT EXISTS(SELECT id FROM Member WHERE mobile = :mobile AND expired > CURRENT_TIMESTAMP) AS bool")
+    Boolean queryExpiredByMobile(@Param("mobile") String mobile);
+			]]>
+			</programlisting>
+			
+		</section>
 		<section id="OrderBy">
 			<title>OrderBy</title>
 			<programlisting>
