@@ -274,6 +274,15 @@ stringRedisTemplate.opsForValue().set("neo", "netkiller",60*10,TimeUnit.SECONDS)
 			]]>
 			</programlisting>
 		</section>
+		<section id="stringRedisTemplate.getAndDelete">
+			<title>获取值并删除</title>
+			<programlisting>
+			<![CDATA[
+        String code = stringRedisTemplate.opsForValue().getAndDelete("captcha::".concat(mobile));
+        String code = stringRedisTemplate.opsForValue().get("captcha::".concat(mobile));		
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>取出数据</title>
 			<programlisting>
@@ -285,8 +294,6 @@ stringRedisTemplate.getExpire("neo")
 	</section>
 	<section id="RedisTemplate">
 		<title>RedisTemplate</title>
-
-
 		<section id="redisTemplate.set.TimeUnit">
 			<title>设置缓存时间</title>
 			<programlisting>
@@ -396,9 +403,6 @@ String result = redisTemplate.execute(new RedisCallback<String>() {
 		]]>
 			</programlisting>
 		</section>
-
-
-
 	</section>
 
 	<section id="ValueOperations">

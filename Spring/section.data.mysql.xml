@@ -3843,7 +3843,8 @@ private List<Student> studentList;
 			<title>@JsonIgnoreProperties</title>
 			<para>当使用 @OneToMany 与 @ManyToOne 相互引用时，你会发现产生了循环调用，此时可以使用
 				@JsonIgnoreProperties 避免出现循环，此时加入 @Transient 或 @JsonIgnore
-				注解可以解决，但要该字段就没有外键数据了。</para>
+				注解可以解决，但要该字段就没有外键数据了。
+			</para>
 			<programlisting>
 			<![CDATA[
 @Entity
@@ -3894,7 +3895,7 @@ public class SubareaSet {
     private Business business;			
 			]]>
 			</programlisting>
-			
+
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.domain.story;
@@ -4992,15 +4993,25 @@ public interface UserRepository extends CrudRepository<User, Long> {
 		</section>
 		<section id="jpa.delete">
 			<title>delete 删除操作</title>
+			<para>deleteBy</para>
 			<programlisting>
 			<![CDATA[
     @Transactional
     Long deleteByFirstName(String firstName);
     
-    @Transactional
-    List<User> removeByFirstName(String firstName);    			
+
+    
+    List<Fruit> deleteByColor(String color);			
 			]]>
 			</programlisting>
+			<para>removeBy</para>
+			<programlisting>
+			<![CDATA[
+    @Transactional
+    List<User> removeByFirstName(String firstName);      			
+			]]>
+			</programlisting>
+
 		</section>
 		<section id="IsNull">
 			<title>IsNull</title>
@@ -5138,14 +5149,14 @@ public interface PictureRepository extends CrudRepository<Picture, Long> {
 boolean exists = repository.existsById(searchId)			
 			]]>
 			</programlisting>
-			<para>SQL EXISTS 函数用法</para>		
+			<para>SQL EXISTS 函数用法</para>
 			<programlisting>
 			<![CDATA[
 	@Query(value = "SELECT EXISTS(SELECT id FROM Member WHERE mobile = :mobile AND expired > CURRENT_TIMESTAMP) AS bool")
     Boolean queryExpiredByMobile(@Param("mobile") String mobile);
 			]]>
 			</programlisting>
-			
+
 		</section>
 		<section id="OrderBy">
 			<title>OrderBy</title>
