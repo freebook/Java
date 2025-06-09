@@ -3,4 +3,95 @@
 	<title>网络</title>
 	&section.android.wifi.xml;
 	&section.android.okhttp.xml;
+	<section id="retrofit">
+		<title>Retrofit - https://github.com/square/retrofit</title>
+		<section>
+			<title>Gradle 依赖</title>
+			<screen>
+			<![CDATA[
+plugins {
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "cn.netkiller.wechat"
+    compileSdk = 35
+
+    defaultConfig {
+        minSdk = 31
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+dependencies {
+
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.10.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+}			
+			]]>
+			</screen>
+		</section>
+		<section id="retrofit.Authorization">
+			<title>Authorization 头</title>
+			<programlisting>
+			<![CDATA[
+      val logging = HttpLoggingInterceptor()
+//        类型为BASIC，其实日志级别分为4类：NONE、BASIC、HEADERS、BODY。
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(object : Interceptor {
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    var request = chain.request().newBuilder()
+//                        .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+//                        .addHeader("Accept-Encoding", "gzip, deflate")
+//                        .addHeader("Connection", "keep-alive")
+//                        .addHeader("Accept", "*/*")
+//                        .addHeader("Cookie", "add cookies here")
+                        .addHeader("Authorization", "Bearer " + Config.Cloud.token)
+                        .build()
+                    return chain.proceed(request)
+                }
+            })
+            .build()
+
+        // 创建 网络请求接口 的实例
+        var retrofit = Retrofit.Builder()
+            .baseUrl(Config.Cloud.url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()			
+			]]>
+			</programlisting>
+		</section>
+			
+	</section>
 </chapter>

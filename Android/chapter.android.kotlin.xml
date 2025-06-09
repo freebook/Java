@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="kotlin" ?>
 	<title>从 Java 到 Kotlin</title>
-	<section>
+	<section id="kotlin.data">
 		<title>数据类型与数据结构</title>
 		<section>
 			<title>字符串</title>
@@ -28,6 +28,39 @@ listOf("debug", "dev").contains(BuildConfig.BUILD_TYPE)
 				</programlisting>
 			</section>
 		</section>
+		<section>
+			<title>Map 图</title>
+			<section>
+				<title>Map.of</title>
+				<programlisting>
+				<![CDATA[
+ mapOf("content" to "hello world")				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
+	<section id="kotlin.class">
+		<title>Class</title>
+		<programlisting>
+			<![CDATA[
+
+    public class TextMessage {
+        public String msgtype;
+        public Map<String, String> text;
+
+    }
+			]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+	class TextMessage {
+        var msgtype: String? = null
+        var text: Map<String, String>? = null
+    }		
+		]]>
+		</programlisting>
 	</section>
 	<section>
 		<title>界面操作</title>
