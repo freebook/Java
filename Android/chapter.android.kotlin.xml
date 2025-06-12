@@ -4,6 +4,29 @@
 	<section id="kotlin.data">
 		<title>数据类型与数据结构</title>
 		<section>
+			<title>循环</title>
+			<programlisting>
+			<![CDATA[
+for (x in 1..5) {
+    print(x)
+}			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+for (x in 1..10 step 2) {
+    print(x)
+}
+println()
+for (x in 9 downTo 0 step 3) {
+    print(x)
+}			
+			]]>
+			</programlisting>
+		</section>
+		
+		
+		<section>
 			<title>字符串</title>
 			<section>
 				<title>字符串转数字</title>

@@ -1452,6 +1452,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			</programlisting>
 		</section>
 	</section>
+	<section id="MediaRecorder">
+		<title>MediaRecorder 录音例子</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.conference.ai.media;
+
+import android.media.MediaRecorder;
+import android.os.Environment;
+import android.util.Log;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class AudioRecorder {
+    private static final String TAG = AudioRecorder.class.getSimpleName();
+    private static AudioRecorder instance;
+
+    private MediaRecorder mediaRecorder;
+    private String filePath;
+
+    public AudioRecorder() {
+
+    }
+
+    public static synchronized AudioRecorder getInstance() {
+        if (instance == null) {
+            instance = new AudioRecorder();
+        }
+        Log.d(TAG, "AudioRecorder getInstance()");
+        return instance;
+    }
+
+    public String start() {
+        String dir = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+//        String dir = Environment.getExternalStorageDirectory().getPath();
+        String date = new SimpleDateFormat("yyyy-MM-dd.hhmmss").format(new Date());
+        filePath = String.format("%s/%s.amr", dir, date);
+//        Log.d(TAG, "AudioRecorder " + filePath);
+        start(filePath);
+        return filePath;
+    }
+
+    public void start(String filename) {
+        if (mediaRecorder == null) {
+            mediaRecorder = new MediaRecorder();
+        }
+        filePath = filename;
+        try {
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+            mediaRecorder.setAudioEncodingBitRate(128000);
+            mediaRecorder.setAudioSamplingRate(16000);
+            mediaRecorder.setOutputFile(filePath);
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+            Log.i(TAG, "Start recording " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stop() {
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+        Log.i(TAG, "Stop recording " + filePath);
+    }
+}
+		
+		]]>
+		</programlisting>
+	</section>
 	<section id="MediaCodec">
 		<title>MediaCodec</title>
 		<programlisting>
