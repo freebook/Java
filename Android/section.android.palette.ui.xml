@@ -109,8 +109,33 @@ toast = Toast.makeText(getApplicationContext(),"带图片的Toast", Toast.LENGTH
         android:spinnersShown="true" />
         ]]>
 		</programlisting>
-
-
+	</section>
+	<section id="Snackbar">
+		<title>Snackbar - Toast 的替代者</title>
+		<programlisting>
+		<![CDATA[
+Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null)
+                .setAnchorView(R.id.fab).show()		
+		]]>
+		</programlisting>
+		<para>Fragment 中使用 Snackbar 的例子</para>
+		<programlisting>
+		<![CDATA[
+        // 设置拨号按钮
+        binding.imageViewCall.setOnClickListener {
+            var phoneNumber = binding.phoneNumber.text.toString()
+            if(phoneNumber.isEmpty()){
+                Snackbar.make(this.requireView(), "请拨分机号", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null)
+                    .setAnchorView(binding.imageViewCall).show()
+                return@setOnClickListener
+            }
+//            sipService.makeCall("3300");
+            call(phoneNumber)
+        }		
+		]]>
+		</programlisting>
 	</section>
 </section>
 
@@ -557,6 +582,30 @@ tools:ignore="ResourceName">
         ]]>
 			</programlisting>
 		</section>
+	</section>
+	<section id="FloatingActionButton">
+		<title>添加悬浮操作按钮</title>
+		<programlisting>
+		<![CDATA[
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+        		
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_my_icon"
+        android:contentDescription="@string/submit"
+        android:layout_margin="16dp" />		
+		]]>
+		</programlisting>
 	</section>
 </section>
 
