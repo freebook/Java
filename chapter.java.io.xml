@@ -212,7 +212,8 @@ public class FileDirectory {
     }
 			]]>
 			</programlisting>
-			<para>walkFileTree与FileVisitor配合使用，walkFileTree方法遍历整个文件目录树，使用FileVisitor处理遍历结果（文件或文件夹）</para>
+			<para>walkFileTree与FileVisitor配合使用，walkFileTree方法遍历整个文件目录树，使用FileVisitor处理遍历结果（文件或文件夹）
+			</para>
 			<programlisting>
 			<![CDATA[
 	// FileVisitor的postVisitDirectory方法，注意方法中的“post”表示“后去做……”的意思，所以用来文件都处理完成之后再去处理文件夹，所以使用这个方法删除文件夹就可以有效避免文件夹内容不为空的异常，因为在去删除文件夹之前，该文件夹里面的文件已经被删除了。
@@ -311,12 +312,26 @@ public class PrintWriterTest {
 		<![CDATA[
 byte[] data = ...
 
-FileOutputStream fos = ...
+FileOutputStream fos = new FileOutputStream(filePath)
 fos.write(data, 0, data.length);
 fos.flush();
 fos.close();		
 		]]>
 		</programlisting>
+		<section id="FileOutputStream.try">
+			<title>FileOutputStream + try 用法</title>
+			<programlisting>
+			<![CDATA[
+	try (FileOutputStream fileOutputStream = new FileOutputStream(filePath)) {
+		...
+		fileOutputStream.write(audioBuffer);
+		...
+	} catch (Exception e) {
+	    throw new RuntimeException(e);
+	}			
+			]]>
+			</programlisting>
+		</section>
 		<section id="OutputStreamWriter">
 			<title>OutputStreamWriter</title>
 			<programlisting>
