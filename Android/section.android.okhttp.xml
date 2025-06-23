@@ -161,6 +161,28 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/networ
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>HttpUrl</title>
+		<programlisting>
+		<![CDATA[
+HttpUrl url = new HttpUrl.Builder()
+    .scheme("https")
+    .host("www.netkiller.cn")
+    .addPathSegment("search")
+    .addQueryParameter("q", "polar bears")
+    .build();
+System.out.println(url);		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+HttpUrl url = HttpUrl.parse("https://twitter.com/search?q=cute%20%23puppies&f=images");
+for (int i = 0, size = url.querySize(); i < size; i++) {
+  System.out.println(url.queryParameterName(i) + ": " + url.queryParameterValue(i));
+}	
+		]]>
+		</programlisting>
+	</section>
 	<section id="okhttp.get">
 		<title>GET</title>
 		<programlisting>
