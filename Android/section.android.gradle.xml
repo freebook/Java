@@ -45,4 +45,119 @@ tasks.jar {
 		]]>
 		</programlisting>		
 	</section>
+	<section>
+		<title>Android Library 项目 .aar 文件上传至 GitHub Package 仓库</title>
+		<programlisting>
+		<![CDATA[
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    id("maven-publish")
+}
+
+android {
+    namespace = "cn.netkiller.ai"
+    compileSdk = 35
+
+    defaultConfig {
+        minSdk = 31
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+dependencies {
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+//            groupId = project.group.toString()
+//            artifactId = project.name
+//            version = project.version as String
+
+//            from(components["release"])
+            //            from(components["java"])
+            groupId = "cn.netkiller"
+            artifactId = "ai"
+            version = "1.0.0"
+
+            artifact("build/outputs/aar/ai-release.aar")
+
+            // 生成 POM 文件
+            pom {
+                name.set("netkiller 工具包")
+                description.set("内部集合了常用Java工具")
+                url.set("https://www.netkiller.cn/java")
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("netkiller")
+                        name.set("Neo Chen")
+                        email.set("netkiller@msn.com")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/netkiller/Conference.git")
+                    developerConnection.set("scm:git:ssh://github.com/netkiller/Conference.git")
+                    url.set("https://github.com/netkiller/Conference")
+                }
+            }
+        }
+    }
+
+    repositories {
+        // 发布到本地 Maven 仓库（调试用）
+//        maven {
+//            url = uri("${System.getProperty("user.home")}/.m2/repository")
+//        }
+
+        // 可选：发布到远程仓库（例如 Nexus 或 Artifactory）
+
+        maven {
+            url = uri("https://maven.pkg.github.com/netkiller/Conference")
+//            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+//                username = System.getenv("MAVEN_USERNAME")
+//                password = System.getenv("MAVEN_PASSWORD")
+                username = "netkiller"
+                password = "ghp_WYSx64NuUW5fgrTsllB4vJAobjRu2In4sg8s"
+            }
+        }
+
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
 </section>

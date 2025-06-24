@@ -109,7 +109,8 @@ neo@MacBook-Pro-M2 test % export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk
 			<section>
 				<title>Artifactory Web UI</title>
 				<para>通过访问 http://localhost:8081/artifactory/
-					，用默认管理员账号密码(用户名：admin，密码：password ) 登录，进入管理界面体验 Artifactory。</para>
+					，用默认管理员账号密码(用户名：admin，密码：password ) 登录，进入管理界面体验 Artifactory。
+				</para>
 
 			</section>
 			<section>
@@ -142,7 +143,8 @@ allprojects {
 		]]>
 				</screen>
 				<para>Artifactory 默认将 jecnter 库缓存到私有 maven仓库中。我们可以在项目中配置 jcenter
-					仓库信息列表，后续编译所需要的包都直接从私服 maven仓库读取，加快项目编译速度。</para>
+					仓库信息列表，后续编译所需要的包都直接从私服 maven仓库读取，加快项目编译速度。
+				</para>
 				<screen>
 		<![CDATA[
 buildscript {
@@ -581,5 +583,173 @@ hello, Neo
 		</section>
 
 	</section>
+	<section>
+		<title>Github Packages</title>
+		<para>https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#example-using-gradle-groovy-for-a-single-package-in-a-repository
+		</para>
+		<screen>
+		<![CDATA[
+Example using Gradle Groovy for a single package in a repository
 
+plugins {
+    id("maven-publish")
+}
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+		]]>
+		</screen>
+
+		<screen>
+		<![CDATA[
+Example using Gradle Groovy for multiple packages in the same repository
+
+plugins {
+    id("maven-publish") apply false
+}
+subprojects {
+    apply plugin: "maven-publish"
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                }
+            }
+        }
+        publications {
+            gpr(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
+}
+		]]>
+		</screen>
+
+		<screen>
+		<![CDATA[
+Example using Kotlin DSL for a single package in the same repository
+
+plugins {
+    `maven-publish`
+}
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
+}
+		]]>
+		</screen>
+
+		<screen>
+		<![CDATA[
+Example using Kotlin DSL for multiple packages in the same repository
+
+plugins {
+    `maven-publish` apply false
+}
+subprojects {
+    apply(plugin = "maven-publish")
+    configure<PublishingExtension> {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+                credentials {
+                    username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+                }
+            }
+        }
+        publications {
+            register<MavenPublication>("gpr") {
+                from(components["java"])
+            }
+        }
+    }
+}		
+		]]>
+		</screen>
+		<section>
+			<title>Publishing a package</title>
+			<screen>
+			<![CDATA[
+ gradle publish
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Using a published package</title>
+			<screen>
+			<![CDATA[
+Example using Gradle Groovy:
+
+dependencies {
+    implementation 'com.example:package'
+}
+Example using Kotlin DSL:
+
+dependencies {
+    implementation("com.example:package")
+}
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+Example using Gradle Groovy:
+
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+   }
+}
+Example using Kotlin DSL:
+
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+        }
+    }
+}
+			]]>
+			</screen>
+		</section>
+	</section>
 </chapter>

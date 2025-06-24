@@ -3,7 +3,7 @@
 	<para>http://maven.apache.org/</para>
 	<section id="install">
 		<title>安装 Maven</title>
-		<section>
+		<section id="maven.centos">
 			<title>CentOS 8 安装 Maven</title>
 			<screen>
 			<![CDATA[
@@ -11,7 +11,7 @@
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="maven.ubuntu">
 			<title>Ubuntu</title>
 			<screen><![CDATA[
 $ sudo apt-get install maven2
@@ -29,13 +29,13 @@ JAVA_HOME="/usr/lib/jvm/java-6-openjdk/jre"
 MAVEN_HOME="/usr/share/maven2/"
 			]]></screen>
 		</section>
-		<section>
+		<section id="maven.oscm">
 			<title>一键安装</title>
 			<screen><![CDATA[
 curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/java/maven/maven.sh | bash
 			]]></screen>
 		</section>
-		<section>
+		<section id="maven.binrary">
 			<title>apache-maven-3.8.2</title>
 			<screen>
 			<![CDATA[
@@ -122,6 +122,33 @@ volumes:
 					</screen>
 				</section>
 			</section>
+		</section>
+		<section id="maven.macos">
+			<title>MacOS</title>
+			<screen>
+			<![CDATA[
+#使用搜索工具去搜索maven包 			
+% brew search maven
+#使用info查看maven包当前的信息情况，包括版本依赖描述等
+% brew info maven
+# 安装 maven
+% brew install maven			
+			]]>
+			</screen>
+			<para>备份 settings.xml 文件</para>
+			<screen>
+			<![CDATA[
+neo@netkiller repository % ls  /opt/homebrew/Cellar/maven/3.9.10/libexec/conf
+logging		settings.xml	toolchains.xml
+
+neo@netkiller repository % cd neo@netkiller repository % ls  /opt/homebrew/Cellar/maven/3.9.10/libexec/conf
+logging         settings.xml    toolchains.xml
+neo@netkiller repository % cd /opt/homebrew/Cellar/maven/3.9.10/libexec/conf
+neo@netkiller conf % cp settings.xml{,.backup}
+neo@netkiller conf % ls
+logging			settings.xml		settings.xml.backup	toolchains.xml
+			]]>
+			</screen>
 		</section>
 		<section id="mvnd">
 			<title>mvnd</title>
@@ -1126,7 +1153,7 @@ MacBook-Pro:api.netkiller.cn neo$ mvn help:describe \
 $ ls ~/.m2
 		]]></screen>
 		</section>
-		<section>
+		<section id="maven.mirror">
 			<title>镜像配置</title>
 			<para>一般镜像</para>
 			<screen>
@@ -3012,7 +3039,7 @@ mvn tomcat:deploy
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="maven.branch">
 		<title>应用案例</title>
 		<section>
 			<title>并行开发解决不同环境包引用</title>
