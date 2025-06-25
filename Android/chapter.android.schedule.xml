@@ -30,6 +30,29 @@
     }, 3000);		
 		]]>
 		</programlisting>
+		<para>循环执行</para>
+		<programlisting>
+		<![CDATA[
+		Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            int count = 5;
+
+            @Override
+            public void run() {
+                handler.postDelayed(this, 1000);
+                runOnUiThread(() -> {
+                    binding.textViewAdSkip.setText(String.format("逃过 %d", count));
+                });
+                count = count - 1;
+                if (count == 0) {
+                    handler.removeCallbacks(this);
+                    binding.frameLayoutAd.setVisibility(View.INVISIBLE);
+                    binding.frameLayoutFullscreen.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 1000);		
+		]]>
+		</programlisting>
 	</section>
 	<section id="time.timetask">
 		<title>Time 和 TimerTask 定时刷新</title>

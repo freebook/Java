@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="media" ?>
 	<title>多媒体开发</title>
+	<section id="AudioDeviceInfo">
+		<title>AudioDeviceInfo</title>
+		<programlisting>
+		<![CDATA[
+int	TYPE_AUX_LINE
+描述辅助线路级连接器的设备类型。
+int	TYPE_BLUETOOTH_A2DP
+描述支持A2DP配置文件的蓝牙设备的设备类型。
+int	TYPE_BLUETOOTH_SCO
+描述通常用于电话的蓝牙设备的设备类型。
+int	TYPE_BUILTIN_EARPIECE
+描述连接的耳机扬声器的设备类型。
+int	TYPE_BUILTIN_MIC
+描述设备内置的麦克风的设备类型。
+int	TYPE_BUILTIN_SPEAKER
+描述扬声器系统的设备类型（即，
+int	TYPE_BUS
+用于与外部音频系统通信的类型不可知设备
+int	TYPE_DOCK
+描述与码头关联的音频设备的设备类型。
+int	TYPE_FM
+与通过FM传输音频信号相关的设备类型。
+int	TYPE_FM_TUNER
+用于访问通过FM传输的音频内容的设备类型。
+int	TYPE_HDMI
+描述HDMI连接的设备类型。
+int	TYPE_HDMI_ARC
+描述HDMI连接的音频返回通道的设备类型。
+int	TYPE_IP
+通过IP连接的设备类型。
+int	TYPE_LINE_ANALOG
+描述模拟线路级连接的设备类型。
+int	TYPE_LINE_DIGITAL
+描述数字线路连接的设备类型（例如，
+int	TYPE_TELEPHONY
+描述通过电话网络传输音频信号的设备类型。
+int	TYPE_TV_TUNER
+用于访问通过电视调谐器系统传输的音频内容的设备类型。
+int	TYPE_UNKNOWN
+与未知或未初始化设备关联的设备类型。
+int	TYPE_USB_ACCESSORY
+描述配件模式下的USB音频设备的设备类型。
+int	TYPE_USB_DEVICE
+描述USB音频设备的设备类型。
+int	TYPE_WIRED_HEADPHONES
+描述一对有线耳机的设备类型。
+int	TYPE_WIRED_HEADSET
+描述耳机的设备类型，它是耳机和麦克风的组合。		
+		]]>
+		</programlisting>
+	</section>
 	<section id="MediaPlayer">
 		<title>MediaPlayer</title>
 		<section>
@@ -1024,6 +1075,17 @@ audioManager.setMode(AudioManager.MODE_IN_CALL);
         return null;
     }		
 		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>远端录音</title>
+			<para>AudioDeviceInfo.TYPE_REMOTE_SUBMIX 用于投屏，电视等设备录音</para>
+			<programlisting>
+			<![CDATA[
+AudioRecord record = new AudioRecord(AudioSource.REMOTE_SUBMIX, 44100,
+        AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, bufferSize)
+
+			]]>
 			</programlisting>
 		</section>
 		<section id="AudioRecord.setPreferredDevice">

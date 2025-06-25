@@ -13,7 +13,51 @@
 		</programlisting>
 	</section>
 	<section>
-		<title></title>
+		<title>获取 Token</title>
+		<programlisting>
+		<![CDATA[
+    public void getTingWuAccessToken() {
+
+        if (token != null) {
+            return;
+        }
+        AccessToken accessToken = new AccessToken(Config.Aliyun.Tingwu.accessKeyId, Config.Aliyun.Tingwu.accessKeySecret);
+        new Thread(() -> {
+
+            try {
+                accessToken.apply();
+
+                while (true) {
+
+                    token = accessToken.getToken();
+                    long expireTime = accessToken.getExpireTime();
+
+                    if (token != null) {
+                        Log.d(TAG, "TingWu Token: " + token + " Expire: " + expireTime);
+                        countDownLatch.countDown();
+                        break;
+                    } else {
+                        Thread.sleep(1000);
+                        Log.d(TAG, "TingWu Token: " + token);
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }).start();
+
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>语音唤醒</title>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.conference.ai.aliyun;

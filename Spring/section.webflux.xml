@@ -1584,3 +1584,172 @@ Flux.just(1,2,3,4,5,6,7,8)
 	]]>
 	</programlisting>
 </section>
+<section id="concatWithValues">
+	<title>末尾连接字符串 </title>
+	<section>
+		<title>concatWith</title>
+		<programlisting>
+		<![CDATA[
+// 使用 concatWith() 追加另一个 Flux
+Flux.just(1, 2, 3)
+    .concatWith(Flux.just(4, 5, 6))
+    .subscribe(System.out::println);
+
+// 效果等同于 concatWithValues(4, 5, 6)		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>concatWithValues</title>
+		<programlisting>
+		<![CDATA[
+Flux.just(1, 2, 0)
+    .map(num -> 10 / num) // 除以 0 会触发错误
+    .onErrorReturn(-1) // 错误时返回 -1
+    .concatWithValues(5, 6) // 无论如何都会追加
+    .subscribe(System.out::println);
+
+// 输出结果：
+// 10
+// 5
+// -1  <- 错误处理结果
+// 5   <- 追加的元素
+// 6		
+		]]>
+		</programlisting>
+		<programlisting>
+	<![CDATA[
+public Flux<String> deepseek(String device, String taskId, String speakId, List<Map<String, String>> messages) {
+
+        WebClient webClient = WebClient.builder()
+                .baseUrl(url)
+                .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("Authorization", "Bearer " + authorization)
+                .build();
+
+//        List<Map<String, String>> messages = new ArrayList<Map<String, String>>();
+//        messages.add(Map.of("role", "user", "content", content));
+
+        log.debug(messages.toString());
+
+        Map<String, Object> requestBody = Map.of(
+                "model", model,
+                "messages", messages,
+                "stream", true
+        );
+
+        StringBuffer sentence = new StringBuffer();
+        Set<String> symbol = Set.of(".", "!", "?", "，", "。", "！", "？");
+
+        return webClient.post()
+                .uri("/chat/completions")
+                .bodyValue(requestBody)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .retrieve()
+                .bodyToFlux(String.class)
+//                .filter(chunk -> !chunk.trim().isEmpty())
+                .map(chunk -> {
+//                    if (chunk.trim().equals("data: [DONE]")) {
+//                        return "[END]";
+//                    }
+                    try {
+//                        log.debug("chunk: " + chunk);
+                        String jsonString = chunk.replaceFirst("^data: ", "");
+                        JsonNode jsonNode = new ObjectMapper().readTree(jsonString);
+                        String result = jsonNode.path("choices").path(0).path("delta").path("content").asText();
+                        result = result.replace(" ", "\\x20").replace("\n", "\\x0A");
+//                        return result != null ? result : "";
+//                        log.debug("[" + result + "]");
+                        return result;
+                    } catch (JsonProcessingException e) {
+                        return "";
+                    }
+                }).concatWithValues("。")
+//                .filter(text -> text != null && !text.equals("null") && !text.isEmpty())
+                .onErrorResume(e -> {
+                    log.error("Error processing stream", e);
+                    return Flux.just("[ERROR]");
+                });
+    }	
+	]]>
+		</programlisting>
+	</section>
+</section>
+<section id="Flux.scan">
+	<title>Flux scan</title>
+	<para>计数</para>
+	<programlisting>
+	<![CDATA[
+import reactor.core.publisher.Flux;
+
+public class ScanExample {
+    public static void main(String[] args) {
+        Flux.just(1, 2, 3, 4, 5)
+            .scan((total, current) -> total + current) // 累加
+            .subscribe(System.out::println);
+    }
+}
+
+// 输出结果：
+// 1    <- 第一个元素直接输出（作为初始值）
+// 3    <- 1 + 2
+// 6    <- 3 + 3
+// 10   <- 6 + 4
+// 15   <- 10 + 5	
+	]]>
+	</programlisting>
+	<para>字符串追加</para>
+	<programlisting>
+	<![CDATA[
+Flux.just("a", "b", "c", "d")
+    .scan("", (acc, current) -> acc + current) // 初始值为空字符串
+    .subscribe(System.out::println);
+
+// 输出结果：
+// ""   <- 初始值
+// "a"  <- "" + "a"
+// "ab" <- "a" + "b"
+// "abc"
+// "abcd"	
+	]]>
+	</programlisting>
+	<para></para>
+	<screen>
+	<![CDATA[
+class Counter {
+    int evenCount = 0;
+    int oddCount = 0;
+    
+    @Override
+    public String toString() {
+        return "偶数: " + evenCount + ", 奇数: " + oddCount;
+    }
+}
+
+Flux.just(1, 2, 3, 4, 5)
+    .scan(new Counter(), (counter, num) -> {
+        if (num % 2 == 0) counter.evenCount++;
+        else counter.oddCount++;
+        return counter;
+    })
+    .subscribe(System.out::println);
+
+// 输出结果：
+// 偶数: 0, 奇数: 0   <- 初始状态
+// 偶数: 0, 奇数: 1   <- 处理 1
+// 偶数: 1, 奇数: 1   <- 处理 2
+// 偶数: 1, 奇数: 2   <- 处理 3
+// 偶数: 2, 奇数: 2   <- 处理 4
+// 偶数: 2, 奇数: 3   <- 处理 5	
+	]]>
+	</screen>
+	<para></para>
+	<programlisting>
+	<![CDATA[
+Flux.just("a", "b", "c", "d")
+                .scan(new StringBuffer(), (sentence, current) -> sentence.append(current)) // 初始值为空字符串
+                .skip(1)
+                .subscribe(System.out::println);	
+	]]>
+	</programlisting>
+</section>
