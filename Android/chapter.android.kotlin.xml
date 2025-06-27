@@ -110,7 +110,7 @@ textViewBuildType.text = BuildConfig.BUILD_TYPE + " 内测版"
 			<![CDATA[
 runOnUiThread(() -> {
 
-});			
+});	
 			]]>
 			</programlisting>
 			<para>切到 Kotlin</para>
@@ -123,5 +123,21 @@ runOnUiThread(() -> {
 			</programlisting>
 		</section>
 	</section>
-
+	<section id="kotlin.thread">
+		<title>Thread</title>
+		<para></para>
+		<section id="kotlin.Handler">
+			<title>Handler</title>
+			<programlisting>
+			<![CDATA[
+     Handler(Looper.getMainLooper()).postDelayed({
+             if (AndroidManager.bluetoothMicrophone()) {
+                 aigcSpeech.speaking("蓝牙麦克风连接")
+             }
+             Log.d(TAG, "Bluetooth connected")
+         }, 3000)			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 </chapter>

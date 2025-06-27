@@ -778,6 +778,197 @@ String text = data.replace("\\x20", " ").replace("\\x0A", "\n");
 			]]>
 			</programlisting>
 		</section>	
+		<section>
+			<title>ChatGPT/DeepSeek 拼接字符，实现整句返回</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+
+@Service
+@Slf4j
+public class DeepSeekService {
+    private final Gson gson = new Gson();
+
+    @Value("${deepseek.url}")
+    private String url;
+    @Value("${deepseek.authorization}")
+    private String authorization;
+    @Value("${deepseek.model}")
+    private String model;
+
+    public Flux<String> deepseek(String device, String taskId, String speakId, List<Map<String, String>> messages) {
+
+        WebClient webClient = WebClient.builder()
+                .baseUrl(url)
+                .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("Authorization", "Bearer " + authorization)
+                .build();
+
+//        List<Map<String, String>> messages = new ArrayList<Map<String, String>>();
+//        messages.add(Map.of("role", "user", "content", content));
+
+        log.debug(messages.toString());
+
+        Map<String, Object> requestBody = Map.of(
+                "model", model,
+                "messages", messages,
+                "stream", true
+        );
+
+        Flux<String> flux = webClient.post()
+                .uri("/chat/completions")
+                .bodyValue(requestBody)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .retrieve()
+                .bodyToFlux(String.class)
+//                .filter(chunk -> !chunk.trim().isEmpty())
+                .map(chunk -> {
+//                    if (chunk.trim().equals("data: [DONE]")) {
+//                        return "[END]";
+//                    }
+                    try {
+//                        log.debug("chunk: " + chunk);
+                        String jsonString = chunk.replaceFirst("^data: ", "");
+                        JsonNode jsonNode = new ObjectMapper().readTree(jsonString);
+                        String result = jsonNode.path("choices").path(0).path("delta").path("content").asText();
+                        result = result.replace(" ", "\\x20").replace("\n", "\\x0A");
+//                        return result != null ? result : "";
+//                        log.debug("[" + result + "]");
+                        return result;
+                    } catch (JsonProcessingException e) {
+                        return "";
+                    }
+                })
+//                .filter(text -> text != null && !text.equals("null") && !text.isEmpty())
+                .onErrorResume(e -> {
+                    log.error("Error processing stream", e);
+                    return Flux.just("[ERROR]");
+                });
+
+        Set<String> symbol = Set.of(".", "!", "?", "，", "。", "！", "？", "EOT");
+
+        return flux.concatWithValues("EOT")
+                .scan(new Sentence(), (sentence, characters) -> {
+//                    log.info("characters " + characters);
+                    sentence.words.append(characters);
+                    boolean contains = symbol.stream().anyMatch(characters::contains);
+                    if (contains) {
+                        sentence.segment = true;
+//                        log.info("current " + state.current);
+                    }
+                    return sentence;
+                })
+                .filter(state -> state.segment)
+                .map(state -> state.getSentence());
+    }
+
+    public String deepseek(List<Map<String, String>> messages) {
+        try {
+
+            if (messages == null || messages.isEmpty()) {
+                throw new RuntimeException("摘要内容为空");
+            }
+
+            // 4. 构建请求体（示例）
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("model", model);
+            requestBody.put("messages", messages);
+
+            // 5. 发送请求并获取响应（使用WebClient）
+            String response = WebClient.create(url)
+                    .post()
+                    .uri("/chat/completions")
+                    .header("Authorization", "Bearer " + authorization)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            // 6. 解析响应
+            JsonNode responseNode = new ObjectMapper().readTree(response);
+            return responseNode.path("choices").path(0).path("message").path("content").asText();
+
+        } catch (Exception e) {
+            // 异常处理
+            log.error("获取答案失败", e);
+            return "无法生成答案：" + e.getMessage();
+        }
+    }
+
+    public Flux<String> streamSegment(Flux<String> flux, Consumer<String> consumer) {
+
+        StringBuffer sentence = new StringBuffer();
+//        StringBuffer segment = new StringBuffer();
+//        AtomicInteger length = new AtomicInteger(sequence.poll());
+//        StringBuffer text = new StringBuffer();
+
+        Set<String> symbol = Set.of(".", "!", "?", "，", "。", "！", "？");
+
+        flux.share();
+        flux.subscribe(
+                word -> {
+                    sentence.append(word);
+                    boolean contains = symbol.stream().anyMatch(word::contains);
+//                    log.debug(marker,"Word: {} ({}) Symbol:{}", word, word.length(), contains);
+                    if (contains) {
+//                        log.debug(marker, "Sentence: {} ({})", sentence, sentence.length());
+                        consumer.accept(sentence.toString());
+                        sentence.setLength(0);
+//                        log.info(marker,"Segment length: {}", length);
+                    }
+                }, error -> {
+//                    log.error(marker, "stream error: " + error);
+//                    biConsumer.accept(ChatGPTComponent.ChatGPTText.ERROR, error.toString());
+                }, () -> {
+                    if (!sentence.isEmpty()) {
+                        consumer.accept(sentence.toString());
+                    }
+//                    log.debug("Text: {} ({})", text, text.length());
+                });
+        return flux;
+    }
+
+    static class Sentence {
+        StringBuilder words = new StringBuilder();
+        boolean segment = false;
+
+        public String getSentence() {
+            String tmp = words.toString();
+            words.setLength(0);
+            segment = false;
+            return tmp.replace("EOT", "");
+        }
+    }
+
+    //
+    @Data
+    public static class DeepSeekResponse {
+
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="webclient.timeout">

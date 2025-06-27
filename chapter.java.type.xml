@@ -413,6 +413,25 @@ public class str {
 			]]>
 				</programlisting>
 			</section>
+			<section id="replaceAll">
+				<title>replaceAll</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.test;
+
+public class Test {
+
+
+    public static void main(String[] args) throws InterruptedException {
+
+        System.out.println("我是小云，你是谁小策".replaceAll("小云|小策", ""));
+
+    }
+    
+}				
+				]]>
+				</programlisting>
+			</section>
 			<section>
 				<title>替换控制字符</title>
 				<programlisting>
@@ -834,6 +853,36 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>字符串输出转译字符串</title>
+			<programlisting>
+			<![CDATA[
+    public static String escapeString(String input) {
+        if (input == null) return null;
+
+        return input
+                .replace("\\", "\\\\")   // 转义反斜杠
+                .replace("\t", "\\t")    // 转义制表符
+                .replace("\b", "\\b")    // 转义退格符
+                .replace("\n", "\\n")    // 转义换行符
+                .replace("\r", "\\r")    // 转义回车符
+                .replace("\f", "\\f")    // 转义换页符
+                .replace("'", "\\'")     // 转义单引号
+                .replace("\"", "\\\"");  // 转义双引号
+    }			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+// 使用示例
+String original = "Hello\nWorld\t\"Java\"";
+String escaped = escapeString(original);
+System.out.println(escaped); // 输出: Hello\nWorld\t\"Java\"			
+			]]>
+			</programlisting>
+			
+		</section>
+		
 	</section>
 	<section id="long">
 		<title>类型转换</title>
@@ -1998,6 +2047,30 @@ public enum HttpMethod {
 			<programlisting>
 			<![CDATA[
 	byte[] bytes = "Helloworld!!! - http://www.netkiller.cn".getBytes();		
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>初始化 byte[] 填充数据 0</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Arrays;
+
+public class Test {
+
+
+    public static void main(String[] args) throws InterruptedException {
+
+        byte[] buffer = new byte[16];
+        Arrays.fill(buffer, (byte) 0); // 确保每个元素为 0
+
+        System.out.println(Arrays.toString(buffer));
+
+    }
+
+}			
 			]]>
 			</programlisting>
 		</section>

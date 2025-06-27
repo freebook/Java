@@ -137,6 +137,23 @@ new Thread () {
 		
 		]]>
 		</programlisting>
+		<section id="Handler.post">
+			<title>Handler post</title>
+			<programlisting>
+			<![CDATA[
+		mHanderThread = new HandlerThread(TAG);
+        mHanderThread.start();
+        mHandler = new Handler(mHanderThread.getLooper());
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+
+
+            }
+        });
+			]]>
+			</programlisting>
+		</section>
 		<section>
 			<title>发送消息</title>
 			<programlisting>
