@@ -154,7 +154,7 @@ new Thread () {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="Handler.SendMessage">
 			<title>发送消息</title>
 			<programlisting>
 			<![CDATA[
@@ -346,6 +346,60 @@ Handler handler = new Handler(handlerThread.getLooper());
 
 // 获取线程名称
 String threadName = handlerThread.getName(); // "MyHandlerThread"			
+			]]>
+			</programlisting>
+		</section>
+		<section id="HandlerThread.post.sleep">
+			<title>HandlerThread 队列</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+HandlerThread handerThread = new HandlerThread(TAG);
+        handerThread.start();
+        Handler handler = new Handler(handerThread.getLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    Thread.sleep(10000);
+                    Log.d(TAG, "handerThread 1 " + handerThread.getThreadId());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    Thread.sleep(1000);
+                    Log.d(TAG, "handerThread 2 " + handerThread.getThreadId());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "handerThread 3 " + handerThread.getThreadId());
+            }
+        });
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                Log.d(TAG, "handerThread 4 " + handerThread.getThreadId());
+            }
+        });			
 			]]>
 			</programlisting>
 		</section>

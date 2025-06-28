@@ -2634,31 +2634,31 @@ public class Test {
             publisher.subscribe(processor);
 
             processor.subscribe(new Flow.Subscriber<String>() {
-                                    private Flow.Subscription subscription;
+                      private Flow.Subscription subscription;
 
-                                    @Override
-                                    public void onSubscribe(Flow.Subscription subscription) {
-                                        this.subscription = subscription;
-                                        System.out.println("Subscriber.onSubscribe");
-                                        subscription.request(1);
-                                    }
+                      @Override
+                      public void onSubscribe(Flow.Subscription subscription) {
+                          this.subscription = subscription;
+                          System.out.println("Subscriber.onSubscribe");
+                          subscription.request(1);
+                      }
 
-                                    @Override
-                                    public void onNext(String item) {
-                                        System.out.println("Subscriber.onNext: " + item);
-                                        this.subscription.request(1);
-                                    }
+                      @Override
+                      public void onNext(String item) {
+                          System.out.println("Subscriber.onNext: " + item);
+                          this.subscription.request(1);
+                      }
 
-                                    @Override
-                                    public void onError(Throwable throwable) {
-                                        System.out.println("Subscriber.onError: " + throwable);
-                                    }
+                      @Override
+                      public void onError(Throwable throwable) {
+                          System.out.println("Subscriber.onError: " + throwable);
+                      }
 
-                                    @Override
-                                    public void onComplete() {
-                                        System.out.println("Subscriber.onComplete");
-                                    }
-                                }
+                      @Override
+                      public void onComplete() {
+                          System.out.println("Subscriber.onComplete");
+                      }
+                  }
             );
 
             publisher.submit("abc");
@@ -2720,6 +2720,146 @@ Subscriber.onNext: NETKILLER
 Subscriber.onComplete			
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>订单</title>
+			<section>
+				<title>方案一 CountDownLatch</title>
+	
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.test;
+
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Flow;
+import java.util.concurrent.SubmissionPublisher;
+import java.util.stream.IntStream;
+
+public class Test {
+
+
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        Flow.Subscriber<String> subscriber = new Flow.Subscriber<String>() {
+            private final long request = 5;
+            private Flow.Subscription subscription;
+
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                this.subscription = subscription;
+                System.out.println("订阅成功，请求 1 个数据");
+                subscription.request(request); // 请求第一个数据
+            }
+
+            // ... 其他方法保持不变
+            @Override
+            public void onNext(String item) {
+                System.out.println("接收到数据: " + item);
+//                latch.countDown(); // 每个数据处理完成后减1
+                subscription.request(request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.err.println("处理失败: " + throwable.getMessage());
+                throw new RuntimeException(throwable);
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("数据流处理完成");
+                countDownLatch.countDown(); // 确保onComplete也能触发
+            }
+
+        };
+
+        publisher.subscribe(subscriber);
+        IntStream.range(1, 100).forEach(n -> {
+            publisher.submit("数据 " + n);
+        });
+        publisher.close();
+        countDownLatch.await(); // 等待所有数据处理完成
+    }
+
+}		
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>方案一 CompletableFuture</title>
+	
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.test;
+
+import lombok.SneakyThrows;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Flow;
+import java.util.concurrent.SubmissionPublisher;
+import java.util.stream.IntStream;
+
+public class Test {
+
+
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Flow.Subscriber<String> subscriber = new Flow.Subscriber<String>() {
+            private final long request = 5;
+            private Flow.Subscription subscription;
+
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                this.subscription = subscription;
+                System.out.println("订阅成功，请求 1 个数据");
+                subscription.request(request); // 请求第一个数据
+            }
+
+            // ... 其他方法保持不变
+            @Override
+            public void onNext(String item) {
+                System.out.println("接收到数据: " + item);
+//                latch.countDown(); // 每个数据处理完成后减1
+                subscription.request(request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.err.println("处理失败: " + throwable.getMessage());
+                completableFuture.completeExceptionally(throwable); // 标记异常
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("数据流处理完成");
+                completableFuture.complete(null); // 标记处理完成
+            }
+
+        };
+
+        publisher.subscribe(subscriber);
+        IntStream.range(1, 100).forEach(n -> {
+            publisher.submit("数据 " + n);
+        });
+        publisher.close();
+        completableFuture.join(); // 等待所有数据处理完成
+    }
+
+}
+				]]>
+				</programlisting>
+			</section>
 		</section>
 	</section>
 

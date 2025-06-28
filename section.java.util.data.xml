@@ -231,15 +231,46 @@ public class TestList {
 			]]>
 			</programlisting>
 		</section>
-		<section id="stream.allMatch">
-			<title>stream().allMatch()</title>
-			<programlisting>
+		<section>
+			<title></title>
+			<section>
+				<title>过滤</title>
+
+				<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class Test {
+
+
+    public static void main(String[] args) throws InterruptedException {
+
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
+
+        // 创建一个流并过滤出长度大于4的名字，然后打印
+        names.stream()
+                .filter(name -> name.length() > 4)
+                .forEach(System.out::println);
+
+    }
+
+}			
+			]]>
+				</programlisting>
+			</section>
+			<section id="stream.allMatch">
+				<title>stream().allMatch()</title>
+				<programlisting>
 			<![CDATA[
         List<String> inputStringList = Arrays.asList("Neo|Netkiller|Tom|Jerry".split("|"));
         List<String> wordsList = Arrays.asList("Neo","Tom");
         System.out.println(wordsList.stream().allMatch(inputStringList::contains));			
 			]]>
-			</programlisting>
+				</programlisting>
+			</section>
 		</section>
 		<section id="随机获取List元素">
 			<title>随机 List</title>
