@@ -403,6 +403,40 @@ HandlerThread handerThread = new HandlerThread(TAG);
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>Token 应用</title>
+			<para>Token 用来标识线程，通过 Token取消任务</para>
+			<programlisting>
+			<![CDATA[
+// 发送带 Token 的延时任务
+handler.postDelayed(runnable, token, delayMillis);
+
+// 取消所有关联该 Token 的任务
+handler.removeCallbacksAndMessages(token);			
+			]]>
+			</programlisting>
+			<para>使用 null 作为 Token：</para>
+			<programlisting>
+			<![CDATA[
+handler.postDelayed(task, null, 2000); // 不推荐
+handler.removeCallbacksAndMessages(null); // 会取消所有未指定 Token 的任务
+			]]>
+			</programlisting>
+			<para>混用 Token 和非 Token 方法：</para>
+			<programlisting>
+			<![CDATA[
+handler.postDelayed(task1, 2000); // 未指定 Token
+handler.postDelayed(task2, TOKEN, 2000); // 指定 Token
+
+handler.removeCallbacksAndMessages(TOKEN); // 只取消 task2，不影响 task1				
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	
 	

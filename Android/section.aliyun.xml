@@ -621,5 +621,17 @@ public class AliyunCosyVoiceSpeechSynthesizer implements AigcSpeechSynthesizer {
 		
 		]]>
 		</programlisting>
+		<section>
+			<title>常见错误</title>
+			<para>statusCode:44 request timeout after 23 seconds.</para>
+			<para>流式合成时出现下面错误</para>
+			<programlisting>
+			<![CDATA[
+{"code":"InvalidParameter","isJson":true,"message":"request timeout after 23 seconds.","requestId":"1d2f2600-afae-4eed-9d14-bc6116b45927","statusCode":44}			
+			]]>
+			</programlisting>
+			<para>问题出现原因</para>
+			<para>没有结束推流</para>
+		</section>
 	</section>
 </section>
