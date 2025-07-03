@@ -52,4 +52,84 @@ SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties.getInt("ro.sf.lc
 		]]>
 		</programlisting>
 	</section>
+	<section id="device.Bluetooth">
+		<title>蓝牙设备管理</title>
+		<section>
+			<title>进入蓝牙设置界面</title>
+			<programlisting>
+			<![CDATA[
+if (!bluetoothAdapter.isEnabled()) {
+    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>通过发送广播处理蓝牙</title>
+			<programlisting>
+			<![CDATA[
+IntentFilter filter = new IntentFilter();
+filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+registerReceiver(bluetoothReceiver, filter);			
+			]]>
+			</programlisting>
+		</section>
+		
+		<section>
+			<title>蓝牙禁用/启用</title>
+			<programlisting>
+			<![CDATA[
+	public static void bluetoothManager() {
+
+        if (ActivityCompat.checkSelfPermission(MainApplication.getContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+              bluetoothAdapter.disable();
+        }
+    }					
+			]]>
+			</programlisting>
+			
+		</section>
+		<section>
+			<title>获取蓝牙设备</title>
+			<programlisting>
+			<![CDATA[
+		if (ActivityCompat.checkSelfPermission(MainApplication.getContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>查询已绑定设备</title>
+			<programlisting>
+			<![CDATA[
+	public static void bluetoothManager() {
+
+        if (ActivityCompat.checkSelfPermission(MainApplication.getContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//            if (bluetoothAdapter != null) {
+//                bluetoothAdapter.disable();
+//            }
+        if (bluetoothAdapter.isEnabled()) {
+            Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
+            bondedDevices.forEach(bluetoothDevice -> {
+                Log.d(TAG, "bluetoothManager " + bluetoothDevice.getName());
+            });
+        }
+
+    }		
+			]]>
+			</programlisting>
+		</section>
+	</section>
 </chapter>	

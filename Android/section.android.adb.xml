@@ -735,6 +735,29 @@ adb shell am start -a android.bluetooth.adapter.action.REQUEST_DISCOVERABLE
 adb shell settings get secure bluetooth_address		
 		]]>
 		</screen>
+		<section>
+			<title>蓝牙打开/关闭/查询</title>
+			<screen>
+			<![CDATA[
+adb shell settings put global bluetooth_on 0 #关闭
+adb shell settings put global bluetooth_on 1 #打开
+adb shell settings get global bluetooth_on #查询
+			
+			]]>
+			</screen>
+		</section>
+		
+		<section>
+			<title>启动/禁用 蓝牙设备</title>
+			<screen>
+			<![CDATA[
+adb shell settings put global bluetooth_disabled true
+
+adb shell settings put global bluetooth_disabled false			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section>
 		<title>声卡</title>
