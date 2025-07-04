@@ -23,7 +23,7 @@ SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties.getInt("ro.sf.lc
 		</programlisting>
 	</section>
 	&section.android.device.sound.xml;
-	<section>
+	<section id="device.phone.tablet">
 		<title>判断是平板，还是手机</title>
 		<para>通过像素判断，不是太准确</para>
 		<programlisting>
@@ -76,7 +76,7 @@ registerReceiver(bluetoothReceiver, filter);
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section>
 			<title>蓝牙禁用/启用</title>
 			<programlisting>
@@ -93,7 +93,7 @@ registerReceiver(bluetoothReceiver, filter);
     }					
 			]]>
 			</programlisting>
-			
+
 		</section>
 		<section>
 			<title>获取蓝牙设备</title>
@@ -128,6 +128,46 @@ registerReceiver(bluetoothReceiver, filter);
         }
 
     }		
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>USB 设备</title>
+		<section>
+			<title>USB 音频设备</title>
+			<programlisting>
+			<![CDATA[
+public static boolean usbAudio(Context context) {
+
+            UsbManager mUsbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+            Map<String, UsbDevice> mDeviceMap = mUsbManager.getDeviceList();//获取系统内的所有usb设备
+            for (Map.Entry<String, UsbDevice> entry : mDeviceMap.entrySet()) {
+                UsbDevice usbDevice = entry.getValue();
+//                Log.d(TAG, "USB Device " +
+////                                ", SerialNumber=" + usbDevice.getSerialNumber()
+//                                "DeviceId=" + usbDevice.getDeviceId() +
+//                                ", DeviceName=" + usbDevice.getDeviceName() +
+//                                ", ProductId=" + usbDevice.getProductId() +
+//                                ", ProductName=" + usbDevice.getProductName() +
+//                                ", ManufacturerName=" + usbDevice.getManufacturerName() +
+//                                ", Version=" + usbDevice.getVersion() +
+//                                ", VendorId=" + usbDevice.getVendorId() +
+//                                " ,DeviceClass=" + usbDevice.getDeviceClass()
+//
+//                );
+                int interfaceCount = usbDevice.getInterfaceCount();
+                for (int index = 0; index < interfaceCount; index++) {
+                    UsbInterface usbInterface = usbDevice.getInterface(index);
+                    if (usbInterface.getInterfaceClass() == UsbConstants.USB_CLASS_AUDIO) {
+                        Log.d(TAG, "USB Audio: " + usbDevice.getProductName());
+                        break;
+                    }
+                }
+            }
+
+            return false;
+        }		
 			]]>
 			</programlisting>
 		</section>

@@ -950,4 +950,28 @@ intent.setPackage(context.getPackageName());
 		]]>
 		</programlisting>
 	</section>
+	<section id="broadcast.usb">
+		<title>接收 USB 设备广播</title>
+		<programlisting>
+		<![CDATA[
+private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+            // 设备连接
+        } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+            // 设备断开
+        }
+    }
+};
+
+// 注册receiver
+IntentFilter filter = new IntentFilter();
+filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+registerReceiver(usbReceiver, filter);		
+		]]>
+		</programlisting>
+	</section>
 </chapter>
