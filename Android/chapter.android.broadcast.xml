@@ -973,5 +973,202 @@ filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 registerReceiver(usbReceiver, filter);		
 		]]>
 		</programlisting>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+package com.netkiller.conference.receiver
+
+import android.Manifest
+import android.app.DownloadManager
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.hardware.usb.UsbManager
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.telephony.TelephonyManager
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import com.blankj.utilcode.util.Utils
+
+
+class StaticBroadcastReceiver : BroadcastReceiver() {
+    //    private val cache = Cache()
+    private val aigcSpeech: AigcSpeech = AigcSpeech.getInstance()
+    private val TAG: String = StaticBroadcastReceiver::class.java.simpleName
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action
+        Log.d(TAG, "Static broadcast Action: " + action)
+        val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+//        var device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+
+        try {
+            when (action) {
+
+                UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
+                    if (AndroidManager.Device.usbAudio(context)) {
+                        AndroidManager.Device.scanMicrophone()
+                        aigcSpeech.speaking("USB麦克风连接")
+                    }
+                }
+
+                UsbManager.ACTION_USB_DEVICE_DETACHED -> {
+                    AndroidManager.Device.resetMicrophone()
+                    aigcSpeech.speaking("USB麦克风断开")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if (AndroidManager.Device.scanMicrophone()) {
+                            aigcSpeech.speaking("切换到蓝牙麦克风")
+                        }
+                        Log.d(TAG, "Bluetooth connected")
+                    }, 1000)
+                }
+
+            }
+
+        } catch (e: Exception) {
+            Log.d(TAG, e.toString())
+        }
+    }
+
+
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>Wifi 广播</title>
+		<programlisting>
+		<![CDATA[
+		<receiver
+            android:name="com.netkiller.conference.receiver.StaticBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package com.netkiller.conference.receiver
+
+import android.Manifest
+import android.app.DownloadManager
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.hardware.usb.UsbManager
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.telephony.TelephonyManager
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import com.blankj.utilcode.util.Utils
+import com.netkiller.conference.ai.State
+import com.netkiller.conference.ai.aigc.AigcSpeech
+import com.netkiller.conference.bluetooth.BlueManager
+import com.netkiller.conference.utils.AndroidManager
+
+
+class StaticBroadcastReceiver : BroadcastReceiver() {
+    //    private val cache = Cache()
+    private val aigcSpeech: AigcSpeech = AigcSpeech.getInstance()
+    private val TAG: String = StaticBroadcastReceiver::class.java.simpleName
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action
+        Log.d(TAG, "Static broadcast Action: " + action)
+
+        try {
+            when (action) {
+
+                WifiManager.WIFI_STATE_CHANGED_ACTION -> {
+                    // 监听wifi的打开与关闭，与wifi的连接无关
+                    var wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0)
+                    Log.e(TAG, "wifiState:" + wifiState)
+
+                    when (wifiState) {
+                        WifiManager.WIFI_STATE_ENABLED -> Log.d(TAG, "WiFi 已启用")
+                        WifiManager.WIFI_STATE_DISABLED -> Log.d(TAG, "WiFi 已禁用")
+                        WifiManager.WIFI_STATE_ENABLING -> Log.d(TAG, "WiFi 正在启用")
+                        WifiManager.WIFI_STATE_DISABLING -> Log.d(TAG, "WiFi 正在禁用")
+                        WifiManager.WIFI_STATE_UNKNOWN -> Log.d(TAG, "WiFi 状态未知")
+                    }
+                }
+
+                WifiManager.NETWORK_STATE_CHANGED_ACTION -> {
+                    var wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+                    val networkInfo: NetworkInfo? = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)
+                    if (networkInfo != null) {
+                        if (networkInfo.isConnected) {
+                            val wifiInfo: WifiInfo = wifiManager.connectionInfo
+                            val ssid = wifiInfo.ssid
+                            val rssi = wifiInfo.rssi
+                            val linkSpeed = wifiInfo.linkSpeed
+                            Log.d(TAG, "已连接到 WiFi: $ssid")
+                            Log.d(TAG, "信号强度: $rssi dBm")
+                            Log.d(TAG, "连接速度: $linkSpeed Mbps")
+                        } else {
+                            Log.d(TAG, "已断开 WiFi 连接")
+                        }
+                    }
+
+                }
+
+                ConnectivityManager.CONNECTIVITY_ACTION -> {
+                    // 监听wifi的连接状态即是否连上了一个有效无线路由
+                    var connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    var activeNetwork = connectivityManager.activeNetworkInfo
+                    var isWiFiConnected = activeNetwork != null &&
+                            activeNetwork.type == ConnectivityManager.TYPE_WIFI &&
+                            activeNetwork.isConnected
+
+                    if (isWiFiConnected) {
+                        Log.d(TAG, "WiFi 已连接且可用")
+                    } else {
+                        Log.d(TAG, "WiFi 不可用")
+                    }
+                }
+
+
+            }
+
+        } catch (e: Exception) {
+            Log.d(TAG, e.toString())
+        }
+    }
+
+}		
+		]]>
+		</programlisting>
 	</section>
 </chapter>

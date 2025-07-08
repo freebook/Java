@@ -208,4 +208,35 @@ neo@MacBook-Pro-M2 album %
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>调试技巧，找不到哪里调用</title>
+		<para>不知道哪里触发了 stopPLayer() ，可以添加这段代码，打印方法调用栈信息 Log.d(TAG, Log.getStackTraceString(new Exception("custom exception")));</para>
+		<programlisting>
+		<![CDATA[
+public void stopPLayer() {
+        Log.d(TAG, Log.getStackTraceString(new Exception("custom exception")));
+        try {
+            if (neoPlayer != null) {
+                if (neoPlayer.isPlaying()) {
+                    neoPlayer.stop();
+                    if (!playlists.isEmpty()) {
+                        playlists.remove();
+
+                        Log.i(TAG, "stopPLayer() 并清空播放列表 " + playlists.isEmpty());
+                    }
+                    Log.i(TAG, "stopPLayer() 正常停止播放，播放状态: " + neoPlayer.isPlaying());
+                } else {
+                    neoPlayer.stop();
+                    Log.i(TAG, "stopPLayer() 强行停止播放，播放状态: " + neoPlayer.isPlaying());
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }		
+		]]>
+		</programlisting>
+	</section>
+	
+	
 </chapter>

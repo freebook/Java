@@ -37,7 +37,17 @@ for (x in 9 downTo 0 step 3) {
 				</programlisting>
 			</section>
 		</section>
-
+		<section>
+			<title>数组</title>
+			<programlisting>
+			<![CDATA[
+val arr = arrayOf(
+    "13113668890", "111222445", "14566677",
+    "20034534535", "21398989"
+)			
+			]]>
+			</programlisting>
+		</section>
 
 		<section>
 			<title>List 列表</title>
@@ -47,6 +57,23 @@ for (x in 9 downTo 0 step 3) {
 				<programlisting>
 				<![CDATA[
 listOf("debug", "dev").contains(BuildConfig.BUILD_TYPE)			
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>列表转数组</title>
+				<programlisting>
+				<![CDATA[
+val contact =
+            mapOf(
+                "BG7NYT" to "177",
+                "BG7NEG" to "172",
+                "BG7JWV" to "179",
+                "BI7XYS" to "190",
+                "BD7KBF" to "4612194"
+            )
+
+contact.values.toTypedArray()
 				]]>
 				</programlisting>
 			</section>
@@ -85,10 +112,10 @@ listOf("debug", "dev").contains(BuildConfig.BUILD_TYPE)
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="kotlin.ui">
 		<title>界面操作</title>
 
-		<section>
+		<section id="findViewById">
 			<title>findViewById</title>
 			<programlisting>
 			<![CDATA[
@@ -103,7 +130,7 @@ textViewBuildType.text = BuildConfig.BUILD_TYPE + " 内测版"
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="runOnUiThread">
 			<title>runOnUiThread</title>
 			<para>Java 用法</para>
 			<programlisting>
@@ -119,6 +146,81 @@ runOnUiThread(() -> {
 	runOnUiThread {
        	qrcodeFrameLayout.visibility = View.VISIBLE
     }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Fragment</title>
+			<programlisting>
+			<![CDATA[
+			val transaction = parentFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, SipFullscreenFragment()).addToBackStack(null).setReorderingAllowed(true).commit()
+			]]>
+			</programlisting>
+			<para>给 Fragment 传参数，我门定义一个 newInstance 方法。</para>
+			<programlisting>
+			<![CDATA[
+package com.ideasprite.conference.ui.phone
+
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.ideasprite.conference.R
+import com.ideasprite.conference.databinding.FragmentCallFullscreenBinding
+
+
+class CallFullscreenFragment : Fragment() {
+    private lateinit var phoneNumber: String
+
+    private var _binding: FragmentCallFullscreenBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentCallFullscreenBinding.inflate(inflater, container, false)
+
+        binding.textViewCalledNumber.text = phoneNumber
+
+        binding.imageViewHangup.setOnClickListener {
+
+            val transaction = parentFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, SipFullscreenFragment()).addToBackStack(null).setReorderingAllowed(true).commit()
+        }
+
+        return binding.root
+
+    }
+
+    companion object {
+        fun newInstance(phoneNumber: String) = CallFullscreenFragment().apply {
+            this.phoneNumber = phoneNumber
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+			]]>
+			</programlisting>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+			val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainerView, CallFullscreenFragment.newInstance(phoneNumber))//切换fragment 传递 phoneNumber 参数
+            transaction.addToBackStack(null)
+            transaction.setReorderingAllowed(true)
+            transaction.commit()			
 			]]>
 			</programlisting>
 		</section>
@@ -139,5 +241,55 @@ runOnUiThread(() -> {
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title>Timer</title>
+		<programlisting>
+		<![CDATA[
+	private var seconds = 0
+
+    private val timer = Timer()
+    private val timerTask: TimerTask = object : TimerTask() {
+        override fun run() {
+            val hours = seconds / 3600
+            val minutes = (seconds % 3600) / 60
+            val secs = seconds % 60
+
+            var time = "00:00"
+
+            if (hours == 0) {
+                // 格式化时间为 HH:MM:SS
+                time = String.format("%02d:%02d", minutes, secs)
+            } else {
+                // 格式化时间为 HH:MM:SS
+                time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+            }
+
+            binding.textViewTimer.text = time
+            seconds++
+        }
+    }		
+    
+	override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentCallFullscreenBinding.inflate(inflater, container, false)
+
+        timer.schedule(timerTask, 1000, 1000)
+
+        return binding.root
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        timer.cancel()
+    }    
+		]]>
+		</programlisting>
 	</section>
 </chapter>
