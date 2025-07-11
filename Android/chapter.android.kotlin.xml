@@ -24,8 +24,8 @@ for (x in 9 downTo 0 step 3) {
 			]]>
 			</programlisting>
 		</section>
-		
-		
+
+
 		<section>
 			<title>字符串</title>
 			<section>
@@ -36,6 +36,15 @@ for (x in 9 downTo 0 step 3) {
 				]]>
 				</programlisting>
 			</section>
+		</section>
+		<section>
+			<title>日期时间</title>
+			<programlisting>
+			<![CDATA[
+val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+val formattedDate = dateFormat.format(Date())			
+			]]>
+			</programlisting>
 		</section>
 		<section>
 			<title>数组</title>
@@ -49,8 +58,20 @@ val arr = arrayOf(
 			</programlisting>
 		</section>
 
-		<section>
+		<section id="kotlin.list">
 			<title>List 列表</title>
+			<section>
+				<title>ArrayList</title>
+				<programlisting>
+				<![CDATA[
+val arrayList = ArrayList<String>()
+arrayList.add("Java")
+arrayList.add("Kotlin")
+arrayList.add("Python")
+println("ArrayList: $arrayList")				
+				]]>
+				</programlisting>
+			</section>
 			<section>
 				<title>List.of</title>
 
@@ -74,6 +95,41 @@ val contact =
             )
 
 contact.values.toTypedArray()
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>MutableList 可变列表集合</title>
+				<programlisting>
+				<![CDATA[
+   // 创建可变列表集合
+    var mutableList = mutableListOf("Tom", "Jerry")
+    // 添加元素
+    mutableList.add("Jack")
+    // 删除元素
+    mutableList.remove("Tom")
+    println(mutableList)
+
+    // 将 可变列表集合 转为 只读列表集合
+    val list: List<String> = mutableList.toList()
+    // 将 只读列表集合 转为 可变列表集合
+    val mutable: MutableList<String> = list.toMutableList()				
+				]]>
+				</programlisting>
+				<para>筛选并删除元素</para>
+				<programlisting>
+				<![CDATA[
+fun main() {
+    // 创建可变列表集合
+    val mutableList = mutableListOf("Tom", "Jerry")
+    // 通过 Lambda 表达式筛选要操作的元素
+    // 删除包含 字母 T 的元素
+    mutableList.removeIf {
+        it.contains("T")
+    }
+    println(mutableList)
+}
+
 				]]>
 				</programlisting>
 			</section>
@@ -112,6 +168,22 @@ contact.values.toTypedArray()
 		]]>
 		</programlisting>
 	</section>
+	<section id="kotlin.callback">
+		<title>Callback 回调</title>
+		<section>
+			<title>Consumer</title>
+			<programlisting>
+			<![CDATA[
+speakerRecognition.recognition(value.payload.result, Consumer { name: String ->
+    honorific.put(value.payload.speaker_id, name)
+    Log.i(TAG, "说话人识别：" + value.payload.speaker_id + " " + name)
+
+})
+			]]>
+			</programlisting>
+		</section>
+	</section>
+
 	<section id="kotlin.ui">
 		<title>界面操作</title>
 
@@ -242,9 +314,31 @@ class CallFullscreenFragment : Fragment() {
 			</programlisting>
 		</section>
 	</section>
-	<section>
-		<title>Timer</title>
-		<programlisting>
+	<section id="kotlin.timer">
+		<title>定时与延迟执行</title>
+		<section>
+			<title>Timer</title>
+			<programlisting>
+			<![CDATA[
+Timer().schedule(object : TimerTask() {
+            override fun run() {
+              //需要执行的任务
+            }
+        }, 1000)
+			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+Timer().schedule(object : TimerTask() {
+            override fun run() {
+                //需要执行的任务
+            }
+        }, 0,2000)
+		
+			]]>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 	private var seconds = 0
 
@@ -291,5 +385,21 @@ class CallFullscreenFragment : Fragment() {
     }    
 		]]>
 		</programlisting>
+		</section>
 	</section>
+	<section>
+		<title>协程</title>
+		<programlisting>
+		<![CDATA[
+GlobalScope.launch {
+    while (true) {
+        delay(1000)
+        println("每秒执行一次")
+    }
+}
+		]]>
+		</programlisting>
+	</section>>
+	
+	
 </chapter>

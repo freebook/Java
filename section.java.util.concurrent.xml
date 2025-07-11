@@ -983,6 +983,97 @@ public class PriorityQueueExample {
 			]]>
 			</programlisting>
 		</section>
+		<section id="ConcurrentLinkedQueue">
+			<title>ConcurrentLinkedQueue</title>
+			<programlisting>
+			<![CDATA[
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class ConcurrentLinkedQueueExample {
+    public static void main(String[] args) {
+        ConcurrentLinkedQueue<Integer> queue = new ConcurrentLinkedQueue<>();
+        
+        // 生产者线程
+        new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                queue.offer(i); // 立即返回，不会阻塞
+                System.out.println("Produced: " + i);
+            }
+        }).start();
+        
+        // 消费者线程
+        new Thread(() -> {
+            while (true) {
+                Integer item = queue.poll(); // 立即返回，队列为空时返回 null
+                if (item != null) {
+                    System.out.println("Consumed: " + item);
+                }
+            }
+        }).start();
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		<section id="LinkedTransferQueue">
+			<title>LinkedTransferQueue</title>
+			<programlisting>
+			<![CDATA[
+import java.util.concurrent.LinkedTransferQueue;
+
+public class LinkedTransferQueueExample {
+    public static void main(String[] args) throws InterruptedException {
+        LinkedTransferQueue<Integer> queue = new LinkedTransferQueue<>();
+        
+        // 消费者线程（先启动，等待数据）
+        new Thread(() -> {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    Integer item = queue.take(); // 等待生产者传递数据
+                    System.out.println("Consumed: " + item);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+        
+        // 生产者线程
+        new Thread(() -> {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    queue.transfer(i); // 直接传递给消费者，若没有消费者则阻塞
+                    System.out.println("Produced: " + i);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
+}
+			]]>
+			</programlisting>
+		</section>
+		
+		<section>
+			<title>LinkedBlockingQueue	LinkedTransferQueue	ConcurrentLinkedQueue</title>
+			<programlisting>
+			<![CDATA[
+特性		LinkedBlockingQueue	LinkedTransferQueue	ConcurrentLinkedQueue
+
+队列边界	有界（可指定）	无界	无界
+锁机制	分离读写锁	无锁（CAS）	无锁（CAS）
+阻塞操作	支持 put/take	支持 transfer	不支持（立即返回）
+直接传递	不支持	支持 transfer()	不支持
+适用场景	生产者 - 消费者模型	即时传递、高性能	非阻塞、读多写少
+性能建议
+
+读多写少：优先使用 ConcurrentLinkedQueue（无锁，吞吐量高）。
+生产者 - 消费者模型：优先使用 LinkedBlockingQueue（有界控制，平衡读写）。
+即时传递：优先使用 LinkedTransferQueue（避免入队出队开销）。
+			]]>
+			</programlisting>
+		</section>		
+		
 	</section>
 	<section id="Future">
 		<title>Future</title>

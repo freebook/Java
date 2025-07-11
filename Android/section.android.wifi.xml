@@ -26,3 +26,35 @@
 		]]>
 	</programlisting>
 </section>
+<section>
+	<title>WI-FI 与 蜂窝网络 信号强度检测</title>
+	<programlisting>
+	<![CDATA[
+		public static int getWifiSignalStrength(Context context) {
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager != null) {
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                if (wifiInfo != null) {
+                    int rssi = wifiInfo.getRssi();
+                    // 可将RSSI值转换为0 - 4的信号强度等级
+                    return WifiManager.calculateSignalLevel(rssi, 5);
+                }
+            }
+            return -1;
+        }
+
+
+        public static int getCellularSignalStrength(Context context) {
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            if (telephonyManager != null) {
+                int level = 0;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    level = telephonyManager.getSignalStrength().getLevel();
+                }
+                return level;
+            }
+            return -1;
+        }	
+	]]>
+	</programlisting>
+</section>

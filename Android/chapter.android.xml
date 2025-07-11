@@ -22,6 +22,7 @@
 	&chapter.android.graphics.xml;
 	&chapter.android.eventbus.xml;
 	&section.android.mqtt.xml;
+	&chapter.android.database.xml;
 	
 	&chapter.android.misc.xml;
 	&chapter.android.faq.xml;

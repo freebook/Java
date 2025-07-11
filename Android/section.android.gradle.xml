@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="android.gradle.kt">
 	<title>Gradle</title>
-	<section>
+	<section id="gradle.exclude">
 		<title>排除重复包引用</title>
 		<screen>
 		<![CDATA[
@@ -17,7 +17,57 @@ dependencies {
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gradle.dependencies">
+		<title>引用其他模块依赖</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+	implementation(project(":utils"))
+    implementation(project(":ai"))
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+dependencies {
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+   
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation("com.pjdroid:pjdroid:2.2.4")
+
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp-sse
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.sse)
+    implementation(libs.gson)
+    implementation("com.belerweb:pinyin4j:2.5.1")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava2:3.0.0")
+
+//    implementation("javax.xml.bind:jaxb-api:2.3.1")
+//    implementation("com.auth0:java-jwt:4.5.0")
+
+	implementation(project(":utils"))
+    implementation(project(":ai"))
+
+}		
+		]]>
+		</screen>
+	</section>
+	<section id="gradle.jar">
 		<title>Jar</title>
 		<programlisting>
 		<![CDATA[
@@ -45,7 +95,7 @@ tasks.jar {
 		]]>
 		</programlisting>		
 	</section>
-	<section>
+	<section id="gradle.aar">
 		<title>Android Library 项目 .aar 文件上传至 GitHub Package 仓库</title>
 		<programlisting>
 		<![CDATA[
