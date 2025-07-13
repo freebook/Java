@@ -221,7 +221,7 @@ runOnUiThread(() -> {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="kotlin.Fragment">
 			<title>Fragment</title>
 			<programlisting>
 			<![CDATA[
@@ -295,6 +295,27 @@ class CallFullscreenFragment : Fragment() {
             transaction.commit()			
 			]]>
 			</programlisting>
+		</section>
+		<section id="kotlin">
+			<title>ImageView</title>
+			<section>
+				<title>设置图片</title>
+				<programlisting>
+				<![CDATA[
+			if (status) {
+                phoneBinding?.imageViewLightWifi?.imageResource = R.drawable.stroke_color_rbtn_blue
+            } else {
+                phoneBinding?.imageViewLightWifi?.imageResource = R.drawable.stroke_color_rbtn_white
+            }				
+				]]>
+				</programlisting>
+				<para></para>
+				<programlisting>
+				<![CDATA[
+val drawable: Drawable? = ResourcesCompat.getDrawable(resources, R.drawable.myimage, null)				
+				]]>
+				</programlisting>
+			</section>			
 		</section>
 	</section>
 	<section id="kotlin.thread">

@@ -1029,12 +1029,49 @@ webClient.get()
 		</programlisting>
 	</section>
 	<section>
-		<title>org.springframework.web.context.request.async.AsyncRequestNotUsableException:
-			ServletOutputStream failed to flush: java.io.IOException: Broken pipe
-		</title>
+		<title>解决 WebClient 截断 URI的问题</title>
+		<screen>
+		<![CDATA[
+https://prod-tingwu-paas-common-beijing.oss-cn-beijing.aliyuncs.com/tingwu/output/1744644768465976/b0ef5830bfe94e9881ee08b0a2dab21b/b0ef5830bfe94e9881ee08b0a2dab21b_20250708103257.mp3?Expires=1754920073&OSSAccessKeyId=LTAI5tMzZ1D4o1drkJN1TfCr&Signature=PhUBnEuKW1VOhBMeyTaqJugqt9U%3D		
+		]]>
+		</screen>
+		<para>mp3后面，问号以及参数会被 WebClient 截断，解决方案</para>
 		<programlisting>
 		<![CDATA[
+	@SneakyThrows
+    public String audio(String taskId, String filename) {
+        Optional<GetTaskInfoResponseBody.GetTaskInfoResponseBodyData> optional = meetingService.getTaskInfo(taskId);
+        if (optional.isEmpty()) {
+            return null;
+        }
+        String mp3file = optional.get().getOutputMp3Path();
+        log.info("下载音频文件 " + mp3file);
+        if (mp3file == null) return null;
 
+        WebClient client = WebClient.builder()
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(128 * 1024 * 1024))
+                .build();
+
+        Flux<DataBuffer> flux = client.get()
+                .uri(URI.create(mp3file))
+                .retrieve()
+                .bodyToFlux(DataBuffer.class);
+
+        String datetime = LocalDateTime.now().format(dateTimeFormatter);
+        File file = new File(String.format("%s/%s/%s", WORKDIR, datetime, taskId));
+        if (!file.isDirectory()) {
+            file.mkdirs();
+        }
+        String filepath = String.format("%s/%s", file.getAbsoluteFile(), filename);
+
+        Path path = Paths.get(filepath);
+        DataBufferUtils.write(flux, path).block();
+        long size = Files.size(path);
+        log.info("文件下载完成: " + filepath + " 大小：" + size + " 字节");
+        return String.format("%s/%s/%s", datetime, taskId, filename);
+    }
 		]]>
 		</programlisting>
 	</section>

@@ -573,6 +573,13 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 		]]>
 		</screen>
 	</section>
-
+	<section>
+		<title>org.springframework.core.io.buffer.DataBufferLimitException: Exceeded limit on max bytes to buffer : 262144</title>
+		<programlisting>
+		<![CDATA[
+spring.codec.max-in-memory-size=16MB		
+		]]>
+		</programlisting>
+	</section>
 
 </chapter>
