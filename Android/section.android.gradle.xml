@@ -210,4 +210,25 @@ publishing {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>新建 module 编译出现 Please ensure dynamic features are configured in the build file.</title>
+		<screen>
+		<![CDATA[
+This application (cn.netkiller.sip) is not configured to use dynamic features.
+Please ensure dynamic features are configured in the build file.
+Refer to https://developer.android.com/guide/playcore/feature-delivery#base_feature_relationship		
+		]]>
+		</screen>
+		<para>解决方案，讲 alias 替换成 id</para>
+		<screen>
+		<![CDATA[
+plugins {
+//    alias(libs.plugins.android.library)
+//    alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+}
+		]]>
+		</screen>
+	</section>
 </section>
