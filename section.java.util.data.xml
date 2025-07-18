@@ -1458,9 +1458,32 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
-	</section>
-	<section id="Iterator">
-		<title>Iterator 迭代器</title>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class MapInverter {
+    public static void main(String[] args) {
+        Map<String, Integer> originalMap = new HashMap<>();
+        originalMap.put("A", 1);
+        originalMap.put("B", 2);
+        originalMap.put("C", 3);
+
+        // 反转键值对（要求 value 唯一）
+        Map<Integer, String> invertedMap = originalMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+
+        System.out.println(invertedMap); // 输出: {1=A, 2=B, 3=C}
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		
 		<para>Iterator接口包含四个方法：hasNext，next，remove，forEachRemaining</para>
 		<section>
 			<title>List 迭代</title>

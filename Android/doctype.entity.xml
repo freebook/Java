@@ -40,7 +40,9 @@
 <!ENTITY chapter.android.graphics.xml		SYSTEM "chapter.android.graphics.xml">
 <!ENTITY section.android.download.xml		SYSTEM "section.android.download.xml">
 <!ENTITY section.android.resources.xml		SYSTEM "section.android.resources.xml">
+
 <!ENTITY chapter.android.database.xml		SYSTEM "chapter.android.database.xml">
+<!ENTITY section.android.database.room.xml	SYSTEM "section.android.database.room.xml">
 
 <!ENTITY chapter.android.eventbus.xml		SYSTEM "chapter.android.eventbus.xml">
 <!ENTITY section.android.mqtt.xml			SYSTEM "section.android.mqtt.xml">

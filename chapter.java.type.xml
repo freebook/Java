@@ -1512,7 +1512,46 @@ ISO 8601扩展格式 YYYY-MM-DDTHH:mm:ss.sssZ
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>计算流逝时间</title>
+			<programlisting>
+			<![CDATA[
+package com.netkiller.conference.ai.utils;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+public class Datatime {
+    
+    public static String elapsed(LocalDateTime startTime, LocalDateTime endTime) {
+        Duration duration = Duration.between(startTime, endTime);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        long seconds = duration.toSecondsPart();
+        long millis = duration.toMillisPart();
+
+        if (hours > 0) {
+//            return String.format("%d 时 %d 分 %d 秒 %d 毫秒", hours, minutes, seconds, millis);
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        } else if (minutes > 0) {
+//            return String.format("%d 分 %d 秒 %d 毫秒", minutes, seconds, millis);
+            return String.format("%02d:%02d", minutes, seconds);
+        } else if (seconds > 0) {
+//            return String.format("%d 秒 %d 毫秒", seconds, millis);
+            return String.format("00:%02d", seconds);
+        } else {
+//            return String.format("%d 毫秒", millis);
+            return "00:00";
+        }
+    }
+}		
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="array">
 		<title>Array 数组</title>

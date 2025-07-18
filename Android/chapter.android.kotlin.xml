@@ -61,6 +61,21 @@ val arr = arrayOf(
 		<section id="kotlin.list">
 			<title>List 列表</title>
 			<section>
+				<title>init</title>
+				<programlisting>
+				<![CDATA[
+        val PATTERN: MutableList<String> = object : ArrayList<String>() {
+            init {
+                add(".*(?:发言|说话)人(\\d+).*")
+                add(".*(?:发言|说话)人(一|二|三|四|五|六|七|八|九|十).*")
+                add(".*(?:发言|说话)人(一|二|三|四|五|六|七|八|九|十).*")
+                //            add("(.*)的观点.*");
+            }
+        }
+				]]>
+				</programlisting>
+			</section>
+			<section>
 				<title>ArrayList</title>
 				<programlisting>
 				<![CDATA[
@@ -133,14 +148,81 @@ fun main() {
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title>forEach</title>
+				<programlisting>
+				<![CDATA[
+var content = meetingDao.findByTaskId(meetingData.taskId).forEach { (id, taskId, time, speaker, sentence) ->
+                Log.d(TAG, sentence)
+            }				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>列表拼接字符串</title>
+				<programlisting>
+				<![CDATA[
+var content = meetingDao.findByTaskId("5b4a5bd92da847d292ed74ae696a7ca1").map({ "${it.time} 发言人${it.speaker} ${it.sentence}" }).joinToString(separator = "\n")
+Log.d(TAG, content)				
+				]]>
+				</programlisting>
+			</section>
 		</section>
-		<section>
+		<section id="kotlin.map">
 			<title>Map 图</title>
+			<section>
+				<title>init</title>
+				<programlisting>
+				<![CDATA[
+        val digit: MutableMap<String?, String?> = object : HashMap<String?, String?>() {
+            init {
+                put("一", "1")
+                put("二", "2")
+                put("三", "3")
+                put("四", "4")
+                put("五", "5")
+                put("六", "6")
+                put("七", "7")
+                put("八", "8")
+                put("九", "9")
+                put("十", "10")
+                put("零", "0")
+            }
+        }				
+				]]>
+				</programlisting>
+			</section>
 			<section>
 				<title>Map.of</title>
 				<programlisting>
 				<![CDATA[
- mapOf("content" to "hello world")				
+ mapOf("content" to "hello world")
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>反转 Map 的 key 与 value</title>
+				<programlisting>
+				<![CDATA[
+ val originalMap = mapOf("a" to 1, "b" to 2, "c" to 2)
+
+// 反转键值对（注意：如果值有重复，会导致键冲突，后面的键会覆盖前面的）
+val reversedMap = originalMap.associateBy({ it.value }, { it.key })
+
+println(reversedMap) // 输出: {1=a, 2=c}（值2对应的原键"b"被覆盖）
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+ConcurrentHashMap<String, String> speakers = new ConcurrentHashMap<>();
+        speakers.put("1", "发言人一");
+        speakers.put("2", "市场部小周");
+        speakers.put("4", "陈先生");
+        speakers.put("5", "齐天大圣");
+        speakers.put("6", "一品轩小飞");
+        speakers.put("7", "年年富");
+        speakers.put("8", "李总");		
+val invertedMap: Map<String, String> = speakers.entries.associateBy({ it.value as String }, { it.key as String })				
 				]]>
 				</programlisting>
 			</section>
@@ -315,7 +397,7 @@ class CallFullscreenFragment : Fragment() {
 val drawable: Drawable? = ResourcesCompat.getDrawable(resources, R.drawable.myimage, null)				
 				]]>
 				</programlisting>
-			</section>			
+			</section>
 		</section>
 	</section>
 	<section id="kotlin.thread">
@@ -405,22 +487,189 @@ Timer().schedule(object : TimerTask() {
         timer.cancel()
     }    
 		]]>
-		</programlisting>
+			</programlisting>
 		</section>
 	</section>
 	<section>
 		<title>协程</title>
-		<programlisting>
-		<![CDATA[
+		<section id="GlobalScope">
+			<title>GlobalScope</title>
+			<section>
+				<title>DefaultDispatcher</title>
+				<para></para>
+				<programlisting>
+				<![CDATA[
 GlobalScope.launch {
     while (true) {
         delay(1000)
         println("每秒执行一次")
     }
 }
-		]]>
-		</programlisting>
-	</section>>
-	
-	
+				]]>
+				</programlisting>
+				<para></para>
+				<programlisting>
+				<![CDATA[
+	GlobalScope.launch {
+        //GlobalScope开启协程：DefaultDispatcher-worker-1
+        Log.d(TAG, "GlobalScope开启协程：" + Thread.currentThread().name)
+		//子线程中此处不可以做UI操作
+		withContext(Dispatchers.Main){
+            Toast.makeText(this@MainActivity, "协程中切换线程", Toast.LENGTH_SHORT).show()
+        }
+    }				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Dispatchers.Main</title>
+				<programlisting>
+				<![CDATA[
+	GlobalScope.launch(Dispatchers.Main) {
+        	//GlobalScope开启协程：main
+            Log.d(TAG, "GlobalScope开启协程：" + Thread.currentThread().name)
+            //可以做UI操作
+            Toast.makeText(this@MainActivity, "GlobalScope开启协程", Toast.LENGTH_SHORT).show()
+    }				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>Dispatchers.IO</title>
+				<programlisting>
+				<![CDATA[
+GlobalScope.launch(Dispatchers.IO) {
+    if (AndroidManager.Device.scanMicrophone() && !State.usbMicrophone.get()) {
+        aigcSpeech.speaking("蓝牙麦克风连接")
+    }
+    Log.d(TAG, "Bluetooth connected")
+}				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="lifecycleScope">
+			<title>lifecycleScope</title>
+			<section>
+				<title></title>
+				<para>lifecycleScope默认主线程，可以通过withContext来指定线程</para>
+				<programlisting>
+				<![CDATA[
+lifecycleScope.launch {
+    // do
+    withContext(Dispatchers.IO) {
+        // do
+    }
+}
+ 
+// or
+ 
+lifecycleScope.launch(Dispatchers.IO){
+    // do
+}
+ 
+// or
+ 
+lifecycleScope.launch {
+    whenResumed {
+        // do
+    }
+}
+ 
+// or
+ 
+lifecycleScope.launchWhenResumed {
+    // do
+}
+				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>协程中串行任务</title>
+				<programlisting>
+			<![CDATA[
+	private fun serialExecution() {
+        lifecycleScope.launch {
+            val startTime = System.currentTimeMillis()
+            val a = getDataA()
+            val b = getDataB()
+            val sum = a + b
+            //D/MainActivity: serialExecution: sum = 3，耗时：3008
+            Log.d(TAG, "serialExecution: sum = $sum，耗时：${System.currentTimeMillis() - startTime}")
+        }
+    }
+
+    private suspend fun getDataA(): Int {
+        delay(1000)
+        return 1
+    }
+
+    private suspend fun getDataB(): Int {
+        delay(2000)
+        return 2
+    }
+			]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>携程并行执行任务</title>
+				<programlisting>
+			<![CDATA[
+private fun parallelExecution(){
+        lifecycleScope.launch {
+            val startTime = System.currentTimeMillis()
+            val a = lifecycleScope.async { getDataA() }
+            val b = lifecycleScope.async { getDataB() }
+            val sum = a.await() + b.await()
+            //D/MainActivity: parallelExecution: sum = 3，耗时：2009
+            Log.d(TAG, "parallelExecution: sum = $sum，耗时：${System.currentTimeMillis() - startTime}")
+        }
+    }
+    
+    private suspend fun getDataA(): Int {
+        delay(1000)
+        return 1
+    }
+
+    private suspend fun getDataB(): Int {
+        delay(2000)
+        return 2
+    }			
+			]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>取消携程</title>
+				<programlisting>
+			<![CDATA[
+private var job: Job? = null
+    
+job = lifecycleScope.launch {
+    ...
+}
+job?.cancel()
+    			
+			]]>
+				</programlisting>
+			</section>
+		</section>
+		<section id="viewModelScope">
+			<title>viewModelScope</title>
+			<section id="viewModelScope.await()">
+				<title>await()</title>
+				<programlisting>
+				<![CDATA[
+fun getMessageByViewModel() {
+    viewModelScope.launch {
+        val deferred = async(Dispatchers.IO) { getMessage("netkiller") }
+        mMessage.value = deferred.await()
+    }
+}				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
+
 </chapter>

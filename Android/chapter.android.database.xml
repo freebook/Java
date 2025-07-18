@@ -151,9 +151,7 @@ File xmlFile = new File("/data/data/<package name>/shared_prefs/<name>.xml");
 			</programlisting>
 		</section>
 	</section>
-	<section id="Room">
-		<title>Room</title>
-	</section>
+	&section.android.database.room.xml;
 	<section id="PreferencesDataStore">
 		<title>Preferences DataStore</title>
 	</section>
