@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="Room">
+	<title>Room</title>
+	<section>
+		<title>快速开始并掌握 Room 数据库</title>
+		<programlisting>
+		<![CDATA[
+package com.netkiller.conference
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "meeting")
+data class Meeting(
+    @PrimaryKey(autoGenerate = true) val id: Long? = 0,
+    @ColumnInfo(name = "task_id") val taskId: String,
+    val time: String,
+    val speaker: String,
+    val sentence: String
+)		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package com.netkiller.conference
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface MeetingDao {
+
+
+    // 查询所有用户
+    @Query("SELECT * FROM meeting")
+    fun getAllUsers(): List<Meeting>
+
+    // 异步查询（返回 Flow）
+    @Query("SELECT * FROM meeting")
+    fun getAllUsersFlow(): Flow<List<Meeting>>
+
+    // 插入单个用户
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(meeting: Meeting)
+
+    // 插入多个用户
+    @Insert
+    fun insertAll(meeting: List<Meeting>)
+
+    @Insert
+    fun insert(meeting: Meeting)
+
+    // 更新用户
+    @Update
+    fun update(meeting: Meeting)
+
+    // 删除用户
+    @Delete
+    fun delete(meeting: Meeting)
+
+    // 自定义查询
+    @Query("SELECT * FROM meeting WHERE task_id > :taskId")
+    fun findByTaskId(taskId: Int): List<Meeting>
+
+
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package com.netkiller.conference
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+
+@Database(entities = [Meeting::class, Speaker::class], version = 3, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun meetingDao(): MeetingDao
+    abstract fun speakerDao(): SpeakerDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        val version3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE Speaker")
+            }
+        }
+
+        fun getInstance(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "conference"
+                )
+                    .fallbackToDestructiveMigration() // 数据库升级时破坏性迁移（删除旧数据）
+//                    .addMigrations(version3)
+                    .build()
+                    .also { INSTANCE = it }
+            }
+        }
+    }
+
+
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+	private val meetingDao = AppDatabase.getInstance(context).meetingDao()
+    
+    meetingDao.insert(Meeting(null, meetingData.taskId, elapsed(startTime, LocalDateTime.now()), result.payload.speaker_id, result.payload.result))
+    
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>组合唯一索引</title>
+		<programlisting>
+		<![CDATA[
+package com.netkiller.conference
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "speaker",
+    indices = [
+        Index(value = ["task_id", "speaker"], unique = true) // 组合唯一索引
+    ]
+)
+data class Speaker(
+    @PrimaryKey(autoGenerate = true) val id: Long? = 0,
+    @ColumnInfo(name = "task_id") val taskId: String,
+    val speaker: String,
+    val segment: String
+)
+		
+		]]>
+		</programlisting>
+	</section>
+</section>
