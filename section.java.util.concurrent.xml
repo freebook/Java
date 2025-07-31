@@ -773,6 +773,52 @@ public class NonBlockingQueueExample {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>CopyOnWriteArraySet</title>
+		<programlisting>
+		<![CDATA[
+import java.util.concurrent.CopyOnWriteArraySet;  
+  
+public class CopyOnWriteArraySetExample {  
+  
+    public static void main(String[] args) {  
+        // 创建一个CopyOnWriteArraySet实例  
+        CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();  
+  
+        // 启动一个线程向集合中添加元素  
+        new Thread(() -> {  
+            for (int i = 0; i < 10; i++) {  
+                set.add("Item" + i);  
+                try {  
+                    // 模拟一些延迟，使得输出更为明显  
+                    Thread.sleep(100);  
+                } catch (InterruptedException e) {  
+                    e.printStackTrace();  
+                }  
+            }  
+        }).start();  
+  
+        // 启动另一个线程来读取和打印集合中的元素  
+        new Thread(() -> {  
+            while (set.size() < 10) {  
+                // 打印当前集合中的所有元素  
+                System.out.println("Current set contents: " + set);  
+                try {  
+                    // 等待一段时间，以便观察集合的变化  
+                    Thread.sleep(200);  
+                } catch (InterruptedException e) {  
+                    e.printStackTrace();  
+                }  
+            }  
+            // 最后打印完整的集合内容  
+            System.out.println("Final set contents: " + set);  
+        }).start();  
+    }  
+}		
+		]]>
+		</programlisting>
+	</section>
+	
 	<section id="BlockingQueue">
 		<title>阻塞队列</title>
 

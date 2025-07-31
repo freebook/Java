@@ -58,7 +58,7 @@ S 和 U 基本上与 T 相同，即表示任意的一个Java类型。
 		</screen>
 		<para>其实我们可以使用 A-Z 之间的任何一个 字母，并不会影响程序的正常运行，但是如果换成 T，E，K，V，？，S，U 字母，在可读性上更好一些。</para>
 		<section>
-			<title></title>
+			<title>范型演示</title>
 			<programlisting>
 			<![CDATA[
 package cn.netkiller.test;
@@ -331,6 +331,21 @@ public class RecordDemo {
 		
 		]]>
 		</programlisting>
+		<section>
+			<title>在 Record 中定义范型</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.record;
+
+import java.util.Date;
+
+public record WebsocketMessage<T>(String device, String event, T data, Date date) {
+}
+			
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 	<section id="class.callback">
 		<title>Callback 回调</title>

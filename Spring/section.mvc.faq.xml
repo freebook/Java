@@ -581,5 +581,29 @@ spring.codec.max-in-memory-size=16MB
 		]]>
 		</programlisting>
 	</section>
-
+	<section>
+		<title>Data truncation: Data too long for column 'content' at row 1</title>
+		<screen>
+		<![CDATA[
+could not execute statement [Data truncation: Data too long for column 'content' at row 1] [update meeting set content=?,title=? where id=?]; SQL [update meeting set content=?,title=? where id=?]		
+		]]>
+		</screen>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+@Column(columnDefinition = "TEXT")
+改成 MEDIUMTEXT 就没有问题了
+@Column(columnDefinition = "MEDIUMTEXT")		
+		]]>
+		</programlisting>
+		<para>MySQL 中的文本字段分为TINYTEXT, TEXT, MEDIUMTEXT,LONGTEXT。</para>
+		<screen>
+		<![CDATA[
+TINYTEXT: 256 bytes
+TEXT: 65,535 bytes => ~64kb
+MEDIUMTEXT: 16,777,215 bytes => ~16MB
+LONGTEXT: 4,294,967,295 bytes => ~4GB		
+		]]>
+		</screen>
+	</section>
 </chapter>

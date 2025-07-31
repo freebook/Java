@@ -1776,7 +1776,7 @@ String fileSize = file.getSize()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="restful.download">
 		<title>下载文件</title>
 		<programlisting>
 		<![CDATA[
@@ -1818,6 +1818,41 @@ public class DownloadController {
 		
 		]]>
 		</programlisting>
+	</section>
+	<section>
+		<title>Mime/MediaType</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import lombok.SneakyThrows;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class Test {
+    
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        Path path = Paths.get("/netkiller/neo/example.svg");
+
+        try {
+            String mimeType = Files.probeContentType(path);
+            if (mimeType != null) {
+                System.out.println("Media Type: " + mimeType); // 输出: image/png
+            } else {
+                System.out.println("无法识别的媒体类型");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}		
+		]]>
+		</programlisting>		
 	</section>
 	<section id="export.csv">
 		<title>Spring boot with csv</title>

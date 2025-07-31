@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="Room">
 	<title>Room</title>
+	<!-- https://developer.android.google.cn/codelabs/basic-android-kotlin-training-persisting-data-room?hl=zh-cn#0 -->
 	<section>
 		<title>快速开始并掌握 Room 数据库</title>
 		<programlisting>

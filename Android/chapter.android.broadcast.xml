@@ -1048,7 +1048,7 @@ class StaticBroadcastReceiver : BroadcastReceiver() {
 			</programlisting>
 		</section>
 	</section>
-	<section>
+	<section id="broadcast.wifi">
 		<title>Wifi 广播</title>
 		<programlisting>
 		<![CDATA[
@@ -1170,5 +1170,9 @@ class StaticBroadcastReceiver : BroadcastReceiver() {
 }		
 		]]>
 		</programlisting>
+	</section>
+	<section id="LiveDataBus">
+		<title>LiveDataBus - 官方 AndroidX jetpack</title>
+		
 	</section>
 </chapter>
