@@ -1513,6 +1513,39 @@ ISO 8601扩展格式 YYYY-MM-DDTHH:mm:ss.sssZ
 			</programlisting>
 		</section>
 		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+import java.time.Duration;
+
+public class SecondsToMillisecondsWithDuration {
+    public static void main(String[] args) {
+        // 1. 整数秒转换
+        int seconds1 = 10;
+        // 通过 Duration.ofSeconds() 创建对应秒数的 Duration 对象
+        Duration duration1 = Duration.ofSeconds(seconds1);
+        // 调用 toMillis() 方法获取毫秒数
+        long millis1 = duration1.toMillis();
+        System.out.println(seconds1 + " 秒 = " + millis1 + " 毫秒"); // 输出：10 秒 = 10000 毫秒
+
+        // 2. 带纳秒的秒数转换（支持更精确的小数秒）
+        long seconds2 = 3; // 秒数整数部分
+        int nanos = 500_000_000; // 纳秒部分（500毫秒 = 500,000,000纳秒）
+        Duration duration2 = Duration.ofSeconds(seconds2, nanos);
+        long millis2 = duration2.toMillis();
+        System.out.println(seconds2 + "秒 + " + nanos + "纳秒 = " + millis2 + " 毫秒"); // 输出：3秒 + 500000000纳秒 = 3500 毫秒
+
+        // 3. 处理大数值秒数
+        long seconds3 = 3_600_000; // 1000小时对应的秒数
+        Duration duration3 = Duration.ofSeconds(seconds3);
+        long millis3 = duration3.toMillis();
+        System.out.println(seconds3 + " 秒 = " + millis3 + " 毫秒"); // 输出：3600000 秒 = 3600000000 毫秒
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>计算流逝时间</title>
 			<programlisting>
 			<![CDATA[

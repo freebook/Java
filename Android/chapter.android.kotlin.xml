@@ -293,6 +293,38 @@ val invertedMap: Map<String, String> = speakers.entries.associateBy({ it.value a
 				</programlisting>
 			</section>
 		</section>
+		<section>
+			<title>let</title>
+			<section>
+				<title>Boolean</title>
+				<programlisting>
+				<![CDATA[
+val isSuccess = true
+
+// 对布尔值使用 let
+val result = isSuccess.let { success ->
+    // success 等价于 isSuccess（it 也可以）
+    if (success) {
+        "操作成功"
+    } else {
+        "操作失败"
+    }
+}
+
+println(result)  // 输出：操作成功				
+				]]>
+				</programlisting>
+				<para>处理 null</para>
+				<programlisting>
+				<![CDATA[
+val flag: Boolean? = null
+flag?.let {  // 安全调用，flag 为 null 时不执行
+    println("flag is $it")
+}				
+				]]>
+				</programlisting>
+			</section>
+		</section>
 	</section>
 	<section id="kotlin.class">
 		<title>Class</title>

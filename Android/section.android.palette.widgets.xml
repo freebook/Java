@@ -562,6 +562,103 @@ public class AnimationFigure {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>圆形进度条</title>
+			<programlisting>
+			<![CDATA[
+ <!--    style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/circular_progress_drawable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTimer" />
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape
+            android:innerRadiusRatio="3.5"
+            android:shape="ring"
+            android:thicknessRatio="12.0"
+            android:type="sweep"
+            android:useLevel="false">
+            <!--    进度条默认底色        -->
+            <solid android:color="#f2f2f2" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <rotate
+            android:fromDegrees="-90"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:toDegrees="-90">
+            <shape
+                android:angle="0"
+                android:innerRadiusRatio="3.5"
+                android:shape="ring"
+                android:thicknessRatio="12.0"
+                android:type="sweep">
+                <!--    进度条颜色            -->
+                <solid android:color="#33cf59" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>
+			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+	private val handler = Handler(Looper.myLooper()!!)			
+	
+	companion object {
+        val timerLiveData = MutableLiveData<Pair<Timer, String>>()
+    }		
+			
+    fun opinionCountDownTimer(seconds: Int) {
+        val delayMillis: Long = 1000L
+        var count: Int = seconds
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                //                百分数 = (1 - 剩余秒数 / 总秒数) × 100
+//                var percent: Int = (1 - count / seconds) * 100
+                val percent: Int = ((1 - count.toDouble() / seconds) * 100).toInt()
+                timerLiveData.postValue(Pair(Timer.OPINION, percent.toString()))
+                Log.d(TAG, "观点倒计时 ${seconds} ${count} 百分比 ${percent}%")
+                if (percent < 100) {
+                    count--
+                    handler.postDelayed(this, delayMillis)
+                }
+            }
+        }, delayMillis)
+    }
+    
+    	Meeting.timerLiveData.observe(this) { (type, time) ->
+            CoroutineScope(Dispatchers.Main).launch {
+                if (type == AigcMeeting.Timer.TIMER) {
+                    binding.textViewTimer.text = time
+                }
+                if (type == AigcMeeting.Timer.OPINION) {
+                    binding.progressBar.setProgress(time.toInt(), true)
+                    binding.textViewPercent.text = time
+                }
+            }
+
+        }
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="NestedScrollView">
 		<title>NestedScrollView + </title>
