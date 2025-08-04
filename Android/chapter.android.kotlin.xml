@@ -961,6 +961,52 @@ class CustomClassLiveDataActivity : AppCompatActivity() {
 			</programlisting>
 		</section>
 	</section>
+	<section id="kotlin.Flow">
+		<title>Flow</title>
+		<section>
+			<title>MutableSharedFlow</title>
+			<programlisting>
+			<![CDATA[
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+
+fun main() = runBlocking {
+    // 1. 创建可变的 SharedFlow（发布者使用）
+    val mutableSharedFlow = MutableSharedFlow<String>()
+    // 2. 对外暴露不可变的 SharedFlow（订阅者使用）
+    val sharedFlow = mutableSharedFlow.asSharedFlow()
+
+    // 3. 订阅者1
+    launch(Dispatchers.Default) {
+        sharedFlow.collect { message ->
+            println("订阅者1 收到: $message")
+        }
+    }
+
+    // 4. 订阅者2
+    launch(Dispatchers.Default) {
+        sharedFlow.collect { message ->
+            println("订阅者2 收到: $message")
+        }
+    }
+
+    // 5. 发布消息
+    launch {
+        // 延迟一下，确保订阅者已准备好
+        kotlinx.coroutines.delay(500)
+        mutableSharedFlow.emit("第一条消息")
+        kotlinx.coroutines.delay(1000)
+        mutableSharedFlow.emit("第二条消息")
+    }
+}
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 	<section id="kotlin.Coroutine">
 		<title>协程</title>
 		<screen>

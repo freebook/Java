@@ -58,7 +58,7 @@ unbindService() —> onUnbind(ture) —> bindService() —> onRebind()
 
 			]]>
 	</screen>
-	<section id="service.basic">
+	<section id="service.startService">
 		<title>Service的基本用法</title>
 		<section id="service.manifest">
 			<title>manifest 文件</title>
@@ -253,6 +253,171 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section id="sevice.bindService">
+		<title>bindService</title>
+		<programlisting>
+		<![CDATA[
+<!-- 在AndroidManifest.xml中添加服务声明 -->
+<application
+    android:name=".MyApplication"
+    ...>
+    
+    <service
+        android:name=".OpusBackgroundService"
+        android:foregroundServiceType="mediaPlayback"
+        android:exported="false" />
+        
+    <!-- 添加音频焦点权限 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+</application>
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+import android.app.Application
+
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        // 初始化并绑定服务（实际项目中可在需要时再绑定）
+        OpusPlayerManager.bindService(this)
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        // 解绑服务
+        OpusPlayerManager.unbindService(this)
+    }
+}
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+import android.app.Service
+import android.content.Intent
+import android.os.Binder
+import android.os.IBinder
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.ByteArrayDataSource
+import com.google.android.exoplayer2.upstream.DataSource
+
+class OpusBackgroundService : Service() {
+    private val binder = LocalBinder()
+    private lateinit var exoPlayer: ExoPlayer
+
+    // 本地Binder，用于Activity绑定服务
+    inner class LocalBinder : Binder() {
+        val service: OpusBackgroundService
+            get() = this@OpusBackgroundService
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        // 初始化ExoPlayer
+        exoPlayer = ExoPlayer.Builder(this).build()
+    }
+
+    // 播放Opus字节流
+    fun playOpusStream(opusBytes: ByteArray) {
+        // 创建内存数据源
+        val byteArrayDataSource = ByteArrayDataSource(opusBytes)
+        val dataSourceFactory = DataSource.Factory { byteArrayDataSource }
+
+        // 创建媒体源
+        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(MediaItem.fromUri("memory://opus-stream"))
+
+        // 准备并播放
+        exoPlayer.setMediaSource(mediaSource)
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+    }
+
+    // 暂停播放
+    fun pause() {
+        exoPlayer.playWhenReady = false
+    }
+
+    // 继续播放
+    fun resume() {
+        exoPlayer.playWhenReady = true
+    }
+
+    // 停止播放并释放资源
+    private fun stopAndRelease() {
+        exoPlayer.stop()
+        exoPlayer.release()
+    }
+
+    override fun onBind(intent: Intent): IBinder = binder
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopAndRelease()
+    }
+}
+
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.IBinder
+
+object OpusPlayerManager {
+    private var service: OpusBackgroundService? = null
+    private var isBound = false
+
+    // 绑定服务
+    fun bindService(context: Context) {
+        val intent = Intent(context, OpusBackgroundService::class.java)
+        context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+    }
+
+    // 解绑服务
+    fun unbindService(context: Context) {
+        if (isBound) {
+            context.unbindService(connection)
+            isBound = false
+            service = null
+        }
+    }
+
+    // 播放Opus字节流
+    fun playOpus(opusBytes: ByteArray) {
+        service?.playOpusStream(opusBytes)
+    }
+
+    // 暂停播放
+    fun pause() {
+        service?.pause()
+    }
+
+    // 服务连接回调
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, serviceBinder: IBinder) {
+            val binder = serviceBinder as OpusBackgroundService.LocalBinder
+            service = binder.service
+            isBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            isBound = false
+        }
+    }
+}
+
+		]]>
+		</programlisting>
 	</section>
 	<section id="service.thread">
 		<title>Service 中启动线程</title>

@@ -9,7 +9,7 @@
 </dependency>	
 	]]>
 	</screen>
-	<section>
+	<section id="webflux.config">
 		<title>配置 WebClient</title>
 		<programlisting>
 			<![CDATA[
@@ -45,7 +45,7 @@ HttpClient httpClient = HttpClient.create()
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="webclient.controller">
 		<title>@Controller/@RestController 实例</title>
 
 		<programlisting>
@@ -95,6 +95,59 @@ public Mono<ResponseEntity<?>> createEmployee(@RequestBody Employee newEmployee)
     });
 }			
 			]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
+
+@Configuration
+public class WebClientConfig {
+    // 配置 WebClient，指定基础地址（本地服务地址）
+    @Bean
+    public WebClient webClient() {
+        return WebClient.builder()
+                .baseUrl("http://localhost:8080")  // 本地服务的基础地址
+                .build();
+    }
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+@RestController
+public class MyController {
+
+    // 注入 WebClient（需提前配置）
+    @Autowired
+    private WebClient webClient;
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello, Spring Boot!";
+    }
+
+    // 调用 /hello 接口（非阻塞方式）
+    @GetMapping("/query")
+    public Mono<String> query() {
+        // 发起 GET 请求到 /hello 接口
+        return webClient.get()
+                .uri("/hello")  // 相对路径（已在 WebClient 配置中指定基础地址）
+                .retrieve()
+                .bodyToMono(String.class)  // 转换返回值为 String 类型
+                .map(helloResult -> "从 /hello 接口获取到的内容：" + helloResult);  // 处理结果
+    }
+}
+		
+		]]>
 		</programlisting>
 	</section>
 	<section id="webclient.get">

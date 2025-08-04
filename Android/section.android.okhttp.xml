@@ -161,7 +161,7 @@ neo@MacBook-Pro ~/AndroidStudioProjects/okhttp % cat app/src/main/res/xml/networ
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="okhttp.HttpUrl">
 		<title>HttpUrl</title>
 		<programlisting>
 		<![CDATA[

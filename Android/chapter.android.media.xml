@@ -276,6 +276,62 @@ public class Bible {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>OPUS</title>
+			<programlisting>
+					<![CDATA[
+import android.media.MediaPlayer
+import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import java.io.IOException
+
+class OpusMediaPlayerActivity : AppCompatActivity() {
+    private var mediaPlayer: MediaPlayer? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_media_player)
+
+        val playButton = findViewById<Button>(R.id.btn_play)
+        val stopButton = findViewById<Button>(R.id.btn_stop)
+
+        // 初始化 MediaPlayer
+        mediaPlayer = MediaPlayer().apply {
+            setOnPreparedListener { it.start() } // 准备完成后自动播放
+            setOnErrorListener { _, what, extra ->
+                // 处理错误（如不支持Opus格式）
+                true
+            }
+        }
+
+        // 播放按钮点击事件
+        playButton.setOnClickListener {
+            val streamUrl = "http://example.com/stream.opus"
+            try {
+                mediaPlayer?.reset()
+                mediaPlayer?.setDataSource(streamUrl) // 设置Opus流地址
+                mediaPlayer?.prepareAsync() // 异步准备（避免阻塞UI）
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+
+        // 停止按钮点击事件
+        stopButton.setOnClickListener {
+            mediaPlayer?.stop()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.release() // 释放资源
+        mediaPlayer = null
+    }
+}					
+					]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="AudioPlayer">
 		<title>AudioPlayer</title>
@@ -2020,6 +2076,136 @@ public class AudioRecorder {
         }		
 		]]>
 		</programlisting>
-	</section>	
-	
+	</section>
+	<section id="ExoPlayer">
+		<title>ExoPlayer</title>
+		<section>
+			<title>Opus</title>
+			<section>
+				<title>文件</title>
+				<programlisting>
+		<![CDATA[
+import android.net.Uri
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.ui.PlayerView
+
+class OpusPlayerActivity : AppCompatActivity() {
+    private lateinit var exoPlayer: ExoPlayer
+    private lateinit var playerView: PlayerView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_opus_player)
+        
+        playerView = findViewById(R.id.player_view)
+        
+        // 初始化 ExoPlayer
+        exoPlayer = ExoPlayer.Builder(this).build()
+        playerView.player = exoPlayer
+        
+        // 准备 Opus 音频（本地文件或网络 URL）
+        val mediaItem = MediaItem.fromUri(Uri.parse("asset:///audio.opus"))
+        val dataSourceFactory = DefaultDataSource.Factory(this)
+        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(mediaItem)
+        
+        // 准备并播放
+        exoPlayer.setMediaSource(mediaSource)
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        exoPlayer.release() // 释放资源
+    }
+}		
+		]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>音频流</title>
+				<programlisting>
+				<![CDATA[
+import android.net.Uri
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.ui.PlayerView
+
+class OpusStreamPlayerActivity : AppCompatActivity() {
+    private lateinit var exoPlayer: ExoPlayer
+    private lateinit var playerView: PlayerView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_opus_stream)
+
+        // 初始化播放器和UI
+        playerView = findViewById(R.id.player_view)
+        exoPlayer = ExoPlayer.Builder(this).build()
+        playerView.player = exoPlayer
+
+        // 1. 播放网络 Opus 流（例如：http://example.com/stream.opus）
+        val streamUrl = "http://example.com/stream.opus"
+        val mediaItem = MediaItem.fromUri(Uri.parse(streamUrl))
+
+        // 2. 配置数据源工厂（支持网络和本地流）
+        val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(this)
+
+        // 3. 创建媒体源（渐进式流，适合音频流）
+        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(mediaItem)
+
+        // 4. 准备并播放
+        exoPlayer.setMediaSource(mediaSource)
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true // 自动播放
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 释放资源，避免内存泄漏
+        exoPlayer.release()
+    }
+}				
+				]]>
+				</programlisting>
+
+			</section>
+			<section>
+				<title>字节流</title>
+				<para></para>
+				<programlisting>
+				<![CDATA[
+import com.google.android.exoplayer2.upstream.ByteArrayDataSource
+import com.google.android.exoplayer2.upstream.DataSource
+
+// 假设 opusBytes 是内存中的 Opus 音频字节数组
+val opusBytes: ByteArray = ... 
+
+// 创建内存数据源
+val byteArrayDataSource = ByteArrayDataSource(opusBytes)
+val dataSourceFactory = DataSource.Factory { byteArrayDataSource }
+
+// 后续步骤同方案1：创建媒体源并播放
+val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+    .createMediaSource(MediaItem.fromUri("bytes://opus")) // 自定义URI标识
+exoPlayer.setMediaSource(mediaSource)				
+				]]>
+				</programlisting>
+			</section>
+		</section>
+
+
+	</section>
 </chapter>
