@@ -20,7 +20,7 @@
 		<para>ServerEndpoint 是 WebSocket 的核心业务逻辑代码。下面实现一个 Echo Server</para>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.controller.websocket;
+package cn.netkiller.controller.websocket;
 
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
@@ -83,9 +83,9 @@ public class EchoServerEndpoint {
 		<para>创建 WebSocketConfiguration 配置文件，</para>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.config;
+package cn.netkiller.config;
 
-import cn.aigcsst.controller.websocket.EchoServerEndpoint;
+import cn.netkiller.controller.websocket.EchoServerEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -157,6 +157,299 @@ public class WebSocketConfiguration {
 2024-08-11 08:21:17.102  INFO  --- [tomcat-handler-0] c.a.c.websocket.EchoServerEndpoint       : [websocket] 收到消息：session=0，message=www.netkiller.cn <- onMessage:30
 2024-08-11 08:21:17.107  INFO  --- [tomcat-handler-0] c.a.c.websocket.EchoServerEndpoint       : [websocket] 收到消息：session=0，message=bye <- onMessage:30
 2024-08-11 08:21:17.107  INFO  --- [tomcat-handler-0] c.a.c.websocket.EchoServerEndpoint       : [websocket] 连接断开：session=0，reason=CloseReason: code [1000], reason [Bye] <- onClose:45
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Json 收发协议的例子</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.websocket;
+
+import cn.netkiller.record.WebsocketMessage;
+import com.google.gson.Gson;
+import jakarta.websocket.*;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Component
+@ServerEndpoint(value = "/websocket/{appId}/{device}")
+@Slf4j
+public class WebsocketEndpoint {
+
+    private static final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<String, Session>();
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final Marker Android = MarkerFactory.getMarker("Android");
+    private final Gson gson = new Gson();
+    //    private Session session;
+    private String device;
+
+    // 连接打开
+    @SneakyThrows
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig endpointConfig,
+                       @PathParam("appId") String appId, @PathParam("device") String device
+    ) {
+        // 保存 session 到对象
+//        this.session = session;
+        this.device = device;
+        sessions.put(device, session);
+//        session.getBasicRemote().sendObject();
+//        String jsonString = gson.toJson(new WebsocketMessage("OnOpen", device, "", new Date()));
+//        session.getBasicRemote().sendText(jsonString);
+        log.info("[websocket] onOpen：session={} device={}", session.getId(), device);
+    }
+
+    // 收到消息
+    @OnMessage
+    public void onMessage(String message) throws IOException {
+
+        log.info("[websocket] onMessage：session={}，message={}", sessions.get(device).getId(), message);
+
+        WebsocketMessage websocketMessage = gson.fromJson(message, WebsocketMessage.class);
+        if (websocketMessage.device().equals("logging")) {
+            if (websocketMessage.event().equals("INFO")) {
+                log.info(Android, websocketMessage.data().toString());
+            }
+            if (websocketMessage.event().equals("DEBUG")) {
+                log.debug(Android, websocketMessage.data().toString());
+            }
+            if (websocketMessage.event().equals("WARNING")) {
+                log.warn(Android, websocketMessage.data().toString());
+            }
+            if (websocketMessage.event().equals("ERROR")) {
+                log.error(Android, websocketMessage.data().toString());
+            }
+        }
+
+        if (sessions.containsKey(websocketMessage.device())) {
+            String jsonString = gson.toJson(new WebsocketMessage(websocketMessage.device(), websocketMessage.event(), websocketMessage.data(), LocalDateTime.now().format(dateTimeFormatter)));
+            sessions.get(websocketMessage.device()).getAsyncRemote().sendText(jsonString);
+            log.info("[websocket] Send：{} => {}, message: {}", sessions.get(device).getId(), sessions.get(websocketMessage.device()).getId(), jsonString);
+        }
+
+    }
+
+    // 连接关闭
+    @OnClose
+    public void onClose(CloseReason closeReason) {
+        log.info("[websocket] onClose：session={}，reason={}", sessions.get(device).getId(), closeReason);
+
+//        String jsonString = gson.toJson(new WebsocketMessage("OnClose", device, "session: " + sessions.get(device).getId() + "  reason=" + closeReason, new Date()));
+//        sessions.get(device).getAsyncRemote().sendText(jsonString);
+
+    }
+
+    // 连接异常
+    @OnError
+    public void onError(Throwable throwable) throws IOException {
+
+        log.info("[websocket] onError：session={}，throwable={}", sessions.get(device).getId(), throwable.getMessage());
+
+//        String jsonString = gson.toJson(new WebsocketMessage("OnError", device, "session: " + sessions.get(device).getId() + "  throwable=" + throwable.getMessage(), new Date()));
+//        sessions.get(device).getAsyncRemote().sendText(jsonString);
+
+        // 关闭连接。状态码为 UNEXPECTED_CONDITION（意料之外的异常）
+        sessions.get(device).close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, throwable.getMessage()));
+        sessions.remove(device);
+    }
+
+   
+}
+		
+		]]>
+		</programlisting>
+		<para>Record 协议定义</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.record;
+
+public record WebsocketMessage<T>(String device, String event, T data, String datetime) {
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Authorization Bearer 实现 JWT Token 验证</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.websocket;
+
+import cn.netkiller.component.JwtTokenComponent;
+import cn.netkiller.record.WebsocketMessage;
+import com.google.gson.Gson;
+import jakarta.websocket.*;
+import jakarta.websocket.server.HandshakeRequest;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
+import jakarta.websocket.server.ServerEndpointConfig;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Component
+@ServerEndpoint(value = "/websocket/{appId}/{device}", configurator = WebsocketEndpoint.BearerAuthorizationConfigurator.class)
+@Slf4j
+public class WebsocketEndpoint {
+
+    private static final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<String, Session>();
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final Marker Android = MarkerFactory.getMarker("Android");
+
+    private final Gson gson = new Gson();
+    //    private Session session;
+    private String device;
+
+
+    // 连接打开
+    @SneakyThrows
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig endpointConfig,
+                       @PathParam("appId") String appId, @PathParam("device") String device
+    ) {
+        // 保存 session 到对象
+//        this.session = session;
+        this.device = device;
+        sessions.put(device, session);
+        String expires = (String) endpointConfig.getUserProperties().get("expires");
+//        session.getBasicRemote().sendObject();
+//        LocalDateTime.now().format(dateTimeFormatter)
+        String jsonString = gson.toJson(new WebsocketMessage(device, "OnOpen", expires, "token 过期时间", LocalDateTime.now().format(dateTimeFormatter)));
+        log.info("[websocket] onOpen：session={} device={} jsonString={}", session.getId(), device, jsonString);
+//        session.getBasicRemote().sendText(jsonString);
+        session.getAsyncRemote().sendText(jsonString);
+
+    }
+
+    // 收到消息
+    @OnMessage
+    public void onMessage(String message) throws IOException {
+
+        log.info("[websocket] onMessage：session={}，message={}", sessions.get(device).getId(), message);
+
+        WebsocketMessage websocketMessage = gson.fromJson(message, WebsocketMessage.class);
+        if (websocketMessage.device().equals("logging")) {
+            if (websocketMessage.event().equals("INFO")) {
+                log.info(Android, websocketMessage.data().toString());
+            }
+            if (websocketMessage.event().equals("DEBUG")) {
+                log.debug(Android, websocketMessage.data().toString());
+            }
+            if (websocketMessage.event().equals("WARNING")) {
+                log.warn(Android, websocketMessage.data().toString());
+            }
+            if (websocketMessage.event().equals("ERROR")) {
+                log.error(Android, websocketMessage.data().toString());
+            }
+        }
+
+        if (sessions.containsKey(websocketMessage.device())) {
+            String jsonString = gson.toJson(new WebsocketMessage(websocketMessage.device(), websocketMessage.event(), websocketMessage.data(), null, LocalDateTime.now().format(dateTimeFormatter)));
+            sessions.get(websocketMessage.device()).getAsyncRemote().sendText(jsonString);
+            log.info("[websocket] Send：{} => {}, message: {}", sessions.get(device).getId(), sessions.get(websocketMessage.device()).getId(), jsonString);
+        }
+
+
+    }
+
+    // 连接关闭
+    @OnClose
+    public void onClose(CloseReason closeReason) {
+        log.info("[websocket] onClose：session={}，reason={}", sessions.get(device).getId(), closeReason);
+
+//        String jsonString = gson.toJson(new WebsocketMessage("OnClose", device, "session: " + sessions.get(device).getId() + "  reason=" + closeReason, new Date()));
+//        sessions.get(device).getAsyncRemote().sendText(jsonString);
+
+    }
+
+    // 连接异常
+    @OnError
+    public void onError(Throwable throwable) throws IOException {
+
+        log.info("[websocket] onError：session={}，throwable={}", sessions.get(device).getId(), throwable.getMessage());
+
+//        String jsonString = gson.toJson(new WebsocketMessage("OnError", device, "session: " + sessions.get(device).getId() + "  throwable=" + throwable.getMessage(), new Date()));
+//        sessions.get(device).getAsyncRemote().sendText(jsonString);
+
+        // 关闭连接。状态码为 UNEXPECTED_CONDITION（意料之外的异常）
+        sessions.get(device).close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, throwable.getMessage()));
+        sessions.remove(device);
+    }
+
+    // 自定义配置器：处理握手和 Bearer 验证
+    public static class BearerAuthorizationConfigurator extends ServerEndpointConfig.Configurator {
+
+        private final JwtTokenComponent jwtTokenComponent = new JwtTokenComponent();
+
+        // 重写握手方法，提取并验证 Bearer 令牌
+        @Override
+        public void modifyHandshake(ServerEndpointConfig config, HandshakeRequest request, HandshakeResponse response) {
+            // 1. 从 HTTP 头中获取 Authorization
+            Map<String, List<String>> headers = request.getHeaders();
+            List<String> authHeaders = headers.get("Authorization");
+
+            // 2. 校验 Authorization 头格式
+            if (authHeaders == null || authHeaders.isEmpty()) {
+                throw new SecurityException("缺少 Authorization 头");
+            }
+            String authHeader = authHeaders.get(0);
+            if (!authHeader.startsWith("Bearer ")) {
+                throw new SecurityException("Authorization 头格式错误（应为 Bearer <token>）");
+            }
+
+            // 3. 提取令牌（去掉 "Bearer " 前缀）
+            String token = authHeader.substring(7).trim();
+
+            // 4. 验证令牌（实际项目中替换为真实验证逻辑）
+            boolean status = jwtTokenComponent.validator(token);
+            if (!status) {
+                throw new SecurityException("无效的 Bearer 令牌");
+            }
+
+            // 5. 存储验证通过的用户信息，供后续使用
+            config.getUserProperties().put("expires", jwtTokenComponent.decode(token).getExpiresAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(dateTimeFormatter));
+        }
+
+        // 可选：限制来源（根据需求配置）
+        @Override
+        public boolean checkOrigin(String originHeaderValue) {
+            // 允许所有来源（生产环境需根据实际域名限制）
+            return true;
+        }
+    }
+}
+		
+		]]>
+		</programlisting>
+		<para>Record 协议定义</para>
+		<programlisting>
+		<![CDATA[
+    public boolean validator(String token) {
+
+        DecodedJWT decodedJWT = JWT.decode(token);
+        return decodedJWT.getIssuer().equals("netkiller") && decodedJWT.getKeyId().equals("8ff61892-cbae-4c1e-9d09-8ce65d76627a");
+    }
 		]]>
 		</programlisting>
 	</section>

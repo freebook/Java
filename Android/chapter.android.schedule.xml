@@ -1,7 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="schedule" ?>
 	<title>Schedule 计划任务</title>
-	<section id="延迟执行">
+	<section id="Handler">
+		<title>使用 Runnable 和 Handler 实现定时执行</title>
+		<para>原理是使用 handler.postDelayed 延迟 Runnable 的运行时间</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.okhttp;
+
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class RunnableActivity extends AppCompatActivity {
+
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        public void run() {
+            this.update();
+            handler.postDelayed(this, 1000);// 1000 ms = 1s 间隔1秒
+        }
+
+        void update() {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            time.setText(dateFormat.format(new Date()));
+        }
+    };
+    private TextView time;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_runnable);
+
+        time = (TextView) findViewById(R.id.time);
+        time.setText("Start...");
+
+        handler.postDelayed(runnable, 1000 * 5); // 5 秒后开始
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
+    }
+
+}		
+		]]>
+		</programlisting>
+
+		<section id="Handler.Runnable">
+			<title>循环执行</title>
+			<programlisting>
+		<![CDATA[
+//首先创建一个Handler对象
+Handler handler=new Handler();   
+//然后创建一个Runnable对像
+Runnable runnable=new Runnable(){  
+   @Override  
+   public void run() {  
+    // TODO Auto-generated method stub  
+    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
+    handler.postDelayed(this, 2000);  
+   }  
+};
+  		]]>
+			</programlisting>
+			<tip>请使用单例模式，否则每次都拿到 handler 都是新对象，无法管理已经运行的对象。</tip>
+			<programlisting>
+		<![CDATA[
+//使用PostDelayed方法，调用此Runnable对象  
+handler.postDelayed(runnable, 2000);
+  
+//关闭此定时器，可以这样操作
+handler.removeCallbacks(runnable);  
+
+//移除所有的消息
+handler.removeCallbacksAndMessages(null);		
+		]]>
+			</programlisting>
+			<para>下面用 ImageView 实现 Loading... 动画，实现方式，是吧图片 360 度旋转。</para>
+			<programlisting>
+		<![CDATA[
+                <ImageView
+                    android:id="@+id/imageViewLoading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="fitCenter"
+                    android:visibility="invisible"
+                    android:src="@android:drawable/ic_menu_rotate" />
+		
+		]]>
+			</programlisting>
+			<programlisting>
+		<![CDATA[
+		        ImageView imageViewLoading = view.findViewById(R.id.imageViewLoading);
+		
+ 				Handler handler = new Handler(Looper.getMainLooper());
+                Runnable runnable = new Runnable() {
+                    int count = 1;
+
+                    @Override
+                    public void run() {
+                        handler.postDelayed(this, 50);
+                        imageViewLoading.setRotation(count);
+                        //每隔一段时间要重复执行的代码
+//                        System.out.println("第" + (count++) + "次执行");
+                        if (count == 360) {
+                            handler.removeCallbacks(this);
+                            imageViewLoading.setVisibility(View.INVISIBLE);
+                            linearLayoutSpaek.setVisibility(View.VISIBLE);
+                        }
+                    }
+                };
+                handler.postDelayed(runnable, 100);		
+		]]>
+			</programlisting>
+		</section><section id="延迟执行">
 		<title>延迟执行</title>
 		<programlisting>
 		<![CDATA[
@@ -54,239 +175,6 @@
 		]]>
 		</programlisting>
 	</section>
-	<section id="time.timetask">
-		<title>Time 和 TimerTask 定时刷新</title>
-		<programlisting>
-		<![CDATA[
-new Timer().schedule(new TimerTask() {
-   @Override
-   public void run() {
-    //TODO: 定时做某件事情
-   }
-}, 5 * 1000, 5 * 1000);
-		
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-    private final Timer timer = new Timer();
-    private final TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            ArrayList<String> list = Picture.pictureLoopList;
-            if (list != null && list.size() > 0) {
-                int index = (int) (Math.random() * list.size());
-                String image = list.get(index);
-                Log.i(TAG, "轮播更换图片 " + image);
-                showImage(image);
-            }
-//            else {
-//                Toast.makeText(MainActivity.this, "跳过轮播", Toast.LENGTH_SHORT).show();
-//            }
-        }
-    };
-    
-    //        timer.schedule(timerTask, 600000, 30000);
-    timer.schedule(timerTask, 30000, 30000);
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-package cn.netkiller.okhttp;
-
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.TextView;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class ScheduleActivity extends AppCompatActivity {
-
-    private TextView clock;
-
-    final Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-                    update(msg.obj.toString());
-                    break;
-            }
-        }
-
-        void update(String c) {
-
-            clock.setText(c);
-        }
-    };
-
-    Timer timer = new Timer();
-    TimerTask task = new TimerTask() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-        public void run() {
-            Message message = new Message();
-            message.what = 1;
-            message.obj = dateFormat.format(new Date());
-            handler.sendMessage(message);
-        }
-    };
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_schedule);
-
-        clock = (TextView) findViewById(R.id.clock);
-        clock.setText("Today is ...");
-        timer.schedule(task, 1000 * 5, 1000); //启动timer
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-
-    }
-
-}
-		
-		]]>
-		</programlisting>
-
-	</section>
-	<section id="Handler.Runnable">
-		<title>使用 Runnable 和 Handler 实现定时执行</title>
-		<para>原理是使用 handler.postDelayed 延迟 Runnable 的运行时间</para>
-		<programlisting>
-		<![CDATA[
-package cn.netkiller.okhttp;
-
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.TextView;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class RunnableActivity extends AppCompatActivity {
-
-    private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
-        public void run() {
-            this.update();
-            handler.postDelayed(this, 1000);// 1000 ms = 1s 间隔1秒
-        }
-
-        void update() {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            time.setText(dateFormat.format(new Date()));
-        }
-    };
-    private TextView time;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_runnable);
-
-        time = (TextView) findViewById(R.id.time);
-        time.setText("Start...");
-
-        handler.postDelayed(runnable, 1000 * 5); // 5 秒后开始
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacks(runnable);
-    }
-
-}		
-		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>循环执行</title>
-		<programlisting>
-		<![CDATA[
-//首先创建一个Handler对象
-Handler handler=new Handler();   
-//然后创建一个Runnable对像
-Runnable runnable=new Runnable(){  
-   @Override  
-   public void run() {  
-    // TODO Auto-generated method stub  
-    //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作  
-    handler.postDelayed(this, 2000);  
-   }  
-};
-  		]]>
-		</programlisting>
-		<tip>请使用单例模式，否则每次都拿到 handler 都是新对象，无法管理已经运行的对象。</tip>
-		<programlisting>
-		<![CDATA[
-//使用PostDelayed方法，调用此Runnable对象  
-handler.postDelayed(runnable, 2000);
-  
-//关闭此定时器，可以这样操作
-handler.removeCallbacks(runnable);  
-
-//移除所有的消息
-handler.removeCallbacksAndMessages(null);		
-		]]>
-		</programlisting>
-		<para>下面用 ImageView 实现 Loading... 动画，实现方式，是吧图片 360 度旋转。</para>
-		<programlisting>
-		<![CDATA[
-                <ImageView
-                    android:id="@+id/imageViewLoading"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="fitCenter"
-                    android:visibility="invisible"
-                    android:src="@android:drawable/ic_menu_rotate" />
-		
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-		        ImageView imageViewLoading = view.findViewById(R.id.imageViewLoading);
-		
- 				Handler handler = new Handler(Looper.getMainLooper());
-                Runnable runnable = new Runnable() {
-                    int count = 1;
-
-                    @Override
-                    public void run() {
-                        handler.postDelayed(this, 50);
-                        imageViewLoading.setRotation(count);
-                        //每隔一段时间要重复执行的代码
-//                        System.out.println("第" + (count++) + "次执行");
-                        if (count == 360) {
-                            handler.removeCallbacks(this);
-                            imageViewLoading.setVisibility(View.INVISIBLE);
-                            linearLayoutSpaek.setVisibility(View.VISIBLE);
-                        }
-                    }
-                };
-                handler.postDelayed(runnable, 100);		
-		]]>
-		</programlisting>
 	</section>
 	<section id="Timer">
 		<title>TimerTask 实现循环播放</title>
@@ -440,11 +328,121 @@ public class AlbumSkillComponent {
 }			
 			]]>
 			</programlisting>
-		</example>
-	</section>
-	<section id="TimerTask">
-		<title>TimerTask 更新 UI</title>
+		</example><section id="time.timetask">
+		<title>Time 和 TimerTask 定时刷新</title>
 		<programlisting>
+		<![CDATA[
+new Timer().schedule(new TimerTask() {
+   @Override
+   public void run() {
+    //TODO: 定时做某件事情
+   }
+}, 5 * 1000, 5 * 1000);
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+    private final Timer timer = new Timer();
+    private final TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            ArrayList<String> list = Picture.pictureLoopList;
+            if (list != null && list.size() > 0) {
+                int index = (int) (Math.random() * list.size());
+                String image = list.get(index);
+                Log.i(TAG, "轮播更换图片 " + image);
+                showImage(image);
+            }
+//            else {
+//                Toast.makeText(MainActivity.this, "跳过轮播", Toast.LENGTH_SHORT).show();
+//            }
+        }
+    };
+    
+    //        timer.schedule(timerTask, 600000, 30000);
+    timer.schedule(timerTask, 30000, 30000);
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.okhttp;
+
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ScheduleActivity extends AppCompatActivity {
+
+    private TextView clock;
+
+    final Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    update(msg.obj.toString());
+                    break;
+            }
+        }
+
+        void update(String c) {
+
+            clock.setText(c);
+        }
+    };
+
+    Timer timer = new Timer();
+    TimerTask task = new TimerTask() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        public void run() {
+            Message message = new Message();
+            message.what = 1;
+            message.obj = dateFormat.format(new Date());
+            handler.sendMessage(message);
+        }
+    };
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_schedule);
+
+        clock = (TextView) findViewById(R.id.clock);
+        clock.setText("Today is ...");
+        timer.schedule(task, 1000 * 5, 1000); //启动timer
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+
+    }
+
+}
+		
+		]]>
+		</programlisting>
+
+	</section>
+		<section id="TimerTask">
+			<title>TimerTask 更新 UI</title>
+			<programlisting>
 		<![CDATA[
 	Timer timer = new Timer();
 		
@@ -469,7 +467,43 @@ public class AlbumSkillComponent {
 //        timer.cancel();
     }
 		]]>
+			</programlisting>
+		</section>
+	</section>
+
+	<section id="ScheduledExecutorService">
+		<title>ScheduledExecutorService</title>
+		<programlisting>
+		<![CDATA[
+	private var scheduler: ScheduledExecutorService? = null
+
+    fun timerStart() {
+
+        scheduler = Executors.newSingleThreadScheduledExecutor()
+
+        scheduler?.scheduleWithFixedDelay({
+            var time = elapsed(startTime, LocalDateTime.now())
+            timerLiveData.postValue(Pair(TIMER.TIMER, time))
+        }, 0, 1, TimeUnit.SECONDS)
+
+    }
+
+
+    fun timerStop() {
+
+        scheduler?.let {
+            if (!it.isShutdown) {
+                it.shutdown() // 优雅关闭（允许当前任务执行完毕）
+                // 可选：如果需要立即终止任务，使用 it.shutdownNow()
+            }
+        }
+        scheduler = null
+    }
+
+    fun timerReset() {
+        startTime = LocalDateTime.now()
+    }		
+		]]>
 		</programlisting>
 	</section>
-	
 </chapter>

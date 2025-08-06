@@ -145,10 +145,10 @@ class Singleton {
 		</section>
 		<section>
 			<title>值设置与获取操作</title>
-			
+
 			<section>
 				<title>set() / get()</title>
-							<para>设置新值，使用 volatile 语义，确保新值对其他线程立即可见（遵循 happens-before 原则）。
+				<para>设置新值，使用 volatile 语义，确保新值对其他线程立即可见（遵循 happens-before 原则）。
 				</para>
 				<programlisting>
 					<![CDATA[
@@ -156,7 +156,7 @@ AtomicReference<String> ref = new AtomicReference<>("初始值");
 ref.set("新值"); // 原子性地更新为新值					
 					]]>
 				</programlisting>
-				
+
 				<para>AtomicReference 类中的 get() 方法是最常用的读取操作，它提供了强内存顺序保证和即时可见性。
 				</para>
 				<programlisting>
@@ -206,7 +206,9 @@ public class StateControlExample {
 			</section>
 			<section>
 				<title>lazySet() / setRelease()</title>
-				<para>lazySet() 提供了一种在高并发场景下以较低性能开销更新原子引用的方式，适用于对可见性要求不高、但对吞吐量敏感的场景。使用时需明确弱内存顺序的语义，避免在关键业务逻辑中引入不可见性问题。</para>
+				<para>lazySet()
+					提供了一种在高并发场景下以较低性能开销更新原子引用的方式，适用于对可见性要求不高、但对吞吐量敏感的场景。使用时需明确弱内存顺序的语义，避免在关键业务逻辑中引入不可见性问题。
+				</para>
 				<para>lazySet() 的实现如下：</para>
 				<programlisting>
 				<![CDATA[
@@ -253,7 +255,9 @@ public class LazySetExample {
 }
 				]]>
 				</programlisting>
-				<para>AtomicReference 类中的 setRelease(V newValue) 是 Java 9 引入的原子操作，它提供了释放语义（Release Semantics）的写入操作。与普通的 set() 相比，setRelease() 在内存可见性和重排序限制上有更明确的语义，同时保持了较低的性能开销。</para>
+				<para>AtomicReference 类中的 setRelease(V newValue) 是 Java 9
+					引入的原子操作，它提供了释放语义（Release Semantics）的写入操作。与普通的 set() 相比，setRelease()
+					在内存可见性和重排序限制上有更明确的语义，同时保持了较低的性能开销。</para>
 				<programlisting>
 				<![CDATA[
 import java.util.concurrent.atomic.AtomicReference;
@@ -298,12 +302,13 @@ public class PublishSubscribeExample {
 				]]>
 				</programlisting>
 			</section>
-			
+
 			<section>
 				<title>setOpaque() / getOpaque()</title>
 				<para>AtomicReference 类中的 getOpaque() 方法是 Java 9
 					引入的一个原子操作，它提供了一种以弱内存顺序读取引用值的方式。与 get() 方法相比，getOpaque()
-					的可见性保证较弱，但性能开销可能更低。</para>
+					的可见性保证较弱，但性能开销可能更低。
+				</para>
 				<programlisting>
 				<![CDATA[
 import java.util.concurrent.atomic.AtomicReference;
@@ -410,7 +415,8 @@ public class PublishSubscribeExample {
 				<title>setPlain() / getPlain()</title>
 				<para>AtomicReference 类中的 getPlain()
 					方法提供了最弱的内存顺序保证，用于读取引用值。与其他读取方法相比，getPlain()
-					的性能开销最低，但也牺牲了更多的内存可见性保证。</para>
+					的性能开销最低，但也牺牲了更多的内存可见性保证。
+				</para>
 				<programlisting>
 				<![CDATA[
 import java.util.concurrent.atomic.AtomicReference;
@@ -455,22 +461,22 @@ public class CounterExample {
 				]]>
 				</programlisting>
 			</section>
-				<section>
-					<title>getAndSet()</title>
-					<para>将引用值原子性地设置为新值，并返回旧值。</para>
-					<programlisting>
+			<section>
+				<title>getAndSet()</title>
+				<para>将引用值原子性地设置为新值，并返回旧值。</para>
+				<programlisting>
 					<![CDATA[
 AtomicReference<String> ref = new AtomicReference<>("旧值");
 String oldValue = ref.getAndSet("新值");
 System.out.println("旧值: " + oldValue); // 输出 "旧值"
 System.out.println("新值: " + ref.get()); // 输出 "新值"					
 					]]>
-					</programlisting>
-				</section>
-				<section>
-					<title>compareAndSet()</title>
-					<para>CAS 操作：比较当前值是否等于预期值 expect，如果相等则原子性地将其更新为 update。</para>
-					<programlisting>
+				</programlisting>
+			</section>
+			<section>
+				<title>compareAndSet()</title>
+				<para>CAS 操作：比较当前值是否等于预期值 expect，如果相等则原子性地将其更新为 update。</para>
+				<programlisting>
 					<![CDATA[
 AtomicReference<String> ref = new AtomicReference<>("初始值");
 
@@ -478,8 +484,8 @@ AtomicReference<String> ref = new AtomicReference<>("初始值");
 boolean success = ref.compareAndSet("初始值", "新值");
 System.out.println("更新结果: " + success); // 输出 true					
 					]]>
-					</programlisting>
-				</section>
+				</programlisting>
+			</section>
 		</section>
 	</section>
 	<section id="ReentrantLock">
@@ -719,8 +725,58 @@ test.isComplated.put("story", true);
 			</programlisting>
 		</section>
 	</section>
-	<section id="ConcurrentLinkedQueue">
-		<title>ConcurrentLinkedQueue</title>
+	
+	<section id="CopyOnWriteArraySet">
+		<title>CopyOnWriteArraySet</title>
+		<programlisting>
+		<![CDATA[
+import java.util.concurrent.CopyOnWriteArraySet;  
+  
+public class CopyOnWriteArraySetExample {  
+  
+    public static void main(String[] args) {  
+        // 创建一个CopyOnWriteArraySet实例  
+        CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();  
+  
+        // 启动一个线程向集合中添加元素  
+        new Thread(() -> {  
+            for (int i = 0; i < 10; i++) {  
+                set.add("Item" + i);  
+                try {  
+                    // 模拟一些延迟，使得输出更为明显  
+                    Thread.sleep(100);  
+                } catch (InterruptedException e) {  
+                    e.printStackTrace();  
+                }  
+            }  
+        }).start();  
+  
+        // 启动另一个线程来读取和打印集合中的元素  
+        new Thread(() -> {  
+            while (set.size() < 10) {  
+                // 打印当前集合中的所有元素  
+                System.out.println("Current set contents: " + set);  
+                try {  
+                    // 等待一段时间，以便观察集合的变化  
+                    Thread.sleep(200);  
+                } catch (InterruptedException e) {  
+                    e.printStackTrace();  
+                }  
+            }  
+            // 最后打印完整的集合内容  
+            System.out.println("Final set contents: " + set);  
+        }).start();  
+    }  
+}		
+		]]>
+		</programlisting>
+	</section>
+	
+	<section id="BlockingQueue">
+		<title>队列 / 阻塞队列</title>
+
+		<section id="ConcurrentLinkedQueue">
+		<title>ConcurrentLinkedQueue 非阻塞队列</title>
 		<programlisting>
 		<![CDATA[
 private final ConcurrentLinkedQueue<Story> queue = new ConcurrentLinkedQueue();		
@@ -772,57 +828,7 @@ public class NonBlockingQueueExample {
 }
 		]]>
 		</programlisting>
-	</section>
-	<section>
-		<title>CopyOnWriteArraySet</title>
-		<programlisting>
-		<![CDATA[
-import java.util.concurrent.CopyOnWriteArraySet;  
-  
-public class CopyOnWriteArraySetExample {  
-  
-    public static void main(String[] args) {  
-        // 创建一个CopyOnWriteArraySet实例  
-        CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();  
-  
-        // 启动一个线程向集合中添加元素  
-        new Thread(() -> {  
-            for (int i = 0; i < 10; i++) {  
-                set.add("Item" + i);  
-                try {  
-                    // 模拟一些延迟，使得输出更为明显  
-                    Thread.sleep(100);  
-                } catch (InterruptedException e) {  
-                    e.printStackTrace();  
-                }  
-            }  
-        }).start();  
-  
-        // 启动另一个线程来读取和打印集合中的元素  
-        new Thread(() -> {  
-            while (set.size() < 10) {  
-                // 打印当前集合中的所有元素  
-                System.out.println("Current set contents: " + set);  
-                try {  
-                    // 等待一段时间，以便观察集合的变化  
-                    Thread.sleep(200);  
-                } catch (InterruptedException e) {  
-                    e.printStackTrace();  
-                }  
-            }  
-            // 最后打印完整的集合内容  
-            System.out.println("Final set contents: " + set);  
-        }).start();  
-    }  
-}		
-		]]>
-		</programlisting>
-	</section>
-	
-	<section id="BlockingQueue">
-		<title>阻塞队列</title>
-
-		<section id="ArrayBlockingQueue">
+	</section><section id="ArrayBlockingQueue">
 			<title>ArrayBlockingQueue</title>
 			<programlisting>
 		<![CDATA[
