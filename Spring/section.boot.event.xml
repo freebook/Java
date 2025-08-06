@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="springboot.event">
+	<title>Spring boot with event</title>
+	<section>
+		<title>定义事件（Event）</title>
+		<para>事件需继承 ApplicationEvent（或使用 @Event 注解），用于封装传递的数据。</para>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.event;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.context.ApplicationEvent;
+
+import java.time.Clock;
+
+@Getter
+@Setter
+@ToString
+public class TestApplicationEvent extends ApplicationEvent {
+    private String event;
+    private String data;
+
+    public TestApplicationEvent(Object source) {
+        super(source);
+    }
+
+    public TestApplicationEvent(Object source, Clock clock) {
+        super(source, clock);
+    }
+
+    public TestApplicationEvent(Object source, String event, String data) {
+        super(source);
+        this.event = event;
+        this.data = data;
+    }
+
+
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>定义监听器（Listener）</title>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.event;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
+
+@Component
+@Slf4j
+public class TestApplicationListener implements ApplicationListener<TestApplicationEvent> {
+    @Override
+    public void onApplicationEvent(TestApplicationEvent event) {
+        log.debug(event.toString());
+    }
+
+    @Override
+    public boolean supportsAsyncExecution() {
+        return ApplicationListener.super.supportsAsyncExecution();
+    }
+}
+		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>定义发布者（Publisher）</title>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.service;
+
+import cn.aigcsst.event.TestApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+
+@Service
+public class TestService {
+    // 注入事件发布器
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    // 构造方法注入
+    public TestService(ApplicationEventPublisher eventPublisher) {
+        this.applicationEventPublisher = eventPublisher;
+    }
+
+
+    public void publish(String event, String data) {
+        System.out.println("Event: [" + event + "] Data: " + data);
+        applicationEventPublisher.publishEvent(new TestApplicationEvent(this, event, data));
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>@EventListener 注解</title>
+		<programlisting>
+		<![CDATA[
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TestEventListener {
+
+    // 注解指定监听的事件类型
+    @EventListener
+    public void handleUserRegisterEvent(UserRegisterEvent event) {
+        String username = event.getUsername();
+        System.out.println("向用户 " + username + " 发送注册成功短信");
+        // 实际业务中可调用短信发送API
+    }
+}
+		]]>
+		</programlisting>
+	</section>
+</section>

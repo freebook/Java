@@ -30,6 +30,49 @@ fun main() {
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title></title>
+				<programlisting>
+				<![CDATA[
+// 语法：字符串.split(Regex)
+val str = "a,b;c d"
+val parts = str.split(Regex("[,;\\s]")) // 用逗号、分号或空格拆分
+println(parts) // 输出：[a, b, c, d]
+
+// 按多个字符拆分（如逗号、分号、空格）
+val text = "apple,banana;orange grape"
+// 正则含义：匹配逗号、分号或空格
+val regex = Regex("[,;\\s]") 
+val fruits = text.split(regex)
+// 结果：[apple, banana, orange, grape]	
+
+// 按数字拆分
+val str = "abc123def456ghi"
+// 正则含义：匹配一个或多个数字
+val parts = str.split(Regex("\\d+")) 
+// 结果：[abc, def, ghi]			
+
+// 按单词边界拆分
+val sentence = "Hello!World?Kotlin"
+// 正则含义：匹配非字母字符（作为分隔符）
+val words = sentence.split(Regex("[^a-zA-Z]")) 
+// 结果：[Hello, World, Kotlin]
+
+// 限制拆分次数
+val str = "a,b,c,d"
+// 最多拆分成2部分（第二个参数为 limit）
+val parts = str.split(Regex(","), 2) 
+// 结果：[a, b,c,d]
+
+
+// 保留空字符串（默认会过滤）
+val str = "a,,b,,c"
+// 加上 -1 表示不限制拆分次数，且保留空字符串
+val parts = str.split(Regex(","), -1) 
+// 结果：[a, , b, , c]
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="kotlin.date">
 			<title>日期时间</title>
