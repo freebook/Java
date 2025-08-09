@@ -5141,6 +5141,12 @@ public interface PictureRepository extends CrudRepository<Picture, Long> {
 }		
 			]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+		LocalDateTime beforeTime = LocalDateTime.now().minusMinutes(2);
+        Iterable<Assets> iterable = assetsRepository.findByPlanIsNullOrPptxIsNullOrMinutesIsNullOrAudioIsNullAndStatusAndCtimeBefore("Processing", beforeTime);			
+			]]>
+			</programlisting>
 		</section>
 		<section id="jpa.Exists">
 			<title>Exists</title>

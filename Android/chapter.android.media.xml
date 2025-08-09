@@ -2205,7 +2205,9 @@ exoPlayer.setMediaSource(mediaSource)
 				</programlisting>
 			</section>
 		</section>
-
-
+	</section>
+	<section>
+		<title>Opus</title>
+		<para>https://github.com/theeasiestway/android-opus-codec</para>
 	</section>
 </chapter>

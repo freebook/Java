@@ -6,7 +6,7 @@
 		<para>事件需继承 ApplicationEvent（或使用 @Event 注解），用于封装传递的数据。</para>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.event;
+package cn.netkiller.event;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +46,7 @@ public class TestApplicationEvent extends ApplicationEvent {
 		<title>定义监听器（Listener）</title>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.event;
+package cn.netkiller.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
@@ -73,9 +73,9 @@ public class TestApplicationListener implements ApplicationListener<TestApplicat
 		<title>定义发布者（Publisher）</title>
 		<programlisting>
 		<![CDATA[
-package cn.aigcsst.service;
+package cn.netkiller.service;
 
-import cn.aigcsst.event.TestApplicationEvent;
+import cn.netkiller.event.TestApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
