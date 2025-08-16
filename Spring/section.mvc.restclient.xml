@@ -219,4 +219,38 @@ ResponseEntity<List> responseEntity = restClient.get()
 		]]>
 		</programlisting>
 	</section>
+	<section id="RestClient.upload">
+		<title>上传文件</title>
+		<programlisting>
+		<![CDATA[
+public ResponseEntity<String> file(String key, String filepath) {
+
+        File file = new File(filepath);
+        
+        // 构建 Multipart 请求体
+        HttpEntity httpEntity = MultipartEntityBuilder.create()
+                .addBinaryBody("file", file)
+                .build();
+
+        RestClient restClient = RestClient.create();
+        ResponseEntity<WeChatResponse> weChatResponse = restClient.post()
+                .uri("https://qyapi.weixin.qq.com/cgi-bin/webhook/upload_media?key={key}&type={type}", Map.of("key", key, "type", "file"))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(httpEntity::writeTo)
+                .retrieve()
+                .toEntity(WeChatResponse.class);
+        log.debug("file() => media_id=", weChatResponse.getBody().media_id());
+        FileMessage fileMessage = new FileMessage();
+        fileMessage.file = Map.of("media_id", weChatResponse.getBody().media_id());
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(fileMessage);
+        log.debug(jsonString);
+
+        ResponseEntity<String> response = restClient.post().uri("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={key}", Map.of("key", key)).contentType(MediaType.APPLICATION_JSON).body(fileMessage).retrieve().toEntity(String.class);
+        return response;
+
+    }		
+		]]>
+		</programlisting>
+	</section>
 </section>
