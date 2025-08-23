@@ -996,6 +996,23 @@ public class Main {
 午夜			
 			]]>
 			</screen>
+			<para>Data 转 LocalDate</para>
+			<programlisting>
+			<![CDATA[
+		Date date = new Date();​
+        ​
+        // 1. 将Date转换为LocalDate（需指定时区，避免默认时区差异）​
+        LocalDate localDate = date.toInstant()​
+                                 .atZone(ZoneId.systemDefault()) // 系统默认时区（如Asia/Shanghai）​
+                                 .toLocalDate();​
+        ​
+        // 2. 定义格式化器：YYYY-MM-DD​
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");​
+        ​
+        // 3. 转换为字符串​
+        String dateStr = localDate.format(formatter);			
+			]]>
+			</programlisting>
 		</section>
 		<section id="SimpleDateFormat">
 			<title>SimpleDateFormat 格式化日期和时间</title>

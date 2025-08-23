@@ -5148,6 +5148,14 @@ public interface PictureRepository extends CrudRepository<Picture, Long> {
 			]]>
 			</programlisting>
 		</section>
+		<section id="jpa.Between">
+			<title>Between</title>
+			<programlisting>
+			<![CDATA[
+Iterable<Assets> iterable = assetsRepository.findByStatusAndCtimeBetween("Processing", afterTime, beforeTime);
+			]]>
+			</programlisting>
+		</section>
 		<section id="jpa.Exists">
 			<title>Exists</title>
 			<programlisting>
@@ -5162,7 +5170,11 @@ boolean exists = repository.existsById(searchId)
     Boolean queryExpiredByMobile(@Param("mobile") String mobile);
 			]]>
 			</programlisting>
-
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
 		</section>
 		<section id="OrderBy">
 			<title>OrderBy</title>

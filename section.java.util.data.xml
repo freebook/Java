@@ -1459,7 +1459,7 @@ public class Test {
 			</programlisting>
 		</section>
 		<section>
-			<title></title>
+			<title>调换 map 的 key 与 value 位置</title>
 			<programlisting>
 			<![CDATA[
 import java.util.HashMap;
@@ -1483,12 +1483,12 @@ public class MapInverter {
 			]]>
 			</programlisting>
 		</section>
-		
+	</section>
+	<section id="Iterator">
+		<title>Iterator</title>
 		<para>Iterator接口包含四个方法：hasNext，next，remove，forEachRemaining</para>
 		<section>
 			<title>List 迭代</title>
-
-
 			<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
@@ -1706,14 +1706,13 @@ List<String> list = Arrays.asList("Neo", "Tom", "Jerry");
 			</programlisting>
 		</section>
 
-	</section>
-	<section id="ListIterator">
-		<title>ListIterator</title>
-		<para>ListIterator 可以实现添加/删除和向前/向后访问数据</para>
-		<para>Iterator 可以用于 List / Set / Vector / Map 数据结构，ListIterator 只能用于
-			List
-		</para>
-		<programlisting>
+		<section id="ListIterator">
+			<title>ListIterator</title>
+			<para>ListIterator 可以实现添加/删除和向前/向后访问数据</para>
+			<para>Iterator 可以用于 List / Set / Vector / Map 数据结构，ListIterator 只能用于
+				List
+			</para>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.test;
 
@@ -1763,22 +1762,104 @@ public class Test {
     }
 }		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 String next = listIterator.next();
 if( "Neo".equals(next)) {
     listIterator.set("Netkiller");
 }		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 List<String> items = new ArrayList<String>();
 String nextWithIndex = items.get(listIterator.nextIndex());
 String previousWithIndex = items.get(listIterator.previousIndex());		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section id="Iterable">
+			<title>Iterable</title>
+			<para>在 Java 中，Iterable接口是所有可迭代集合（如List、Set等）的父接口，其核心方法iterator()返回一个Iterator对象，用于遍历集合元素。</para>
+			<programlisting>
+			<![CDATA[
+Iterable<String> iterable = Arrays.asList("a", "b", "c");
+
+// for-each循环直接遍历元素
+for (String element : iterable) {
+    System.out.println(element); // 输出：a、b、c
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+Iterable<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+Iterator<Integer> iterator = numbers.iterator();
+
+// 循环判断是否有下一个元素
+while (iterator.hasNext()) {
+    Integer num = iterator.next(); // 获取下一个元素
+    System.out.println(num);
+    
+    // 示例：删除偶数（仅支持可修改的集合，如ArrayList，不可修改集合会抛异常）
+    if (num % 2 == 0) {
+        iterator.remove(); // 必须在next()之后调用，否则报错
+    }
+}			
+			]]>
+			</programlisting>		
+			<para>对于支持流式操作的Iterable（如集合类），可通过stream()或parallelStream()转换为流，结合 Lambda 表达式实现函数式遍历：</para>
+			<programlisting>
+			<![CDATA[
+Iterable<String> words = Arrays.asList("apple", "banana", "cherry");
+
+// 转换为流并遍历
+words.forEach(word -> System.out.println(word.toUpperCase())); // 输出大写字母
+
+// 更复杂的流操作（过滤、映射等）
+((Collection<String>) words).stream() // 注意：需强转为Collection才能调用stream()
+    .filter(word -> word.length() > 5)
+    .forEach(System.out::println); // 输出：banana、cherry			
+			]]>
+			</programlisting>
+			<para>遍历自定义 Iterable 对象，若你自定义了实现Iterable接口的类，只需重写iterator()方法，即可使用上述所有遍历方式：</para>
+			<programlisting>
+			<![CDATA[
+public class MyIterable implements Iterable<String> {
+    private String[] data = {"x", "y", "z"};
+
+    @Override
+    public Iterator<String> iterator() {
+        return new Iterator<String>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < data.length;
+            }
+
+            @Override
+            public String next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return data[index++];
+            }
+        };
+    }
+
+    // 测试遍历
+    public static void main(String[] args) {
+        MyIterable myIterable = new MyIterable();
+        for (String s : myIterable) {
+            System.out.println(s); // 输出：x、y、z
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="java.util.Queue">
 		<title>Queue</title>
