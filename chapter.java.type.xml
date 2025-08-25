@@ -629,7 +629,22 @@ Hello world!
 				]]>
 				</screen>
 			</section>
-
+			<section>
+				<title>数字开头的字符串前面加回车符</title>
+				<programlisting>
+				<![CDATA[
+        String original = "1: neo 2: netkiller 3: other";
+        System.out.println(original.replaceAll("\n", "").replaceAll("(?=^\\d:|\\d:)", "\n"));
+				]]>
+				</programlisting>
+				<screen>
+				<![CDATA[
+1: neo 
+2: netkiller 
+3: other
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="substring">
 			<title>substring</title>
