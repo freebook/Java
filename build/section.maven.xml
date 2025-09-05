@@ -229,7 +229,7 @@ MAVEN_OPTS = -Dmaven.repo.local=.m2/repository
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="mvn.settings.xml">
 			<title>-s 指定 settings.xml 文件</title>
 			<screen>
 			<![CDATA[
@@ -237,7 +237,7 @@ mvn clean install -Dmaven.test.skip=true -s ~/.m2/settings.xml
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="mvn.thread">
 			<title>多线程</title>
 			<para>使用4个线程构建</para>
 			<screen>
@@ -276,6 +276,59 @@ mvn archetype:create
 			]]>
 			</screen>
 		</section>
+		<section id="mvn.archetype">
+			<title>从 archetype 模版创建项目</title>
+			<screen>
+			<![CDATA[
+neo@Mac tmp % mvn archetype:generate -DarchetypeArtifactId=maven-archetype-quickstart -DgroupId=cn.netkiller -DartifactId=book -DinteractiveMode=false			
+
+参数说明：
+参数						说明
+-DgroupId				组织名（如公司域名倒写）
+-DartifactId			项目名称（会成为项目文件夹名）
+-DarchetypeArtifactId	使用的模板（quickstart 是基础 Java 项目）
+-DinteractiveMode=false	非交互模式（避免手动确认）
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+neo@Mac tmp % mvn archetype:generate -DarchetypeArtifactId=maven-archetype-quickstart -DgroupId=cn.netkiller -DartifactId=book -DinteractiveMode=false
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/opt/homebrew/Cellar/maven/3.9.10/libexec/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.apache.maven:standalone-pom >-------------------
+[INFO] Building Maven Stub Project (No POM) 1
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] >>> archetype:3.4.0:generate (default-cli) > generate-sources @ standalone-pom >>>
+[INFO] 
+[INFO] <<< archetype:3.4.0:generate (default-cli) < generate-sources @ standalone-pom <<<
+[INFO] 
+[INFO] 
+[INFO] --- archetype:3.4.0:generate (default-cli) @ standalone-pom ---
+[INFO] Generating project in Batch mode
+[INFO] ----------------------------------------------------------------------------
+[INFO] Using following parameters for creating project from Old (1.x) Archetype: maven-archetype-quickstart:1.0
+[INFO] ----------------------------------------------------------------------------
+[INFO] Parameter: basedir, Value: /Users/neo/tmp
+[INFO] Parameter: package, Value: cn.netkiller
+[INFO] Parameter: groupId, Value: cn.netkiller
+[INFO] Parameter: artifactId, Value: book
+[INFO] Parameter: packageName, Value: cn.netkiller
+[INFO] Parameter: version, Value: 1.0-SNAPSHOT
+[INFO] project created from Old (1.x) Archetype in dir: /Users/neo/tmp/book
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.348 s
+[INFO] Finished at: 2025-09-04T10:51:40+08:00
+[INFO] ------------------------------------------------------------------------			
+			]]>
+			</screen>
+		</section>
 		<section id="clean">
 			<title>clean</title>
 			<para>清楚</para>
@@ -303,7 +356,7 @@ mvn clean package -T 1C -Dmaven.test.skip=true  -Dmaven.compile.fork=true
 				</para>
 			</section>
 		</section>
-		<section>
+		<section id="mvn.test-compile">
 			<title>编译测试代码</title>
 			<screen>
 			<![CDATA[
@@ -583,15 +636,15 @@ mvn jar:jar -Djar.finalName=custom-jar-name
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="mvn.assembly">
 			<title>构建装配Maven Assembly</title>
 			<screen>
 			<![CDATA[
-mvn install assembly:assembly			
+mvn install assembly:assembly		
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="mvn.encrypt">
 			<title>加密密码</title>
 			<para>--encrypt-master-password</para>
 			<screen>
