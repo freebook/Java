@@ -566,6 +566,22 @@ public String getFoos(@RequestParam Optional<String> id){
 			]]>
 			</programlisting>
 		</section>
+		<section id="LocalDateTime">
+			<title>LocalDateTime 值</title>
+			<screen>
+			<![CDATA[
+    @PostMapping("payment")
+    public JsonResponse payment(@PathVariable("device") String device, @RequestParam("money") Float money,
+                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                @RequestParam("expired") LocalDateTime expired) {
+
+//        log.debug(data.toString());
+        Optional<Device> optional = rechargeService.payment(device, money, expired);
+        return JsonResponse.data(optional);
+    }			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="@RequestHeader">

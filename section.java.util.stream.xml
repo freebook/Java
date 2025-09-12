@@ -334,6 +334,76 @@ appenededStream.forEach(System.out::print); //Prints 123456
 		]]>
 		</programlisting>
 	</section>
+	<section id="stream.Collectors">
+		<title>Collectors</title>
+		<screen>
+		<![CDATA[
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class StreamJoinWithNewline {
+    public static void main(String[] args) {
+        // 1. 示例1：从List创建Stream<String>
+        List<String> stringList = Arrays.asList("第一行", "第二行", "第三行", "第四行");
+        String joinedByNewline1 = stringList.stream()
+                .collect(Collectors.joining("\n")); // 关键：用"\n"作为分隔符
+        System.out.println("从List生成的拼接结果：");
+        System.out.println(joinedByNewline1);
+        // 输出结果（带换行）：
+        // 第一行
+        // 第二行
+        // 第三行
+        // 第四行
+
+        // 2. 示例2：直接创建Stream<String>（如动态生成的字符串流）
+        Stream<String> stringStream = Stream.of("Apple", "Banana", "Cherry", "Date");
+        String joinedByNewline2 = stringStream
+                .collect(Collectors.joining("\n"));
+        System.out.println("\n直接Stream生成的拼接结果：");
+        System.out.println(joinedByNewline2);
+        // 输出结果（带换行）：
+        // Apple
+        // Banana
+        // Cherry
+        // Date
+    }
+}		
+		]]>
+		</screen>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+Stream<String> lines = Stream.of("Hello", "World", "Java Stream");
+// 前缀加"【", 后缀加"】"，元素间用"\n"分隔
+String resultWithPrefixSuffix = lines.collect(Collectors.joining(
+        "\n",    // 元素分隔符（换行）
+        "【",    // 整体前缀
+        "】"     // 整体后缀
+));
+System.out.println(resultWithPrefixSuffix);
+// 输出结果：
+// 【Hello
+// World
+// Java Stream】			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>过滤空值</title>
+			<screen>
+			<![CDATA[
+String joinedWithNoNull = stringList.stream()
+        .filter(Objects::nonNull) // 过滤null元素
+        .collect(Collectors.joining("\n"));			
+			]]>
+			</screen>
+		</section>
+	</section>
+	
+	
 	<section id="stream.example">
 		<title>混合使用的例子</title>
 		<programlisting>
