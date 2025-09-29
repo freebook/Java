@@ -174,7 +174,45 @@ logging.pattern.console=%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){blue} %clr(%-5p) %clr(
 			</programlisting>
 		</section>
 	</section>
-
+	<section id="logging.logback">
+		<title>日志切割</title>
+		<screen>
+		<![CDATA[
+logging.logback.rollingpolicy.file-name-pattern=${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
+#logging.logback.rollingpolicy.max-file-size=1KB
+		]]>
+		</screen>
+		<para>参数说明</para>
+		<screen>
+		<![CDATA[
+配置项																				默认值				描述
+logging.logback.rollingpolicy.file-name-pattern	${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz	日志文档的文件名格式
+logging.logback.rollingpolicy.clean-history-on-start								false				应用启动时是否清除以前的文档
+logging.logback.rollingpolicy.max-file-size											10MB				存档前每个日志文件的最大大小
+logging.logback.rollingpolicy.total-size-cap										0B					日志文件被删除之前，可以容纳最大大小。设置1GB则磁盘存储超过1GB日志后就会删除旧日志文件
+logging.logback.rollingpolicy.max-history											7					日志文件的最大保存天数		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+logging.logback.rollingpolicy.file-name-pattern=${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
+logging.logback.rollingpolicy.max-file-size=10MB
+logging.logback.rollingpolicy.clean-history-on-start=false
+logging.logback.rollingpolicy.max-history=7
+logging.logback.rollingpolicy.total-size-cap=0B		
+		]]>
+		</screen>
+	</section>
+	<section id="logging.ansi">
+		<title>彩色日志</title>
+		<para>启动 Springboot 增加参数 -Dspring.output.ansi.enabled=ALWAYS</para>
+		<para>或者写入配置文件</para>
+		<screen>
+		<![CDATA[
+spring.output.ansi.enabled=ALWAYS		
+		]]>
+		</screen>
+	</section>
 	<section id="lombok.logging">
 		<title>打印日志</title>
 		<para>日志的用法，首先开发中我们根据实际的需要打印不同级别的日志。</para>
