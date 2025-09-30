@@ -30,8 +30,8 @@ fun main() {
 				]]>
 				</programlisting>
 			</section>
-			<section>
-				<title></title>
+			<section id="kotlin.string.split">
+				<title>字符串分割</title>
 				<programlisting>
 				<![CDATA[
 // 语法：字符串.split(Regex)
@@ -44,6 +44,7 @@ val text = "apple,banana;orange grape"
 // 正则含义：匹配逗号、分号或空格
 val regex = Regex("[,;\\s]") 
 val fruits = text.split(regex)
+
 // 结果：[apple, banana, orange, grape]	
 
 // 按数字拆分
@@ -73,6 +74,44 @@ val parts = str.split(Regex(","), -1)
 				]]>
 				</programlisting>
 			</section>
+			<section id="kotlin.string.filter">
+				<title>字符过滤</title>
+				<programlisting>
+				<![CDATA[
+fun main() {
+    val originalString = "Hello, World，123。"
+    val charsToExclude = setOf(',', '，', '.', '。') // 要排除的字符集合
+
+    // 过滤掉需要排除的字符
+    val filteredString = originalString.filterNot { it in charsToExclude }
+
+    println("原始字符串: $originalString")
+    println("排除指定字符后: $filteredString")
+}				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+fun main() {
+    val excludes = setOf(",", "，", ".", "。") // 要排除的字符集合
+    val stringList = listOf("apple", ",", "orange", "，", "banana", ".", "grape", "。", "watermelon")
+
+    // 过滤并显示不在排除列表中的字符串
+    stringList.filter { it !in excludes }.forEach { println(it) }
+}
+
+fun main() {
+    val excludes = setOf(",", "，", ".", "。") // 要排除的字符集合
+    val stringList = listOf("apple", ",", "orange", "，", "banana", ".", "grape", "。", "watermelon")
+
+    // 过滤并显示不在排除列表中的字符串
+    stringList.filterNot { it in excludes }.forEach { println(it) }
+}
+				]]>
+				</programlisting>
+			</section>
+			
+			
 		</section>
 		<section id="kotlin.date">
 			<title>日期时间</title>
