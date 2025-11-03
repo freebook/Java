@@ -1216,6 +1216,35 @@ while(!future.isDone()) {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>Future + ExecutorService</title>
+			<programlisting>
+			<![CDATA[
+public class OldConcurrentService {
+    privatefinal ExecutorService executor = Executors.newFixedThreadPool(2);
+
+    public Map<String, Object> getPageData(String userId) throws Exception {
+        // 1. 提交两个异步任务
+        Future<String> userFuture = executor.submit(() -> fetchUserInfo(userId));
+        Future<String> productFuture = executor.submit(() -> fetchProductList());
+
+        // 2. 等待并获取结果，异常处理非常棘手
+        try {
+            String userInfo = userFuture.get(2, TimeUnit.SECONDS);
+            String productList = productFuture.get(2, TimeUnit.SECONDS);
+            
+            // 3. 组合结果
+            return Map.of("user", userInfo, "products", productList);
+        } finally {
+            // 4. 必须手动关闭线程池
+            executor.shutdown();
+        }
+    }
+    // 模拟API调用...
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="FutureTask">
 		<title>FutureTask</title>
@@ -1260,6 +1289,49 @@ public class Future {
 }
 	
 	]]>
+		</programlisting>
+	</section>
+	
+	<section id="StructuredTaskScope">
+		<title>StructuredTaskScope</title>
+		<para>StructuredTaskScope 的核心思想是将任务和子任务的生命周期绑定到代码块的作用域内。所有子任务必须在父任务结束前完成或被取消，这种结构化的方式避免了传统线程管理中的资源泄漏和复杂的错误处理。</para>
+		<programlisting>
+		<![CDATA[
+public static Weather readWeather() throws ExecutionException, InterruptedException {
+   try (var scope = new StructuredTaskScope.ShutdownOnSuccess<Weather>()) {
+       scope.fork(() -> Weather.readWeatherFromServerA());
+       scope.fork(() -> Weather.readWeatherFromServerB());
+       scope.fork(() -> Weather.readWeatherFromServerC());
+       scope.join(); // 等待所有任务完成
+       return scope.result(); // 获取第一个成功的结果
+   }
+}		
+		]]>
+		</programlisting>
+		<para>相比传统的 ExecutorService，StructuredTaskScope 提供了更高的抽象层次。ExecutorService 需要开发者手动管理任务之间的关系，而 StructuredTaskScope 自动处理任务的取消和错误传播，避免了线程泄漏和复杂的异常处理逻辑。</para>
+		<programlisting>
+		<![CDATA[
+public class NewConcurrentService {
+    
+    public Map<String, Object> getPageData(String userId) throws InterruptedException, ExecutionException {
+        // ✅ 使用 try-with-resources 确保 Scope 自动关闭
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            // 1. fork() 启动虚拟线程执行任务
+            Supplier<String> userSupplier = scope.fork(() -> fetchUserInfo(userId));
+            Supplier<String> productSupplier = scope.fork(() -> fetchProductList());
+
+            // 2. join() 等待所有任务完成，如果任何一个失败则抛出异常
+            scope.join();
+            scope.throwIfFailed(); // 如果有失败，将第一个异常抛出
+
+            // 3. 获取结果，类型安全
+            return Map.of("user", userSupplier.get(), "products", productSupplier.get());
+        }
+        // ✅ 无需手动管理线程池！
+    }
+    // 模拟API调用...
+}		
+		]]>
 		</programlisting>
 	</section>
 

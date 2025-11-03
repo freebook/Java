@@ -511,6 +511,28 @@ public class Test {
 		]]>
 		</programlisting>
 	</section>
+	<section id="ScopedValue">
+		<title>ScopedValue</title>
+		<para>Scoped Value 允许声明一个只能在当前范围（如代码块或方法调用栈）内访问的变量。这个范围可以包含多个线程，但这些变量只能被当前范围内的代码读取，无法被其他范围内的代码读取或修改。因此，Scoped Value 是不可变的，并且可以安全地在线程之间共享。</para>
+		<programlisting>
+		<![CDATA[
+import java.lang.Scope;
+import java.lang.ScopedValue;
+public class ScopedValueDemo {
+   private static ScopedValue<String> stringScopedValue = ScopedValue.newInstance();
+   public static void main(String[] args) {
+       ScopedValue.runWhere(stringScopedValue, "Hello, Scoped Value!", () -> {
+           System.out.println(stringScopedValue.get());
+           anotherMethod();
+       });
+   }
+   public static void anotherMethod() {
+       System.out.println(stringScopedValue.get());
+   }
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="ThreadLocalMap">
 		<title>ThreadLocalMap</title>
 	</section>
