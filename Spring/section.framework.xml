@@ -371,4 +371,31 @@ String locationUri = ServletUriComponentsBuilder
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>@ConcurrencyLimit 连流</title>
+		<para>启用配置，在配置类上添加@EnableResilientMethods注解</para>
+		<para>在需要限制并发的方法上添加@ConcurrencyLimit注解</para>
+		<programlisting>
+		<![CDATA[
+@Configuration
+@EnableResilientMethods
+public class ResilientMethodsConfig {
+    // 配置类
+}
+
+@Component
+public class NotificationService {
+    @ConcurrencyLimit(10)
+    public void sendNotification() {
+        this.jmsClient.destination("notifications").send(...);
+    }
+    
+    @ConcurrencyLimit(1)
+    public void processCriticalTask() {
+        // 关键任务处理
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
 </chapter>
