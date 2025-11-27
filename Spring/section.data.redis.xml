@@ -946,7 +946,10 @@ System.out.println(zset.rangeByScore("zMember", 0, 2));
 		<title>HashOperations</title>
 		<screen>
 			<![CDATA[
-HashOperations<String,String,String> ops = redisTemplate.opsForHash();			
+    @Autowired
+    private RedisTemplate redisTemplate;			
+			
+	HashOperations<String,String,String> ops = redisTemplate.opsForHash();			
 			]]>
 		</screen>
 		<section>

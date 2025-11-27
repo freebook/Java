@@ -1543,9 +1543,44 @@ ISO 8601扩展格式 YYYY-MM-DDTHH:mm:ss.sssZ
 				
 			]]>
 			</programlisting>
+			<para>时间比较</para>
+			<programlisting>
+			<![CDATA[
+import java.time.LocalDateTime;
+
+public class LocalDateTimeCompareDemo {
+    public static void main(String[] args) {
+        // 构建两个 LocalDateTime 实例（方式：of() 或 parse()）
+        LocalDateTime time1 = LocalDateTime.of(2025, 11, 4, 10, 30, 0); // 2025-11-04 10:30:00
+        LocalDateTime time2 = LocalDateTime.parse("2025-11-04T14:20:00"); // 2025-11-04 14:20:00
+        LocalDateTime time3 = LocalDateTime.of(2025, 11, 4, 10, 30, 0); // 与 time1 相等
+
+        // 1. isBefore()：是否在之前
+        boolean before = time1.isBefore(time2);
+        System.out.println("time1 在 time2 之前？" + before); // true
+
+        // 2. isAfter()：是否在之后
+        boolean after = time2.isAfter(time1);
+        System.out.println("time2 在 time1 之后？" + after); // true
+
+        // 3. isEqual()：是否相等（精确到纳秒，年月日时分秒纳秒完全一致）
+        boolean equal = time1.isEqual(time3);
+        System.out.println("time1 与 time3 相等？" + equal); // true
+
+        // 4. compareTo()：比较（返回 int，支持排序）
+        int compare1 = time1.compareTo(time2); // time1 < time2 → 返回负数（-1）
+        int compare2 = time2.compareTo(time1); // time2 > time1 → 返回正数（1）
+        int compare3 = time1.compareTo(time3); // 相等 → 返回 0
+        System.out.println("time1.compareTo(time2)：" + compare1); // -1
+        System.out.println("time2.compareTo(time1)：" + compare2); // 1
+        System.out.println("time1.compareTo(time3)：" + compare3); // 0
+    }
+}			
+			]]>
+			</programlisting>
 		</section>
-		<section>
-			<title></title>
+		<section id="java.time.Duration">
+			<title>Duration</title>
 			<programlisting>
 			<![CDATA[
 import java.time.Duration;

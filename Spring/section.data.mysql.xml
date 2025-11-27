@@ -355,6 +355,7 @@ public String getContent() {
 
 		<section id="@Temporal">
 			<title>@Temporal 日期定义</title>
+			<para>@Temporal 已经被废弃</para>
 			<programlisting>
 			<![CDATA[
 @Entity
@@ -373,6 +374,15 @@ public class Article {
     @Temporal(TemporalType.TIMESTAMP)
     Date creationDateTime;
 }			
+			]]>
+			</programlisting>
+			<para>@Temporal(TemporalType.DATE) 替换 private LocalDate birthday;</para>
+			<programlisting>
+			<![CDATA[
+    @Comment("生日")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthday;
 			]]>
 			</programlisting>
 		</section>
@@ -5711,6 +5721,58 @@ try {
     // 处理异常
     log.error(e.getMessage());
 }			
+			]]>
+			</programlisting>
+			<para>查找数据，如果没有找到就创建数据，然后返回</para>
+			<programlisting>
+			<![CDATA[
+        Assets assets = assetsRepository.findByTaskIdAndName(meeting.getTaskId(), "minutes").orElseGet(() -> {
+            Assets newAssets = new Assets();
+            newAssets.setTaskId(meeting.getTaskId());
+//            assets.setDepartment("Marketing");
+            newAssets.setName("minutes");
+            newAssets.setOss("");
+            return assetsRepository.save(newAssets);
+        });			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+		<section id="jpa.stream">
+			<title>stream 用法</title>
+			<programlisting>
+			<![CDATA[
+public Optional<Map<String, Object>> assetsDepartment(String taskId) {
+        Map<String, Object> document = new HashMap<>();
+
+        assetsRepository.findByTaskId(taskId).ifPresent(assets -> {
+            document.put("summary", assets.getSummary());
+            document.put("plan", assets.getPlan());
+            document.put("minutes", assets.getMinutes());
+            document.put("pptx", assets.getPptx());
+            document.put("todolist", assets.getTodolist());
+            document.put("mindmap", assets.getMindmap());
+            document.put("gantt", assets.getGantt());
+            document.put("fishbone", assets.getFishbone());
+            document.put("audio", assets.getAudio());
+            
+
+            document.put("department", assetsDepartmentService.findbyTaskId(taskId).stream().collect(Collectors.toMap(
+                    AssetsDepartment::getName,
+                    AssetsDepartment::getOss
+            )));
+        });
+        return Optional.of(document);
+    }			
 			]]>
 			</programlisting>
 		</section>
