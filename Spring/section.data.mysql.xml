@@ -1336,9 +1336,119 @@ mysql> select options from item_pool;
 1 row in set (0.00 sec)			
 			]]>
 			</programlisting>
+			<section>
+				<title>List 与 Json</title>
+				<para>用 MySQL json 类型保存 List 数据</para>
+				<programlisting>
+				<![CDATA[
+	@Column(columnDefinition = "json")
+    private List<String> whitelist;
+				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.aigcsst.domain.device;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table
+@DynamicUpdate
+@DynamicInsert
+@Data
+@Comment("版本表")
+public class Version implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Integer id;
+
+    @Comment("商户ID")
+    private String appId;
+
+    @Comment("型号")
+    @Column(length = 16)
+    private String model;
+
+    @Comment("版本")
+    @Column(length = 8)
+    private String version;
+
+    @Comment("下载地址")
+    private String url;
+
+    @Comment("编译类型")
+    @Column(columnDefinition = "enum('release','debug','dev','beta') DEFAULT 'debug'")
+    private String buildTypes;
+
+    @Comment("Checksum 校验")
+    @Column(length = 32)
+    private String md5sum;
+
+    @Comment("描述")
+    private String description;
+
+    @Comment("状态")
+    @Column(columnDefinition = "enum('Stable','Unstable','BUG','Gray') DEFAULT 'Stable'")
+    private String status;
+
+    @Comment("灰度白名单，状态为Gray时有效")
+    @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "json")
+    private List<String> whitelist;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Comment("创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    @Comment("修改时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime mtime;
+
+}
+				
+				]]>
+				</programlisting>
+				<para>用法与普通 list 没有任何区别 version.getWhitelist().contains(device)</para>
+				<programlisting>
+				<![CDATA[
+    public Optional<Version> version(String device, String buildTypes) {
+        Optional<Version> optional = versionRepository.findFirstByBuildTypesOrderByIdDesc(buildTypes);
+        return optional.map(version -> {
+            if (version.getStatus().equals("Gray")) {
+                if (version.getWhitelist() == null) {
+                    return null;
+                } else if (!version.getWhitelist().contains(device)) {
+                    return null;
+                }
+            }
+            return version;
+        });
+    }
+				
+				]]>
+				</programlisting>
+			</section>
 		</section>
-
-
 
 		<section id="@Embeddable">
 			<title>嵌入</title>
