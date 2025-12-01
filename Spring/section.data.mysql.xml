@@ -321,6 +321,218 @@ CREATE TABLE `member` (
 		<section id="@Transient">
 			<title>非数据库字段</title>
 			<para>@Transient 该注解标注的字段不会被应射到数据库当中</para>
+			<para>settings 不会在数据库中出现，只用于JSON传值</para>
+			<programlisting>
+			<![CDATA[
+	@Transient
+    private Map<String, Object> settings;			
+			]]>
+			</programlisting>
+			<para>应用举例</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.domain.device;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Map;
+
+@Entity
+@Table(
+//        uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "business_id"})}
+//        indexes = {
+//        @Index(name = "key_device_unique", columnList = "name"),
+//        @Index(name = "key_device_unique", columnList = "business_id")
+//}
+)
+@DynamicUpdate
+@DynamicInsert
+@Data
+//@Builder
+@Comment("设备表")
+public class Device implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+    @Column(columnDefinition = "int unsigned")
+    @Comment("存储容量")
+    private final Integer capacity = null;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned")
+    @Comment("主键")
+    private Integer id;
+
+    @Column(nullable = false, insertable = true, updatable = true, length = 32)
+    @Comment("设备名称")
+    private String name;
+
+    @Column(unique = true, nullable = false, insertable = true, updatable = false, length = 32)
+    @Comment("序列号")
+    private String sn;
+
+    @Comment("型号")
+    @Column(length = 32)
+    private String model;
+
+    @Comment("固件版本")
+    @Column(length = 32)
+    private String fireware;
+
+    @Comment("软件版本")
+    @Column(length = 32)
+    private String version;
+
+//    @Column(columnDefinition = "int unsigned")
+//    @Comment("内存容量")
+//    private Integer memory;
+//
+//    @Comment("移动网络提供商")
+//    @Column(columnDefinition = "enum('中国移动','中国电信','中国联通','中国广电','其他') DEFAULT NULL")
+//    private String provider;
+
+//    @Comment("IMEI")
+//    @Column(length = 15)
+//    private String imei;
+//
+//    @Comment("IMSI(International Mobile Subscriber Identity)国际移动用户识别码")
+//    @Column(length = 15)
+//    private String imsi;
+//
+//    @Comment("MEID")
+//    @Column(length = 15)
+//    private String meid;
+//
+//    @Comment("ICCID")
+//    @Column(length = 20)
+//    private String iccid;
+
+    @Comment("品牌")
+    private String brand;
+
+    @Comment("CPU")
+    private String cpu;
+
+    @Comment("设备驱动")
+    private String device;
+
+    @Comment("显示屏")
+    private String display;
+
+    @Comment("设备标识")
+    private String fingerprint;
+
+    @Comment("硬件")
+    private String hardware;
+
+    @Comment("制造商")
+    private String manufacturer;
+
+    @Comment("产品")
+    private String product;
+
+    @Comment("App 版本")
+    @Column(length = 8)
+    private String app;
+
+    @Comment("企业微信群")
+//    @Column(length = 11, insertable = false, updatable = false)
+    @Column(length = 36)
+    private String weComGroup;
+
+    //    @Column(insertable = false, updatable = false, columnDefinition = "int unsigned DEFAULT '0'")
+    @Comment("微信小程序")
+    @Column(length = 11)
+    private String wechat;
+
+    @Comment("email")
+    @Column(length = 64)
+    private String email;
+
+    @Column(length = 32)
+    @Comment("手机号码")
+    private String mobile;
+
+    @Column(columnDefinition = "DATETIME DEFAULT NULL")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Comment("到期时间")
+    private LocalDateTime expired;
+
+    @Column(nullable = false, updatable = false, columnDefinition = "enum('Y','N') DEFAULT 'N'")
+    @Comment("设备状态，Y=正常，N=禁用，冻结，description 会描述冻结原因")
+    private String status;
+
+    @Comment("设备状态原因")
+    @Column(nullable = false, updatable = false, columnDefinition = "enum('未激活','激活','禁用','冻结','过期','演示') DEFAULT '未激活'")
+    private String reason;
+
+    @Comment("设备状态描述")
+    private String description;
+
+    @Comment("设备状态描述")
+    private String wechatOpenId;
+
+    @Comment("密码")
+    @Column(length = 40)
+    private String password;
+
+//    @CreatedDate
+//    @Column(nullable = true, insertable = true, updatable = true)
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @Comment("访问时间")
+//    private Date atime;
+
+    @Transient
+//    @JsonProperty
+//    @JsonInclude(JsonInclude.Include.ALWAYS)
+    private Map<String, Object> settings;
+
+    @Comment("设备归属")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "business_id", updatable = false)
+    @JsonIgnore
+    private Business business;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("创建时间")
+    private LocalDateTime ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("修改时间")
+    private LocalDateTime mtime;
+
+    public Device() {
+
+    }
+
+//    @OneToOne(mappedBy = "device")
+//    private Consumer consumer;
+
+//    public enum Status{
+//        Y,N,TRUE,FLASE,ENABLED,DISABLED
+//    }
+//    public enum reason{
+//        "未激活","余额不足","禁用","正常"
+//    }
+}			
+			]]>
+			</programlisting>
 		</section>
 		<section id="@Lob">
 			<title>@Lob 注解属性将被持久化为 Blog 或 Clob 类型</title>
@@ -1348,7 +1560,7 @@ mysql> select options from item_pool;
 				</programlisting>
 				<programlisting>
 				<![CDATA[
-package cn.aigcsst.domain.device;
+package cn.netkiller.domain.device;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -5201,8 +5413,19 @@ public interface LoraRepository extends CrudRepository<Lora, Integer> {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>比较数值大小</title>
+			<section>
+				<title>大于</title>
+				<programlisting>
+				<![CDATA[
+boolean existsByDeviceAndGiftGreaterThan(String device, int i);				
+				]]>
+				</programlisting>
+			</section>
+		</section>
 		<section id="BeforeAfter">
-			<title>Before/After</title>
+			<title>判断日期和时间 Before / After</title>
 			<programlisting>
 			<![CDATA[
 //        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
