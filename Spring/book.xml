@@ -16,8 +16,8 @@
 ]>
 <book xml:base="http://www.netkiller.cn/spring/" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
-		<title>Netkiller Spring Cloud 手札</title>
-		<subtitle>Spring Cloud Cookbook（<?dbtimestamp format="Y"?>版）</subtitle>
+		<title>Netkiller Spring 手札</title>
+		<subtitle>Springboot 4.0 Cookbook（<?dbtimestamp format="Y"?>版）</subtitle>
 		
 		&book.info.author.xml;
 
@@ -31,7 +31,7 @@
 			<holder>Neo Chan</holder>
 		</copyright>
 		<cover>
-			<para role="tagline">Netkiller Spring Cloud 手札</para>
+			<para role="tagline">Netkiller Spring 手札</para>
 			<mediaobject>
 				<imageobject>
 					<imagedata fileref="images/cover.png" />

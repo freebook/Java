@@ -1336,6 +1336,90 @@ public class TestLinkedHashMap {
 		]]>
 			</programlisting>
 		</section>
+		<section id="NavigableMap">
+			<title>NavigableMap</title>
+			<programlisting>
+			<![CDATA[
+NavigableMap<Integer, String>map=newTreeMap<>();
+map.put(1, "one");
+map.put(2, "two");
+map.put(3, "three");
+map.put(4, "four");
+
+System.out.println("Poll First Entry: "+map.pollFirstEntry());  // 输出 1=one
+System.out.println("Poll Last Entry: "+map.pollLastEntry());    // 输出 4=four
+
+map.forEach((key, value) ->System.out.println(key+" :: "+value));			
+			]]>
+			</programlisting>
+			<para>反向遍历</para>
+			<programlisting>
+			<![CDATA[
+NavigableMap 还提供了一些方法，用于反向遍历 Map。你可以通过这些方法，按照降序遍历键值对。
+navigableKeySet()：返回一个 NavigableSet，你可以通过它按顺序访问 Map 中的所有键。
+descendingKeySet()：返回一个 NavigableSet，你可以通过它反向访问 Map 中的键。
+descendingMap()：返回一个新的 NavigableMap，它是原始 Map 的反向视图。
+这些方法使得我们能够轻松实现对 Map 键的反向遍历。
+			
+NavigableMap<Integer, String>map=newTreeMap<>();
+map.put(1, "one");
+map.put(2, "two");
+map.put(3, "three");
+map.put(4, "four");
+map.put(5, "five");
+
+// 正序遍历
+map.keySet().forEach(key->System.out.print(key+" "));  // 输出 1 2 3 4 5
+System.out.println();
+
+// 反向遍历
+NavigableSet<Integer>descendingKeys=map.descendingKeySet();
+descendingKeys.forEach(key->System.out.print(key+" "));  // 输出 5 4 3 2 1			
+			]]>
+			</programlisting>
+			<para>队列式特性：从 Map 中取出元素</para>
+			<programlisting>
+			<![CDATA[
+NavigableMap 提供了一些方法，使得 Map 具有类似队列的操作功能：
+pollFirstEntry()：返回并移除 Map 中最小的键值对。
+pollLastEntry()：返回并移除 Map 中最大的键值对。
+这些方法使得我们可以模拟从 Map 的两端删除元素。
+			
+NavigableMap<Integer, String>map=newTreeMap<>();
+map.put(1, "one");
+map.put(2, "two");
+map.put(3, "three");
+map.put(4, "four");
+
+System.out.println("Poll First Entry: "+map.pollFirstEntry());  // 输出 1=one
+System.out.println("Poll Last Entry: "+map.pollLastEntry());    // 输出 4=four
+
+map.forEach((key, value) ->System.out.println(key+" :: "+value));			
+			]]>
+			</programlisting>
+			<para>获取子集视图</para>
+			<programlisting>
+			<![CDATA[
+NavigableMap 还提供了几个方法，用于获取 Map 的子集视图。这些视图是原始 Map 的视图，任何对这些视图的更改都会反映到原始 Map 中。
+subMap(fromKey, fromInclusive, toKey, toInclusive)：返回一个子集视图，可以指定是否包含边界键。
+headMap(toKey, inclusive)：返回一个子集视图，其中包含小于 toKey 的键，并可以指定是否包含 toKey。
+tailMap(fromKey, inclusive)：返回一个子集视图，其中包含大于或等于 fromKey 的键，并可以指定是否包含 fromKey。
+这些方法允许你更精细地控制对 Map 中部分元素的访问。			
+			
+NavigableMap<Integer, String>map=newTreeMap<>();
+map.put(1, "one");
+map.put(2, "two");
+map.put(3, "three");
+map.put(4, "four");
+map.put(5, "five");
+
+// 获取从 2 到 4 的子集视图（包括边界）
+NavigableMap<Integer, String>subMap=map.subMap(2, true, 4, true);
+subMap.forEach((key, value) ->System.out.println(key+" :: "+value));			
+			]]>
+			</programlisting>
+		</section>
+		
 		<section id="Map.loop">
 			<title>遍历数据</title>
 			<programlisting>
