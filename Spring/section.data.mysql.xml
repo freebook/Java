@@ -4971,7 +4971,7 @@ CREATE TABLE `user_persona` (
 		</section>
 	</section>
 	<section id="Repository">
-		<title>Repository</title>
+		<title>Repository/CrudRepository/PagingAndSortingRepository/JpaRepository</title>
 		<screen>
 		<![CDATA[
 Repository： 仅仅是一个标识，没有任何方法，方便Spring自动扫描识别
@@ -5343,7 +5343,64 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> removeByFirstName(String firstName);      			
 			]]>
 			</programlisting>
+			<section>
+				<title>返回删除数量</title>
+				<para>仓库定义</para>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.repository;
 
+
+import cn.netkiller.domain.meeting.Assets;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface AssetsRepository extends CrudRepository<Assets, Integer> {
+
+    List<Assets> findAllByTaskId(String taskId);
+
+    boolean existsByTaskIdAndName(String taskId, String name);
+
+    int countByTaskId(String taskId);
+
+    Optional<Assets> findByTaskIdAndName(String taskId, String name);
+
+
+    int countByTaskIdAndStatus(String taskId, String completed);
+
+    List<Assets> findAllByTaskIdAndStatus(String taskId, String completed);
+
+    boolean existsByTaskIdAndNameAndOssIsNotNull(String taskId, String summary);
+
+    int deleteByTaskId(String taskId);
+}
+				]]>
+				</programlisting>
+				<para>Service</para>
+				<programlisting>
+				<![CDATA[
+    @Transactional
+    public int trash(String taskId) {
+
+        final Marker marker = MarkerFactory.getMarker(taskId);
+        List<Assets> assets = assetsRepository.findAllByTaskId(taskId);
+        assets.stream().forEach(asset -> {
+            aliyunComponent.ossDelete(asset.getOss());
+            log.info(marker, "trash() => oss={}", asset.getOss());
+        });
+        int count = assetsRepository.deleteByTaskId(taskId);
+        log.info(marker, "trash() => assets={}", count);
+        int meetingCount = meetingRepository.deleteByTaskId(taskId);
+        log.info(marker, "trash() => meeting={}", taskId);
+        return count;
+    }
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="IsNull">
 			<title>IsNull</title>
@@ -5413,7 +5470,7 @@ public interface LoraRepository extends CrudRepository<Lora, Integer> {
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="find.GreaterThan">
 			<title>比较数值大小</title>
 			<section>
 				<title>大于</title>

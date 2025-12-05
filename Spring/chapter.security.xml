@@ -511,7 +511,99 @@ public class WebSecurityConfig {
 			</programlisting>
 		</section>
 	</section>
-	
+	<section id="security.ipaddress">
+		<title>指定 URL 限制 IP 访问</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
+
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * @author Neo
+ * @description Security 配置类
+ * @date 2023-01-26 21:18
+ */
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@Slf4j
+public class WebSecurityConfig {
+//
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//        manager.createUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
+//        manager.createUser(User.withDefaultPasswordEncoder().username("neo").password("chen").roles("USER").build());
+//        return manager;
+//    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        List<IpAddressMatcher> allowedIps = Arrays.asList(
+                new IpAddressMatcher("192.168.1.100"),
+                new IpAddressMatcher("127.0.0.1"),
+                new IpAddressMatcher("0:0:0:0:0:0:0:1"),
+                new IpAddressMatcher("192.168.1.0/24")
+        );
+
+//        http.csrf((csrf) -> csrf.disable());
+//        http.httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable());
+
+        http.csrf((csrf) -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/adm/**").access((authentication, context) -> {
+
+                            HttpServletRequest request = context.getRequest();
+                            // 获取真实客户端 IP
+                            String clientIp = getClientIp(request);
+                            // 检查 IP 是否允许
+                            boolean isAllowed = allowedIps.stream()
+                                    .anyMatch(matcher -> matcher.matches(clientIp));
+                            log.debug("{} {} => {}", request.getRequestURI(), clientIp, isAllowed);
+                            return new AuthorizationDecision(isAllowed);
+                        })
+                        .anyRequest().permitAll()
+                );
+        return http.build();
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip != null && ip.contains(",")) {
+            ip = ip.split(",")[0].trim();
+        }
+//        log.debug(ip);
+        return ip;
+    }
+
+
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section>
 		<title>InvalidClaimException: The Token can't be used before</title>
 		<para>.withNotBefore(new Date())</para>
