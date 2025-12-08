@@ -1578,6 +1578,25 @@ public class LocalDateTimeCompareDemo {
 }			
 			]]>
 			</programlisting>
+			<para>去一个日期范围</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.time.LocalDateTime;
+
+public class Test {
+    public static void main(String[] args) {
+
+        LocalDateTime afterTime = LocalDateTime.now().minusHours(1);
+        LocalDateTime beforeTime = LocalDateTime.now().minusMinutes(10);
+        System.out.printf("%s ~ %s", afterTime, beforeTime);
+
+    }
+
+}			
+			]]>
+			</programlisting>
 		</section>
 		<section id="java.time.Duration">
 			<title>Duration</title>

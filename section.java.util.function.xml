@@ -484,7 +484,7 @@ public class Test {
 		]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="java.util.function">
 		<title>Supplier / Consumer / Predicate 应用场景</title>
 		<para>Supplier 没有入参，但是有返回值，通过 get() 获得。</para>
 		<para>Consumer 有入参，但是没有返回值，通过 andThen() 可以获得返回叔叔。</para>
@@ -522,6 +522,105 @@ public class Test {
         System.out.println(string.test(""));
         System.out.println(string.test("neo"));
 
+    }
+
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Map + Function</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+public class Test {
+    static void main(String[] args) {
+
+        Map<String, Function<String, String>> map = new HashMap<>();
+        map.put("A", s -> "处理逻辑 A: " + s);
+        map.put("B", s -> "处理逻辑 B: " + s);
+        map.put("C", s -> "处理逻辑 C: " + s);
+        String input = "B";
+        String result = map.getOrDefault(input, s -> "默认逻辑").apply(input);
+        System.out.println(result);
+
+    }
+
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Predicate + Stream</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+
+class Rule {
+    Predicate<Integer> condition;
+    Runnable action;
+
+    Rule(Predicate<Integer> condition, Runnable action) {
+        this.condition = condition;
+        this.action = action;
+    }
+}
+
+public class Test {
+    static void main(String[] args) {
+
+        int value = 15;
+        List<Rule> rules = Arrays.asList(
+	        new Rule(v -> v < 10, () -> System.out.println("小于 10")), 
+	        new Rule(v -> v >= 10 && v < 20, () -> System.out.println("10 到 20")), 
+	        new Rule(v -> v >= 20, () -> System.out.println("大于等于 20"))
+        );
+        rules.stream()
+        	.filter(rule -> rule.condition.test(value))
+        	.findFirst()
+        	.ifPresent(rule -> rule.action.run());
+
+    }
+
+}		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Enum + Function</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.test;
+
+import java.util.function.Function;
+
+enum Operation {
+    ADD(x -> x + 10), MULTIPLY(x -> x * 2), SQUARE(x -> x * x);
+    private final Function<Integer, Integer> func;
+
+    Operation(Function<Integer, Integer> func) {
+        this.func = func;
+    }
+
+    public int apply(int value) {
+        return func.apply(value);
+    }
+}
+
+public class Test {
+    static void main(String[] args) {
+        // 输出 10
+        int result = Operation.MULTIPLY.apply(5);
+        System.out.println(result);
     }
 
 }		
