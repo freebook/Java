@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="framework">
-<!-- <?dbhtml dir="util" ?> -->
+	<!-- <?dbhtml dir="util" ?> -->
 	<title>Spring 框架</title><!-- Miscellaneous -->
 	<para>Spring框架为基于Java的现代企业级应用程序提供了全面的编程和配置模型——适用于任何类型的部署平台。</para>
-	<para>Spring框架的关键要素是应用程序级别的基础设施支持：Spring专注于企业级应用程序的“管道”，以便团队可以专注于应用程序级别的业务逻辑，而无需与特定的部署环境产生不必要的联系。</para>
+	<para>Spring框架的关键要素是应用程序级别的基础设施支持：Spring专注于企业级应用程序的“管道”，以便团队可以专注于应用程序级别的业务逻辑，而无需与特定的部署环境产生不必要的联系。
+	</para>
 	<section id="bean"><!-- <?dbhtml dir="bean" ?> -->
 		<title>@Bean</title>
 		<programlisting>
@@ -251,7 +252,7 @@ webClient.post()
         .bodyToMono(Employee.class);
 			]]>
 		</programlisting>
-		
+
 		<programlisting>
 		<![CDATA[
 		
@@ -371,11 +372,13 @@ String locationUri = ServletUriComponentsBuilder
 		]]>
 		</programlisting>
 	</section>
-	<section>
-		<title>@ConcurrencyLimit 连流</title>
+	<section id="spring.EnableResilientMethods">
+		<title>@EnableResilientMethods</title>
 		<para>启用配置，在配置类上添加@EnableResilientMethods注解</para>
-		<para>在需要限制并发的方法上添加@ConcurrencyLimit注解</para>
-		<programlisting>
+		<section id="spring.ConcurrencyLimit">
+			<title>@ConcurrencyLimit 连流</title>
+			<para>在需要限制并发的方法上添加@ConcurrencyLimit注解</para>
+			<programlisting>
 		<![CDATA[
 @Configuration
 @EnableResilientMethods
@@ -396,6 +399,40 @@ public class NotificationService {
     }
 }		
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section id="spring.Retry">
+			<title>@Retry 重试</title>
+			<programlisting>
+			<![CDATA[
+@Retryable
+public void sendNotification() {
+    this.jmsClient.destination("notifications").send(...);
+}			
+			]]>
+			</programlisting>
+			<para>可通过@Retryable注解中的includes、excludes和implicit值属性，限制触发重试的异常类型。</para>
+			<programlisting>
+			<![CDATA[
+@Retryable(  includes = MessageDeliveryException.class,  maxAttempts = 5,  delay = 100,  jitter = 10,  multiplier = 2,  maxDelay = 1000)
+public void sendNotification() {    
+	this.jmsClient.destination("notifications").send(...);
+}			
+			]]>
+			</programlisting>
+			<para>RetryTemplate</para>
+			<programlisting>
+			<![CDATA[
+var retryPolicy = RetryPolicy.builder()
+        .includes(MessageDeliveryException.class)
+        .maxAttempts(5)
+        .delay(Duration.ofMillis(100))
+        .build();
+var retryTemplate = new RetryTemplate(retryPolicy);
+retryTemplate.execute(() -> jmsClient.destination("notifications").send(...));
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 </chapter>

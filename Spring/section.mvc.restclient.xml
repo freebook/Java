@@ -253,4 +253,16 @@ public ResponseEntity<String> file(String key, String filepath) {
 		]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>Springboot 4.0 Version 版本号</title>
+		<programlisting>
+		<![CDATA[
+RestClient customClient = RestClient.builder()
+  .baseUrl(“https://spring.io/api”)
+  .defaultVersion(“1.2”)
+  .apiVersionInserter(ApiVersionInserter.fromHeader(“API-Version”).build())
+  .build();		
+		]]>
+		</programlisting>
+	</section>
 </section>
