@@ -1239,9 +1239,25 @@ public String fetchDataSync() {
         log.error("调用失败", e);
         throw new RuntimeException("服务调用异常", e);
     }
-}			
+}
 			]]>
 			</programlisting>
+		</section>
+	</section>
+	<section id="webflux.HttpExchange">
+		<title>HttpExchange</title>
+		<section>
+			<title>支持的注解类型</title>
+			<screen>
+			<![CDATA[
+@HttpExchange：是用于指定 HTTP 端点的通用注释。在接口级别使用时，它适用于所有方法。
+@GetExchange：为 HTTP GET请求指定@HttpExchange。
+@PostExchange：为 HTTP POST请求指定@HttpExchange。
+@PutExchange：为 HTTP PUT请求指定@HttpExchange。
+@DeleteExchange：为 HTTP DELETE请求指定@HttpExchange。
+@PatchExchange：为 HTTP PATCH请求指定@HttpExchange。
+			]]>
+			</screen>
 		</section>
 	</section>
 </section>

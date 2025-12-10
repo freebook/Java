@@ -173,7 +173,7 @@ public class RedisConfig {
 			</programlisting>
 		</section>
 		<section>
-			<title>订阅和发布类</title>
+			<title>订阅类</title>
 			<programlisting>
 				<![CDATA[
 package cn.netkiller.wallet.redis;
@@ -192,6 +192,10 @@ public class RedisMessageSubscriber implements MessageListener {
 
 				]]>
 			</programlisting>
+			
+		</section>
+		<section>
+			<title>发布类</title>
 			<programlisting>
 				<![CDATA[
 package cn.netkiller.wallet.redis;
