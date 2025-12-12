@@ -2084,6 +2084,50 @@ public SseEmitter sse() {
 }		
 		]]>
 			</programlisting>
+			<programlisting>
+			<![CDATA[
+@GetMapping(path = "listen/{device}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter listen(@PathVariable("device") String device) {
+
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE); // 永不超时（可按需调整）
+
+        SseEmitter.SseEventBuilder event = SseEmitter.event()
+                .id(UUID.randomUUID().toString()) // 消息唯一ID（前端可通过 lastEventId 重连）
+                .name("normal-message") // 事件类型（前端可按类型监听）
+                .data("currentTimeMillis：" + System.currentTimeMillis()); // 消息内容（String/JSON/对象）
+
+        // 发送消息
+        try {
+            emitter.send(event);
+            emitter.complete();
+        } catch (IOException e) {
+            emitter.completeWithError(e);
+        }
+
+
+        // 监听 SSE 连接关闭
+        emitter.onCompletion(() -> {
+            System.out.println("SSE 连接正常完成");
+            // 清理资源（如取消定时任务、释放连接）
+        });
+
+        // 连接超时
+        emitter.onTimeout(() -> {
+            System.out.println("SSE 连接超时");
+            emitter.complete(); // 超时后主动关闭
+        });
+
+        // 连接异常
+        emitter.onError(e -> {
+            System.err.println("SSE 连接异常：" + e.getMessage());
+            emitter.complete(); // 异常后关闭
+        });
+
+        return emitter;
+    }			
+			]]>
+			</programlisting>
+			
 		</section>
 
 		<section id="ResponseBodyEmitter">
@@ -2242,6 +2286,94 @@ data:Ef2EmTusV8xNTdLrcb3ndKOD23Sz1v8iw98YMqd9TGIQppNvXHmrTv4JYzVOIr7NwOqpID81Oyj
 :HhyY8h0Yez0pIKMYNavtTBuAFX8iOuRlGpAntNak4H09mQbHZ5O7Sc5huOjcgL43BQs0V57UTKI2cpSptroxJTRQPQmJwrHGbWzHHqjjB85p4AsSBzF5mWit2eEmDKWu
 ]]>
 			</screen>
+		</section>
+		<section>
+			<title>订阅 Redis 频道推送到 SSE </title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller.ui;
+
+import cn.netkiller.utils.responses.JsonResponse;
+import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@Slf4j
+@RequestMapping("/ui/meeting")
+public class UiMeetingController {
+
+    private final Gson gson = new Gson();
+    private final RedisMessageListenerContainer redisMessageListenerContainer;
+   
+
+    public UiMeetingController(RedisMessageListenerContainer redisMessageListenerContainer) {
+        this.redisMessageListenerContainer = redisMessageListenerContainer;
+    }
+
+
+    @GetMapping(path = "listen/{device}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter listen(@PathVariable("device") String channel) {
+
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageListener() {
+            @Override
+            public void onMessage(Message message, byte @Nullable [] pattern) {
+                try {
+                    emitter.send(SseEmitter.event().data(message.getBody()));
+                } catch (IOException e) {
+                    emitter.completeWithError(e);
+                }
+            }
+        });
+
+//        // 注册 Redis 模式订阅
+//        PatternTopic topic = new PatternTopic(device);
+//        redisMessageListenerContainer.addMessageListener(messageListenerAdapter, topic);
+        redisMessageListenerContainer.addMessageListener(messageListenerAdapter, new ChannelTopic(channel));
+        
+        // 监听 SSE 连接关闭，自动取消 Redis 订阅
+        emitter.onCompletion(() -> {
+            redisMessageListenerContainer.removeMessageListener(messageListenerAdapter, new ChannelTopic(channel));
+            System.out.println("SSE 连接正常完成");
+            // 清理资源（如取消定时任务、释放连接）
+        });
+
+        // 连接超时
+        emitter.onTimeout(() -> {
+            System.out.println("SSE 连接超时");
+            redisMessageListenerContainer.removeMessageListener(messageListenerAdapter, new ChannelTopic(channel));
+            emitter.complete(); // 超时后主动关闭
+        });
+
+        // 连接异常
+        emitter.onError(e -> {
+            System.err.println("SSE 连接异常：" + e.getMessage());
+            redisMessageListenerContainer.removeMessageListener(messageListenerAdapter, new ChannelTopic(channel));
+            emitter.complete(); // 异常后关闭
+        });
+
+        return emitter;
+    }
+
+}			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section>

@@ -1513,7 +1513,7 @@ public class TestRestController {
 		</screen>
 		<section>
 			<title>MessageListener 方案</title>
-			<para></para>
+			<para>配置 Redis</para>
 			<programlisting>
 			<![CDATA[
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -1537,7 +1537,12 @@ public class RedisConfig {
 }			
 			]]>
 			</programlisting>
-			<para></para>
+			<para>使用 PatternTopic("*") 订阅所有频道</para>
+			<programlisting>
+			<![CDATA[
+        container.addMessageListener(redisMessageListener, new PatternTopic("*"));			
+			]]>
+			</programlisting>
 			<programlisting>
 			<![CDATA[
 import org.springframework.data.redis.connection.Message;
@@ -1557,7 +1562,6 @@ public class RedisMessageListener implements MessageListener {
 }			
 			]]>
 			</programlisting>
-
 		</section>
 		<section>
 			<title>@RedisListener 注解方案</title>
@@ -1617,6 +1621,23 @@ public class RedisMessageListener {
     @RedisListener(pattern = "user-*")
     public void onPatternMessage(String message) {
         System.out.println("模式匹配消息：" + message);
+    }
+}				
+				]]>
+				</programlisting>
+				<para>使用通配符订阅频道</para>
+				<programlisting>
+				<![CDATA[
+import org.springframework.data.redis.listener.annotation.RedisListener;
+import org.springframework.stereotype.Component;
+
+@Component
+public class RedisAnnotationListener {
+
+    // 注解方式订阅所有频道
+    @RedisListener(pattern = "*")
+    public void onAllChannelMessage(String message, String channel) {
+        System.out.println("注解方式接收：频道=" + channel + "，内容=" + message);
     }
 }				
 				]]>
