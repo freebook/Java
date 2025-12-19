@@ -13,7 +13,7 @@
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="actuator.config">
 		<title>与 Spring Boot Actuator 有关的配置</title>
 		<para>application.properties</para>
 		<para>跨域配置</para>
@@ -81,7 +81,7 @@ curl -X POST www.netkiller.cn:8080/actuator/shutdown
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="actuator.address">
 		<title>actuator 接口</title>
 		<para>常规接口</para>
 		<screen>
@@ -380,21 +380,91 @@ neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/health | jq
 			]]>
 			</screen>
 		</section>
+		<section id="actuator.health.custom">
+			<title>自定义健康检查</title>
+			<section>
+				<title>方案一</title>
+				<programlisting>
+				<![CDATA[
+package cn.aigcsst.config;
+
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomHealthIndicator extends AbstractHealthIndicator {
+    @Override
+    protected void doHealthCheck(Health.Builder builder) throws Exception {
+        builder.up().withDetail("netkiller", "OK");
+//        builder.down().withDetail("Item", "xxx").withDetail("error", "xxxErrorCode");
+    }
+}
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>方案二</title>
+				<programlisting>
+			<![CDATA[
+package cn.aigcsst.config;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.boot.health.contributor.Health;
+import org.springframework.boot.health.contributor.HealthIndicator;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomHealthIndicator implements HealthIndicator {
+
+    @Override
+    public @Nullable Health health(boolean includeDetails) {
+        return HealthIndicator.super.health(includeDetails);
+    }
+
+    @Override
+    public @Nullable Health health() {
+//        return null;
+        // 执行自定义检查逻辑
+        if (false) {
+            // 健康状态为UP，可添加额外的详细信息
+            return Health.up()
+                    .withDetail("message", "订单服务连接正常")
+                    .withDetail("version", "v1.0.0")
+                    .withDetail("timestamp", System.currentTimeMillis())
+                    .build();
+        } else {
+            // 健康状态为DOWN，添加错误信息
+            return Health.down()
+                    .withDetail("message", "订单服务连接失败")
+                    .withDetail("error", "连接超时/服务未启动")
+                    .build();
+        }
+    }
+}
+
+			]]>
+				</programlisting>
+			</section>
+		</section>
+
 	</section>
-	
+
 	<section id="actuator.info">
 		<title>info 配置信息</title>
-		<para>返回 application.properties 文件中定义的 info 配置信息，如:</para>
-		<screen>
-		<![CDATA[
+		<section>
+			<title>application.properties 配置静态信息</title>
+			<para>返回 application.properties 文件中定义的 info 配置信息，如:</para>
+			<screen>
+			<![CDATA[
 # info端点信息配置
 info.app.name=spring-boot-example
 info.app.version=v1.0.0		
-		]]>
-		</screen>
-		<para></para>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
 neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/info | jq   
 {
   "app": {
@@ -402,8 +472,55 @@ neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/info | jq
     "version": "v1.0.0"
   }
 }
-		]]>
-		</screen>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>动态信息</title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.config;
+
+import org.springframework.boot.actuate.info.Info;
+import org.springframework.boot.actuate.info.InfoContributor;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Component
+public class CustomInfoContributor implements InfoContributor {
+
+    @Override
+    public void contribute(Info.Builder builder) {
+        Map<String, Object> customInfo = new HashMap<>();
+        customInfo.put("currentTime", System.currentTimeMillis());
+        customInfo.put("serviceStatus", "running");
+        customInfo.put("database", "MySQL 8.0");
+
+        // 2. 将自定义信息添加到info端点
+        builder.withDetail("custom", customInfo);
+        // 也可以直接添加单个属性
+        builder.withDetail("buildTime", "2025-01-01 10:00:00");
+    }
+}
+			]]>
+			</programlisting>
+			<para>输出信息</para>
+			<screen>
+			<![CDATA[
+neo@Mac ~ % curl -s http://localhost:8080/actuator/info | jq
+{
+  "custom": {
+    "currentTime": 1766126152379,
+    "database": "MySQL 8.0",
+    "serviceStatus": "running"
+  },
+  "buildTime": "2025-01-01 10:00:00"
+}			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="actuator.beans">
 		<title>beans 信息</title>
@@ -4829,7 +4946,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
 	</section>
 	<section id="actuator.caches">
 		<title>caches</title>
-		
+
 		<screen>
 		<![CDATA[
 neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/caches | jq
@@ -6565,7 +6682,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/configprops
 		]]>
 		</screen>
 	</section>
-		<section id="actuator.env">
+	<section id="actuator.env">
 		<title>env 环境变量</title>
 		<screen>
 		<![CDATA[
@@ -7192,7 +7309,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/env |jq
 		]]>
 		</screen>
 	</section>
-		<section id="actuator.logfile">
+	<section id="actuator.logfile">
 		<title>logfile 日志</title>
 		<screen>
 		<![CDATA[
@@ -7213,7 +7330,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/loggers | t
 {"levels":["OFF","ERROR","WARN","INFO","DEBUG","TRACE"],"loggers":{"ROOT":{"configuredLevel":"INFO","effectiveLevel":"INFO"},"_org":{"effectiveLevel":"INFO"},"_org.springframework":{"effectiveLevel":"INFO"},"_org.springframework.web":{"effectiveLevel":"INFO"},"_org.springframework.web.servlet":{"effectiveLevel":"INFO"},"_org.springframework.web.servlet.HandlerMapping":{"effectiveLevel":"INFO"},"_org.springframework.web.servlet.HandlerMapping.Mappings":{"effectiveLevel":"INFO"},"cn":{"effectiveLevel":"INFO"},"cn.netkiller":{"effectiveLevel":"INFO"},"cn.netkiller.Application":{"effectiveLevel":"INFO"},"cn.netkiller.ai":{"effectiveLevel":"INFO"},"cn.netkiller.ai.xfyun":{"effectiveLevel":"INFO"},"cn.netkiller.ai.xfyun.SpeechRecognizerService":{"effectiveLevel":"INFO"},"cn.netkiller.ai.xfyun.SpeechSynthesizerService":{"effectiveLevel":"INFO"},"cn.netkiller.component":{"effectiveLevel":"INFO"},"cn.netkiller.component.AudioService":		
 		]]>
 		</screen>
-		
+
 	</section>
 	<section id="actuator.threaddump">
 		<title>threaddump 线程信息</title>
@@ -7269,8 +7386,8 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/threaddump 
 		]]>
 		</screen>
 	</section>
-	
-	
+
+
 	<section id="actuator.scheduledtasks">
 		<title>计划任务</title>
 		<screen>
@@ -7279,7 +7396,7 @@ http://www.netkiller.cn:8080/actuator/scheduledtasks
 		]]>
 		</screen>
 	</section>
-	
+
 	<section id="actuator.metrics">
 		<title>metrics</title>
 		<screen>
@@ -7397,6 +7514,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/mappings |j
 		]]>
 		</screen>
 	</section>
+
 	<section id="actuator.endpoint">
 		<title>自定义监控指标</title>
 		<programlisting>
@@ -7442,5 +7560,69 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/netkiller | 
 }		
 		]]>
 		</screen>
+		<programlisting>
+		<![CDATA[
+import org.springframework.boot.actuate.endpoint.annotation.DeleteOperation;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 自定义Actuator端点：/actuator/custom
+ * @Endpoint注解的id为custom，对应访问路径是/actuator/custom
+ */
+@Component
+@Endpoint(id = "custom")
+public class CustomActuatorEndpoint {
+
+    // 模拟存储一些自定义数据
+    private final Map<String, String> data = new HashMap<>();
+
+    public CustomActuatorEndpoint() {
+        // 初始化数据
+        data.put("key1", "value1");
+        data.put("key2", "value2");
+    }
+
+    /**
+     * GET请求：访问/actuator/custom，获取自定义数据
+     * @ReadOperation对应HTTP GET
+     */
+    @ReadOperation
+    public Map<String, Object> getCustomInfo() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "这是自定义Actuator端点的信息");
+        result.put("data", data);
+        result.put("status", "success");
+        return result;
+    }
+
+    /**
+     * POST请求：访问/actuator/custom，传入key和value，添加数据
+     * @WriteOperation对应HTTP POST
+     */
+    @WriteOperation
+    public String addCustomData(String key, String value) {
+        data.put(key, value);
+        return "添加成功：" + key + "=" + value;
+    }
+
+    /**
+     * DELETE请求：访问/actuator/custom，传入key，删除数据
+     * @DeleteOperation对应HTTP DELETE
+     */
+    @DeleteOperation
+    public String deleteCustomData(String key) {
+        data.remove(key);
+        return "删除成功：" + key;
+    }
+}		
+		]]>
+		</programlisting>
+
 	</section>
 </chapter>

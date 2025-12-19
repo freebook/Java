@@ -257,7 +257,8 @@ public class LazySetExample {
 				</programlisting>
 				<para>AtomicReference 类中的 setRelease(V newValue) 是 Java 9
 					引入的原子操作，它提供了释放语义（Release Semantics）的写入操作。与普通的 set() 相比，setRelease()
-					在内存可见性和重排序限制上有更明确的语义，同时保持了较低的性能开销。</para>
+					在内存可见性和重排序限制上有更明确的语义，同时保持了较低的性能开销。
+				</para>
 				<programlisting>
 				<![CDATA[
 import java.util.concurrent.atomic.AtomicReference;
@@ -725,7 +726,7 @@ test.isComplated.put("story", true);
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section id="CopyOnWriteArraySet">
 		<title>CopyOnWriteArraySet</title>
 		<programlisting>
@@ -771,18 +772,18 @@ public class CopyOnWriteArraySetExample {
 		]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="BlockingQueue">
 		<title>队列 / 阻塞队列</title>
 
 		<section id="ConcurrentLinkedQueue">
-		<title>ConcurrentLinkedQueue 非阻塞队列</title>
-		<programlisting>
+			<title>ConcurrentLinkedQueue 非阻塞队列</title>
+			<programlisting>
 		<![CDATA[
 private final ConcurrentLinkedQueue<Story> queue = new ConcurrentLinkedQueue();		
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -827,8 +828,9 @@ public class NonBlockingQueueExample {
     }
 }
 		]]>
-		</programlisting>
-	</section><section id="ArrayBlockingQueue">
+			</programlisting>
+		</section>
+		<section id="ArrayBlockingQueue">
 			<title>ArrayBlockingQueue</title>
 			<programlisting>
 		<![CDATA[
@@ -1105,9 +1107,10 @@ public class LinkedTransferQueueExample {
 			]]>
 			</programlisting>
 		</section>
-		
+
 		<section>
-			<title>LinkedBlockingQueue	LinkedTransferQueue	ConcurrentLinkedQueue</title>
+			<title>LinkedBlockingQueue LinkedTransferQueue ConcurrentLinkedQueue
+			</title>
 			<programlisting>
 			<![CDATA[
 特性		LinkedBlockingQueue	LinkedTransferQueue	ConcurrentLinkedQueue
@@ -1124,8 +1127,8 @@ public class LinkedTransferQueueExample {
 即时传递：优先使用 LinkedTransferQueue（避免入队出队开销）。
 			]]>
 			</programlisting>
-		</section>		
-		
+		</section>
+
 	</section>
 	<section id="Future">
 		<title>Future</title>
@@ -1291,10 +1294,12 @@ public class Future {
 	]]>
 		</programlisting>
 	</section>
-	
+
 	<section id="StructuredTaskScope">
 		<title>StructuredTaskScope</title>
-		<para>StructuredTaskScope 的核心思想是将任务和子任务的生命周期绑定到代码块的作用域内。所有子任务必须在父任务结束前完成或被取消，这种结构化的方式避免了传统线程管理中的资源泄漏和复杂的错误处理。</para>
+		<para>StructuredTaskScope
+			的核心思想是将任务和子任务的生命周期绑定到代码块的作用域内。所有子任务必须在父任务结束前完成或被取消，这种结构化的方式避免了传统线程管理中的资源泄漏和复杂的错误处理。
+		</para>
 		<programlisting>
 		<![CDATA[
 public static Weather readWeather() throws ExecutionException, InterruptedException {
@@ -1308,7 +1313,9 @@ public static Weather readWeather() throws ExecutionException, InterruptedExcept
 }		
 		]]>
 		</programlisting>
-		<para>相比传统的 ExecutorService，StructuredTaskScope 提供了更高的抽象层次。ExecutorService 需要开发者手动管理任务之间的关系，而 StructuredTaskScope 自动处理任务的取消和错误传播，避免了线程泄漏和复杂的异常处理逻辑。</para>
+		<para>相比传统的 ExecutorService，StructuredTaskScope
+			提供了更高的抽象层次。ExecutorService 需要开发者手动管理任务之间的关系，而 StructuredTaskScope
+			自动处理任务的取消和错误传播，避免了线程泄漏和复杂的异常处理逻辑。</para>
 		<programlisting>
 		<![CDATA[
 public class NewConcurrentService {
@@ -3417,7 +3424,7 @@ public class Test {
 	</section>
 
 	<section id="VirtualThreads">
-		<title>Java 协程</title>
+		<title>Java 虚拟线程（协程）</title>
 		<programlisting>
 		<![CDATA[
 package cn.netkiller.thread;
@@ -3493,5 +3500,19 @@ Thread.ofVirtual().start(Runnable);
 Thread.ofVirtual().unstarted(Runnable);		
 		]]>
 		</programlisting>
+		<section>
+			<title>与 Future 配合使用</title>
+
+			<programlisting>
+			<![CDATA[
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    Future<User> user = executor.submit(() -> userService.getUser(id));
+    Future<Order> order = executor.submit(() -> orderService.getOrder(id));
+
+    return new Result(user.get(), order.get());
+}		
+		 	]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>

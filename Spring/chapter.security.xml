@@ -604,6 +604,62 @@ public class WebSecurityConfig {
 		]]>
 		</programlisting>
 	</section>
+	<section id="securtiy.authorization">
+		<title>Authorization Bearer</title>
+		<programlisting>
+		<![CDATA[
+package cn.aigcsst.config;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+/**
+ * @author Neo
+ * @description Security 配置类
+ * @date 2023-01-26 21:18
+ */
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@Slf4j
+public class WebSecurityConfiguration {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.csrf((csrf) -> csrf.disable());
+
+        http.authorizeHttpRequests(auth -> auth
+                // 使用SpEL表达式读取Authorization头，并添加授权条件
+                .requestMatchers("/adm/**").access((authentication, context) -> {
+                    // 获取当前请求对象
+                    HttpServletRequest request = context.getRequest();
+                    // 读取Authorization头
+                    String authorizationHeader = request.getHeader("Authorization");
+                    log.debug("Authorization：" + authorizationHeader);
+
+                    // 自定义授权逻辑（示例：头存在且为Bearer类型则授权通过）
+                    boolean isAuthorized = authorizationHeader != null && authorizationHeader.startsWith("Bearer ");
+                    return new AuthorizationDecision(isAuthorized);
+                })
+                .anyRequest().permitAll()
+        );
+        return http.build();
+    }
+
+
+}		
+		]]>
+		</programlisting>
+	</section>
+	
 	<section>
 		<title>InvalidClaimException: The Token can't be used before</title>
 		<para>.withNotBefore(new Date())</para>

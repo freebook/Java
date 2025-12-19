@@ -933,6 +933,25 @@ public class PersonController {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>allowCredentials</title>
+			<para>当 allowCredentials 为 true 时 originPatterns 不能使用 * 匹配</para>
+			<programlisting>
+			<![CDATA[
+    @GetMapping("/ping")
+    @CrossOrigin(
+            originPatterns = "*",
+            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS}, // 允许的方法
+            allowedHeaders = "*",
+            allowCredentials = "false",
+            maxAge = 3600
+    )
+    public Mono<String> ping() {
+        return Mono.just("pong");
+    }			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="@CookieValue">
 		<title>@CookieValue - 获取 Cookie 值</title>

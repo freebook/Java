@@ -32,73 +32,36 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 }
 		]]>
 	</programlisting>
-	<section id="cors">
-		<title>CORS 跨域请求</title>
-		<programlisting>
-			<![CDATA[
-@Configuration
-public class CorsConfiguration
-{
-    @Bean
-    public WebMvcConfigurer corsConfigurer()
-    {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**");
-            }
-        };
-    }
-}		
-			]]>
-		</programlisting>
-		<programlisting>
-			<![CDATA[
- 	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
-    }			
-			]]>
-		</programlisting>
-	</section>
+	
 	<section>
-		<title>Spring MVC CORS with WebMvcConfigurerAdapter</title>
+		<title>@PostConstruct</title>
 		<programlisting>
-			<![CDATA[
+		<![CDATA[
+package cn.netkiller.config;
+
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+
 @Configuration
-@EnableWebMvc
-public class CorsConfiguration extends WebMvcConfigurerAdapter
-{
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("GET", "POST");
+@Slf4j
+public class HikariConfigCheck {
+    // 注入配置的参数
+    @Value("${spring.datasource.hikari.minimum-idle:undefined}")
+    private int minimumIdle;
+
+    @Value("${spring.datasource.hikari.maximum-pool-size:undefined}")
+    private int maximumPoolSize;
+
+    @PostConstruct
+    public void checkConfig() {
+        log.debug("加载的 minimum-idle：" + minimumIdle);
+        log.debug("加载的 maximum-pool-size：" + maximumPoolSize);
     }
 }
-			]]>
-		</programlisting>
-		<programlisting>
-			<![CDATA[
-@Configuration
-@EnableWebMvc
-public class AppConfig extends WebMvcConfigurerAdapter {
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-	  registry.addMapping("/info/**")
-	   	  .allowedOrigins("http://localhost:8080", "http://localhost:8000")
-		  .allowedMethods("POST", "GET",  "PUT", "OPTIONS", "DELETE")
-		  .allowedHeaders("X-Auth-Token", "Content-Type")
-		  .exposedHeaders("custom-header1", "custom-header2")
-		  .allowCredentials(false)
-		  .maxAge(4800);
-	}
-}			
-			]]>
+		
+		]]>
 		</programlisting>
 	</section>
-
 </section>
