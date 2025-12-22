@@ -3,6 +3,37 @@
 	<para>http://maven.apache.org/</para>
 	<section id="install">
 		<title>安装 Maven</title>
+		<section id="rockylinux.openjdk25">
+			<title>Rocky Linux 9 + Maven 3.3.9 + OpenJDK25</title>
+			<para>Rocky Linux 9 AppStream 没有 </para>
+			<screen>
+			<![CDATA[
+[root@development ~]# dnf install https://dl.rockylinux.org/pub/rocky/10/AppStream/x86_64/os/Packages/m/maven-openjdk25-3.9.9-3.el10_1.noarch.rpm
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+cat > /etc/java/maven.conf <<EOF
+JAVA_HOME=/usr/lib/jvm/jre-25-openjdk
+EOF
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@development meeting]# mvn -v
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.fusesource.jansi.internal.JansiLoader in an unnamed module (file:/usr/share/maven/lib/jansi-1.17.1.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Apache Maven 3.6.3 (Red Hat 3.6.3-22)
+Maven home: /usr/share/maven
+Java version: 25.0.1, vendor: Red Hat, Inc., runtime: /usr/lib/jvm/java-25-openjdk
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "5.14.0-503.31.1.el9_5.x86_64", arch: "amd64", family: "unix"
+			]]>
+			</screen>
+		</section>
 		<section id="maven.centos">
 			<title>CentOS 8 安装 Maven</title>
 			<screen>
