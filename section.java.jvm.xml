@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="jvm" ?>
 	<title>JVM</title>
+	<section>
+		<title>Rocky Linux 9 / Almalinux 9 + Maven + OpenJDK25</title>
+		<screen>
+		<![CDATA[
+dnf update -y
+dnf install https://dl.rockylinux.org/pub/rocky/10/AppStream/x86_64/os/Packages/m/maven-openjdk25-3.9.9-3.el10_1.noarch.rpm	
+		]]>
+		</screen>
+		<para>修改配置文件 /etc/java/maven.conf </para>
+		<screen>
+		<![CDATA[
+JAVA_HOME=/usr/lib/jvm/jre-25-openjdk
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@production ~]# cat /etc/java/maven.conf 
+JAVA_HOME=/usr/lib/jvm/jre-25-openjdk		
+		]]>
+		</screen>
+		
+	</section>
 	<section id="java.21">
 		<title>Java 21</title>
 		<screen>
