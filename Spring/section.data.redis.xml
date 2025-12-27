@@ -403,6 +403,14 @@ String result = redisTemplate.execute(new RedisCallback<String>() {
 		]]>
 			</programlisting>
 		</section>
+		<section id="redisTemplate.hasKey">
+			<title>判断 key 是否存在</title>
+			<programlisting>
+			<![CDATA[
+redisTemplate.hasKey(key)			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="ValueOperations">
