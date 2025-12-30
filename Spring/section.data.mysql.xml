@@ -1261,6 +1261,129 @@ private Gender gender;
 				]]>
 				</programlisting>
 			</section>
+			<section>
+				<title>使用枚举做主键</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.domain.meeting;
+
+import cn.netkiller.enums.Department;
+import cn.netkiller.enums.Industry;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.Date;
+
+@Entity
+@Table
+@DynamicUpdate
+@DynamicInsert
+@Data
+@Comment("提示词")
+public class Prompt {
+    @Id
+    @Enumerated(EnumType.STRING)
+    @Comment("行业")
+    @Column(nullable = false, columnDefinition = "enum('Hospital')")
+    private Industry industry;
+
+    @Comment("使用部门")
+    // 枚举字段：存储枚举序号（如0/1/2）
+    @Enumerated(EnumType.ORDINAL)
+    @Column(columnDefinition = "enum('General','HumanResources','Marketing','Sales','PublicRelations','Government') DEFAULT 'General'")
+    private Department department;
+
+    @Comment("提示词")
+    @Column(columnDefinition = "json")
+    private String messages;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("创建时间")
+    private Date ctime;
+
+    @Column(nullable = true, insertable = false, updatable = false, columnDefinition = "TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Comment("修改时间")
+    private Date mtime;
+}				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.repository;
+
+
+import cn.netkiller.domain.meeting.Prompt;
+import cn.netkiller.enums.Industry;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface PromptRepository extends CrudRepository<Prompt, Industry> {
+    Optional<Prompt> findByIndustry(Industry industry);
+}
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+    public Optional<Prompt> findByIndustry(Industry industry) {
+        return promptRepository.findByIndustry(industry);
+    }
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.controller.debug;
+
+import cn.netkiller.annotation.TokenPass;
+import cn.netkiller.domain.meeting.Prompt;
+import cn.netkiller.enums.Industry;
+import cn.netkiller.service.AiService;
+import cn.netkiller.service.prompt.PromptService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@Slf4j
+@RestController
+@TokenPass
+@RequestMapping("/debug/prompt")
+public class PromptDebugController {
+    @Autowired
+    private AiService aiService;
+
+    @Autowired
+    private PromptService promptService;
+
+    @PostMapping("industry")
+    public Industry industry(@RequestParam("content") String content) {
+        Industry industry = aiService.industry(null, content);
+        return industry;
+    }
+
+    @GetMapping("test")
+    public Optional<Prompt> test() {
+        log.info(Industry.Hospital.toString());
+        return promptService.findByIndustry(Industry.Hospital);
+
+    }
+
+}
+
+				]]>
+				</programlisting>
+			</section>
 		</section>
 		<section id="set">
 			<title>SET 数据结构</title>
@@ -6504,10 +6627,10 @@ public List<Map<String, Object>> getCustomField();
 			</programlisting>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.repository;
+package cn.netkiller.repository;
 
 
-import cn.aigcsst.domain.meeting.Token;
+import cn.netkiller.domain.meeting.Token;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
