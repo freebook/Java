@@ -43,7 +43,7 @@ public class RedisLockRegistryConfiguration {
 			
 			]]>
 			</programlisting>
-			<para></para>
+			<para>配置默认超时时间</para>
 			<programlisting>
 			<![CDATA[
   @Bean(destroyMethod = "destroy")
@@ -56,6 +56,7 @@ public class RedisLockRegistryConfiguration {
 		</section>
 		<section>
 			<title>使用方法</title>
+			<para>通过 Autowired 注解使用 RedisLockRegistry</para>
 			<programlisting>
 			<![CDATA[
 @Autowired
@@ -112,13 +113,242 @@ try {
     }			
 			]]>
 			</programlisting>
+			<para>方法二，通过构造方法使用 RedisLockRegistry</para>
+			<programlisting>
+			<![CDATA[
+@Service
+public class DistributedLockService {
+    
+    private final RedisLockRegistry redisLockRegistry;
+    
+    public DistributedLockService(RedisLockRegistry redisLockRegistry) {
+        this.redisLockRegistry = redisLockRegistry;
+    }
+    
+    public void processWithLock(String lockKey) {
+        // 获取锁对象
+        Lock lock = redisLockRegistry.obtain(lockKey);
+        
+        try {
+            // 尝试获取锁，最多等待10秒，锁持有30秒
+            if (lock.tryLock(10, 30, TimeUnit.SECONDS)) {
+                try {
+                    // 成功获取锁，执行业务逻辑
+                    System.out.println("获得锁，执行业务逻辑");
+                    // 模拟业务处理
+                    Thread.sleep(5000);
+                } finally {
+                    // 释放锁
+                    lock.unlock();
+                    System.out.println("释放锁");
+                }
+            } else {
+                System.out.println("获取锁失败");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("线程被中断");
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Service 中使用方法</title>
+			<programlisting>
+			<![CDATA[
+@Service
+public class LockExamples {
+    
+    private final RedisLockRegistry redisLockRegistry;
+    
+    public LockExamples(RedisLockRegistry redisLockRegistry) {
+        this.redisLockRegistry = redisLockRegistry;
+    }
+    
+    // 方式1：立即尝试获取锁（不等待）
+    public boolean tryLockImmediately(String key) {
+        Lock lock = redisLockRegistry.obtain(key);
+        return lock.tryLock();
+    }
+    
+    // 方式2：带超时的尝试获取锁
+    public boolean tryLockWithTimeout(String key) throws InterruptedException {
+        Lock lock = redisLockRegistry.obtain(key);
+        return lock.tryLock(5, TimeUnit.SECONDS); // 等待5秒
+    }
+    
+    // 方式3：带超时和租期的获取锁
+    public boolean tryLockWithLease(String key) throws InterruptedException {
+        Lock lock = redisLockRegistry.obtain(key);
+        return lock.tryLock(10, 30, TimeUnit.SECONDS); // 等待10秒，租期30秒
+    }
+    
+    // 方式4：阻塞获取锁（不推荐，可能导致死锁）
+    public void lockBlockingly(String key) {
+        Lock lock = redisLockRegistry.obtain(key);
+        lock.lock(); // 一直等待直到获取锁
+        try {
+            // 业务逻辑
+        } finally {
+            lock.unlock();
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>在定时任务中使用</title>
+			<programlisting>
+			<![CDATA[
+@Component
+public class ScheduledTask {
+    
+    private final RedisLockRegistry redisLockRegistry;
+    
+    public ScheduledTask(RedisLockRegistry redisLockRegistry) {
+        this.redisLockRegistry = redisLockRegistry;
+    }
+    
+    @Scheduled(cron = "0 */5 * * * ?") // 每5分钟执行一次
+    public void executeScheduledTask() {
+        String lockKey = "scheduled-task-lock";
+        Lock lock = redisLockRegistry.obtain(lockKey);
+        
+        try {
+            if (lock.tryLock(0, 10, TimeUnit.MINUTES)) { // 不等待，锁10分钟
+                try {
+                    // 确保只有一个实例执行定时任务
+                    System.out.println("开始执行定时任务...");
+                    // 任务逻辑
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                System.out.println("其他实例正在执行定时任务");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>在Controller中使用</title>
+			<programlisting>
+			<![CDATA[
+@RestController
+@RequestMapping("/api")
+public class LockController {
+    
+    private final RedisLockRegistry redisLockRegistry;
+    
+    public LockController(RedisLockRegistry redisLockRegistry) {
+        this.redisLockRegistry = redisLockRegistry;
+    }
+    
+    @PostMapping("/process/{resourceId}")
+    public ResponseEntity<String> processResource(@PathVariable String resourceId) {
+        String lockKey = "resource-lock:" + resourceId;
+        Lock lock = redisLockRegistry.obtain(lockKey);
+        
+        try {
+            if (lock.tryLock(3, 15, TimeUnit.SECONDS)) {
+                try {
+                    // 处理资源
+                    return ResponseEntity.ok("处理成功: " + resourceId);
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("资源正在被处理，请稍后重试");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("处理中断");
+        }
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>使用模板方法模式封装</title>
+			<programlisting>
+			<![CDATA[
+@Component
+public class DistributedLockTemplate {
+    
+    private final RedisLockRegistry redisLockRegistry;
+    
+    public DistributedLockTemplate(RedisLockRegistry redisLockRegistry) {
+        this.redisLockRegistry = redisLockRegistry;
+    }
+    
+    public <T> T executeWithLock(String lockKey, Supplier<T> supplier) {
+        return executeWithLock(lockKey, 5, 30, supplier);
+    }
+    
+    public <T> T executeWithLock(String lockKey, long waitTime, long leaseTime, Supplier<T> supplier) {
+        Lock lock = redisLockRegistry.obtain(lockKey);
+        
+        try {
+            if (lock.tryLock(waitTime, leaseTime, TimeUnit.SECONDS)) {
+                try {
+                    return supplier.get();
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                throw new RuntimeException("获取分布式锁失败: " + lockKey);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("获取锁时被中断", e);
+        }
+    }
+    
+    // 无返回值的版本
+    public void executeWithLock(String lockKey, Runnable runnable) {
+        executeWithLock(lockKey, () -> {
+            runnable.run();
+            return null;
+        });
+    }
+}
+
+// 使用示例
+@Service
+public class BusinessService {
+    
+    private final DistributedLockTemplate lockTemplate;
+    
+    public BusinessService(DistributedLockTemplate lockTemplate) {
+        this.lockTemplate = lockTemplate;
+    }
+    
+    public void updateInventory(String productId, int quantity) {
+        lockTemplate.executeWithLock("inventory:" + productId, () -> {
+            // 更新库存逻辑
+            System.out.println("更新产品 " + productId + " 的库存: " + quantity);
+            return null;
+        });
+    }
+}			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="Mqtt">
 		<title>MQTT Support</title>
 		<para>
-			<ulink
-				url="https://docs.spring.io/spring-integration/reference/mqtt.html" />
+			<ulink url="https://docs.spring.io/spring-integration/reference/mqtt.html" />
 		</para>
 		<screen>
 		<![CDATA[
@@ -260,8 +490,8 @@ public class MqttConfiguration {
 			</para>
 			<para>
 			</para>
-			
-			
+
+
 		</section>
 
 		<section>
