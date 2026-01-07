@@ -3514,5 +3514,57 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 		 	]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>虚拟线程并发控制</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+
+public class Test {
+    static void main(String[] args) {
+
+        // 1. 创建虚拟线程执行器
+        ExecutorService virtualThreadExecutor = Executors.newVirtualThreadPerTaskExecutor();
+
+        // 2. 设置并发上限（比如限制同时执行 10 个任务）
+        Semaphore semaphore = new Semaphore(10);
+
+        // 3. 提交任务时通过信号量管控并发
+        for (int i = 0; i < 1000; i++) {
+            int taskId = i;
+            try {
+	            // 获取许可：若已达10个并发，此处阻塞
+                semaphore.acquire();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            virtualThreadExecutor.submit(() -> {
+                try {
+                    // 业务逻辑：执行具体任务
+                    System.out.println("执行任务 " + taskId + "，虚拟线程：" + Thread.currentThread());
+                    Thread.sleep(5000); // 模拟任务耗时
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                } finally {
+                    // 释放许可：任务完成后归还，允许新任务执行
+                    semaphore.release();
+                }
+            });
+        }
+
+        // 4. 关闭执行器（按需）
+        virtualThreadExecutor.shutdown();
+
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 </chapter>
