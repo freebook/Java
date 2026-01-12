@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="Retryable">
+	<title>Spring boot with Retryable</title>
+	<para>Springboot 实现重试有两个方案，一个是 Springboot 4.0 自带的 Retryable 是 Resilient 实现。另一个方案是 spring-retry 需要额外引入依赖。</para>
+	<section id="spring.EnableResilientMethods">
+		<title>@EnableResilientMethods</title>
+		<para>启用配置，在配置类上添加@EnableResilientMethods注解</para>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+		<section id="spring.ConcurrencyLimit">
+			<title>@ConcurrencyLimit 限流</title>
+			<para>在需要限制并发的方法上添加@ConcurrencyLimit注解</para>
+			<programlisting>
+		<![CDATA[
+@Configuration
+@EnableResilientMethods
+public class ResilientMethodsConfig {
+    // 配置类
+}
+
+@Component
+public class NotificationService {
+    @ConcurrencyLimit(10)
+    public void sendNotification() {
+        this.jmsClient.destination("notifications").send(...);
+    }
+    
+    @ConcurrencyLimit(1)
+    public void processCriticalTask() {
+        // 关键任务处理
+    }
+}		
+		]]>
+			</programlisting>
+		</section>
+		<section id="spring.Retryable">
+			<title>@Retryable 重试</title>
+			<programlisting>
+			<![CDATA[
+@Retryable
+public void sendNotification() {
+    this.jmsClient.destination("notifications").send(...);
+}			
+			]]>
+			</programlisting>
+			<para>可通过@Retryable注解中的includes、excludes和implicit值属性，限制触发重试的异常类型。
+			</para>
+			<programlisting>
+			<![CDATA[
+@Retryable(  includes = MessageDeliveryException.class,  maxAttempts = 5,  delay = 100,  jitter = 10,  multiplier = 2,  maxDelay = 1000)
+public void sendNotification() {    
+	this.jmsClient.destination("notifications").send(...);
+}			
+			]]>
+			</programlisting>
+			<para>RetryTemplate</para>
+			<programlisting>
+			<![CDATA[
+var retryPolicy = RetryPolicy.builder()
+        .includes(MessageDeliveryException.class)
+        .maxAttempts(5)
+        .delay(Duration.ofMillis(100))
+        .build();
+var retryTemplate = new RetryTemplate(retryPolicy);
+retryTemplate.execute(() -> jmsClient.destination("notifications").send(...));
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+	
+	<section>
+		<title>spring-retry</title>
+		<section>
+			<title>spring-retry 依赖</title>
+			<para>添加依赖</para>
+			<screen>
+			<![CDATA[
+		<dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>2.0.12</version>
+        </dependency>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>@EnableRetry 启用重试</title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst;
+
+import cn.aigcsst.websocket.WebsocketEndpoint;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.annotation.EnableAsync;
+
+@SpringBootApplication
+@EnableJpaRepositories
+@EnableAutoConfiguration
+@EnableCaching
+@EnableAsync
+@EnableRetry
+public class Application {
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+
+    @Value("${spring.application.name}")
+    public String name;
+
+    static void main(String[] args) {
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class, args);
+        WebsocketEndpoint.setApplicationContext(applicationContext);
+    }
+
+    @PostConstruct
+    public void init() {
+        logger.info(String.format("==================== %s 系统启动 ====================", name));
+    }
+
+    @PreDestroy
+    public void destroy() {
+        logger.info(String.format("==================== %s 系统销毁 ====================", name));
+    }
+
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.controller.debug;
+
+import cn.aigcsst.annotation.TokenPass;
+import cn.aigcsst.service.AiService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Slf4j
+@TokenPass
+@RequestMapping("/test")
+public class TestController {
+
+    @GetMapping
+    @Retryable(RuntimeException.class)
+    public void index() {
+        log.warn("Test");
+        throw new RuntimeException();
+    }
+}
+			
+			]]>
+			</programlisting>
+			<para>输出日志</para>
+			<screen>
+			<![CDATA[
+api  | 2026-01-12 17:52:53.288  WARN  --- [tomcat-handler-0] c.a.controller.debug.TestController      : Test <- index:23
+api  | 2026-01-12 17:52:53.303  WARN  --- [tomcat-handler-0] cn.aigcsst.service.AiService             : ---> Test ---> <- agent:42
+api  | 2026-01-12 17:52:54.305  WARN  --- [tomcat-handler-0] cn.aigcsst.service.AiService             : ---> Test ---> <- agent:42
+api  | 2026-01-12 17:52:55.306  WARN  --- [tomcat-handler-0] cn.aigcsst.service.AiService             : ---> Test ---> <- agent:42
+api  | 2026-01-12 17:52:55.308 ERROR  --- [tomcat-handler-0] c.aigcsst.config.GloablControllerAdvice  : RuntimeException: null <- handleException:19			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>高级用法</title>
+			<programlisting>
+			<![CDATA[
+    @Retryable(value = RuntimeException.class, maxAttempts = 2, backoff = @Backoff(delay = 1000, multiplier = 2))
+    public void service() {
+        Random random = new Random();
+        int i = random.nextInt();
+        if (i == 0) {
+            System.out.println("i = " + i + " " + LocalDateTime.now());
+            throw new RuntimeException("service failed!");
+        }
+    }			
+			]]>
+			</programlisting>
+		</section>		
+		
+	</section>
+
+
+
+	
+
+
+</chapter>

@@ -65,14 +65,14 @@ Hellowoard!!!
 ________________________________________________________
 Executed in    5.02 secs      fish           external
    usr time    4.98 millis  242.00 micros    4.74 millis
-   sys time    5.48 millis  993.00 micros    4.49 millis			
+   sys time    5.48 millis  993.00 micros    4.49 millis
 			]]>
 		</screen>
 		<screen>
 			<![CDATA[
 2023-02-24T14:13:07.063+08:00 TRACE 1552 --- [  XNIO-1 task-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#springmvc()
 2023-02-24T14:13:07.077+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : start
-2023-02-24T14:13:12.082+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done			
+2023-02-24T14:13:12.082+08:00  INFO 1552 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done
 			]]>
 		</screen>
 		<para>从省输出日志可以看到 start 2023-02-24T14:13:07, done 2023-02-24T14:13:12
@@ -85,7 +85,7 @@ Hellowoard!!!
 ________________________________________________________
 Executed in    5.02 secs      fish           external
    usr time    5.19 millis  228.00 micros    4.96 millis
-   sys time    6.05 millis  854.00 micros    5.20 millis	
+   sys time    6.05 millis  854.00 micros    5.20 millis
 			]]>
 		</screen>
 		<screen>
@@ -93,7 +93,7 @@ Executed in    5.02 secs      fish           external
 2023-02-24T14:14:54.720+08:00 TRACE 1583 --- [  XNIO-1 task-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()
 2023-02-24T14:14:54.729+08:00  INFO 1583 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : start
 2023-02-24T14:14:54.731+08:00  INFO 1583 --- [  XNIO-1 task-2] c.n.controller.WebFluxController         : done
-2023-02-24T14:14:59.753+08:00 TRACE 1583 --- [  XNIO-1 task-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()	
+2023-02-24T14:14:59.753+08:00 TRACE 1583 --- [  XNIO-1 task-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to cn.netkiller.controller.WebFluxController#webflux()
 			]]>
 		</screen>
 		<para>再看 webflux 的表现，start 2023-02-24T14:14:54, done
@@ -159,7 +159,7 @@ public class WebFluxRouter {
 		return RouterFunctions.route(RequestPredicates.GET("/hello").and(RequestPredicates.accept(MediaType.TEXT_PLAIN)), helloWorldHandler::helloWorld);
 	}
 }
-		
+
 		]]>
 		</programlisting>
 	</section>
@@ -176,7 +176,7 @@ public class WebFluxRouter {
     public String post(@RequestParam("param") String test) {
         log.info(test);
         return test;
-    }		
+    }
 		]]>
 		</programlisting>
 		<para>有一种方法可以获取 Form 提交过来的数据</para>
@@ -187,7 +187,7 @@ public class WebFluxRouter {
         Mono<MultiValueMap<String, String>> fromData = exchange.getFormData();
         log.info(fromData.toString());
         return fromData;
-    }		
+    }
 		]]>
 		</programlisting>
 		<programlisting>
@@ -204,7 +204,7 @@ public class WebFluxRouter {
         });
 
         return fromData;
-    }		
+    }
 		]]>
 		</programlisting>
 		<para>获取 Form 数据</para>
@@ -218,7 +218,7 @@ public class WebFluxRouter {
                     log.info(singleValueMap.toString());
                     return Mono.just(singleValueMap);
                 });
-    }		
+    }
 		]]>
 		</programlisting>
 	</section>
@@ -232,7 +232,7 @@ public class WebFluxRouter {
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>			
+    </dependency>
 			]]>
 			</screen>
 		</section>
@@ -275,7 +275,7 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
         final Flux<City> citys = cityService.findAllCity();
         model.addAttribute("cityLists", citys);
         return "cityList";
-    }			
+    }
 			]]>
 			</programlisting>
 		</section>
@@ -296,7 +296,7 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 <h1 >你好，欢迎来自<p th:text="${city}"></p>的<p th:text="${name}"></p></h1>
 
 </body>
-</html>			
+</html>
 			]]>
 			</programlisting>
 			<para>cityList.html</para>
@@ -339,7 +339,7 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 </div>
 
 </body>
-</html>			
+</html>
 			]]>
 			</programlisting>
 		</section>
@@ -375,10 +375,10 @@ spring:
     timeout: 5000
     lettuce:
       pool:
-        max-active: 200 
-        max-idle: 20 
-        min-idle: 5 
-        max-wait: 1000 			
+        max-active: 200
+        max-idle: 20
+        min-idle: 5
+        max-wait: 1000
 			]]>
 		</screen>
 	</section>
@@ -390,7 +390,7 @@ spring:
 	public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
 		ReactiveRedisTemplate<String, String> reactiveRedisTemplate = new ReactiveRedisTemplate<>(factory,RedisSerializationContext.string());
 		return reactiveRedisTemplate;
-	}			
+	}
 			]]>
 		</programlisting>
 	</section>
@@ -403,31 +403,31 @@ public class RedisServiceImpl implements RedisService {
 
 	@Autowired
 	private ReactiveRedisTemplate<String, String> redisTemplate;
-	
+
 	@Override
 	public Mono<String> get(String key) {
-		
+
 		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
 		return operations.get(key);
 	}
 
 	@Override
 	public Mono<String> set(String key,User user) {
-		
+
 		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
 		return operations.getAndSet(key, JSON.toJSONString(user));
 	}
 
 	@Override
 	public Mono<Boolean> delete(String key) {
-		
+
 		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
 		return operations.delete(key);
 	}
 
 	@Override
 	public Mono<String> update(String key,User user) {
-		
+
 		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
 		return operations.getAndSet(key, JSON.toJSONString(user));
 	}
@@ -441,17 +441,17 @@ public class RedisServiceImpl implements RedisService {
 
 	@Override
 	public Mono<Long> push(String key,List<String> list) {
-		
+
 		ReactiveListOperations<String, String> operations = redisTemplate.opsForList();
 		return operations.leftPushAll(key, list);
 	}
-	
+
 	@Override
 	public Flux<String> find(String key) {
 		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
 		return redisTemplate.keys(key).flatMap(keyId ->operations.get(keyId));
 	}
-}			
+}
 			]]>
 		</programlisting>
 	</section>
@@ -462,17 +462,17 @@ public class RedisServiceImpl implements RedisService {
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	
+
 	public final static String USER_KEY="user";
-	
+
 	@Autowired
 	private RedisService redisService;
-	
+
 	@GetMapping("/get/{key}")
 	public Mono<String> getUserByKey(@PathVariable("id")String key){
 		return redisService.get(key);
 	}
-	
+
 	@GetMapping("/add")
 	public Mono<String> add(User user){
 		user = new User();
@@ -490,9 +490,9 @@ public class UserController {
 		user.setState("Enabled");
 
 		System.out.println(JSON.toJSONString(user));
-		return redisService.set("neo",user);		
+		return redisService.set("neo",user);
 	}
-	
+
 	@GetMapping("/addlist")
 	public Mono<Long> addlist(){
 		List<String> list=new ArrayList<String>();
@@ -509,14 +509,14 @@ public class UserController {
 		user.setCounty("南山区");
 		user.setAddress("");
 		user.setState("Enabled");
-		
+
 		//添加第一条数据
 		list.add(JSON.toJSONString(user));
 		//添加第二条数据
 		list.add(JSON.toJSONString(user));
 		//添加第三条数据
 		list.add(JSON.toJSONString(user));
-		
+
 		return redisService.addlist("list", list);
 	}
 
@@ -524,12 +524,12 @@ public class UserController {
 	public Flux<String> findAll(){
 		return redisService.all("list").delayElements(Duration.ofSeconds(2));
 	}
-	
+
 	@GetMapping("/getUsers")
 	public Flux<String> findUsers() {
 		return redisService.find("*").delayElements(Duration.ofSeconds(2));
 	}
-}			
+}
 			]]>
 		</programlisting>
 	</section>
@@ -543,7 +543,7 @@ public class UserController {
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-	</dependency>			
+	</dependency>
 			]]>
 		</screen>
 	</section>
@@ -567,10 +567,10 @@ public interface UserRepository extends ReactiveMongoRepository<User, Long>{
 			<![CDATA[
 @Service
 public class MongoServiceImpl implements MongoService {
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Override
 	public Mono<User> getById(Long id) {
 		return userRepository.findById(id);
@@ -596,7 +596,7 @@ public class MongoServiceImpl implements MongoService {
 	public Flux<User> findAllUser() {
 		return userRepository.findAll();
 	}
-}			
+}
 			]]>
 		</screen>
 	</section>
@@ -607,7 +607,7 @@ public class MongoServiceImpl implements MongoService {
 @RestController
 @RequestMapping("/usermg")
 public class UserMongoController {
-	
+
 	@Autowired
 	private MongoService mongoService;
 
@@ -627,13 +627,13 @@ public class UserMongoController {
 		user.setCounty("南山区");
 		user.setAddress("");
 		user.setState("Enabled");
-		
-	
+
+
 		System.out.println(JSON.toJSONString(user));
 		return mongoService.addUser(user);
 
 	}
-	
+
 	/**
 	 *	注意这里 produces = MediaType.APPLICATION_STREAM_JSON_VALUE 必须这样设置
 	 */
@@ -656,7 +656,7 @@ public class UserMongoController {
 		<title>Mono.just()/Mono.justOrEmpty()</title>
 		<programlisting>
 		<![CDATA[
-Mono.justOrEmpty(Optional.of("Netkiller")).subscribe(System.out::println);		
+Mono.justOrEmpty(Optional.of("Netkiller")).subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -665,7 +665,7 @@ Mono.justOrEmpty(Optional.of("Netkiller")).subscribe(System.out::println);
 		<title>MonoSink 创建 Mono</title>
 		<programlisting>
 		<![CDATA[
-Mono.create(sink -> sink.success("Netkiller")).subscribe(System.out::println);	
+Mono.create(sink -> sink.success("Netkiller")).subscribe(System.out::println);
 		]]>
 		</programlisting>
 		<programlisting>
@@ -702,7 +702,7 @@ Mono.create(sink -> sink.success("Netkiller")).subscribe(System.out::println);
         });
         log.info("end");
         return result;
-    }		
+    }
 		]]>
 		</programlisting>
 	</section>
@@ -751,7 +751,7 @@ Mono.error(new RuntimeException("Something wrong"))
 Mono.just("Netkiller")
         .concatWith(Mono.error(new IllegalStateException()))
         .subscribe(System.out::println, System.err::println);
-		
+
 		]]>
 		</programlisting>
 		<programlisting>
@@ -759,7 +759,7 @@ Mono.just("Netkiller")
 Mono.just("Netkiller")
         .concatWith(Mono.error(new IllegalStateException()))
         .onErrorReturn("defaultError")
-        .subscribe(System.out::println);		
+        .subscribe(System.out::println);
 		]]>
 		</programlisting>
 		<programlisting>
@@ -768,7 +768,7 @@ Mono.just("Netkiller")
          .concatWith(Mono.error(new IllegalStateException()))
          .switchOnError(Mono.just("defaultError"))
          .subscribe(System.out::println);
-		
+
 		]]>
 		</programlisting>
 	</section>
@@ -780,8 +780,8 @@ Mono.just("Netkiller")
                 .doOnNext(i -> System.out.println("On next: " + i))
                 .doOnSuccess(i -> System.out.println("On success: " + i))
                 .doOnError(i -> System.out.println("On error: " + i))
-                .block();	
-                
+                .block();
+
 		Mono.empty()
 		    .doOnNext(i -> System.out.println("On next: " + i))
 		    .doOnSuccess(i -> System.out.println("On success: " + i))
@@ -793,14 +793,14 @@ Mono.just("Netkiller")
 		    .doOnNext(i -> System.out.println("On next: " + i))
 		    .doOnSuccess(i -> System.out.println("On success: " + i))
 		    .doOnError(i -> System.out.println("On error: " + i))
-		    .block();       
-				    
+		    .block();
+
 		Mono.error(new RuntimeException("Something wrong"))
 		    .doOnNext(i -> System.out.println("On next: " + i))
 		    .doOnSuccess(i -> System.out.println("On success: " + i))
 		    .doOnError(i -> System.out.println("On error: " + i))
 		    .block();
-    
+
 		]]>
 		</programlisting>
 		<programlisting>
@@ -808,11 +808,11 @@ Mono.just("Netkiller")
         Mono.delay(Duration.ofMillis(10)).map(d -> {
             System.out.println(d);
             return d;
-        }).block();		
+        }).block();
         Mono.delay(Duration.ofMillis(10)).map(d -> {
             System.out.println(d);
             return d;
-        }).subscribe(System.out::println);        
+        }).subscribe(System.out::println);
 		]]>
 		</programlisting>
 
@@ -830,7 +830,7 @@ Mono.just("Netkiller")
             sink.next("netkiller");
             sink.complete();
         });
-        flux.subscribe(System.out::println);		
+        flux.subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -842,7 +842,7 @@ Mono.just("Netkiller")
             synchronousSink.next("Neo");
             synchronousSink.complete();
         });
-        generate.subscribe(System.out::println);		
+        generate.subscribe(System.out::println);
 		]]>
 		</programlisting>
 		<para>多个值</para>
@@ -857,7 +857,7 @@ Flux.generate(ArrayList::new, (list, sink) -> {
         sink.complete();
     }
     return list;
-}).subscribe(System.out::println);		
+}).subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -868,7 +868,7 @@ Flux.generate(ArrayList::new, (list, sink) -> {
 //单个元素
 Flux.just("just").subscribe(System.out::println);
 //多个元素
-Flux.just("just", "just1", "just2").subscribe(System.out::println);	
+Flux.just("just", "just1", "just2").subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -879,7 +879,7 @@ Flux.just("just", "just1", "just2").subscribe(System.out::println);
 //Flux->Flux
 Flux.from(Flux.just("just", "just1", "just2")).subscribe(System.out::println);
 //Mono->Mono
-Flux.from(Mono.just("just")).subscribe(System.out::println);	
+Flux.from(Mono.just("just")).subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -890,7 +890,7 @@ Flux.from(Mono.just("just")).subscribe(System.out::println);
 		<![CDATA[
 Flux.just("Netkiller1", "Netkiller2", "Netkiller3")
         .subscribe(data -> System.out.println("onNext:" + data), err -> {
-        }, () -> System.out.println("onComplete"));		
+        }, () -> System.out.println("onComplete"));
 		]]>
 		</programlisting>
 		<para>多个订阅者</para>
@@ -917,7 +917,7 @@ Flux.just("Netkiller1", "Netkiller2", "Netkiller3")
         con.subscribe(System.out::println);
         con.subscribe(System.out::println);
         // 手动的开启消费数据
-        con.connect();		
+        con.connect();
 		]]>
 		</programlisting>
 	</section>
@@ -925,7 +925,7 @@ Flux.just("Netkiller1", "Netkiller2", "Netkiller3")
 		<title>从 Flux/Mono 创建 Flux</title>
 		<programlisting>
 		<![CDATA[
-Flux.fromArray(new String[] { "arr", "arr", "arr", "arr" }).subscribe(System.out::println);	
+Flux.fromArray(new String[] { "arr", "arr", "arr", "arr" }).subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -946,7 +946,7 @@ Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
         Flux<String> auto = flux.publish().autoConnect(5);
         auto.subscribe(System.out::println);
         auto.subscribe(System.out::println);
-        auto.subscribe(System.out::println);		
+        auto.subscribe(System.out::println);
 		]]>
 		</programlisting>
 		<para>停止消费策略</para>
@@ -964,7 +964,7 @@ Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
         Flux<String> auto = flux.publish().refCount(3,Duration.ofSeconds(10));
         auto.subscribe(System.out::println);
         auto.subscribe(System.out::println);
-        auto.subscribe(System.out::println);		
+        auto.subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -980,7 +980,7 @@ Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
     private Flux<String> getWords() {
         Stream<String> items = Arrays.asList("alpha", "bravo", "charlie").stream();
         return Flux.fromStream(items);
-    }		
+    }
 		]]>
 		</programlisting>
 	</section>
@@ -988,7 +988,7 @@ Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
 		<title>defer()</title>
 		<programlisting>
 		<![CDATA[
-Flux.defer(() -> Flux.just("just", "just1", "just2")).subscribe(System.out::println);		
+Flux.defer(() -> Flux.just("just", "just1", "just2")).subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -996,7 +996,7 @@ Flux.defer(() -> Flux.just("just", "just1", "just2")).subscribe(System.out::prin
 		<title>Flux.interval()</title>
 		<programlisting>
 		<![CDATA[
-Flux.interval(Duration.of(500, ChronoUnit.MILLIS)).subscribe(System.out::println);	
+Flux.interval(Duration.of(500, ChronoUnit.MILLIS)).subscribe(System.out::println);
 Flux.interval(Duration.ofSeconds(2), Duration.ofMillis(200)).subscribe(System.out::println);
 
 Flux.intervalMillis(1000).subscribe(System.out::println);
@@ -1007,7 +1007,7 @@ Flux.intervalMillis(1000).subscribe(System.out::println);
 		<title>Flux.empty()</title>
 		<programlisting>
 		<![CDATA[
-Flux.empty().subscribe(System.out::println);		
+Flux.empty().subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -1118,7 +1118,7 @@ Flux.range(0, 100).subscribe(System.out::println);
 
         outSink.next("Netkiller");
     }
-		
+
 		]]>
 		</programlisting>
 		<programlisting>
@@ -1130,19 +1130,19 @@ interface MyEventListener<T> {
 
 
 Flux<String> bridge = Flux.create(sink -> {
-    myEventProcessor.register( 
-      new MyEventListener<String>() { 
+    myEventProcessor.register(
+      new MyEventListener<String>() {
 
         public void onDataChunk(List<String> chunk) {
           for(String s : chunk) {
-            sink.next(s); 
+            sink.next(s);
           }
         }
         public void processComplete() {
-            sink.complete(); 
+            sink.complete();
         }
     });
-});	
+});
 	]]>
 		</programlisting>
 	</section>
@@ -1155,7 +1155,7 @@ Flux<String> bridge = Flux.create(sink -> {
                 .map(i -> {
                     return i * 2;
                 })
-                .subscribe(System.out::println);		
+                .subscribe(System.out::println);
 		]]>
 		</programlisting>
 		<programlisting>
@@ -1165,7 +1165,7 @@ Flux<String> bridge = Flux.create(sink -> {
                 .flatMap(e -> {
                     return Flux.just(e * 2).delayElements(Duration.ofSeconds(1));
                 })
-                .subscribe(System.out::println);		
+                .subscribe(System.out::println);
 		]]>
 		</programlisting>
 
@@ -1179,7 +1179,7 @@ Flux<String> bridge = Flux.create(sink -> {
 
         flux.map(num -> num * 2) // 将每个元素乘以2
                 .filter(num -> num % 2 == 0) // 过滤掉奇数
-                .subscribe(System.out::println);		
+                .subscribe(System.out::println);
 		]]>
 		</programlisting>
 	</section>
@@ -1196,7 +1196,7 @@ AtomicBoolean onComplete = new AtomicBoolean();
                     System.out.println("OK");
                 })
                 .subscribe(System.out::println);
-        System.out.println(onComplete.get());	
+        System.out.println(onComplete.get());
 	]]>
 		</programlisting>
 	</section>
@@ -1212,7 +1212,7 @@ AtomicBoolean onComplete = new AtomicBoolean();
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> createConnectionAndSendEvents() {
         return Flux.just("Alpha", "Omega");
-    }			
+    }
 			]]>
 		</programlisting>
 		<para>curl 访问 SSE 需要设置HTTP头 -H "Accept: text/event-stream" </para>
@@ -1221,7 +1221,7 @@ AtomicBoolean onComplete = new AtomicBoolean();
 neo@MacBook-Pro-M2 ~ % curl -H "Accept: text/event-stream" -X 'GET' 'http://localhost:8080/mock/sse'
 data:Alpha
 
-data:Omega			
+data:Omega
 			]]>
 		</screen>
 		<tip>Safari 浏览器不支持 SSE推送，微软的 Egde 支持。</tip>
@@ -1234,7 +1234,7 @@ data:Omega
     private Flux<String> getWords() {
         Stream<String> items = Arrays.asList("alpha", "bravo", "charlie").stream();
         return Flux.fromStream(items);
-    }		
+    }
 		]]>
 		</programlisting>
 	</section>
@@ -1250,17 +1250,17 @@ data:Omega
                 .zip(Flux.just(WORDS), Flux.interval(Duration.ofSeconds(1)))
                 .map(Tuple2::getT1);
     }
-    
+
 	@GetMapping("/random")
 	public Flux<ServerSentEvent<Integer>> randomNumbers() {
 		return Flux.interval(Duration.ofSeconds(1)).map(seq -> Tuples.of(seq, ThreadLocalRandom.current().nextInt())).map(data -> ServerSentEvent.<Integer>builder().event("random").id(Long.toString(data.getT1())).data(data.getT2()).build());
-	}    
-	
+	}
+
 	@GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<String> streamFlux() {
 	    return Flux.interval(Duration.ofSeconds(1))
 	      .map(sequence -> "Flux - " + LocalTime.now().toString());
-	}	
+	}
 			]]>
 		</programlisting>
 	</section>
@@ -1278,7 +1278,7 @@ data:Omega
                         .data(data)
                         .comment("测试数据")
                         .build());
-    }		
+    }
 		]]>
 		</programlisting>
 		<para>演示结果</para>
@@ -1322,7 +1322,7 @@ data:我的昵称是 netkiller
             sink.complete();
         });
         return flux;
-    }		
+    }
 		]]>
 		</programlisting>
 	</section>
@@ -1373,7 +1373,7 @@ public class SseController {
 	public Flux<Object> range() {
 		return Flux.range(10, 1).map(seq -> Tuples.of(seq, getCountDownSec())).map(data -> ServerSentEvent.<Object>builder().event("launch").id(Long.toString(data.getT1())).data(data.getT2().toString()).build());
 	}
-	
+
 	// WebFlux 服务器推送(SSE - >Server Send Event)
 	@GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	private Flux<String> flux() {
@@ -1388,7 +1388,7 @@ public class SseController {
 		return result;
 	}
 }
-		
+
 		]]>
 		</programlisting>
 		<para>运行结果</para>
@@ -1437,7 +1437,7 @@ data:倒计时：0
 id:10
 event:launch
 data:发射
-		
+
 		]]>
 		</screen>
 	</section>
@@ -1488,7 +1488,7 @@ data:发射
                     return Mono.just(integer);
                 }, 5)
                 .repeat()
-                .subscribe();	
+                .subscribe();
 	]]>
 	</programlisting>
 	<programlisting>
@@ -1511,10 +1511,10 @@ Flux.just(1,2,3,4,5,6,7,8)
     .parallel(2) // mention number of threads
     .runOn(Schedulers.parallel())
     .map(integer -> {
-             System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId()); 
+             System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
              return integer;
-        })   
-    .subscribe();	
+        })
+    .subscribe();
 	]]>
 	</programlisting>
 	<programlisting>
@@ -1529,7 +1529,7 @@ Flux.just(1,2,3,4,5,6,7,8)
                     }).publishOn(Schedulers.parallel()); // <- Each Mono processing every integer can be processed in a different thread
                 })
                 .repeat()
-                .subscribe();	
+                .subscribe();
 	]]>
 	</programlisting>
 	<programlisting>
@@ -1564,12 +1564,12 @@ Flux.just(1,2,3,4,5,6,7,8)
         .publishOn(Schedulers.parallel()) // <- Each flux can be published in a different thread
         .flatMap(integer -> {
             return Mono.fromCallable(() -> {
-                 System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId()); 
+                 System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
                  return integer;
             }).publishOn(Schedulers.parallel()); // <- Each Mono processing every integer can be processed in a different thread
          })
         .repeat()
-        .subscribe();	
+        .subscribe();
 	]]>
 	</programlisting>
 </section>
@@ -1580,7 +1580,7 @@ Flux.just(1,2,3,4,5,6,7,8)
         AtomicBoolean onComplete = new AtomicBoolean();
         ConnectableFlux<Integer> f = Flux.just(1)
                 .doOnComplete(() -> onComplete.set(true))
-                .publish();	
+                .publish();
 	]]>
 	</programlisting>
 </section>
@@ -1595,7 +1595,7 @@ Flux.just(1, 2, 3)
     .concatWith(Flux.just(4, 5, 6))
     .subscribe(System.out::println);
 
-// 效果等同于 concatWithValues(4, 5, 6)		
+// 效果等同于 concatWithValues(4, 5, 6)
 		]]>
 		</programlisting>
 	</section>
@@ -1614,7 +1614,7 @@ Flux.just(1, 2, 0)
 // 5
 // -1  <- 错误处理结果
 // 5   <- 追加的元素
-// 6		
+// 6
 		]]>
 		</programlisting>
 		<programlisting>
@@ -1670,7 +1670,7 @@ public Flux<String> deepseek(String device, String taskId, String speakId, List<
                     log.error("Error processing stream", e);
                     return Flux.just("[ERROR]");
                 });
-    }	
+    }
 	]]>
 		</programlisting>
 	</section>
@@ -1695,7 +1695,7 @@ public class ScanExample {
 // 3    <- 1 + 2
 // 6    <- 3 + 3
 // 10   <- 6 + 4
-// 15   <- 10 + 5	
+// 15   <- 10 + 5
 	]]>
 	</programlisting>
 	<para>字符串追加</para>
@@ -1710,7 +1710,7 @@ Flux.just("a", "b", "c", "d")
 // "a"  <- "" + "a"
 // "ab" <- "a" + "b"
 // "abc"
-// "abcd"	
+// "abcd"
 	]]>
 	</programlisting>
 	<para></para>
@@ -1719,7 +1719,7 @@ Flux.just("a", "b", "c", "d")
 class Counter {
     int evenCount = 0;
     int oddCount = 0;
-    
+
     @Override
     public String toString() {
         return "偶数: " + evenCount + ", 奇数: " + oddCount;
@@ -1740,7 +1740,7 @@ Flux.just(1, 2, 3, 4, 5)
 // 偶数: 1, 奇数: 1   <- 处理 2
 // 偶数: 1, 奇数: 2   <- 处理 3
 // 偶数: 2, 奇数: 2   <- 处理 4
-// 偶数: 2, 奇数: 3   <- 处理 5	
+// 偶数: 2, 奇数: 3   <- 处理 5
 	]]>
 	</screen>
 	<para></para>
@@ -1749,7 +1749,33 @@ Flux.just(1, 2, 3, 4, 5)
 Flux.just("a", "b", "c", "d")
                 .scan(new StringBuffer(), (sentence, current) -> sentence.append(current)) // 初始值为空字符串
                 .skip(1)
-                .subscribe(System.out::println);	
+                .subscribe(System.out::println);
+	]]>
+	</programlisting>
+</section>
+<section id="webflux.NDJSON">
+    <title>Newline Delimited JSON (NDJSON) </title>
+    <programlisting>
+	<![CDATA[
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+
+@RestController
+public class DataController {
+    @GetMapping(value = "/stream-data", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<DataRecord> streamData() {
+        // 返回流式 JSON 数据，每行一个 DataRecord 对象
+        return Flux.just(
+            new DataRecord("Alice", 30),
+            new DataRecord("Bob", 25),
+            new DataRecord("Charlie", 35)
+        );
+    }
+
+    record DataRecord(String name, int age) {}
+}
 	]]>
 	</programlisting>
 </section>
