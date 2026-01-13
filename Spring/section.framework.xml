@@ -372,5 +372,155 @@ String locationUri = ServletUriComponentsBuilder
 		]]>
 		</programlisting>
 	</section>
-	
+	<section id="HttpExchange">
+		<title>声明式 HTTP 客户端 HttpExchange</title>
+		<section>
+			<title>支持的注解类型</title>
+			<screen>
+			<![CDATA[
+@HttpExchange：是用于指定 HTTP 端点的通用注释。在接口级别使用时，它适用于所有方法。
+@GetExchange：为 HTTP GET请求指定@HttpExchange。
+@PostExchange：为 HTTP POST请求指定@HttpExchange。
+@PutExchange：为 HTTP PUT请求指定@HttpExchange。
+@DeleteExchange：为 HTTP DELETE请求指定@HttpExchange。
+@PatchExchange：为 HTTP PATCH请求指定@HttpExchange。
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>RestClient 例子</title>
+			<para>定义接口</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.annotation.HttpExchange;
+
+import java.util.List;
+
+@HttpExchange(
+        url = "https://api.netkiller.cn", // 基础URL
+        contentType = MediaType.APPLICATION_JSON_VALUE, // 默认Content-Type
+        accept = MediaType.APPLICATION_JSON_VALUE // 默认Accept
+)
+public interface UserApiClient {
+
+    @GetExchange("/actuator/info")
+    String info();
+
+}			
+			]]>
+			</programlisting>
+			<para>配置 RestClient</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+
+@Configuration
+public class ClientConfiguration {
+
+    @Bean
+    public RestClient restClient() {
+        return RestClient.builder()
+                .baseUrl("https://api.example.com") // 全局基础URL（可覆盖接口的@HttpExchange配置）
+                .defaultHeader("Content-Type", "application/json")
+                .build();
+    }
+
+    生成 UserApiClient 代理对象
+    @Bean
+    public UserApiClient userApiClient(RestClient restClient) {
+        // 创建 HttpServiceProxyFactory
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(
+                RestClientAdapter.create(restClient)
+        ).build();
+        // 生成接口实现类
+        return factory.createClient(UserApiClient.class);
+    }
+}
+			
+			]]>
+			</programlisting>
+			<para>调用与测试</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.controller.debug;
+
+import cn.netkiller.annotation.TokenPass;
+import cn.netkiller.config.UserApiClient;
+import cn.netkiller.service.AiService;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.resilience.annotation.Retryable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Slf4j
+@TokenPass
+@RequestMapping("/test")
+public class TestController {
+
+    @Resource
+    private UserApiClient userApiClient;
+
+    @GetMapping("info")
+    public String info() {
+        return userApiClient.info();
+    }
+}
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+neo@Mac Spring % curl http://localhost:8080/test/info
+{"status":{"COMPLETED":33,"START":3,"CLOSE":6}}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>HTTP 头设置</title>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.httpexchange;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.service.annotation.HttpExchange;
+import org.springframework.web.service.annotation.PostExchange;
+
+import java.util.Map;
+
+@HttpExchange(
+        url = "http://rwa.ideasprite.com:3000", // 基础URL
+        contentType = MediaType.APPLICATION_JSON_VALUE, // 默认Content-Type
+        accept = MediaType.APPLICATION_JSON_VALUE // 默认Accept
+        headers = {
+                "x-app-id=1766326269588"
+        }
+)
+public interface PptxInterface {
+
+    @PostExchange("/ppt/gen")
+    String generator(@RequestBody Map<String, String> params);
+
+}			
+			]]>
+			</programlisting>
+		</section>
+	</section>
 </chapter>
