@@ -4,7 +4,6 @@
 	&section.boot.shutdown.xml;
 	&section.boot.properties.xml;
 	&section.boot.logging.xml;
-	&section.boot.undertow.xml;
 	&section.boot.http2.xml;
 	&section.boot.datasource.xml;
 	&section.boot.redis.xml;
@@ -29,3 +28,4 @@
 	&section.boot.record.xml;
 	&section.boot.retry.xml;
 	&section.boot.aliyun.xml;
+	&section.boot.opentelemetry.xml;

@@ -1,22 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="https" ?>
-	<title>Spring boot with HTTP2 SSL</title>
-	<section>
-		<title>生成自签名证书</title>
-		<programlisting>
+<chapter id="web">
+	<title>Springboot with Undertow / Jetty / http2</title>
+
+	<section id="Undertow">
+		<title>Spring boot with Undertow</title>
+		<para>Undertow 是红帽公司开发的一款基于 NIO 的高性能 Web 嵌入式服务器</para>
+		<section>
+			<title>Maven 依赖</title>
+			<screen>
+		<![CDATA[
+<dependencies>
+    
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <exclusions>
+            <!-- Exclude the Tomcat dependency -->
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-tomcat</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+
+    <!-- Use Undertow instead -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-undertow</artifactId>
+    </dependency>
+
+</dependencies>	
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>Application</title>
+			<programlisting>
+		<![CDATA[
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class);
+    }
+
+    @GetMapping(value = "/undertow/test")
+    public String undertow() {
+        return "hello undertow";
+    }
+
+}
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>相关配置</title>
+			<para>Undertow 日志配置</para>
+			<screen>
+		<![CDATA[
+#存放目录
+server.undertow.accesslog.dir=
+# 是否启用日志
+server.undertow.accesslog.enabled=false 
+# 日志格式
+server.undertow.accesslog.pattern=common
+# 日志文件名前缀
+server.undertow.accesslog.prefix=access_log
+# 日志文件名后缀
+server.undertow.accesslog.suffix=log
+		]]>
+			</screen>
+			<para>HTTP 相关配置</para>
+			<screen>
+		<![CDATA[
+# HTTP POST请求最大的大小
+server.undertow.max-http-post-size=0 
+# 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+server.undertow.io-threads=4
+# 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+server.undertow.worker-threads=20
+# 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+# 每块buffer的空间大小,越小的空间被利用越充分
+server.undertow.buffer-size=1024
+# 每个区分配的buffer数量 , 所以pool的大小是buffer-size * buffers-per-region
+server.undertow.buffers-per-region=1024
+# 是否分配的直接内存
+server.undertow.direct-buffers=true				
+		]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="jetty">
+		<title>Spring boot with Jetty</title>
+		<para>使用 Jetty 替代 Tomcat</para>
+		<screen>
+	<![CDATA[
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-web</artifactId>
+<exclusions>
+	<!-- Exclude the Tomcat dependency -->
+	<exclusion>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-tomcat</artifactId>
+	</exclusion>
+</exclusions>
+</dependency>
+<!-- Use Jetty instead -->
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>		
+	]]>
+		</screen>
+	</section>
+
+	<section id="springboot.https">
+		<title>Spring boot with HTTP2 SSL</title>
+		<section>
+			<title>生成自签名证书</title>
+			<programlisting>
 			<![CDATA[
 keytool -genkey -alias www.netkiller.cn -keyalg RSA -keystore /www/netkiller.cn/www.netkiller.cn.keystore
 			]]>
-		</programlisting>
-		<para>导入证书（Windows）</para>
-		<programlisting>
+			</programlisting>
+			<para>导入证书（Windows）</para>
+			<programlisting>
 			<![CDATA[
 keytool -selfcert -alias www.netkiller.cn -keystore www.netkiller.cn.keystore
 keytool -export -alias www.netkiller.cn -keystore www.netkiller.cn.keystore -storepass passw0rd -rfc -file www.netkiller.cn.cer
 			]]>
-		</programlisting>
-		<para>找到 Java 安装路径</para>
-		<screen>
+			</programlisting>
+			<para>找到 Java 安装路径</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# alternatives --list
 libnssckbi.so.x86_64    auto    /usr/lib64/pkcs11/p11-kit-trust.so
@@ -40,18 +163,19 @@ java_sdk_1.8.0          auto    /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.262.b10-0.
 java_sdk_1.8.0_openjdk  auto    /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.262.b10-0.el8_2.x86_64
 mvn                     auto    /usr/share/maven/bin/mvn		
 		]]>
-		</screen>
-		<para>导入证书（JVM）</para>
-		<programlisting>
+			</screen>
+			<para>导入证书（JVM）</para>
+			<programlisting>
 			<![CDATA[
 keytool -importcert -alias www.netkiller.cn -file www.netkiller.cn.cer -keystore /srv/java/jre/lib/security/cacerts
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>application.properties 配置文件</title>
-		<para>配置Tomcat HTTPS 端口 8443（由于JVM不能fork和setuid，所以无法向nginx,apache httpd 那样设置 80 端口，除非你使用root用户运行，但这样做是不安全的。）</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>application.properties 配置文件</title>
+			<para>配置Tomcat HTTPS 端口 8443（由于JVM不能fork和setuid，所以无法向nginx,apache
+				httpd 那样设置 80 端口，除非你使用root用户运行，但这样做是不安全的。）</para>
+			<programlisting>
 			<![CDATA[
 server.port=8443
 server.ssl.enabled=true
@@ -60,9 +184,10 @@ server.ssl.key-store-password=passw0rd
 server.ssl.key-store-type=JKS
 server.ssl.key-alias=www.netkiller.cn
 			]]>
-		</programlisting>
-		<para>keystore 文件可以放到 classpath 中，首先将证书文件放到 src/main/resources 目录中，然后配置 application.properties 如下：</para>
-		<programlisting>
+			</programlisting>
+			<para>keystore 文件可以放到 classpath 中，首先将证书文件放到 src/main/resources
+				目录中，然后配置 application.properties 如下：</para>
+			<programlisting>
 			<![CDATA[
 server.port=8443
 server.ssl.enabled=true
@@ -71,46 +196,46 @@ server.ssl.key-store-password=passw0rd
 server.ssl.key-store-type=JKS
 server.ssl.key-alias=www.netkiller.cn
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>启动 Spring boot</title>
-		<screen>
+			</programlisting>
+		</section>
+		<section>
+			<title>启动 Spring boot</title>
+			<screen>
 			<![CDATA[
 /srv/java/bin/java -server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom -jar /www/netkiller.cn/www.netkiller.cn/www.netkiller.cn-0.0.1.war
 			]]>
-		</screen>
-	</section>
-	<section>
-		<title>restTemplate 调用实例</title>
-		<programlisting>
+			</screen>
+		</section>
+		<section>
+			<title>restTemplate 调用实例</title>
+			<programlisting>
 			<![CDATA[
 String url = "https://www.netkiller.cn:8443/public/test/version.json";
 ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponse<String>>() {});
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>HTTP2</title>
-		<para>启用 HTTP2 必须使用 Tomcat 9 以上， Springboot 2.1</para>
-		<para>创建证书</para>
-		<screen>
+			</programlisting>
+		</section>
+		<section>
+			<title>HTTP2</title>
+			<para>启用 HTTP2 必须使用 Tomcat 9 以上， Springboot 2.1</para>
+			<para>创建证书</para>
+			<screen>
 			<![CDATA[
 keytool -genkey -alias localhost -storetype PKCS12 -keyalg RSA -keysize 2048 -storepass passw0rd -keystore localhost.p12 -dname "CN=localhost, OU=netkiller, O=netkiller.cn, L=Guangdong, ST=Shenzhen, C=CN"
 keytool -selfcert -alias localhost -storepass passw0rd -keystore localhost.p12
 keytool -export -alias localhost -keystore localhost.p12 -storepass passw0rd -rfc -file localhost.cer
 keytool -importcert -trustcacerts -alias localhost -file localhost.cer -storepass passw0rd -keystore /etc/pki/java/cacerts
 			]]>
-		</screen>
-		<para>如果你是自己安装的JDK，需要找到cacerts安装路径</para>
-		<screen>
+			</screen>
+			<para>如果你是自己安装的JDK，需要找到cacerts安装路径</para>
+			<screen>
 		<![CDATA[
 keytool -importcert -trustcacerts -alias localhost -file localhost.cer -storepass passw0rd -keystore /srv/java/jre/lib/security/cacerts		
 		]]>
-		</screen>
-		
-		<para>MacOS 添加方法，当提示你输入密码的时候，输入：changeit</para>
-		<screen>
+			</screen>
+
+			<para>MacOS 添加方法，当提示你输入密码的时候，输入：changeit</para>
+			<screen>
 		<![CDATA[
 iMac:resources neo$ sudo keytool -importcert -trustcacerts -alias localhost -file localhost.cer -cacerts
 Password:
@@ -144,10 +269,10 @@ iMac:resources neo$ keytool -list -cacerts -alias localhost
 localhost, 2020年9月8日, trustedCertEntry, 
 证书指纹 (SHA-256): 2C:04:B7:BB:28:25:B5:E6:7C:0F:73:4B:02:38:6E:04:80:42:E2:F7:61:5C:91:4D:A8:EA:5E:20:2E:82:4F:0C	
 		]]>
-		</screen>
-		
-		<para>配置启用 http2</para>
-		<screen>
+			</screen>
+
+			<para>配置启用 http2</para>
+			<screen>
 			<![CDATA[
 server:
   port: 8443
@@ -161,9 +286,9 @@ server:
   http2:
     enabled: true			
 			]]>
-		</screen>
-		<para>我的配置</para>
-		<screen>
+			</screen>
+			<para>我的配置</para>
+			<screen>
 			<![CDATA[
 spring.application.name=web
 server.port=8443
@@ -174,9 +299,9 @@ server.ssl.key-store-type=PKCS12
 server.ssl.key-store-password=123456
 server.http2.enabled=true
 			]]>
-		</screen>
-		<para>使用 curl 访问可以看到 HTTP/2 字样，表示成功</para>
-		<screen>
+			</screen>
+			<para>使用 curl 访问可以看到 HTTP/2 字样，表示成功</para>
+			<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % curl -i -k https://localhost:8443/ping
 HTTP/2 200 
@@ -186,6 +311,7 @@ date: Tue, 09 Apr 2019 08:41:29 GMT
 
 Pong%    			
 			]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 </chapter>

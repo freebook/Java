@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.event">
-	<title>Spring boot with event</title>
+	<title>Spring boot with event(Spring Event)</title>
 	<section>
 		<title>定义事件（Event）</title>
 		<para>事件需继承 ApplicationEvent（或使用 @Event 注解），用于封装传递的数据。</para>

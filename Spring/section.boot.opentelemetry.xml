@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="">
+	<title>Spring Boot 4 + OpenTelemetry</title>
+	<section>
+		<title>依赖配置</title>
+		<para>首先，在你的pom.xml中添加依赖：</para>
+		<screen>
+		<![CDATA[
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-opentelemetry</artifactId>
+</dependency>		
+		]]>
+		</screen>
+		<para>然后在application.yml中添加配置：# application.yml</para>
+		<screen>
+		<![CDATA[
+spring:
+  application:
+    name: meeting-service # 服务名称，会出现在追踪中
+		
+management:
+  tracing:
+    sampling:
+      probability: 1.0 # 采样率，生产环境可调低
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318 # OTLP接收端点
+  metrics:
+    export:
+      otlp:
+        enabled: true
+		]]>
+		</screen>
+		
+		
+	</section>
+	<section>
+		<title>定义 Span</title>
+		<para>通过注解添加自定义 Span：</para>
+		<screen>
+		<![CDATA[
+import io.opentelemetry.instrumentation.annotations.WithSpan;
+
+@Service
+public class OrderService {
+    
+    @WithSpan("process-order") // 自定义Span名称
+    public Order processOrder(OrderRequest request) {
+        // 业务逻辑会自动被追踪
+        validateRequest(request); // 子Span自动创建
+        checkInventory(request.getItems());
+        createOrderRecord(request);
+        return order;
+    }
+}		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>日志追踪</title>
+		<para>在logback-spring.xml 中配置日志模式包含追踪信息：</para>
+		<screen>
+		<![CDATA[
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-}] [%X{spanId:-}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
+		]]>
+		</screen>
+	</section>
+</chapter>
