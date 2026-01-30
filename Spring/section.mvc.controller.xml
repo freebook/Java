@@ -2428,3 +2428,58 @@ public class MyController {
 		</programlisting>
 	</section>
 </section>
+<section>
+	<title>Springboot 4.0</title>
+	<section>
+		<title>Api 版本控制</title>
+		<para>URL 传版本 /your/path?version=2</para>
+		<para>application.properties 文件开启 apiversion 配置</para>
+		<screen>
+		<![CDATA[
+spring.mvc.apiversion.enabled=true
+spring.mvc.apiversion.use.query-parameter=version
+spring.mvc.apiversion.default=1		
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+    @GetMapping(value = "download", version = "1")
+    public JsonResponse assets(
+            @PathVariable("device") String device,
+            @RequestParam("taskId") String taskId
+    ) {
+        Map<String, String> assets = assetsService.download(taskId);
+        return JsonResponse.data(assets);
+    }
+
+    @GetMapping(path = "download", version = "2")
+    public JsonResponse download(
+            @PathVariable("device") String device,
+            @RequestParam("taskId") String taskId
+    ) {
+        List<Assets> assets = assetsService.download2(taskId);
+        return JsonResponse.data(assets);
+    }		
+		]]>
+		</programlisting>
+		<para>http 头方式</para>
+		<screen>
+		<![CDATA[
+spring.mvc.apiversion.enabled=true
+spring.mvc.apiversion.use.query-parameter=version
+spring.mvc.apiversion.use.header=Version
+spring.mvc.apiversion.default=1
+		]]>
+		</screen>
+		<para>http 头方式</para>
+		<screen>
+		<![CDATA[
+spring.mvc.apiversion.enabled=true
+spring.mvc.apiversion.use.query-parameter=version
+spring.mvc.apiversion.use.header=Version
+spring.mvc.apiversion.use.path-segment=1
+spring.mvc.apiversion.default=1
+		]]>
+		</screen>
+	</section>
+</section>
