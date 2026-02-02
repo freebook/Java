@@ -2171,6 +2171,96 @@ public class C extends A{
 			]]>
 			</programlisting>
 		</section>
+		<section id="Column.GENERATED">
+			<title>虚拟列</title>
+			<para>MySQL 虚拟列，用于自动计算，columnDefinition 是 MySQL 原生实现，@Formula 是JPA实现</para>
+			<programlisting>
+			<![CDATA[
+    @Column(insertable = false, updatable = false, columnDefinition = "FLOAT GENERATED ALWAYS AS (prompt_tokens / 1000000 * 2 + completion_tokens / 1000000 * 3) VIRTUAL", comment = "成本")
+    @Formula("prompt_tokens /1000000 * 2 + completion_tokens / 1000000 * 3")
+    private float cost;
+			]]>
+			</programlisting>
+			<para>请看下面例子</para>
+			<programlisting>
+			<![CDATA[
+package cn.aigcsst.domain.meeting;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(comment = "Token 消耗")
+@DynamicUpdate
+@DynamicInsert
+@Data
+public class Token implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "int unsigned", comment = "主键")
+    private Integer id;
+
+    @Column(length = 32, nullable = false, insertable = true, updatable = false, comment = "设备")
+    private String device;
+
+    @Column(nullable = false, insertable = true, updatable = false, comment = "会议ID")
+    private String taskId;
+
+    @Column(nullable = false, insertable = true, updatable = false, comment = "模型")
+    private String model;
+
+    @Column(nullable = false, insertable = true, updatable = false, comment = "服务")
+//    @Enumerated(EnumType.STRING)
+    private String service;
+
+
+    @Column(nullable = false, insertable = true, updatable = false, comment = "输出 token")
+    private Integer promptTokens;
+
+    @Column(nullable = false, insertable = true, updatable = false, comment = "输出 token")
+    private Integer completionTokens;
+
+    @Column(nullable = false, insertable = true, updatable = false, comment = "总消耗 token")
+    private Integer totalTokens;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "FLOAT GENERATED ALWAYS AS (prompt_tokens / 1000000 * 2 + completion_tokens / 1000000 * 3) VIRTUAL", comment = "成本")
+    @Formula("prompt_tokens /1000000 * 2 + completion_tokens / 1000000 * 3")
+    private float cost;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", comment = "创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime ctime;
+}
+
+			]]>
+			</programlisting>
+			<para>生成数据库结构如下</para>
+			<programlisting>
+			<![CDATA[
+CREATE TABLE `token` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `completion_tokens` int NOT NULL COMMENT '消耗 completionTokens',
+  `ctime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `device` varchar(32) NOT NULL COMMENT '设备',
+  `model` varchar(255) NOT NULL COMMENT '模型',
+  `prompt_tokens` int NOT NULL COMMENT '消耗 promptTokens',
+  `service` varchar(255) NOT NULL COMMENT '服务',
+  `task_id` varchar(255) NOT NULL COMMENT '会议',
+  `total_tokens` int NOT NULL COMMENT '消耗 totalTokens',
+  `cost` float GENERATED ALWAYS AS ((((`prompt_tokens` / 1000000) * 2) + ((`completion_tokens` / 1000000) * 3))) VIRTUAL COMMENT '成本',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=480 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Token 消耗'
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="@ElementCollection">
 		<title>映射集合属性</title>
