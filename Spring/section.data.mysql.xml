@@ -2184,7 +2184,7 @@ public class C extends A{
 			<para>请看下面例子</para>
 			<programlisting>
 			<![CDATA[
-package cn.aigcsst.domain.meeting;
+package cn.netkiller.domain.meeting;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -2258,6 +2258,71 @@ CREATE TABLE `token` (
   `cost` float GENERATED ALWAYS AS ((((`prompt_tokens` / 1000000) * 2) + ((`completion_tokens` / 1000000) * 3))) VIRTUAL COMMENT '成本',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=480 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Token 消耗'
+			]]>
+			</programlisting>
+		</section>
+		<section id="Entity.Locale">
+			<title>语言区域</title>
+			<para>java.util.Locale 作为数据类型需要注意的是，数据库中存储的是 zh_CN，对象中是 zh-CN</para>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.domain.device;
+
+import cn.netkiller.enums.Department;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serializable;
+import java.util.Locale;
+
+@Entity
+@Table(
+        comment = "参数设置表"
+)
+@DynamicUpdate
+@DynamicInsert
+@Data
+public class Settings implements Serializable {
+    @Id
+    @Column(length = 32, unique = true, nullable = false, insertable = true, updatable = false, comment = "设备")
+    private String device;
+
+//    @Column(columnDefinition = "enum('zh_CN','zh_TW','en_US') DEFAULT 'zh_CN'", comment = "语言区域")
+    @Column(columnDefinition = "CHAR(5) DEFAULT 'zh_CN'", comment = "语言区域")
+    private Locale locale = Locale.CHINA;
+
+    @Column(comment = "使用部门")
+    @Enumerated(EnumType.STRING)
+    private Department department;
+
+    @Column(comment = "Leave a message（留言）")
+//    @Column(length = 8)
+    private String message;
+
+    @Column(length = 36, comment = "企业微信群")
+    private String weComGroup;
+
+    @Column(comment = "菜单功能")
+    private Boolean menu = false;
+}
+
+			]]>
+			</programlisting>
+			<para>初始化</para>
+			<programlisting>
+			<![CDATA[
+Settings settings = new Settings();
+settings.setDevice(device.getSn());
+settings.setLocale(Locale.CHINA);
+settingsRepository.save(settings);
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+        log.debug(settings.getLocale().toString()); // zh_CN
+        log.debug(settings.getLocale().toLanguageTag()); // zh-CN		
 			]]>
 			</programlisting>
 		</section>

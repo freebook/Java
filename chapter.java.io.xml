@@ -60,6 +60,56 @@ if (!dirname.isDirectory())
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>获取路径中目录和文件名</title>
+			<programlisting>
+			<![CDATA[
+import java.io.File;
+
+public class GetDirectory {
+    public static void main(String[] args) {
+        String path = "development/2026-03-01/5e021a21153a48828a2a19283b03ebaa/家庭用车选择丰田双擎的优势(甘特图).svg";
+        
+        File file = new File(path);
+        // 获取文件所在的目录
+        String directory = file.getParent();
+        
+        System.out.println("目录路径：" + directory);
+    }
+}    
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+import java.io.File;
+
+public class FileNameExtractor {
+    public static void main(String[] args) {
+        String path = "development/2026-03-01/5e021a21153a48828a2a19283b03ebaa/家庭用车选择丰田双擎的优势(甘特图).svg";
+        
+        File file = new File(path);
+        String fileName = file.getName(); // 直接获取文件名
+        
+        System.out.println("提取到的文件名：" + fileName);
+    }
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+public class FileNameExtractor {
+    public static void main(String[] args) {
+        String path = "development/2026-03-01/5e021a21153a48828a2a19283b03ebaa/家庭用车选择丰田双擎的优势(甘特图).svg";
+        
+        // 按 / 分割，取最后一段就是文件名
+        String fileName = path.split("/")[path.split("/").length - 1];
+        
+        System.out.println("提取到的文件名：" + fileName);
+    }
+}			
+			]]>
+			</programlisting>
+		</section>
 		<section id="File.createTempFile">
 			<title>临时文件</title>
 			<programlisting>
