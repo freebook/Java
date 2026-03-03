@@ -534,7 +534,8 @@ picture[]: gather/be7572e4df527b4389d605766ea65aafcf2d822a.jpg
 		<section>
 			<title>Boolean 值</title>
 			<para>@RequestParam(value = "secondary", required = false,
-				defaultValue = "false") Boolean secondary</para>
+				defaultValue = "false") Boolean secondary
+			</para>
 			<programlisting>
 			<![CDATA[
     @PostMapping("create/premium")
@@ -597,8 +598,11 @@ public void displayHeaderInfo(@RequestHeader("Accept-Encoding") String encoding,
 } 
 		]]>
 		</programlisting>
-		<para>获取用户当前语言</para>
-		<programlisting>
+		<section>
+			<title>Accept-Language</title>
+
+			<para>获取用户当前语言</para>
+			<programlisting>
 		<![CDATA[
 	@GetMapping("/lang")
 	public String language(@RequestHeader("Accept-Language") String locale ) {
@@ -606,9 +610,9 @@ public void displayHeaderInfo(@RequestHeader("Accept-Encoding") String encoding,
 		return locale;
 	}				
 		]]>
-		</programlisting>
-		<para>下面代码可以获得相同效果</para>
-		<programlisting>
+			</programlisting>
+			<para>下面代码可以获得相同效果</para>
+			<programlisting>
 		<![CDATA[
 	@GetMapping("/lang")
 	public String language(Locale locale) {
@@ -623,7 +627,8 @@ public void displayHeaderInfo(@RequestHeader("Accept-Encoding") String encoding,
 		return locale;
 	}
 		]]>
-		</programlisting>
+			</programlisting>
+		</section>
 		<section>
 			<title>@RequestHeader 从 Http 头中获取变量</title>
 			<programlisting>
@@ -638,6 +643,7 @@ public void displayHeaderInfo(@RequestHeader("Accept-Encoding") String encoding,
 			]]>
 			</programlisting>
 		</section>
+
 	</section>
 	<section id="@PathVariable">
 		<title>RequestMapping with Path Variables - @PathVariable</title>
@@ -1403,6 +1409,27 @@ neo@Mac ~ % curl "http://localhost:8080/tools/url?id=10&name=neo"
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>HttpServletRequest 遍历 Http header 头</title>
+			<programlisting>
+			<![CDATA[
+@PostMapping("translate/callback")
+    public String callback(@RequestBody String jsonString, HttpServletRequest request) {
+
+		log.debug("authorization {} {}", authorization, jsonString);
+        java.util.Enumeration<String> headers = request.getHeaderNames();
+
+        while (headers.hasMoreElements()) {
+            String key = headers.nextElement();
+            String value = request.getHeader(key);
+            log.warn("{}={}", key, value);
+
+        }
+        return jsonString;
+    }
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 
@@ -1413,11 +1440,14 @@ neo@Mac ~ % curl "http://localhost:8080/tools/url?id=10&name=neo"
 	<section>
 		<title>接口设计中 URL 参数，FORM 参数，JSON 怎么选择</title>
 		<para>URL 参数，只能传递简单数据类型，参数可以在 web 服务器日志中看到，方便调试。可以在 Web 服务器中拦截，能用于
-			7层负载均衡转发策略中。还能做数据统计分析。</para>
+			7层负载均衡转发策略中。还能做数据统计分析。
+		</para>
 		<para>form data 数据提交的优势是简单，key-value
-			对应，一般情况下，web服务器不做特殊设置，是看不到数据的，数据类型支持数组等简单类型。</para>
+			对应，一般情况下，web服务器不做特殊设置，是看不到数据的，数据类型支持数组等简单类型。
+		</para>
 		<para>json 方案是应对复杂的数据结构，方便进行反序列化操作，除了常规数据类型 int/float/string/bool 还支持
-			map,list 以及用户定义的 class </para>
+			map,list 以及用户定义的 class
+		</para>
 	</section>
 	<section>
 		<title>返回迭代器</title>
@@ -2146,7 +2176,7 @@ public SseEmitter sse() {
     }			
 			]]>
 			</programlisting>
-			
+
 		</section>
 
 		<section id="ResponseBodyEmitter">
