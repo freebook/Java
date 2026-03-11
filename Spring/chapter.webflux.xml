@@ -135,6 +135,7 @@ Hello world!%
 	&section.webflux.xml;
 	&section.webflux.webclient.xml;
 	&section.webflux.security.xml;
+	&section.webflux.data.xml;
 	&section.webflux.faq.xml;
 	
 </chapter>

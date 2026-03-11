@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
 	<title>Webflux 安全</title>
-	<section>
+	<section id="webflux.webfilter">
 		<title>Token 拦截器</title>
 		<programlisting>
 			<![CDATA[
@@ -45,7 +45,7 @@ public class TokenWebFilter implements WebFilter {
 		</programlisting>
 		
 	</section>
-	<section>
+	<section id="webflux.jwt">
 		<title>JWT</title>
 		<programlisting>
 		<![CDATA[
@@ -249,8 +249,14 @@ public class JwtTokeComponent {
 		
 		]]>
 		</programlisting>
+		<para>通过注解跳过 Token 验证</para>
+		<programlisting>
+		<![CDATA[
+	
+		]]>
+		</programlisting>
 	</section>
-	<section>
+	<section id="webflux.security">
 		<title>spring-boot-starter-security</title>
 
 		<programlisting>

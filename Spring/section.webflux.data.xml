@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="webflux.r2dbc">
+	<title>R2DBC</title>
+	<section>
+		<title>MySQL</title>
+		<section>
+			<title></title>
+			<programlisting>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.netkiller</groupId>
+    <artifactId>cordyceps</artifactId>
+    <version>1.0.0</version>
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>aliyun-repos</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+    <properties>
+        <java.version>25</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-statemachine.version>4.0.1</spring-statemachine.version>
+        <docker.registry>http://localhost/registry</docker.registry>
+    </properties>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.0.3</version>
+        <relativePath/>
+    </parent>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+  
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+        </dependency>
+        <!-- a R2DBC driver -->
+        <!-- https://mvnrepository.com/artifact/io.asyncer/r2dbc-mysql -->
+        <dependency>
+            <groupId>io.asyncer</groupId>
+            <artifactId>r2dbc-mysql</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.aliyun.oss/aliyun-sdk-oss -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.18.3</version>
+        </dependency>
+
+        <!-- 阿里云短信服务依赖 -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <!--            <version>4.1.76.Final</version>-->
+            <classifier>osx-aarch_64</classifier>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>cn.netkiller.Application</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <release>${java.version}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <imageName>netkiller/${project.artifactId}</imageName>
+                    <baseImage>openjdk:25</baseImage>
+                    <maintainer>netkiller@msn.com</maintainer>
+                    <volumes>/tmp</volumes>
+                    <workdir>/srv</workdir>
+                    <exposes>8080</exposes>
+                    <env>
+                        <JAVA_OPTS>-server -Xms128m -Xmx2048m</JAVA_OPTS>
+                    </env>
+                    <entryPoint>["sh", "-c", "java ${JAVA_OPTS} -jar /srv/${project.build.finalName}.jar
+                        ${SPRING_OPTS}"]
+                    </entryPoint>
+                    <resources>
+                        <resource>
+                            <targetPath>/srv</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                    <image>netkiller/${project.artifactId}</image>
+                    <newName>netkiller/${project.artifactId}:${project.version}</newName>
+                    <!-- <serverId>docker-hub</serverId> -->
+                    <registryUrl>http://${docker.registry}/v2/</registryUrl>
+                    <imageTags>
+                        <imageTag>log4j2</imageTag>
+                        <!-- <imageTag>undertow</imageTag> <imageTag>tomcat</imageTag> <imageTag>${project.version}</imageTag> <imageTag>latest</imageTag> -->
+                    </imageTags>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
+			]]>
+			</programlisting>
+			<section>
+				<title>数据库配置</title>
+				<programlisting>
+				<![CDATA[
+spring.r2dbc.url=r2dbc:mysql://localhost:3306/beta?useUnicode=true&characterEncoding=UTF-8
+spring.r2dbc.username=root
+spring.r2dbc.password=chen
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>启动文件</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
+
+@SpringBootApplication
+@EnableR2dbcRepositories
+@EnableAutoConfiguration
+public class Application {
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+
+    @Value("${spring.application.name}")
+    public String name;
+
+    static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @PostConstruct
+    public void init() {
+        logger.info(String.format("==================== %s 系统启动 ====================", name));
+    }
+
+    @PreDestroy
+    public void destroy() {
+        logger.info(String.format("==================== %s 系统销毁 ====================", name));
+    }
+}				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>仓库</title>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.domain;
+
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@Table()
+@Data
+public class Device implements Serializable {
+    @Serial
+    public static final long serialVersionUID = 1L;
+
+    @Id
+    private Integer id;
+    private String androidId;
+    private String model;
+    private String fireware;
+    private String version;
+    private String brand;
+    private String cpu;
+    private String device;
+    private String display;
+    private String fingerprint;
+    private String hardware;
+    private String manufacturer;
+    private String product;
+    //    private LocalDateTime expired;
+    private String status;
+    private String description;
+    private LocalDateTime ctime;
+    private LocalDateTime mtime;
+
+}				
+				]]>
+				</programlisting>
+				<programlisting>
+				<![CDATA[
+package cn.netkiller.repository;
+
+import cn.netkiller.domain.Device;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
+
+@Repository
+public interface DeviceRepository extends ReactiveCrudRepository<Device, Integer> {
+    Mono<Device> findByAndroidId(String androidId);
+
+}				
+				]]>
+				</programlisting>
+			</section>
+			<section>
+				<title>控制器中调用</title>
+				<programlisting>
+			<![CDATA[
+    @GetMapping("count")
+    public JsonResponse count() {
+        long number = deviceRepository.count().block();
+        return JsonResponse.builder().status(true).code(String.valueOf(Code.SUCCESS)).reason("成功").data(number).build();
+    }
+
+
+    @GetMapping("query/{androidId}")
+    public JsonResponse query(@PathVariable("androidId") String androidId) {
+        Mono<Device> mono = deviceRepository.findByAndroidId(androidId);
+        return JsonResponse.data(mono.block());
+    }			
+			]]>
+				</programlisting>
+			</section>
+		</section>
+	</section>
+	<section id="R2dbcEntityTemplate">
+		<title>R2dbcEntityTemplate</title>
+		<para>通过注解跳过 Token 验证</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.controller;
+
+import cn.netkiller.annotation.TokenPass;
+import cn.netkiller.component.JwtTokenComponent;
+import cn.netkiller.domain.Device;
+import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.relational.core.query.Query;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+import java.util.Map;
+
+@RestController
+@Slf4j
+@TokenPass
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/")
+public class HomeController {
+
+    private final R2dbcEntityTemplate template;
+
+    @Autowired
+    private JwtTokenComponent jwtTokenComponent;
+
+    public HomeController(R2dbcEntityTemplate template) {
+        this.template = template;
+    }
+
+    @GetMapping()
+    public String index() {
+        return "OK";
+    }
+
+    @GetMapping("/ping")
+    @TokenPass
+    public Mono<String> ping() {
+        return Mono.just("pong");
+    }
+
+    @PostMapping("test")
+    public Mono<Device> test(@RequestParam("id") String id) {
+        return template.selectOne(
+                Query.query(Criteria.where("id").is(id)),
+                Device.class
+        );
+    }
+
+}
+	
+		]]>
+		</programlisting>
+	</section>
+</section>
+<section id="redis-reactive">
+	<title>Webflux Redis</title>
+	<section>
+		<title>Maven Redis 依赖</title>
+		<screen>
+			<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Redis 配置</title>
+		<screen>
+			<![CDATA[
+server:
+  port: 8080
+spring:
+  application:
+    name: webflux
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: pwd2020
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 200
+        max-idle: 20
+        min-idle: 5
+        max-wait: 1000
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Config</title>
+		<programlisting>
+			<![CDATA[
+	@Bean
+	public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
+		ReactiveRedisTemplate<String, String> reactiveRedisTemplate = new ReactiveRedisTemplate<>(factory,RedisSerializationContext.string());
+		return reactiveRedisTemplate;
+	}
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Service</title>
+		<programlisting>
+			<![CDATA[
+@Service
+public class RedisServiceImpl implements RedisService {
+
+	@Autowired
+	private ReactiveRedisTemplate<String, String> redisTemplate;
+
+	@Override
+	public Mono<String> get(String key) {
+
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.get(key);
+	}
+
+	@Override
+	public Mono<String> set(String key,User user) {
+
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.getAndSet(key, JSON.toJSONString(user));
+	}
+
+	@Override
+	public Mono<Boolean> delete(String key) {
+
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.delete(key);
+	}
+
+	@Override
+	public Mono<String> update(String key,User user) {
+
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return operations.getAndSet(key, JSON.toJSONString(user));
+	}
+
+	@Override
+	public Flux<String> all(String key) {
+		ReactiveListOperations<String, String> operations = redisTemplate.opsForList();
+		return operations.range(key, 0, -1);
+	}
+
+
+	@Override
+	public Mono<Long> push(String key,List<String> list) {
+
+		ReactiveListOperations<String, String> operations = redisTemplate.opsForList();
+		return operations.leftPushAll(key, list);
+	}
+
+	@Override
+	public Flux<String> find(String key) {
+		ReactiveValueOperations<String, String> operations = redisTemplate.opsForValue();
+		return redisTemplate.keys(key).flatMap(keyId ->operations.get(keyId));
+	}
+}
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>RestController</title>
+		<programlisting>
+			<![CDATA[
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+	public final static String USER_KEY="user";
+
+	@Autowired
+	private RedisService redisService;
+
+	@GetMapping("/get/{key}")
+	public Mono<String> getUserByKey(@PathVariable("id")String key){
+		return redisService.get(key);
+	}
+
+	@GetMapping("/add")
+	public Mono<String> add(User user){
+		user = new User();
+		user.setAccount("neo");
+		user.setPassword("123456");
+		user.setNickname("netkiller");
+		user.setEmail("netkiller@msn.com");
+		user.setPhone("");
+		user.setGender(true);
+		user.setBirthday("1980-01-30");
+		user.setProvince("广东省");
+		user.setCity("深圳市");
+		user.setCounty("南山区");
+		user.setAddress("");
+		user.setState("Enabled");
+
+		System.out.println(JSON.toJSONString(user));
+		return redisService.set("neo",user);
+	}
+
+	@GetMapping("/addlist")
+	public Mono<Long> addlist(){
+		List<String> list=new ArrayList<String>();
+		User user = new User();
+		user.setAccount("neo");
+		user.setPassword("123456");
+		user.setNickname("netkiller");
+		user.setEmail("netkiller@msn.com");
+		user.setPhone("");
+		user.setGender(true);
+		user.setBirthday("1980-01-30");
+		user.setProvince("广东省");
+		user.setCity("深圳市");
+		user.setCounty("南山区");
+		user.setAddress("");
+		user.setState("Enabled");
+
+		//添加第一条数据
+		list.add(JSON.toJSONString(user));
+		//添加第二条数据
+		list.add(JSON.toJSONString(user));
+		//添加第三条数据
+		list.add(JSON.toJSONString(user));
+
+		return redisService.addlist("list", list);
+	}
+
+	@GetMapping(value="/findAll",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	public Flux<String> findAll(){
+		return redisService.all("list").delayElements(Duration.ofSeconds(2));
+	}
+
+	@GetMapping("/getUsers")
+	public Flux<String> findUsers() {
+		return redisService.find("*").delayElements(Duration.ofSeconds(2));
+	}
+}
+			]]>
+		</programlisting>
+	</section>
+</section>
+<section id="mongodb-reactive">
+	<title>Webflux Mongdb</title>
+	<section>
+		<title>Maven 依赖</title>
+		<screen>
+			<![CDATA[
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+	</dependency>
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Repository</title>
+		<programlisting>
+			<![CDATA[
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+
+import cn.netkiller.entity.User;
+
+public interface UserRepository extends ReactiveMongoRepository<User, Long>{
+
+}
+			]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>Service</title>
+		<screen>
+			<![CDATA[
+@Service
+public class MongoServiceImpl implements MongoService {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Override
+	public Mono<User> getById(Long id) {
+		return userRepository.findById(id);
+	}
+
+	@Override
+	public Mono<User> addUser(User user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public Mono<Boolean> deleteById(Long id) {
+		 userRepository.deleteById(id);
+		 return Mono.create(userMonoSink -> userMonoSink.success());
+	}
+
+	@Override
+	public Mono<User> updateById(User user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public Flux<User> findAllUser() {
+		return userRepository.findAll();
+	}
+}
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>控制器</title>
+		<programlisting>
+			<![CDATA[
+@RestController
+@RequestMapping("/usermg")
+public class UserMongoController {
+
+	@Autowired
+	private MongoService mongoService;
+
+	@GetMapping("/add")
+	public Mono<User> add(User user) {
+		user = new User();
+		User user = new User();
+		user.setAccount("neo");
+		user.setPassword("123456");
+		user.setNickname("netkiller");
+		user.setEmail("netkiller@msn.com");
+		user.setPhone("");
+		user.setGender(true);
+		user.setBirthday("1980-01-30");
+		user.setProvince("广东省");
+		user.setCity("深圳市");
+		user.setCounty("南山区");
+		user.setAddress("");
+		user.setState("Enabled");
+
+
+		System.out.println(JSON.toJSONString(user));
+		return mongoService.addUser(user);
+
+	}
+
+	/**
+	 *	注意这里 produces = MediaType.APPLICATION_STREAM_JSON_VALUE 必须这样设置
+	 */
+	@GetMapping(value="/findAll",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+	public Flux<User> findAll(){
+		return mongoService.findAllUser().delayElements(Duration.ofSeconds(1));
+	}
+}
+			]]>
+		</programlisting>
+		<para>produces
+			如果不是application/stream+json则调用端无法滚动得到结果，将一直阻塞等待数据流结束或超时。
+		</para>
+	</section>
+</section>
