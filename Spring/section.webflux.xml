@@ -345,28 +345,26 @@ spring.thymeleaf.view-names= # Comma-separated list of view names that can be re
 		</section>
 
 	</section>
-</section>
-
-<section id="webflux.mono">
-	<title>Mono</title>
-	<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
-	<section>
-		<title>Mono.just()/Mono.justOrEmpty()</title>
-		<programlisting>
+	<section id="webflux.mono">
+		<title>Mono</title>
+		<para>Mono(返回0或1个元素)/Flux(返回0-n个元素)</para>
+		<section>
+			<title>Mono.just()/Mono.justOrEmpty()</title>
+			<programlisting>
 		<![CDATA[
 Mono.justOrEmpty(Optional.of("Netkiller")).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
+			</programlisting>
+		</section>
 
-	<section>
-		<title>MonoSink 创建 Mono</title>
-		<programlisting>
+		<section>
+			<title>MonoSink 创建 Mono</title>
+			<programlisting>
 		<![CDATA[
 Mono.create(sink -> sink.success("Netkiller")).subscribe(System.out::println);
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
     @GetMapping("mono")
     public Mono<Object> mono() {
@@ -381,12 +379,12 @@ Mono.create(sink -> sink.success("Netkiller")).subscribe(System.out::println);
                 });
     }
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Supplier 创建 Mono</title>
-		<para>从 Supplier 创建 Mono</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Supplier 创建 Mono</title>
+			<para>从 Supplier 创建 Mono</para>
+			<programlisting>
 		<![CDATA[
     @GetMapping("/get")
     private Mono<String> get() {
@@ -402,13 +400,13 @@ Mono.create(sink -> sink.success("Netkiller")).subscribe(System.out::println);
         return result;
     }
 		]]>
-		</programlisting>
-	</section>
+			</programlisting>
+		</section>
 
 
-	<section>
-		<title>then()</title>
-		<programlisting>
+		<section>
+			<title>then()</title>
+			<programlisting>
 		<![CDATA[
 Mono.empty()
     .then()
@@ -440,27 +438,27 @@ Mono.error(new RuntimeException("Something wrong"))
     .doOnError(i -> System.out.println("On error: " + i))
     .block();
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>异常处理</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>异常处理</title>
+			<programlisting>
 		<![CDATA[
 Mono.just("Netkiller")
         .concatWith(Mono.error(new IllegalStateException()))
         .subscribe(System.out::println, System.err::println);
 
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 Mono.just("Netkiller")
         .concatWith(Mono.error(new IllegalStateException()))
         .onErrorReturn("defaultError")
         .subscribe(System.out::println);
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
 Mono.just("Netkiller")
          .concatWith(Mono.error(new IllegalStateException()))
@@ -468,11 +466,11 @@ Mono.just("Netkiller")
          .subscribe(System.out::println);
 
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>同步阻塞等待结果</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>同步阻塞等待结果</title>
+			<programlisting>
 		<![CDATA[
         Mono.just("Hello World")
                 .doOnNext(i -> System.out.println("On next: " + i))
@@ -500,8 +498,8 @@ Mono.just("Netkiller")
 		    .block();
 
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
         Mono.delay(Duration.ofMillis(10)).map(d -> {
             System.out.println(d);
@@ -512,16 +510,16 @@ Mono.just("Netkiller")
             return d;
         }).subscribe(System.out::println);
 		]]>
-		</programlisting>
+			</programlisting>
 
+		</section>
 	</section>
-</section>
-<section id="webflux.flux">
-	<title>Flux 返回多条数据</title>
+	<section id="webflux.flux">
+		<title>Flux 返回多条数据</title>
 
-	<section>
-		<title>FluxSink 创建异步 Flux</title>
-		<programlisting>
+		<section>
+			<title>FluxSink 创建异步 Flux</title>
+			<programlisting>
 		<![CDATA[
         Flux<String> flux = Flux.create(sink -> {
             sink.next("Neo");
@@ -530,11 +528,11 @@ Mono.just("Netkiller")
         });
         flux.subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>SynchronousSink 创建同步 Flux</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>SynchronousSink 创建同步 Flux</title>
+			<programlisting>
 		<![CDATA[
         Flux<String> generate = Flux.generate(synchronousSink -> {
             synchronousSink.next("Neo");
@@ -542,9 +540,9 @@ Mono.just("Netkiller")
         });
         generate.subscribe(System.out::println);
 		]]>
-		</programlisting>
-		<para>多个值</para>
-		<programlisting>
+			</programlisting>
+			<para>多个值</para>
+			<programlisting>
 		<![CDATA[
 final Random random = new Random();
 Flux.generate(ArrayList::new, (list, sink) -> {
@@ -557,42 +555,42 @@ Flux.generate(ArrayList::new, (list, sink) -> {
     return list;
 }).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>just()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>just()</title>
+			<programlisting>
 		<![CDATA[
 //单个元素
 Flux.just("just").subscribe(System.out::println);
 //多个元素
 Flux.just("just", "just1", "just2").subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>从 Flux/Mono 创建 Flux</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>从 Flux/Mono 创建 Flux</title>
+			<programlisting>
 		<![CDATA[
 //Flux->Flux
 Flux.from(Flux.just("just", "just1", "just2")).subscribe(System.out::println);
 //Mono->Mono
 Flux.from(Mono.just("just")).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>消息订阅</title>
+			</programlisting>
+		</section>
+		<section>
+			<title>消息订阅</title>
 
-		<programlisting>
+			<programlisting>
 		<![CDATA[
 Flux.just("Netkiller1", "Netkiller2", "Netkiller3")
         .subscribe(data -> System.out.println("onNext:" + data), err -> {
         }, () -> System.out.println("onComplete"));
 		]]>
-		</programlisting>
-		<para>多个订阅者</para>
-		<programlisting>
+			</programlisting>
+			<para>多个订阅者</para>
+			<programlisting>
 		<![CDATA[
     List<String> list = new ArrayList<>();
         list.add("1");
@@ -605,9 +603,9 @@ Flux.just("Netkiller1", "Netkiller2", "Netkiller3")
         flux.subscribe(System.out::println);
         flux.subscribe(System.out::println);
 		]]>
-		</programlisting>
-		<para>手动控制</para>
-		<programlisting>
+			</programlisting>
+			<para>手动控制</para>
+			<programlisting>
 		<![CDATA[
 	Flux<String> flux = Flux.fromIterable(list);
         ConnectableFlux<String> con = flux.publish();
@@ -617,19 +615,19 @@ Flux.just("Netkiller1", "Netkiller2", "Netkiller3")
         // 手动的开启消费数据
         con.connect();
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>从 Flux/Mono 创建 Flux</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>从 Flux/Mono 创建 Flux</title>
+			<programlisting>
 		<![CDATA[
 Flux.fromArray(new String[] { "arr", "arr", "arr", "arr" }).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>从 Iterable 创建 Flux</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>从 Iterable 创建 Flux</title>
+			<programlisting>
 		<![CDATA[
 Set<String> v = new HashSet<>();
 v.add("1");
@@ -637,18 +635,18 @@ v.add("2");
 v.add("3");
 Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
 		]]>
-		</programlisting>
-		<para>autoConnect(5) 表示如果订阅者达到5个 就自动开启</para>
-		<programlisting>
+			</programlisting>
+			<para>autoConnect(5) 表示如果订阅者达到5个 就自动开启</para>
+			<programlisting>
 		<![CDATA[
         Flux<String> auto = flux.publish().autoConnect(5);
         auto.subscribe(System.out::println);
         auto.subscribe(System.out::println);
         auto.subscribe(System.out::println);
 		]]>
-		</programlisting>
-		<para>停止消费策略</para>
-		<programlisting>
+			</programlisting>
+			<para>停止消费策略</para>
+			<programlisting>
 		<![CDATA[
 		// 如果订阅者少于三个就会停止消费数据，直到订阅者达到三个为止
         Flux<String> auto = flux.publish().refCount(3);
@@ -664,15 +662,15 @@ Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
         auto.subscribe(System.out::println);
         auto.subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
+			</programlisting>
+		</section>
 
 
-	<section>
-		<title>从 Stream 创建 Flux</title>
+		<section>
+			<title>从 Stream 创建 Flux</title>
 
-		<para>从 Stream 返回 Flux</para>
-		<programlisting>
+			<para>从 Stream 返回 Flux</para>
+			<programlisting>
 		<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     private Flux<String> getWords() {
@@ -680,63 +678,63 @@ Flux.fromIterable(() -> v.iterator()).subscribe(System.out::println);
         return Flux.fromStream(items);
     }
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>defer()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>defer()</title>
+			<programlisting>
 		<![CDATA[
 Flux.defer(() -> Flux.just("just", "just1", "just2")).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section id="Flux.interval">
-		<title>Flux.interval()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section id="Flux.interval">
+			<title>Flux.interval()</title>
+			<programlisting>
 		<![CDATA[
 Flux.interval(Duration.of(500, ChronoUnit.MILLIS)).subscribe(System.out::println);
 Flux.interval(Duration.ofSeconds(2), Duration.ofMillis(200)).subscribe(System.out::println);
 
 Flux.intervalMillis(1000).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Flux.empty()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Flux.empty()</title>
+			<programlisting>
 		<![CDATA[
 Flux.empty().subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Flux.error()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Flux.error()</title>
+			<programlisting>
 		<![CDATA[
 Flux.error(new RuntimeException()).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Flux.never()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Flux.never()</title>
+			<programlisting>
 		<![CDATA[
 Flux.never().subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>Flux.range()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>Flux.range()</title>
+			<programlisting>
 		<![CDATA[
 Flux.range(0, 100).subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>返回数据</title>
-		<para>返回 List</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>返回数据</title>
+			<para>返回 List</para>
+			<programlisting>
 		<![CDATA[
     @GetMapping("flux")
     public Flux<Picture> flux() {
@@ -750,9 +748,9 @@ Flux.range(0, 100).subscribe(System.out::println);
         return Flux.fromIterable(list);
     }
 		]]>
-		</programlisting>
-		<para>返回 Map</para>
-		<programlisting>
+			</programlisting>
+			<para>返回 Map</para>
+			<programlisting>
 		<![CDATA[
     @GetMapping("map")
     public Flux<Map.Entry<String, String>> map() {
@@ -764,12 +762,12 @@ Flux.range(0, 100).subscribe(System.out::println);
         return Flux.fromIterable(map.entrySet());
     }
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>持续更新 Flux</title>
+			</programlisting>
+		</section>
+		<section>
+			<title>持续更新 Flux</title>
 
-		<programlisting>
+			<programlisting>
 	<![CDATA[
 		AtomicReference<FluxSink<String>> fluxSink = new AtomicReference<FluxSink<String>>();
 
@@ -781,9 +779,9 @@ Flux.range(0, 100).subscribe(System.out::println);
         fluxSink.get().next("Neo");
         fluxSink.get().next("Netkiller");
 	]]>
-		</programlisting>
+			</programlisting>
 
-		<programlisting>
+			<programlisting>
 		<![CDATA[
 	Consumer<String> producer;
 
@@ -818,8 +816,8 @@ Flux.range(0, 100).subscribe(System.out::println);
     }
 
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 	<![CDATA[
 interface MyEventListener<T> {
     void onDataChunk(List<T> chunk);
@@ -842,11 +840,11 @@ Flux<String> bridge = Flux.create(sink -> {
     });
 });
 	]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>map(), flatMap()</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>map(), flatMap()</title>
+			<programlisting>
 		<![CDATA[
         Flux.just(1, 2, 3, 4)
                 .log()
@@ -855,8 +853,8 @@ Flux<String> bridge = Flux.create(sink -> {
                 })
                 .subscribe(System.out::println);
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 		<![CDATA[
         Flux.just(1, 2, 3, 4)
                 .log()
@@ -865,13 +863,13 @@ Flux<String> bridge = Flux.create(sink -> {
                 })
                 .subscribe(System.out::println);
 		]]>
-		</programlisting>
+			</programlisting>
 
 
-	</section>
-	<section>
-		<title>过滤</title>
-		<programlisting>
+		</section>
+		<section>
+			<title>过滤</title>
+			<programlisting>
 		<![CDATA[
         Flux<Integer> flux = Flux.just(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
@@ -879,12 +877,12 @@ Flux<String> bridge = Flux.create(sink -> {
                 .filter(num -> num % 2 == 0) // 过滤掉奇数
                 .subscribe(System.out::println);
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>触发操作</title>
-		<para>doOnComplete 完成时执行</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>触发操作</title>
+			<para>doOnComplete 完成时执行</para>
+			<programlisting>
 	<![CDATA[
 AtomicBoolean onComplete = new AtomicBoolean();
         Flux<Integer> flux = Flux.just(1, 2, 3);
@@ -896,37 +894,132 @@ AtomicBoolean onComplete = new AtomicBoolean();
                 .subscribe(System.out::println);
         System.out.println(onComplete.get());
 	]]>
-		</programlisting>
+			</programlisting>
+		</section>
+		<section id="flux.parallel">
+			<title>并发</title>
+			<programlisting>
+	<![CDATA[
+        Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
+                .publishOn(Schedulers.parallel())
+                .flatMap(integer -> {
+                    System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
+                    return Mono.just(integer);
+                }, 5)
+                .repeat()
+                .subscribe();
+	]]>
+			</programlisting>
+			<programlisting>
+	<![CDATA[
+    @GetMapping(value = "parallel", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Integer> parallel() {
+        return Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
+                .publishOn(Schedulers.parallel())
+                .flatMap(integer -> {
+                    log.info("val:" + integer + ", thread:" + Thread.currentThread().getId());
+                    return Mono.just(integer);
+                }, 2).repeat(10L);
+
+    }
+	]]>
+			</programlisting>
+			<programlisting>
+	<![CDATA[
+Flux.just(1,2,3,4,5,6,7,8)
+    .parallel(2) // mention number of threads
+    .runOn(Schedulers.parallel())
+    .map(integer -> {
+             System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
+             return integer;
+        })
+    .subscribe();
+	]]>
+			</programlisting>
+			<programlisting>
+	<![CDATA[
+        Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
+                .publishOn(Schedulers.parallel()) // <- Each flux can be published in a different thread
+                .flatMap(integer -> {
+                    return Mono.fromCallable(() -> {
+                        System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
+                        log.info("val:" + integer + ", thread:" + Thread.currentThread().getId());
+                        return integer;
+                    }).publishOn(Schedulers.parallel()); // <- Each Mono processing every integer can be processed in a different thread
+                })
+                .repeat()
+                .subscribe();
+	]]>
+			</programlisting>
+			<programlisting>
+	<![CDATA[
+package cn.netkiller.test;
+
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
+
+
+public class Test {
+    public static void main(String[] args) {
+
+        Flux.create(sink -> {
+                    sink.next(Thread.currentThread().getName());
+                    sink.complete();
+                }).publishOn(Schedulers.single())
+                .map(x -> String.format("[%s] %s", Thread.currentThread().getName(), x))
+                .publishOn(Schedulers.immediate())
+                .map(x -> String.format("[%s] %s", Thread.currentThread().getName(), x))
+                .subscribeOn(Schedulers.parallel())
+                .toStream()
+                .forEach(System.out::println);
+
+    }
+}
+	]]>
+			</programlisting>
+			<programlisting>
+	<![CDATA[
+Flux.just(1,2,3,4,5,6,7,8)
+        .publishOn(Schedulers.parallel()) // <- Each flux can be published in a different thread
+        .flatMap(integer -> {
+            return Mono.fromCallable(() -> {
+                 System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
+                 return integer;
+            }).publishOn(Schedulers.parallel()); // <- Each Mono processing every integer can be processed in a different thread
+         })
+        .repeat()
+        .subscribe();
+	]]>
+			</programlisting>
+		</section>
 	</section>
-</section>
+	<section id="webflux.sse">
+		<title>SSE</title>
 
-<section id="webflux.sse">
-	<title>SSE</title>
-
-	<section>
-		<title>一次性事件</title>
-		<programlisting>
+		<section>
+			<title>一次性事件</title>
+			<programlisting>
 			<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> createConnectionAndSendEvents() {
         return Flux.just("Alpha", "Omega");
     }
 			]]>
-		</programlisting>
-		<para>curl 访问 SSE 需要设置HTTP头 -H "Accept: text/event-stream" </para>
-		<screen>
+			</programlisting>
+			<para>curl 访问 SSE 需要设置HTTP头 -H "Accept: text/event-stream" </para>
+			<screen>
 			<![CDATA[
 neo@MacBook-Pro-M2 ~ % curl -H "Accept: text/event-stream" -X 'GET' 'http://localhost:8080/mock/sse'
 data:Alpha
 
 data:Omega
 			]]>
-		</screen>
-		<tip>Safari 浏览器不支持 SSE推送，微软的 Egde 支持。</tip>
-	</section>
-	<section>
-		<title>从 Steam 返回数据</title>
-		<programlisting>
+			</screen>
+			<tip>Safari 浏览器不支持 SSE推送，微软的 Egde 支持。</tip>
+		</section>
+		<section>
+			<title>从 Steam 返回数据</title>
+			<programlisting>
 		<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     private Flux<String> getWords() {
@@ -934,12 +1027,12 @@ data:Omega
         return Flux.fromStream(items);
     }
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>周期性事件</title>
-		<para>每间隔一秒发送一次数据</para>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>周期性事件</title>
+			<para>每间隔一秒发送一次数据</para>
+			<programlisting>
 			<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     private Flux<String> getWords() {
@@ -960,11 +1053,11 @@ data:Omega
 	      .map(sequence -> "Flux - " + LocalTime.now().toString());
 	}
 			]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>返回 ServerSentEvent 数据结构</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>返回 ServerSentEvent 数据结构</title>
+			<programlisting>
 		<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     private Flux<ServerSentEvent<Object>> getWords() {
@@ -978,9 +1071,9 @@ data:Omega
                         .build());
     }
 		]]>
-		</programlisting>
-		<para>演示结果</para>
-		<screen>
+			</programlisting>
+			<para>演示结果</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro-M2 ~> curl http://localhost:8080/test/sse
 id:1
@@ -998,9 +1091,9 @@ event:hello
 data:我的昵称是 netkiller
 :测试数据
 		]]>
-		</screen>
-		<para>FluxSink 发送 ServerSentEvent</para>
-		<programlisting>
+			</screen>
+			<para>FluxSink 发送 ServerSentEvent</para>
+			<programlisting>
 		<![CDATA[
     @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> serverSentEvent() {
@@ -1022,11 +1115,11 @@ data:我的昵称是 netkiller
         return flux;
     }
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>SSE 完整的例子</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>SSE 完整的例子</title>
+			<programlisting>
 		<![CDATA[
 package cn.netkiller.webflux.controller;
 
@@ -1088,9 +1181,9 @@ public class SseController {
 }
 
 		]]>
-		</programlisting>
-		<para>运行结果</para>
-		<screen>
+			</programlisting>
+			<para>运行结果</para>
+			<screen>
 		<![CDATA[
 id:0
 event:launch
@@ -1137,11 +1230,11 @@ event:launch
 data:发射
 
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>SSE Client 订阅实例</title>
-		<programlisting>
+			</screen>
+		</section>
+		<section>
+			<title>SSE Client 订阅实例</title>
+			<programlisting>
 			<![CDATA[
  	@GetMapping("/server")
     public Flux<ServerSentEvent<String>> streamEvents() {
@@ -1172,121 +1265,14 @@ data:发射
                 () -> log.info("Completed!!!"));
     }
 			]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
-</section>
-<section id="flux.parallel">
-	<title>并发</title>
-	<programlisting>
-	<![CDATA[
-        Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
-                .publishOn(Schedulers.parallel())
-                .flatMap(integer -> {
-                    System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
-                    return Mono.just(integer);
-                }, 5)
-                .repeat()
-                .subscribe();
-	]]>
-	</programlisting>
-	<programlisting>
-	<![CDATA[
-    @GetMapping(value = "parallel", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Integer> parallel() {
-        return Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
-                .publishOn(Schedulers.parallel())
-                .flatMap(integer -> {
-                    log.info("val:" + integer + ", thread:" + Thread.currentThread().getId());
-                    return Mono.just(integer);
-                }, 2).repeat(10L);
-
-    }
-	]]>
-	</programlisting>
-	<programlisting>
-	<![CDATA[
-Flux.just(1,2,3,4,5,6,7,8)
-    .parallel(2) // mention number of threads
-    .runOn(Schedulers.parallel())
-    .map(integer -> {
-             System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
-             return integer;
-        })
-    .subscribe();
-	]]>
-	</programlisting>
-	<programlisting>
-	<![CDATA[
-        Flux.just(1, 2, 3, 4, 5, 6, 7, 8)
-                .publishOn(Schedulers.parallel()) // <- Each flux can be published in a different thread
-                .flatMap(integer -> {
-                    return Mono.fromCallable(() -> {
-                        System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
-                        log.info("val:" + integer + ", thread:" + Thread.currentThread().getId());
-                        return integer;
-                    }).publishOn(Schedulers.parallel()); // <- Each Mono processing every integer can be processed in a different thread
-                })
-                .repeat()
-                .subscribe();
-	]]>
-	</programlisting>
-	<programlisting>
-	<![CDATA[
-package cn.netkiller.test;
-
-import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
-
-
-public class Test {
-    public static void main(String[] args) {
-
-        Flux.create(sink -> {
-                    sink.next(Thread.currentThread().getName());
-                    sink.complete();
-                }).publishOn(Schedulers.single())
-                .map(x -> String.format("[%s] %s", Thread.currentThread().getName(), x))
-                .publishOn(Schedulers.immediate())
-                .map(x -> String.format("[%s] %s", Thread.currentThread().getName(), x))
-                .subscribeOn(Schedulers.parallel())
-                .toStream()
-                .forEach(System.out::println);
-
-    }
-}
-	]]>
-	</programlisting>
-	<programlisting>
-	<![CDATA[
-Flux.just(1,2,3,4,5,6,7,8)
-        .publishOn(Schedulers.parallel()) // <- Each flux can be published in a different thread
-        .flatMap(integer -> {
-            return Mono.fromCallable(() -> {
-                 System.out.println("val:" + integer + ", thread:" + Thread.currentThread().getId());
-                 return integer;
-            }).publishOn(Schedulers.parallel()); // <- Each Mono processing every integer can be processed in a different thread
-         })
-        .repeat()
-        .subscribe();
-	]]>
-	</programlisting>
-</section>
-<section id="ConnectableFlux">
-	<title>ConnectableFlux</title>
-	<programlisting>
-	<![CDATA[
-        AtomicBoolean onComplete = new AtomicBoolean();
-        ConnectableFlux<Integer> f = Flux.just(1)
-                .doOnComplete(() -> onComplete.set(true))
-                .publish();
-	]]>
-	</programlisting>
-</section>
-<section id="concatWithValues">
-	<title>末尾连接字符串 </title>
-	<section>
-		<title>concatWith</title>
-		<programlisting>
+	<section id="concatWithValues">
+		<title>末尾连接字符串 </title>
+		<section>
+			<title>concatWith</title>
+			<programlisting>
 		<![CDATA[
 // 使用 concatWith() 追加另一个 Flux
 Flux.just(1, 2, 3)
@@ -1295,11 +1281,11 @@ Flux.just(1, 2, 3)
 
 // 效果等同于 concatWithValues(4, 5, 6)
 		]]>
-		</programlisting>
-	</section>
-	<section>
-		<title>concatWithValues</title>
-		<programlisting>
+			</programlisting>
+		</section>
+		<section>
+			<title>concatWithValues</title>
+			<programlisting>
 		<![CDATA[
 Flux.just(1, 2, 0)
     .map(num -> 10 / num) // 除以 0 会触发错误
@@ -1314,8 +1300,8 @@ Flux.just(1, 2, 0)
 // 5   <- 追加的元素
 // 6
 		]]>
-		</programlisting>
-		<programlisting>
+			</programlisting>
+			<programlisting>
 	<![CDATA[
 public Flux<String> deepseek(String device, String taskId, String speakId, List<Map<String, String>> messages) {
 
@@ -1370,13 +1356,13 @@ public Flux<String> deepseek(String device, String taskId, String speakId, List<
                 });
     }
 	]]>
-		</programlisting>
+			</programlisting>
+		</section>
 	</section>
-</section>
-<section id="Flux.scan">
-	<title>Flux scan</title>
-	<para>计数</para>
-	<programlisting>
+	<section id="Flux.scan">
+		<title>Flux scan</title>
+		<para>计数</para>
+		<programlisting>
 	<![CDATA[
 import reactor.core.publisher.Flux;
 
@@ -1395,9 +1381,9 @@ public class ScanExample {
 // 10   <- 6 + 4
 // 15   <- 10 + 5
 	]]>
-	</programlisting>
-	<para>字符串追加</para>
-	<programlisting>
+		</programlisting>
+		<para>字符串追加</para>
+		<programlisting>
 	<![CDATA[
 Flux.just("a", "b", "c", "d")
     .scan("", (acc, current) -> acc + current) // 初始值为空字符串
@@ -1410,9 +1396,9 @@ Flux.just("a", "b", "c", "d")
 // "abc"
 // "abcd"
 	]]>
-	</programlisting>
-	<para></para>
-	<screen>
+		</programlisting>
+		<para></para>
+		<screen>
 	<![CDATA[
 class Counter {
     int evenCount = 0;
@@ -1440,20 +1426,34 @@ Flux.just(1, 2, 3, 4, 5)
 // 偶数: 2, 奇数: 2   <- 处理 4
 // 偶数: 2, 奇数: 3   <- 处理 5
 	]]>
-	</screen>
-	<para></para>
-	<programlisting>
+		</screen>
+		<para></para>
+		<programlisting>
 	<![CDATA[
 Flux.just("a", "b", "c", "d")
                 .scan(new StringBuffer(), (sentence, current) -> sentence.append(current)) // 初始值为空字符串
                 .skip(1)
                 .subscribe(System.out::println);
 	]]>
-	</programlisting>
+		</programlisting>
+	</section>
+	<section id="ConnectableFlux">
+		<title>ConnectableFlux</title>
+		<programlisting>
+	<![CDATA[
+        AtomicBoolean onComplete = new AtomicBoolean();
+        ConnectableFlux<Integer> f = Flux.just(1)
+                .doOnComplete(() -> onComplete.set(true))
+                .publish();
+	]]>
+		</programlisting>
+	</section>
 </section>
+
+
 <section id="webflux.NDJSON">
-    <title>Newline Delimited JSON (NDJSON) </title>
-    <programlisting>
+	<title>Newline Delimited JSON (NDJSON) </title>
+	<programlisting>
 	<![CDATA[
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
