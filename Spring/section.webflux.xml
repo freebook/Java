@@ -1448,6 +1448,96 @@ Flux.just("a", "b", "c", "d")
 	]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>上传文件并保存</title>
+		<programlisting>
+		<![CDATA[
+@PostMapping("/upload/files")
+Mono upload(@RequestPart("files") Flux<FilePart> filePartFlux) {
+    return filePartFlux.flatMap(file -> file.transferTo(Paths.get(file.filename())))
+      .then(Mono.just("OK"))
+      .onErrorResume(error -> Mono.just("Error uploading files"));
+}		
+		]]>
+		</programlisting>
+		<para>获取文件 bytes 字节码</para>
+		<programlisting>
+		<![CDATA[
+@PostMapping("/upload/files/save")
+Mono uploadFileSave(@RequestPart("files") Flux<FilePart> filePartFlux) {
+    File file = new File();
+
+    return filePartFlux.flatMap(filePart -> filePart.transferTo(Paths.get(filePart.filename()))
+      .then(Mono.just(filePart.filename())))
+      .collectList()
+      .flatMap(filenames -> {
+          file.setFilenames(filenames);
+          return fileService.save(file);
+      })
+      .onErrorResume(error -> Mono.error(error));
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+@PostMapping(value = "upload/{androidId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Mono<String> upload(@PathVariable("androidId") String androidId, @RequestPart("file") Mono<FilePart> filePart) {
+
+        return filePart.flatMap(file -> {
+                    Mono<byte[]> fileBytes = file.content().map(buffer -> {
+                                byte[] bytes = new byte[buffer.readableByteCount()];
+                                buffer.read(bytes);
+                                DataBufferUtils.release(buffer);
+                                return bytes;
+                            })
+                            .reduce(new ByteArrayOutputStream(), (os, b) -> {
+                                os.write(b, 0, b.length);
+                                return os;
+                            })
+                            .map(ByteArrayOutputStream::toByteArray);
+
+                    return fileBytes;
+                }).then(Mono.just("OK"))
+                .onErrorResume(error -> Mono.just("Error uploading files"));
+		]]>
+		</programlisting>
+		<para>获取文件输入流 InputStream</para>
+		<programlisting>
+		<![CDATA[
+@PostMapping(value = "upload/{androidId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Mono<JsonResponse<Object>> upload(@PathVariable("androidId") String androidId, @RequestPart("files") Flux<FilePart> fileParts) {
+        final Marker marker = MarkerFactory.getMarker(androidId);
+
+        return fileParts.flatMap(filePart -> {
+                    return filePart.content()
+                            .map(dataBuffer -> {
+                                // 将 DataBuffer 转换为 InputStream
+                                InputStream inputStream = dataBuffer.asInputStream();
+                                // 注意：需要正确处理 InputStream 的使用和关闭
+                                return inputStream;
+                            }).map(inputStream -> {
+                                String datetime = LocalDateTime.now().format(dateTimeFormatter);
+                                String objectName = String.format("%s/%s/%s/%s", "cordyceps", datetime, androidId, filePart.filename());
+                                Optional<String> optional = aliyunComponent.ossUploadFromInputStream(objectName, inputStream);
+                                optional.ifPresent(oss -> {
+                                    log.info(marker, oss);
+                                });
+                                return objectName;
+                            });
+
+                }).collectList()
+                .map(results -> {
+//                    StringBuilder sb = new StringBuilder("上传结果:\n");
+//                    results.forEach(r -> sb.append(r).append("\n"));
+//                    log.info(marker, sb.toString());
+                    return JsonResponse.builder().status(true).code(Code.SUCCESS.name()).reason("上传成功").data(results).build();
+                })
+                .onErrorResume(error -> Mono.just(JsonResponse.builder().status(false).code(Code.FAIL.name()).reason(error.getMessage()).data(null).build()));
+    }
+		
+		]]>
+		</programlisting>
+	</section>
 </section>
 
 
