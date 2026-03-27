@@ -107,7 +107,7 @@ user.dir 用户的当前工作目录
 			</section>
 			<section>
 				<title>user.dir</title>
-						<programlisting>
+				<programlisting>
 		<![CDATA[
 public class Test {
 
@@ -121,7 +121,7 @@ public class Test {
 	}
 }
 		]]>
-			</programlisting>
+				</programlisting>
 			</section>
 
 
@@ -133,7 +133,8 @@ public class Test {
 					System.out.println(System.getProperty("java.io.tmpdir"));
 				</programlisting>
 				<para>如果你希望从外部修改这个系统属性的话，你可以使用-D这个参数，例如 java
-					-Djava.io.tmpdir=/path/to/tmpdir</para>
+					-Djava.io.tmpdir=/path/to/tmpdir
+				</para>
 				<programlisting>
 					System.out.println(System.getProperty("java.io.tmpdir"));
 				</programlisting>
@@ -267,5 +268,26 @@ public class AnsiColorTest {
 			]]>
 			</programlisting>
 		</section>
+	</section>
+	<section>
+		<title>Java 嵌入 Python 代码</title>
+		<programlisting>
+		<![CDATA[
+// JDK 26 + Project Detroit
+public class PythonIntegration {
+    public static void main(String[] args) {
+        try (var python = PythonRuntime.newRuntime()) {
+            // 直接调用numpy等Python库
+            PythonObject result = python.eval("""
+                import numpy as np
+                a = np.array([1,2,3,4,5])
+                a.mean()
+                """);
+            System.out.println("均值: " + result.toDouble());
+        }
+    }
+}		
+		]]>
+		</programlisting>
 	</section>
 </chapter>

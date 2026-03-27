@@ -1630,6 +1630,34 @@ public class SecondsToMillisecondsWithDuration {
 }			
 			]]>
 			</programlisting>
+			<para>100000 毫秒 → 格式化为 00:10（分：秒）</para>
+			<programlisting>
+			<![CDATA[
+import java.time.Duration;
+
+public static String formatMsToMinSec(long milliseconds) {
+    Duration duration = Duration.ofMillis(milliseconds);
+    long minutes = duration.toMinutes();
+    long seconds = duration.minusMinutes(minutes).getSeconds();
+    
+
+    
+    // 格式化成 00:00
+    return String.format("%02d:%02d", minutes, seconds);
+}
+			
+			
+    String time = String.format("请求频率太频繁，请 %02d:%02d 后重试",
+                        Duration.ofMillis(expire).toMinutes(),
+                        Duration.ofMillis(expire).toSecondsPart()
+	);		
+
+Duration d = Duration.ofSeconds(100);
+String time = String.format("%02d:%02d", d.toMinutesPart(), d.toSecondsPart());
+
+                	
+			]]>
+			</programlisting>
 		</section>
 		<section>
 			<title>计算流逝时间</title>

@@ -421,7 +421,7 @@ public class Test {
 			</programlisting>
 		</section>
 	</section>
-	
+
 	<section id="InetAddress">
 		<title>获取IP地址何机器名</title>
 		<para>改变java.io.tmpdir的默认值</para>
@@ -439,6 +439,23 @@ public class Test {
             return ResponseEntity.ok(e.toString());
         }
     }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>HttpClient HTTP/3 （QUIC协议）</title>
+		<para>JDK 26 支持HTTP/3。</para>
+		<programlisting>
+		<![CDATA[
+HttpClient client = HttpClient.newBuilder()
+    .version(HttpClient.Version.HTTP_3)
+    .build();
+
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://example.com"))
+    .build();
+
+HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 		]]>
 		</programlisting>
 	</section>

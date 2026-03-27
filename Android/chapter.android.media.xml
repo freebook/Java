@@ -2208,6 +2208,10 @@ exoPlayer.setMediaSource(mediaSource)
 	</section>
 	<section>
 		<title>Opus</title>
-		<para>https://github.com/theeasiestway/android-opus-codec</para>
+		<!-- <para>https://github.com/theeasiestway/android-opus-codec</para> -->
+		<section>
+			<title>Kopus - A Kotlin Multiplatform library providing OPUS audio codec functionality for Android and iOS platforms.</title>
+			<para>https://github.com/voxkit/kopus</para>
+		</section>
 	</section>
 </chapter>

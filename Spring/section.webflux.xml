@@ -1233,6 +1233,44 @@ data:发射
 			</screen>
 		</section>
 		<section>
+			<title>判断 Flux 已经完成</title>
+			<programlisting>
+			<![CDATA[
+    @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<String>> sse() {
+
+        return Flux.interval(Duration.ofSeconds(1))
+                .map(sequence -> ServerSentEvent.builder("data-" + sequence).build())
+                .take(10) // 发10条结束
+
+                // ✅ 【正常完成】Flux 正常结束时触发
+                .doOnComplete(() -> {
+                    System.out.println("✅ SSE Flux 正常完成！");
+                })
+
+                // ✅ 【异常完成】发生错误时触发
+                .doOnError(ex -> {
+                    System.out.println("❌ SSE Flux 异常结束：" + ex.getMessage());
+                })
+
+                // ✅ 【最终完成】无论正常/异常/客户端断开，都会进这里！⭐⭐⭐
+                .doFinally(signalType -> {
+                    System.out.println("🔚 SSE 流最终关闭：" + signalType);
+
+                    // 你可以在这里：释放锁、关闭资源、记录日志
+                });
+    }			
+			]]>
+			</programlisting>
+			<para>输出结果</para>
+			<screen>
+			<![CDATA[
+✅ SSE Flux 正常完成！
+🔚 SSE 流最终关闭：onComplete
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>SSE Client 订阅实例</title>
 			<programlisting>
 			<![CDATA[

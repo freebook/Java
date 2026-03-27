@@ -221,6 +221,42 @@ Locale locale = Locale.US;
 Locale locale = Locale.getDefault();	// 默认语言	
 		]]>
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+Locale locale = Locale.ENGLISH;
+String lang = locale.getLanguage(); 
+// 结果：en
+
+Locale locale = Locale.CHINA;
+String lang = locale.getLanguage();
+// 结果：zh		
+		]]>
+		</programlisting>
+
+		<programlisting>
+		<![CDATA[
+HttpClient client = HttpClient.newBuilder()
+    .version(HttpClient.Version.HTTP_3)
+    .build();
+
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://example.com"))
+    .build();
+
+HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+		]]>
+		</programlisting>
+
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+		
+		]]>
+		</programlisting>
 	</section>
 	<section id="java.util.ResourceBundle">
 		<title>ResourceBundle</title>

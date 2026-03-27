@@ -344,6 +344,149 @@ public class BusinessService {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>读取锁过期时间</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.elastolink.controller;
+
+import cn.netkiller.elastolink.domain.device.Settings;
+import cn.netkiller.elastolink.repository.SettingsRepository;
+import cn.netkiller.elastolink.service.MenuService;
+import cn.netkiller.elastolink.utils.responses.JsonResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.MediaType;
+import org.springframework.integration.redis.util.RedisLockRegistry;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+
+@RestController
+@Slf4j
+@RequestMapping("/menu/{appId}/{device}")
+public class MenuController {
+
+
+    private final RedisLockRegistry redisLockRegistry;
+    private final RedisConnectionFactory redisConnectionFactory;
+    private final StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private MenuService menuService;
+
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    public MenuController(RedisConnectionFactory redisConnectionFactory, StringRedisTemplate stringRedisTemplate) {
+        this.redisConnectionFactory = redisConnectionFactory;
+        this.stringRedisTemplate = stringRedisTemplate;
+        redisLockRegistry = new RedisLockRegistry(
+                this.redisConnectionFactory,
+                "menu",
+                1000 * 60 * 5 // 过期时间（毫秒）
+        );
+    }
+
+    @GetMapping("item")
+    public JsonResponse item(@PathVariable String device) {
+        Optional<Settings> optional = settingsRepository.findByDevice(device).filter(settings -> Boolean.TRUE.equals(settings.getMenu()));
+        if (optional.isPresent()) {
+            return JsonResponse.data(menuService.item());
+        }
+        return JsonResponse.builder().status(false).code(JsonResponse.Code.AccessDenied.name()).data(null).reason("无权限").build();
+    }
+
+
+    @GetMapping("content")
+    public JsonResponse content(
+            @PathVariable String appId, @PathVariable String device,
+            @RequestParam("uuid") String uuid, @RequestParam("taskId") String taskId) {
+        Optional<String> data = menuService.content(uuid, device, taskId);
+        return JsonResponse.data(data);
+    }
+
+    @PostMapping("agent")
+    public JsonResponse agent(
+            @PathVariable String appId, @PathVariable String device,
+            @RequestParam("uuid") String uuid, @RequestParam("taskId") String taskId,
+            @RequestParam("content") String content) {
+        Optional<String> optional = menuService.content(uuid, device, taskId, content);
+        log.debug(optional.toString());
+        if (optional.isPresent()) {
+            return JsonResponse.data(optional.get());
+        } else {
+            return JsonResponse.builder().status(true).code(JsonResponse.Code.PENDING.name()).reason("服务器已接受请求").build();
+        }
+    }
+
+    @PutMapping(path = "content", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> contentStream(
+            @PathVariable String appId, @PathVariable String device,
+            @RequestParam("uuid") String uuid, @RequestParam("taskId") String taskId,
+            @RequestParam("content") String content) {
+        final Marker marker = MarkerFactory.getMarker(taskId);
+        Lock lock = redisLockRegistry.obtain(taskId);
+        Flux<String> flux = Flux.empty();
+        try {
+            Long expire = stringRedisTemplate.getExpire("menu:".concat(taskId), TimeUnit.SECONDS);
+            log.debug("lock expire={}", expire);
+            boolean status = lock.tryLock(0, TimeUnit.SECONDS);
+            log.debug(marker, "agent lock {} status: {}", redisLockRegistry, status);
+            if (status) {
+
+                flux = menuService.stream(uuid, device, taskId, content);
+                flux.log();
+                flux.doOnComplete(() -> {
+                            System.out.println("✅ SSE Flux 正常完成！");
+                        })
+
+                        // ✅ 【异常完成】发生错误时触发
+                        .doOnError(ex -> {
+                            System.out.println("❌ SSE Flux 异常结束：" + ex.getMessage());
+                        })
+
+                        // ✅ 【最终完成】无论正常/异常/客户端断开，都会进这里！⭐⭐⭐
+                        .doFinally(signalType -> {
+                            System.out.println("🔚 SSE 流最终关闭：" + signalType);
+                            lock.unlock();
+                            log.debug(marker, "agent unlock {}", taskId);
+                            // 你可以在这里：释放锁、关闭资源、记录日志
+                        });
+                return flux;
+            } else {
+                return Flux.just("请求频率太快");
+            }
+        } catch (Exception e) {
+            log.error(marker, "agent Exception {}", e.getMessage());
+        }
+        return flux;
+    }
+}
+			
+			]]>
+			</programlisting>
+			<para>注意细节，定义前缀是 menu 但是读取 key 是 "menu:"</para>
+			<programlisting>
+			<![CDATA[
+redisLockRegistry = new RedisLockRegistry(
+                this.redisConnectionFactory,
+                "menu",
+                1000 * 60 * 5 // 过期时间（毫秒）
+        );
+
+Lock lock = redisLockRegistry.obtain(taskId);
+
+Long expire = stringRedisTemplate.getExpire("menu:".concat(taskId), TimeUnit.SECONDS);        
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="Mqtt">
 		<title>MQTT Support</title>
