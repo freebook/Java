@@ -29,3 +29,4 @@
 	&section.boot.retry.xml;
 	&section.boot.aliyun.xml;
 	&section.boot.opentelemetry.xml;
+	&section.boot.koog.xml;

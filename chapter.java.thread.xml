@@ -255,6 +255,54 @@ public class Test {
 			]]>
 			</programlisting>
 		</section>
+		<section>
+			<title>安装终止一个线程</title>
+			<programlisting>
+			<![CDATA[
+public class SafeInterrupted {
+    public static void main(String[] args) throws InterruptedException {
+        Thread worker = new Thread(() -> {
+            // 定期检查中断状态
+            while (!Thread.currentThread().isInterrupted()) {
+                try {// 业余草
+                    doWork();
+                } catch (InterruptedException e) {
+                    // 收到中断信号，清理资源后退出
+                    System.out.println("收到中断信号，准备退出...");
+                    cleanup();
+                    break; // 或 return
+                }
+            }
+        });
+        
+        worker.start();
+        Thread.sleep(1000);
+        worker.interrupt(); // 优雅地请求停止
+    }
+}			
+			]]>
+			</programlisting>
+			<para>volatile 标志位方式（推荐）</para>
+			<programlisting>
+			<![CDATA[
+public class VolatileExample {
+    private volatile boolean running = true;
+
+    public void stop() {
+        running = false;
+    }
+    
+    public void run() {
+        while (running) {
+            doWork();
+        }
+        cleanup();
+    }
+}		
+			]]>
+			</programlisting>
+		</section>
+		
 	</section>
 	<section id="Runnable">
 		<title>实现 Runnable 接口</title>
@@ -533,6 +581,7 @@ public class ScopedValueDemo {
 		]]>
 		</programlisting>
 	</section>
+	
 	<section id="ThreadLocalMap">
 		<title>ThreadLocalMap</title>
 	</section>

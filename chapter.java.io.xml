@@ -59,6 +59,27 @@ if (!dirname.isDirectory())
     }
 			]]>
 			</programlisting>
+			<para>演示</para>
+			<programlisting>
+			<![CDATA[
+public class Test {
+    public static void main(String[] args) throws IOException {
+        File dir = new File("d:\\test");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File("d:\\test\\a.txt");
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        new FileInputStream(file);
+
+        boolean delete = file.delete();
+        System.out.println(delete ? "删除成功！" : "删除失败！");
+    }
+}			
+			]]>
+			</programlisting>
 		</section>
 		<section>
 			<title>获取路径中目录和文件名</title>
@@ -590,6 +611,35 @@ void testReadFile6() throws IOException {
    }
 
 }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Files.delete</title>
+			<programlisting>
+			<![CDATA[
+Files.delete(file.toPath());			
+			]]>
+			</programlisting>
+			<para>boolean delete = file.delete(); 传统delete返回false/true没有返回失败原因，而Files则会给出“文件占用/文件不存在/删除目录非空”等原因，同时会抛出异常</para>
+			<programlisting>
+			<![CDATA[
+public class Test {
+    public static void main(String[] args) throws IOException {
+        File dir = new File("d:\\test");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File("d:\\test\\a.txt");
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        new FileInputStream(file);
+
+        boolean delete = file.delete();
+        System.out.println(delete ? "删除成功！" : "删除失败！");     
+    }
+}
 			]]>
 			</programlisting>
 		</section>

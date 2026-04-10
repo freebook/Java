@@ -1315,7 +1315,8 @@ public static Weather readWeather() throws ExecutionException, InterruptedExcept
 		</programlisting>
 		<para>相比传统的 ExecutorService，StructuredTaskScope
 			提供了更高的抽象层次。ExecutorService 需要开发者手动管理任务之间的关系，而 StructuredTaskScope
-			自动处理任务的取消和错误传播，避免了线程泄漏和复杂的异常处理逻辑。</para>
+			自动处理任务的取消和错误传播，避免了线程泄漏和复杂的异常处理逻辑。
+		</para>
 		<programlisting>
 		<![CDATA[
 public class NewConcurrentService {
@@ -1340,6 +1341,27 @@ public class NewConcurrentService {
 }		
 		]]>
 		</programlisting>
+		<section id="StructuredTaskScope">
+			<title>StructuredTaskScope Example</title>
+			<programlisting>
+		<![CDATA[
+// 使用 StructuredTaskScope 自动管理子线程生命周期
+try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+    scope.fork(() -> {
+        // 业余草 子任务1
+        return doTask1();
+    });
+    scope.fork(() -> {
+        // 业余草 子任务2  
+        return doTask2();
+    });
+    
+    scope.join(); // 等待所有任务完成或失败
+    scope.throwIfFailed();
+} // 作用域结束时，所有子线程自动、安全地停止		
+		]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="CompletableFuture">

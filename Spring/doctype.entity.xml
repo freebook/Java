@@ -36,6 +36,7 @@
 <!ENTITY section.boot.record.xml 	    SYSTEM "section.boot.record.xml">
 <!ENTITY section.boot.redis.xml 	    SYSTEM "section.boot.redis.xml">
 <!ENTITY section.boot.aliyun.xml 	    SYSTEM "section.boot.aliyun.xml">
+<!ENTITY section.boot.koog.xml	 	    SYSTEM "section.boot.koog.xml">
 
 <!ENTITY chapter.framework.xml			SYSTEM "chapter.framework.xml">
 <!ENTITY section.framework.xml			SYSTEM "section.framework.xml">
