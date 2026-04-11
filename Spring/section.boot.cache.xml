@@ -308,8 +308,57 @@ public void expire() {
     	]]>
 		</programlisting>
 	</section>
+	<section>
+		<title>序列化</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+import java.time.Duration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+
+@Configuration
+public class CacheConfiguration {
+	@Bean    
+	public RedisCacheConfiguration cacheConfiguration() {
+		return RedisCacheConfiguration                
+			.defaultCacheConfig()                
+			.entryTtl(Duration.ofMinutes(10)) // 全局设置，统一TTL时间
+			.disableCachingNullValues()                
+			.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+	}
+}		
+		]]>
+		</programlisting>
+	</section>
 	<section id="解决Expire 和 TTL 过期时间">
 		<title>解决Expire 和 TTL 过期时间</title>
+		<para>分别配置 products 和 users key 的过期时间</para>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.config;
+import java.time.Duration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerBuilder;
+import org.springframework.data.redis.cache.RedisCacheManagerBuilderCustomizer;
+
+@Configuration
+public class CacheConfiguration {
+    @Bean
+    public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
+        return (RedisCacheManagerBuilder builder) -> builder
+            .withCacheConfiguration("products", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)))
+			.withCacheConfiguration("users", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(1))
+		);    
+	}
+}		
+		]]>
+		</programlisting>
 		<para>Springboot 1.x</para>
 		<programlisting>
         <![CDATA[
@@ -424,7 +473,7 @@ private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
         ]]>
 		</screen>
 	</section>
-	<section>
+	<section id="cache.serializer">
 		<title>Cannot serialize</title>
 		<para>org.springframework.data.redis.serializer.SerializationException: Cannot serialize</para>
 		<para>Caused by: java.io.InvalidClassException: cn.netkiller.domain.PictureClick; class invalid for deserialization</para>
