@@ -311,6 +311,23 @@ public class UuidTest {
 		
 		]]>
 		</programlisting>
+		<para>UUIDv7</para>
+		<programlisting>
+		<![CDATA[
+import java.util.UUID;
+
+public class UuidV7Demo {
+    public static void main(String[] args) {
+        // 方法一：使用当前时间戳生成UUIDv7
+        long currentTimestamp = System.currentTimeMillis();
+        UUID uuid7 = UUID.ofEpochMillis(currentTimestamp);
+        
+        System.out.println("UUIDv7: " + uuid7);
+        System.out.println("版本: " + uuid7.version());  // 输出7
+    }
+}		
+		]]>
+		</programlisting>
 	</section>
 	<section id="Arrays.equals">
 		<title>Arrays.equals 判断两个数组是否相等</title>
