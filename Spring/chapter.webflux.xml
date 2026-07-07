@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="webflux"><?dbhtml dir="webflux" ?>
+<chapter id="index"><?dbhtml dir="webflux" ?>
 	<title>WebFlux framework</title>
 	<section id="webflux.helloworld">
 		<title>Getting Started</title>

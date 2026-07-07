@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="">
+<section id="opentelemetry">
 	<title>Spring Boot 4 + OpenTelemetry</title>
 	<section>
 		<title>依赖配置</title>
@@ -79,4 +79,4 @@ public class OrderService {
 		]]>
 		</screen>
 	</section>
-</chapter>
+</section>
