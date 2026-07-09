@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="monitor" ?>
+<section id="springboot.monitor">
 	<title>Spring boot with Monitor</title>
 
 &section.boot.admin.xml;
@@ -482,4 +482,4 @@ restful_api_requests_total{application="springboot-with-prometheus",} 2.0
 			</section>
 		</section>
 	</section>
-</chapter>	 
+</section>	 

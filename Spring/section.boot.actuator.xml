@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="actuator" ?>
+<section id="springboot.actuator">
 	<title>Spring Boot Actuator</title>
 	<subtitle>健康检查、审计、统计和监控</subtitle>
 	<section>
@@ -7625,4 +7625,4 @@ public class CustomActuatorEndpoint {
 		</programlisting>
 
 	</section>
-</chapter>
+</section>

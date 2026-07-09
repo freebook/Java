@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="boot" ?>
+	<title>Spring Boot</title>
 	&section.boot.maven.xml;
 	&section.boot.xml;
 	&section.boot.shutdown.xml;
@@ -30,3 +32,4 @@
 	&section.boot.aliyun.xml;
 	&section.boot.opentelemetry.xml;
 	&section.boot.koog.xml;
+</chapter>	

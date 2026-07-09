@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="properties" ?>
+<section id="springboot.properties">
 	<title>Properties 配置文件</title>
 	<section id="application.properties">
 		<title>application.properties 配置文件</title>
@@ -2908,4 +2908,4 @@ public class Password {
 		</programlisting>
 	</section>
 
-</chapter>
+</section>

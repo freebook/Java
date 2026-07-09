@@ -1,4 +1,4 @@
-<chapter id="spring.boot.quickstart">
+<section id="springboot.quickstart">
 	<title>Spring Boot Quick start</title>
 	<section>
 		<title>创建项目</title>
@@ -179,4 +179,4 @@ neo@MacBook-Pro-Neo ~/workspace/microservice/config % mvn spring-boot:build-info
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>

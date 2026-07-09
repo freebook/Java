@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="suite">
+<section id="springboot.suite">
 	<title>Spring 开发环境</title>
 	<section>
 		<title>Java 开发环境</title>
@@ -44,8 +44,8 @@
 			<ulink url="https://start.spring.io" />
 		</para>
 	</section>
-</chapter>
-<chapter id="SpringApplication">
+</section>
+<section id="SpringApplication">
 	<title>SpringApplication</title>
 	<programlisting>
 		<![CDATA[
@@ -639,4 +639,4 @@ public class Application {
     ]]>
 		</programlisting>
 	</section>
-</chapter>
+</section>

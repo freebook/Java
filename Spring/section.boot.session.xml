@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="session" ?>
+<section id="springboot.session">
     <title>Spring boot with Session share</title>
     <section>
         <title>Redis</title>
@@ -366,4 +366,4 @@ spring.redis.port=6379
         ]]>
         </screen>
     </section>
-</chapter>
+</section>

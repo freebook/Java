@@ -1,1 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<chapter id="spring"><?dbhtml dir="spring" ?>
+	<title>Spring</title>
+	<section id="spring.framework">
+		<title>Spring Framework</title>
+		<simplesect id="spring.framework.overview">
+			<title>概述</title>
+			<para>Spring Framework 为基于 Java 的企业级应用提供编程模型、配置模型和基础设施支持。</para>
+		</simplesect>
+	</section>
+</chapter>

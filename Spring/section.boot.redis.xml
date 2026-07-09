@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="redis">
+<section id="springboot.redis">
 	<title>Spring boot with Redis</title>
 	<section id="redis">
 		<title>Spring boot with Redis</title>

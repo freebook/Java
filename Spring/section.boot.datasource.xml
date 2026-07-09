@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="mongodb" ?>
+<section id="springboot.mongodb">
 	<title>Spring boot with MongoDB</title>
 	<section>
 		<title>Maven</title>
@@ -395,8 +395,8 @@ public class IndexController {
 		</programlisting>
 	</section>
 
-</chapter>
-<chapter id="index"><?dbhtml dir="mysql" ?>
+</section>
+<section id="springboot.mysql">
 	<title>Spring boot with MySQL</title>
 	<section>
 		<title>Maven</title>
@@ -773,8 +773,8 @@ public class IndexController {
 
 
 	</section>
-</chapter>
-<chapter id="index"><?dbhtml dir="oracle" ?>
+</section>
+<section id="springboot.oracle">
 	<title>Spring boot with Oracle</title>
 	<section>
 		<title>Maven</title>
@@ -1239,8 +1239,8 @@ public class IndexController {
 	<!-- <programlisting> <![CDATA[ @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } ]]> </programlisting> <programlisting> <![CDATA[ import oracle.jdbc.pool.OracleDataSource; import org.springframework.boot.context.properties.ConfigurationProperties; import 
 		org.springframework.context.annotation.Bean; import org.springframework.context.annotation.Configuration; import org.springframework.context.annotation.Profile; import javax.sql.DataSource; import javax.validation.constraints.NotNull; import java.sql.SQLException; @Configuration @ConfigurationProperties("oracle") public class OracleConfiguration { @NotNull private String username; @NotNull private String password; @NotNull private String url; public void setUsername(String username) { this.username = username; 
 		} public void setPassword(String password) { this.password = password; } public void setUrl(String url) { this.url = url; } @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } } ]]> </programlisting> -->
-</chapter>
-<chapter id="index"><?dbhtml dir="postgresql" ?>
+</section>
+<section id="springboot.postgresql">
 	<title>Spring boot with PostgreSQL</title>
 	<section>
 		<title>pom.xml</title>
@@ -1479,8 +1479,8 @@ public class TestPostgreSQLController {
 			curl http://127.0.0.1:7000/test/pgsql/jdbc?id=1
 		</screen>
 	</section>
-</chapter>
-<chapter id="index"><?dbhtml dir="elasticsearch" ?>
+</section>
+<section id="springboot.elasticsearch">
 	<title>Spring boot with Elasticsearch</title>
 	<section>
 		<title>Maven</title>
@@ -1606,8 +1606,8 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
 	        ]]>
 		</programlisting>
 	</section>
-</chapter>
-<chapter id="index"><?dbhtml dir="elasticsearch/5.x" ?>
+</section>
+<section>
 	<title>Spring boot with Elasticsearch TransportClient</title>
 	<para>Spring data 目前还不支持 Elasticsearch 5.5.x 所以需要通过注入 TransportClient 这就意味着使用 5.5.x 版本你无法使用 ElasticsearchRepository 这种特性，只能通过官方的 TransportClient 操作 Elasticsearch。</para>
 	<section>
@@ -1919,8 +1919,8 @@ MacBook-Pro:~ neo$ curl -k https://test:test@localhost:8443/restful/search/clien
 	        ]]>
 		</screen>
 	</section>
-</chapter>
-<chapter id="index"><?dbhtml dir="hive" ?>
+</section>
+<section id="springboot.hive">
 	<title>Spring boot with Apache Hive</title>
 	<section>
 		<title>Maven</title>
@@ -2129,8 +2129,8 @@ public class HiveController {
 			]]>
 		</programlisting>
 	</section>
-</chapter>
-<chapter id="index"><?dbhtml dir="phoenix" ?>
+</section>
+<section id="springboot.phoenix">
 	<title>Spring boot with Phoenix</title>
 	<section>
 		<title>Maven</title>
@@ -2213,8 +2213,8 @@ public class PhoenixDataSource {
 			]]>
 		</programlisting>
 	</section>
-</chapter>
-<chapter id="index"><?dbhtml dir="datasource" ?>
+</section>
+<section id="spirngboot.datasource">
 	<title>Spring boot with Datasource</title>
 	<subtitle>数据源配置</subtitle>
 	<section>
@@ -2604,8 +2604,8 @@ public class SecondaryConfig {
 		</programlisting>
 	</section>
 	
-</chapter>
-<chapter id="index"><?dbhtml dir="pool" ?>
+</section>
+<section id="springboot.pool">
 	<title>连接池配置</title>
 	<subtitle>Connection and Statement Pooling</subtitle>
 	<para>注意：下面的实例仅限 Spring boot 2.0.2.RELEASE</para>
@@ -2817,4 +2817,4 @@ spring.datasource.hikari.connection-test-query=SELECT 1
 			]]>
 		</programlisting>
 	</section>
-</chapter>
+</section>

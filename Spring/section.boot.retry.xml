@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="Retryable">
+<section id="springboot.Retryable">
 	<title>Spring boot with Retryable</title>
 	<para>Springboot 实现重试有两个方案，一个是 Springboot 4.0 自带的 Retryable 是 Resilient 实现。另一个方案是 spring-retry 需要额外引入依赖。</para>
 	<section id="spring.EnableResilientMethods">
@@ -205,4 +205,4 @@ api  | 2026-01-12 17:52:55.308 ERROR  --- [tomcat-handler-0] c.aigcsst.config.Gl
 	
 
 
-</chapter>
+</section>

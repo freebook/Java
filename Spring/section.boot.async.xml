@@ -1,5 +1,5 @@
 
-<chapter id="index"><?dbhtml dir="async" ?>
+<section id="springboot.async">
 	<title>Spring boot with Async</title>
 	<section id="Callable">
 		<title>Callable 实现异步</title>
@@ -1001,4 +1001,4 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics/exec
 		</para>
 	</section>
 
-</chapter>
+</section>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="queue" ?>
+<section id="springboot.queue">
 	<title>Spring boot with Queue</title>
 	<para></para>
 	<section id="rabbitmq">
@@ -1142,4 +1142,4 @@ public class CFPushTasks {
 			</section>
 		</section>
 	</section>
-</chapter> 
+</section> 
