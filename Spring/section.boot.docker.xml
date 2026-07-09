@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="springboot.docker">
+<section id="springboot.container">
 	<title>Spring boot with Container</title>
 
 	<section id="springboot.docker">
@@ -7,7 +7,7 @@
 		<section>
 			<title>通过 Docker 命令构建镜像</title>
 
-			<section>
+			<simplesect>
 				<title>手工编译镜像</title>
 				<para>在项目根目录创建 Dockerfile 文件</para>
 				<screen>
@@ -43,8 +43,8 @@ neo@MacBook-Pro ~ % curl http://localhost:8080
 Hello Docker World
 		]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>Dockerfile 放在 src/main/docker/Dockerfile 下</title>
 				<screen>
 		<![CDATA[
@@ -69,8 +69,8 @@ neo@MacBook-Pro ~ % curl http://localhost:8080
 Hello Docker World
 		]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>通过参数指定 Springboot 文件</title>
 				<screen>
 		<![CDATA[
@@ -91,16 +91,16 @@ docker build --build-arg JAR_FILE=target/*.jar -t netkiller/docker -f src/main/d
 docker run -p 8080:8080 netkiller/docker
 		]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>SPRING_PROFILES_ACTIVE 指定配置文件</title>
 				<screen>
 		<![CDATA[
 % docker run -e "SPRING_PROFILES_ACTIVE=prod" -p 8080:8080 netkiller/docker
 		]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>推送镜像到仓库</title>
 				<screen>
 		<![CDATA[
@@ -114,11 +114,11 @@ c4a7cf6a6169: Mounted from library/openjdk
 latest: digest: sha256:3078fea95c633f007be33b829efae0ff8e9d78ad463925af7d07752c95eb43a3 size: 1165
 		]]>
 				</screen>
-			</section>
+			</simplesect>
 		</section>
 		<section>
 			<title>通过 Maven 构建 Docker 镜像</title>
-			<section>
+			<simplesect>
 				<title>Maven + Dockerfile 方案一</title>
 				<para>项目地址 https://github.com/spotify/dockerfile-maven</para>
 				<screen>
@@ -232,8 +232,8 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 		]]>
 				</screen>
 
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>Maven + Dockerfile 方案二</title>
 				<screen>
 			<![CDATA[
@@ -261,9 +261,9 @@ neo@MacBook-Pro ~/git/springcloud/docker % mvn dockerfile:build
 </build>			
 			]]>
 				</screen>
-			</section>
+			</simplesect>
 
-			<section>
+			<simplesect>
 				<title>Maven 不使用 Dockerfile 文件</title>
 				<para>项目地址 https://github.com/spotify/docker-maven-plugin</para>
 				<screen>
@@ -346,8 +346,8 @@ Successfully tagged netkiller/webflux:latest
 [INFO] ------------------------------------------------------------------------
 		]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>推送镜像</title>
 				<screen>
 			<![CDATA[
@@ -466,11 +466,11 @@ vim ~/.m2/settings-security.xml
 </settingsSecurity>			
 			]]>
 				</screen>
-			</section>
+			</simplesect>
 
 		</section>
 
-		<section>
+		<simplesect>
 			<title>[ERROR] No plugin found for prefix 'dockerfile' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (/Users/neo/.m2/repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]</title>
 			<screen>
 		<![CDATA[
@@ -491,8 +491,8 @@ vim /usr/local/Cellar/maven/3.6.0/libexec/conf/settings.xml
 </pluginGroups>
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>curl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to localhost:8888</title>
 			<screen>
 		<![CDATA[
@@ -712,11 +712,11 @@ date: Mon, 21 Sep 2020 02:51:11 GMT
 {"sms":{"gateway":{"url":"https://sms.netkiller.cn/v1","username":"netkiller","password":"123456"}}}		
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 	<section id="spring-boot.docker-stack">
 		<title>Spring boot with Docker stack</title>
-		<section>
+		<simplesect>
 			<title>编译 Docker 镜像</title>
 			<screen>
 		<![CDATA[
@@ -776,8 +776,8 @@ Successfully tagged netkiller/config:latest
 [INFO] ------------------------------------------------------------------------		
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title></title>
 			<para>初始化 Swarm</para>
 			<screen>
@@ -842,7 +842,7 @@ ID                  NAME                  IMAGE                     NODE        
 mr30ujsdbti4        springboot_config.1   netkiller/config:latest   docker-desktop      Running             Preparing 4 minutes ago                       		
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 	<section id="springboot.kubernetes">
 		<title>Spring boot with Kubernetes</title>
@@ -850,7 +850,7 @@ mr30ujsdbti4        springboot_config.1   netkiller/config:latest   docker-deskt
 			首先你需要构建 docker 镜像，并且 push 到 registry
 			<link linkend="springboot.docker">参考这里</link>
 		</para>
-		<section>
+		<simplesect>
 			<title>Kubernetes 编排脚本</title>
 			<para>创建密钥</para>
 			<screen>
@@ -913,8 +913,8 @@ spec:
         - name: docker-hub
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>部署镜像</title>
 			<screen>
 		<![CDATA[
@@ -955,6 +955,6 @@ service "springboot" deleted
 deployment.apps "springboot" deleted		
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 </section>

@@ -5,7 +5,7 @@
 	<section id="Undertow">
 		<title>Spring boot with Undertow</title>
 		<para>Undertow 是红帽公司开发的一款基于 NIO 的高性能 Web 嵌入式服务器</para>
-		<section>
+		<simplesect>
 			<title>Maven 依赖</title>
 			<screen>
 		<![CDATA[
@@ -32,8 +32,8 @@
 </dependencies>	
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Application</title>
 			<programlisting>
 		<![CDATA[
@@ -58,8 +58,8 @@ public class Application {
 }
 		]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>相关配置</title>
 			<para>Undertow 日志配置</para>
 			<screen>
@@ -94,10 +94,10 @@ server.undertow.buffers-per-region=1024
 server.undertow.direct-buffers=true				
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 
-	<section id="jetty">
+	<simplesect id="jetty">
 		<title>Spring boot with Jetty</title>
 		<para>使用 Jetty 替代 Tomcat</para>
 		<screen>
@@ -120,11 +120,11 @@ server.undertow.direct-buffers=true
 </dependency>		
 	]]>
 		</screen>
-	</section>
+	</simplesect>
 
 	<section id="springboot.https">
 		<title>Spring boot with HTTP2 SSL</title>
-		<section>
+		<simplesect>
 			<title>生成自签名证书</title>
 			<programlisting>
 			<![CDATA[
@@ -170,8 +170,8 @@ mvn                     auto    /usr/share/maven/bin/mvn
 keytool -importcert -alias www.netkiller.cn -file www.netkiller.cn.cer -keystore /srv/java/jre/lib/security/cacerts
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>application.properties 配置文件</title>
 			<para>配置Tomcat HTTPS 端口 8443（由于JVM不能fork和setuid，所以无法向nginx,apache
 				httpd 那样设置 80 端口，除非你使用root用户运行，但这样做是不安全的。）</para>
@@ -197,16 +197,16 @@ server.ssl.key-store-type=JKS
 server.ssl.key-alias=www.netkiller.cn
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>启动 Spring boot</title>
 			<screen>
 			<![CDATA[
 /srv/java/bin/java -server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom -jar /www/netkiller.cn/www.netkiller.cn/www.netkiller.cn-0.0.1.war
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>restTemplate 调用实例</title>
 			<programlisting>
 			<![CDATA[
@@ -214,8 +214,8 @@ String url = "https://www.netkiller.cn:8443/public/test/version.json";
 ResponseEntity<RestResponse<String>> result = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponse<String>>() {});
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>HTTP2</title>
 			<para>启用 HTTP2 必须使用 Tomcat 9 以上， Springboot 2.1</para>
 			<para>创建证书</para>
@@ -312,6 +312,6 @@ date: Tue, 09 Apr 2019 08:41:29 GMT
 Pong%    			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 </section>

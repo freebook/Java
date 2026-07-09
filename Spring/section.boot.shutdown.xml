@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="spring.boot.shutdown">
+<section id="springboot.shutdown">
 	<title>如何优雅停止 Springboot 运行</title>
-	<section>
+	<simplesect>
 		<title>准备工作</title>
 		<para>@PreDestroy 会在系统关闭前执行</para>
 		<programlisting>
@@ -29,8 +29,8 @@ public class ShutdownConfiguration {
 }
  		]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>kill 命令演示</title>
 		<para>kill 命令本质是给进程发送终止信号，进程接收到终止信号后退出运行。</para>
 		<para>可以看到 Springboot 启动后，进程 PID 44559，现在使用 kill 命令杀死这个进程</para>
@@ -145,8 +145,8 @@ Destroying Spring
 ==============================		
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>容器中如何优雅关闭 Springboot</title>
 		<para>容器与进程模式并没有什么区别，我们给容器发送终止信号，容器会转发给 Springboot。</para>
 		<para>理论归理论，我们还是需要亲自实践，这样才能理解更深刻。</para>
@@ -256,8 +256,8 @@ spring exited with code 137
 		</screen>
 		<para>结论，docker kill = kill -9</para>
 		<para>现在你应该明白什么时候该使用什么命令终止程序了吧，同时我们在写程序的时候，也应该将程序的运行状态反应出来，在我们停止程序运行的时候，可以去观察进程的状态，而不是半天没有反应，只能怀疑进程死了，必须执行B计划（kill -9）这会造成很多数据丢失的问题。</para>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>写入PID文件</title>
 		<para>我们明白了 kill 的原理后，常常需要与 pid 打交道，使用 ps 命令是可以查看 pid 的，但是当我们运行多个实例的时候会常常搞混，所以最好的方式是让 springboot 把PID写入到文件中。</para>
 		<programlisting>
@@ -311,5 +311,5 @@ spring.pid.file=/tmp/spring.pid
 1		
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 </section>

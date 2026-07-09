@@ -5,7 +5,7 @@
 		<ulink
 			url="https://docs.spring.io/spring-boot/docs/current/reference/html/io.html#io.caching.provider.redis" />
 	</para>
-	<section>
+	<simplesect>
 		<title>maven</title>
 		<programlisting>
             <![CDATA[
@@ -15,7 +15,7 @@
     </dependency>			
             ]]>
 		</programlisting>
-		<section>
+		<simplesect>
 			<title>Redis</title>
 			<para>使用 Redis</para>
 			<programlisting>
@@ -48,9 +48,9 @@ spring.cache.redis.time-to-live=604800000
 spring.cache.redis.cache-null-values=false
     	]]>
 			</programlisting>
-		</section>
-	</section>
-	<section id="@EnableCaching">
+		</simplesect>
+	</simplesect>
+	<simplesect id="@EnableCaching">
 		<title>启用缓存 @EnableCaching</title>
 		<para>添加 @EnableCaching </para>
 		<screen>
@@ -72,10 +72,8 @@ public class Application {
 }			
         ]]>
 		</screen>
-	</section>
-
-
-	<section id="@Cacheable">
+	</simplesect>
+	<simplesect id="@Cacheable">
 		<title>设置缓存 @Cacheable</title>
 		<programlisting>
         <![CDATA[
@@ -88,7 +86,7 @@ public User find(Integer id) {
         ]]>
 		</programlisting>
 
-		<section>
+		<simplesect>
 			<title>多参数处理</title>
 			<programlisting>
 			<![CDATA[
@@ -99,8 +97,8 @@ public User find(Integer id) {
     }			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>对象参数</title>
 			<para>引用对象</para>
 			<programlisting>
@@ -113,8 +111,8 @@ return null;
 }			
         ]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title></title>
 			<para>条件判断</para>
 			<programlisting>
@@ -130,8 +128,8 @@ return "hello"+id;
 @Cacheable(value={"users"}, key="#user.id", condition="#user.id%2==0")
         ]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>参数索引</title>
 			<para>#p0 参数索引，p0表示第一个参数</para>
 			<programlisting>
@@ -152,8 +150,8 @@ return null;
         ]]>
 			</programlisting>
 
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>自动生成 key</title>
 			<para>@Cacheable 如果没有任何参数将会自动生成 key ，前提是必须设置 @CacheConfig(cacheNames
 				=
@@ -176,9 +174,9 @@ public Attribute auto() {
 1) "test::SimpleKey []"			
         ]]>
 			</screen>
-		</section>
+		</simplesect>
 
-		<section>
+		<simplesect>
 			<title>SpEL表达式</title>
 			<programlisting>
         <![CDATA[
@@ -195,8 +193,8 @@ public String expire() {
 }
         ]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>排除 null 结果</title>
 			<para>使用 unless 排除 null 结果</para>
 			<programlisting>
@@ -212,8 +210,8 @@ public String expire() {
 spring.cache.redis.cache-null-values=false			
 			]]>
 			</screen>
-		</section>
-		<section id="result.empty">
+		</simplesect>
+		<simplesect id="result.empty">
 			<title>排除 empty</title>
 			<para>List 不会返回 null，怎么不缓存空的 list 呢？使用 unless="#result.empty" 可以实现
 			</para>
@@ -225,9 +223,9 @@ public List<Object> getList() {
 }			
 			]]>
 			</programlisting>
-		</section>
-	</section>
-	<section id="@CachePut">
+		</simplesect>
+	</simplesect>
+	<simplesect id="@CachePut">
 		<title>更新缓存 @CachePut</title>
 		<para>@CachePut 每次都会执行方法，都会将结果存入指定key的缓存中，@CachePut 不会判断是否 key
 			已经存在，二是始终覆盖。
@@ -242,8 +240,8 @@ return null;
 }
         ]]>
 		</programlisting>
-	</section>
-	<section id="@CacheEvict">
+	</simplesect>
+	<simplesect id="@CacheEvict">
 		<title>删除缓存 @CacheEvict</title>
 		<para>缓存返回结果</para>
 		<programlisting>
@@ -270,8 +268,8 @@ public void expire() {
 }
             ]]>
 		</programlisting>
-	</section>
-	<section id="@Caching">
+	</simplesect>
+	<simplesect id="@Caching">
 		<title>组合操作 @Caching</title>
 		<programlisting>
     	<![CDATA[
@@ -307,8 +305,8 @@ public void expire() {
     )
     	]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>序列化</title>
 		<programlisting>
 		<![CDATA[
@@ -333,8 +331,8 @@ public class CacheConfiguration {
 }		
 		]]>
 		</programlisting>
-	</section>
-	<section id="解决Expire 和 TTL 过期时间">
+	</simplesect>
+	<simplesect id="解决Expire 和 TTL 过期时间">
 		<title>解决Expire 和 TTL 过期时间</title>
 		<para>分别配置 products 和 users key 的过期时间</para>
 		<programlisting>
@@ -472,8 +470,8 @@ private RedisCacheConfiguration redisCacheConfiguration(Integer seconds) {
         
         ]]>
 		</screen>
-	</section>
-	<section id="cache.serializer">
+	</simplesect>
+	<simplesect id="cache.serializer">
 		<title>Cannot serialize</title>
 		<para>org.springframework.data.redis.serializer.SerializationException: Cannot serialize</para>
 		<para>Caused by: java.io.InvalidClassException: cn.netkiller.domain.PictureClick; class invalid for deserialization</para>
@@ -530,6 +528,6 @@ public class PictureClick implements Serializable {
 		]]>
 		</programlisting>
 		<para>public class PictureClick implements Serializable</para>
-	</section>
+	</simplesect>
 
 </section>

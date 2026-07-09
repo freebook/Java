@@ -22,7 +22,7 @@ application.yml
 trace=true	
 	]]>
 	</screen>
-	<section id="application.properties.logging">
+	<simplesect id="application.properties.logging">
 		<title>配置日志文件</title>
 		<para>一般的日志需求可以通过配置 application.properties实现。</para>
 		<para>Spring Boot中 日志默认是输出到控制台的，这样是为了方便开发人员，但是在生产环境中应该输出到日志文件中。</para>
@@ -57,7 +57,7 @@ logging.config=classpath:logback.xml
 		]]>
 			</screen>
 		</tip>
-		<section>
+		<simplesect>
 			<title>日志输出级别</title>
 			<screen>
 		<![CDATA[
@@ -97,16 +97,16 @@ logging:
     cn.netkiller.sharding.MonthShardingAlgorithm: DEBUG
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Spring boot 2.1 以后的版本不打印 Mapped 日志问题</title>
 			<screen>
 		<![CDATA[
 logging.level.org.springframework.web=trace		
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>禁止控制台输出日志</title>
 			<para>禁止控制台日志输出，同时将日志写入日志文件.</para>
 			<para>src/main/resources/application.properties</para>
@@ -135,8 +135,8 @@ $ cat src/main/resources/logback.xml
 			]]>
 			</screen>
 			<para>使用 java -jar project-version-xxx.jar 启动后控制不会再输出日志</para>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>定制日志格式</title>
 			<itemizedlist>
 				<title>定制日志格式有两个配置</title>
@@ -162,8 +162,8 @@ logging.pattern.file=%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n
 %n			平台的换行符
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>彩色输出</title>
 			<programlisting>
 			<![CDATA[
@@ -172,9 +172,9 @@ spring.output.ansi.enabled=ALWAYS
 logging.pattern.console=%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){blue} %clr(%-5p) %clr(${PID}){faint} %clr(---){faint} %clr([%8.15t]){cyan} %clr(%-40.40logger{0}){blue} %clr(:){red} %clr(%m){faint}%n			
 			]]>
 			</programlisting>
-		</section>
-	</section>
-	<section id="logging.logback">
+		</simplesect>
+	</simplesect>
+	<simplesect id="logging.logback">
 		<title>日志切割</title>
 		<screen>
 		<![CDATA[
@@ -206,8 +206,8 @@ logging.logback.rollingpolicy.max-history=7
 logging.logback.rollingpolicy.total-size-cap=0B		
 		]]>
 		</screen>
-	</section>
-	<section id="logging.ansi">
+	</simplesect>
+	<simplesect id="logging.ansi">
 		<title>彩色日志</title>
 		<para>启动 Springboot 增加参数 -Dspring.output.ansi.enabled=ALWAYS</para>
 		<para>或者写入配置文件</para>
@@ -216,8 +216,8 @@ logging.logback.rollingpolicy.total-size-cap=0B
 spring.output.ansi.enabled=ALWAYS		
 		]]>
 		</screen>
-	</section>
-	<section id="lombok.logging">
+	</simplesect>
+	<simplesect id="lombok.logging">
 		<title>打印日志</title>
 		<para>日志的用法，首先开发中我们根据实际的需要打印不同级别的日志。</para>
 		<programlisting>
@@ -250,7 +250,7 @@ public class TestController {
 			]]>
 		</programlisting>
 		<para>然后通过application.properties配置那些需要显示，那些不需要，以及显示的级别是什么。 </para>
-		<section>
+		<simplesect>
 			<title>lombok</title>
 			<screen>
 			<![CDATA[
@@ -271,10 +271,10 @@ class DemoApplicationTests {
 }			
 			]]>
 			</programlisting>
-		</section>
-	</section>
+		</simplesect>
+	</simplesect>
 
-	<section id="springboot.logback">
+	<simplesect id="springboot.logback">
 		<title>logback 配置详解</title>
 		<para>配置文件名默认是：logback-spring.xml，使用其他文件名通过下面配置项指定即可。</para>
 		<screen>
@@ -282,7 +282,7 @@ class DemoApplicationTests {
 logging.config=classpath:logback.xml		
 		]]>
 		</screen>
-		<section id="logback.stdout">
+		<simplesect id="logback.stdout">
 			<title>标准输出</title>
 			<para>基本配置</para>
 
@@ -301,16 +301,16 @@ logging.config=classpath:logback.xml
 </configuration>		
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>禁止 logback 日志输出</title>
 			<screen>
 			<![CDATA[
 	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />			
 			]]>
 			</screen>
-		</section>
-		<section id="logback.level">
+		</simplesect>
+		<simplesect id="logback.level">
 			<title>指定Class过滤日志</title>
 			<programlisting>
 			<![CDATA[
@@ -321,8 +321,8 @@ logging.config=classpath:logback.xml
     </logger>
 			]]>
 			</programlisting>
-		</section>
-		<section id="logback.attr">
+		</simplesect>
+		<simplesect id="logback.attr">
 			<title>configuration 属性配置</title>
 			<screen>
 			<![CDATA[
@@ -331,8 +331,8 @@ scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有
 debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。			
 			]]>
 			</screen>
-		</section>
-		<section id="logback.contextName">
+		</simplesect>
+		<simplesect id="logback.contextName">
 			<title>contextName 设置上下文名称</title>
 			<screen>
 			<![CDATA[
@@ -341,8 +341,8 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 <contextName>logback</contextName>			
 			]]>
 			</screen>
-		</section>
-		<section id="logback.property">
+		</simplesect>
+		<simplesect id="logback.property">
 			<title>property 设置变量</title>
 			<screen>
 			<![CDATA[
@@ -351,8 +351,8 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 <property name="log.path" value="/tmp" />
 			]]>
 			</screen>
-		</section>
-		<section id="logback.encoder">
+		</simplesect>
+		<simplesect id="logback.encoder">
 			<title>encoder 日志格式设置</title>
 			<screen>
 			<![CDATA[
@@ -366,7 +366,7 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 %n——平台的换行符			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 		<section id="RollingFileAppender">
 			<title>RollingFileAppender</title>
 			<screen>
@@ -376,7 +376,7 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 <totalSizeCap>1GB</totalSizeCap>用来指定日志文件的上限大小，例如设置为1GB的话，那么到了这个值，就会删除旧的日志。	
 			]]>
 			</screen>
-			<section>
+			<simplesect>
 				<title>按日期分割日志</title>
 				<screen>
 			<![CDATA[
@@ -408,8 +408,8 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 </configuration>
 			]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>按照文件尺寸分割日志</title>
 				<para>按日期分割文件</para>
 				<screen>
@@ -535,9 +535,9 @@ debug:当此属性设置为true时，将打印出logback内部日志信息，实
 </configuration>			
 			]]>
 				</screen>
-			</section>
+			</simplesect>
 		</section>
-		<section>
+		<simplesect>
 			<title>日志过滤</title>
 			<para>将特定日志输出保存到指定位置</para>
 			<programlisting>
@@ -586,8 +586,8 @@ public class Application {
 </configuration>			
 			]]>
 			</programlisting>
-		</section>
-		<section id="logback.file">
+		</simplesect>
+		<simplesect id="logback.file">
 			<title>标准输出</title>
 			<screen>
 			<![CDATA[
@@ -607,8 +607,8 @@ public class Application {
 </configuration>
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>MDC</title>
 			<para>每个 userId 生成一个日志文件</para>
 			<programlisting>
@@ -675,20 +675,20 @@ public class LogTest {
 			
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 
-		<section id="logback.mongodb">
+		<simplesect id="logback.mongodb">
 			<title>日志写入 MongoDB</title>
 			<screen>
 			<![CDATA[
 
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 		<section id="logback.logstash">
 			<title>日志发送给 logstash</title>
 			<para>https://github.com/logfellow/logstash-logback-encoder/</para>
-			<section>
+			<simplesect>
 				<title>logstash 配置</title>
 				<para>配置 logstash 增加 tcp 接收输入端。</para>
 				<screen>
@@ -703,8 +703,8 @@ input {
 }				
 				]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>Java 项目</title>
 				<para>Maven 配置文件 pom.xml 中添加</para>
 				<screen>
@@ -744,10 +744,10 @@ input {
 </configuration>				
 				]]>
 				</screen>
-			</section>
+			</simplesect>
 			<section>
 				<title>通过 tags 区分日志文件</title>
-				<section>
+				<simplesect>
 					<title>logstash pipeline 配置</title>
 					<para></para>
 					<screen>
@@ -786,8 +786,8 @@ output {
 }				
 				]]>
 					</screen>
-				</section>
-				<section>
+				</simplesect>
+				<simplesect>
 					<title>logback-spring.xml 配置</title>
 					<screen>
 				<![CDATA[
@@ -872,8 +872,8 @@ output {
 </configuration>
 				]]>
 					</screen>
-				</section>
-				<section>
+				</simplesect>
+				<simplesect>
 					<title>打印日志</title>
 					<programlisting>
 				<![CDATA[
@@ -930,12 +930,12 @@ public class HomeController {
 				
 				]]>
 					</programlisting>
-				</section>
+				</simplesect>
 			</section>
 		</section>
 		<section id="springboot.fluentd">
 			<title>fluentd</title>
-			<section>
+			<simplesect>
 				<title>Maven 依赖</title>
 				<screen>
 			<![CDATA[
@@ -951,8 +951,8 @@ public class HomeController {
 		</dependency>			
 			]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>安装 fluent-bit</title>
 				<screen>
 			<![CDATA[
@@ -976,8 +976,8 @@ Fluent Bit v1.9.7
 [2022/09/24 23:25:25] [ info] [output:stdout:stdout.0] worker #0 started
 			]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>配置 logback-spring.xml</title>
 				<programlisting>
 		<![CDATA[
@@ -1009,8 +1009,8 @@ Fluent Bit v1.9.7
 </configuration>
 		]]>
 				</programlisting>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>查看 fluent 输出</title>
 				<screen>
 			<![CDATA[
@@ -1029,12 +1029,12 @@ Fluent Bit v1.9.7
 [1] development.normal: [1664033189.000000000, {"level"=>"INFO", "logger"=>"cn.netkiller.Application", "thread"=>"main", "message"=>"Started Application in 4.224 seconds (JVM running for 4.918)"}]			
 			]]>
 				</screen>
-			</section>
+			</simplesect>
 		</section>
 		<section id="Loki4j">
 			<title>Loki4j Logback</title>
 			<para>https://loki4j.github.io/loki-logback-appender/</para>
-			<section>
+			<simplesect>
 				<title>Maven</title>
 				<screen>
 			<![CDATA[
@@ -1045,8 +1045,8 @@ Fluent Bit v1.9.7
 </dependency>			
 			]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>logback.xml</title>
 				<screen>
 			<![CDATA[
@@ -1070,14 +1070,14 @@ Fluent Bit v1.9.7
 </root>
 			]]>
 				</screen>
-			</section>
+			</simplesect>
 		</section>
-	</section>
+	</simplesect>
 
-	<section id="log4j2-gelf-logstash">
+	<simplesect id="log4j2-gelf-logstash">
 		<title>Log4j2 + Gelf + Logstash</title>
 		<para>https://logging.paluch.biz/examples/log4j-2.x.html</para>
-		<section>
+		<simplesect>
 			<title>Maven 配置</title>
 			<screen>
 			<![CDATA[
@@ -1109,8 +1109,8 @@ Fluent Bit v1.9.7
 		</dependency>		
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>log4j2.xml 配置</title>
 			<screen>
 			<![CDATA[
@@ -1186,8 +1186,8 @@ Fluent Bit v1.9.7
 </Configuration>			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Java 测试代码</title>
 			<screen>
 			<![CDATA[
@@ -1212,8 +1212,8 @@ Fluent Bit v1.9.7
 	}			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Logstash 配置</title>
 			<screen>
 			<![CDATA[
@@ -1252,8 +1252,8 @@ output {
 }			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>测试结果</title>
 			<screen>
 			<![CDATA[
@@ -1325,10 +1325,10 @@ finance.2022-11-16.log  market.2022-11-16.log  origin.2022-11-16.log.gz
 			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 		<section>
 			<title>Log4j2 更多技巧</title>
-			<section>
+			<simplesect>
 				<title>多环境配置</title>
 				<para>方案一</para>
 				<screen>
@@ -1361,8 +1361,8 @@ public class Application implements CommandLineRunner {
 }				
 				]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>控制 class 日志输出级别</title>
 				<screen>
 				<![CDATA[
@@ -1381,8 +1381,8 @@ logging:
     com.chinamobile.cmss.bdpaas.resource.monitor: DEBUG				
 				]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>日志输出级别</title>
 				<programlisting>
 			<![CDATA[
@@ -1396,8 +1396,8 @@ logging:
     </Loggers>			
 			]]>
 				</programlisting>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>读取系统变量/环境变量</title>
 				<screen>
 				<![CDATA[
@@ -1405,8 +1405,8 @@ ${sys:catalina.home}/logs
 ${env:log.home}/logs
 				]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>读取 spring 配置</title>
 				<para>引入依赖</para>
 				<screen>
@@ -1495,23 +1495,23 @@ ${env:log.home}/logs
 <property name="environment">${sys:spring.profiles.active}</property>				
 				]]>
 				</screen>
-			</section>
+			</simplesect>
 			<section>
 				<title>变量默认值</title>
 				<para>格式是 ${变量名:-默认值}</para>
-				<section>
+				<simplesect>
 				<![CDATA[
 <property name="service">${sys:spring.application.name:-dev}</property>
 <property name="environment">${sys:spring.profiles.active:-dev}</property>						
 				]]>
-				</section>
+				</simplesect>
 			</section>
 		</section>
 
-	</section>
-	<section id="logging.dingtalk">
+	</simplesect>
+	<simplesect id="logging.dingtalk">
 		<title>日志报警</title>
-		<section>
+		<simplesect>
 			<title>Logstash 配置</title>
 			<para>将 ERROR 和 WARN 级别的日志发送到钉钉群</para>
 			<screen>
@@ -1559,8 +1559,8 @@ output {
 }			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>监控 SpringBootApplication 的启动和退出</title>
 			<screen>
 			<![CDATA[ 
@@ -1604,9 +1604,9 @@ public class Application {
 			</screen>
 			<para>@PostConstruct 可以监控 启动情况</para>
 			<para>@PreDestroy 可以监控 退出情况</para>
-		</section>
-	</section>
-	<section id="SpringBoot.ELK">
+		</simplesect>
+	</simplesect>
+	<simplesect id="SpringBoot.ELK">
 		<title>Spring boot with ELK(Elasticsearch + Logstash + Kibana)</title>
 		<para>将 Spring boot 日志写入 ELK 有多种实现方式，这里仅提供三种方案：</para>
 		<orderedlist>
@@ -1629,7 +1629,7 @@ public class Application {
 				Kafka 方法适合大数据的情况。
 			</listitem>
 		</orderedlist>
-		<section>
+		<simplesect>
 			<title>TCP 方案</title>
 			<para>logstash 配置</para>
 			<programlisting>
@@ -1683,8 +1683,8 @@ output {
 </configuration>			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Redis 方案</title>
 			<para>https://github.com/kmtong/logback-redis-appender</para>
 			<para>Maven pom.xml 增加 Logback Redis 依赖</para>
@@ -1753,18 +1753,18 @@ output {
 }
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Kafka 方案</title>
 			<programlisting>
 			<![CDATA[]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Other</title>
 			<programlisting>
 			<![CDATA[]]>
 			</programlisting>
-		</section>
-	</section>
+		</simplesect>
+	</simplesect>
 </section>

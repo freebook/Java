@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.suite">
 	<title>Spring 开发环境</title>
-	<section>
+	<simplesect>
 		<title>Java 开发环境</title>
 		<screen>
 		<![CDATA[
@@ -9,8 +9,8 @@
 [root@localhost ~]# dnf install maven 	
 		]]>
 		</screen>
-	</section>
-	<section id="install">
+	</simplesect>
+	<simplesect id="install">
 		<title>安装 Spring Tool Suite</title>
 		<para>
 			<ulink url="https://spring.io/tools/sts/" />
@@ -33,17 +33,17 @@
 			<graphic format="png" fileref="../../images/spring/suite/restart.png" srccredit="neo" width="" />
 		</para>
 		<para>点击 Yes 按钮重启 Eclipse</para>
-	</section>
-	<section id="dashboard">
+	</simplesect>
+	<simplesect id="dashboard">
 		<title>Dashboard</title>
 		<para>进入菜单 Help -&gt; Dashboard</para>
-	</section>
-	<section id="start.spring.io">
+	</simplesect>
+	<simplesect id="start.spring.io">
 		<title>Spring Initializr - Bootstrap your application</title>
 		<para>
 			<ulink url="https://start.spring.io" />
 		</para>
-	</section>
+	</simplesect>
 </section>
 <section id="SpringApplication">
 	<title>SpringApplication</title>
@@ -70,7 +70,7 @@ public class Application {
 	<section id="spring.run">
 		<title>运行 Spring boot 项目</title>
 
-		<section>
+		<simplesect>
 			<title>Linux systemd</title>
 			<para>/etc/systemd/system/spring.service</para>
 			<screen>
@@ -98,8 +98,8 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>传统 init.d 脚本</title>
 			<screen>
 			<![CDATA[
@@ -184,8 +184,8 @@ exit $?
 
 			]]>
 			</screen>
-		</section>
-		<section id="war">
+		</simplesect>
+		<simplesect id="war">
 			<title>编译用于Tomcat的 War</title>
 			<programlisting>
 			<![CDATA[
@@ -219,7 +219,7 @@ public class Application extends SpringBootServletInitializer {
 }		
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 
 	</section>
 
@@ -231,16 +231,16 @@ public class Application extends SpringBootServletInitializer {
 @SpringBootApplication
 			]]>
 		</programlisting>
-		<section>
+		<simplesect>
 			<title>排除 @EnableAutoConfiguration 加载项</title>
 			<programlisting>
 				<![CDATA[
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)				
 				]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
-	<section id="获取Resources中的文件">
+	<simplesect id="获取Resources中的文件">
 		<title>获取 Resources 目录中的静态文件</title>
 		<programlisting>
 			<![CDATA[
@@ -283,8 +283,8 @@ public class Application extends SpringBootServletInitializer {
 	}		
 			]]>
 		</programlisting>
-	</section>
-	<section id="EnableAutoConfiguration">
+	</simplesect>
+	<simplesect id="EnableAutoConfiguration">
 		<title>@EnableAutoConfiguration</title>
 		<para>exclude 排除配置，下面例子是排除 DataSource配置</para>
 		<programlisting>
@@ -292,8 +292,8 @@ public class Application extends SpringBootServletInitializer {
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 			]]>
 		</programlisting>
-	</section>
-	<section id="@ComponentScan">
+	</simplesect>
+	<simplesect id="@ComponentScan">
 		<title>@ComponentScan</title>
 		<para>@ComponentScan 注入会扫描 @Controller 与 @RestController</para>
 		<programlisting>
@@ -303,16 +303,16 @@ public class Application extends SpringBootServletInitializer {
 @ComponentScan({"cn.netkiller.controller", "cn.netkiller.rest"})
 			]]>
 		</programlisting>
-	</section>
-	<section id="@EntityScan">
+	</simplesect>
+	<simplesect id="@EntityScan">
 		<title>@EntityScan 实体扫描</title>
 		<programlisting>
 			<![CDATA[
 @EntityScan("common.domain")
 			]]>
 		</programlisting>
-	</section>
-	<section id="@EnableJpaRepositories">
+	</simplesect>
+	<simplesect id="@EnableJpaRepositories">
 		<title>@EnableJpaRepositories</title>
 		<para>扫描 Jpa 仓库</para>
 		<programlisting>
@@ -320,8 +320,8 @@ public class Application extends SpringBootServletInitializer {
 @EnableJpaRepositories("common.domain")			
 			]]>
 		</programlisting>
-	</section>
-	<section id="启动和销毁">
+	</simplesect>
+	<simplesect id="启动和销毁">
 		<title>启动和销毁</title>
 		<programlisting>
 		<![CDATA[
@@ -366,8 +366,8 @@ public class Application {
 }		
 		]]>
 		</programlisting>
-	</section>
-	<section id="打印环境变量">
+	</simplesect>
+	<simplesect id="打印环境变量">
 		<title>打印环境变量</title>
 		<programlisting>
 		<![CDATA[
@@ -408,8 +408,8 @@ public class Application {
 }		
 		]]>
 		</programlisting>
-	</section>
-	<section id="CharacterEncodingFilter">
+	</simplesect>
+	<simplesect id="CharacterEncodingFilter">
 		<title>CharacterEncodingFilter</title>
 		<programlisting>
 			<![CDATA[
@@ -421,8 +421,8 @@ public class Application {
 	}			
 			]]>
 		</programlisting>
-	</section>
-	<section id="banner">
+	</simplesect>
+	<simplesect id="banner">
 		<title>隐藏 Banner</title>
 		<para>隐藏 Spring Boot Banner</para>
 		<screen>
@@ -445,9 +445,9 @@ public static void main(String[] args) {
 }
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 
-	<section id="scan">
+	<simplesect id="scan">
 		<title>实体与仓库扫描</title>
 		<programlisting>
 			<![CDATA[
@@ -455,8 +455,8 @@ public static void main(String[] args) {
 @EnableJpaRepositories(basePackages = { "cn.netkiller.repository" })			
 			]]>
 		</programlisting>
-	</section>
-	<section id="beans">
+	</simplesect>
+	<simplesect id="beans">
 		<title>列出 Beans</title>
 		<programlisting>
 			<![CDATA[
@@ -498,8 +498,8 @@ public class Application {
 }
 			]]>
 		</programlisting>
-	</section>
-	<section id="spring.boot.ports">
+	</simplesect>
+	<simplesect id="spring.boot.ports">
 		<title>Tomcat 端口</title>
 		<programlisting>
 		<![CDATA[
@@ -530,8 +530,8 @@ public class TomcatConfiguration implements EmbeddedServletContainerCustomizer {
 }
 		]]>
 		</programlisting>
-	</section>
-	<section id="启动配置项">
+	</simplesect>
+	<simplesect id="启动配置项">
 		<title>配置项设定</title>
 		<programlisting>
 			<![CDATA[
@@ -543,8 +543,8 @@ public static void main(String[] args) {
   }			
 			]]>
 		</programlisting>
-	</section>
-	<section id="spring.profiles.active">
+	</simplesect>
+	<simplesect id="spring.profiles.active">
 		<title>spring.profiles.active</title>
 		<programlisting>
 			<![CDATA[
@@ -563,8 +563,8 @@ ctx.refresh();
 			]]>
 
 		</programlisting>
-	</section>
-	<section id="@Profile">
+	</simplesect>
+	<simplesect id="@Profile">
 		<title>@Profile("dev") / @ActiveProfiles("dev")</title>
 		<para>不同环境运行不同的逻辑</para>
 		<programlisting>
@@ -604,8 +604,8 @@ public class DataSourceConfig {
 @Profile({"dev", "test", "grey", "prod"})		
 		]]>
 		</programlisting>
-	</section>
-	<section id="spring.boot.timezone">
+	</simplesect>
+	<simplesect id="spring.boot.timezone">
 		<title>设置默认时区</title>
 		<programlisting>
     <![CDATA[ 
@@ -638,5 +638,5 @@ public class Application {
 }
     ]]>
 		</programlisting>
-	</section>
+	</simplesect>
 </section>

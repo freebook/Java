@@ -3,7 +3,7 @@
     <title>Spring boot with Session share</title>
     <section>
         <title>Redis</title>
-        <section>
+        <simplesect>
             <title>Maven</title>
             <para>增加下面代码到pom.xml</para>
             <programlisting>
@@ -176,8 +176,8 @@
             
             ]]>
             </programlisting>
-        </section>
-        <section>
+        </simplesect>
+        <simplesect>
             <title>application.properties</title>
             <para>spring.session.store-type=redis 将Session 存储在Redis中</para>
             <programlisting>
@@ -196,8 +196,8 @@ spring.session.store-type=redis
             ]]>
             </programlisting>
 
-        </section>
-        <section>
+        </simplesect>
+        <simplesect>
             <title>Application</title>
             <programlisting>
             <![CDATA[
@@ -246,10 +246,10 @@ public RedisHttpSessionConfig() {
 }				
             ]]>
             </programlisting>
-        </section>
+        </simplesect>
 
     </section>
-    <section>
+    <simplesect>
         <title>测试 Session</title>
         <programlisting>
         <![CDATA[
@@ -313,8 +313,8 @@ $60
 spring:session:sessions:627018c8-243e-43ac-87b9-fc07f130c899
             ]]>
         </screen>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>JDBC</title>
         <programlisting>
         <![CDATA[
@@ -322,8 +322,8 @@ spring.session.store-type=jdbc
 spring.session.jdbc.table-name=SESSIONS			
         ]]>
         </programlisting>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>Springboot 2.1</title>
         <screen>
         <![CDATA[
@@ -365,5 +365,5 @@ spring.redis.host=localhost
 spring.redis.port=6379 			
         ]]>
         </screen>
-    </section>
+    </simplesect>
 </section>

@@ -2,7 +2,7 @@
 <section id="springboot.command">
 	<title>Spring boot with command line</title>
 
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<para>开发命令行程序通常我们不需要 Tomcat，所以不需要引入 spring-boot-starter-web 依赖，spring-boot-starter 依赖不含Tomcat。</para>
 		<screen>
@@ -46,8 +46,8 @@
 		
 		]]>
 		</screen>
-	</section>
-	<section id="spring.command.argv">
+	</simplesect>
+	<simplesect id="spring.command.argv">
 		<title>CommandLineRunner 例子</title>
 		<programlisting>
 		<![CDATA[
@@ -85,8 +85,8 @@ public class Application implements CommandLineRunner {
 % java -jar target/command-0.0.1-SNAPSHOT.jar --host=ww.netkiller.cn java spring boot --help -v
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>ApplicationRunner 例子</title>
 		<programlisting>
 		<![CDATA[
@@ -122,5 +122,5 @@ public class Command implements ApplicationRunner {
 		
 		]]>
 		</programlisting>
-	</section>
+	</simplesect>
 </section>

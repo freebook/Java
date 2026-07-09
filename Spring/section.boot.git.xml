@@ -3,7 +3,7 @@
     <title>Spring boot with Git version</title>
     <para>Spring boot 每次升级打包发给运维操作，常常运维操作不当致使升级失败，开发怎样确认线上的jar/war包与升级包一致呢？</para>
     <para>请看下面的解决方案</para>
-    <section>
+    <simplesect>
         <title>CommonRestController 公共控制器</title>
         <para>所有 RestController将会集成 CommonRestController</para>
         <programlisting>
@@ -37,8 +37,8 @@ public String auth(@AuthenticationPrincipal final UserDetails user) {
 }
         ]]>
         </programlisting>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>VersionRestController 测试控制器</title>
         <para>我们创建一个RestController并继承CommonRestController用来测试</para>
         <programlisting>
@@ -63,8 +63,8 @@ public String welcome() {
 }
         ]]>
         </programlisting>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>创建 .gitattributes 文件</title>
         <programlisting>
         <![CDATA[
@@ -79,5 +79,5 @@ curl https://api.netkiller.cn/public/version/commit.json
 $Id: 929bc9e4c90b4d68c25dc693618f23b33fd6ba0f $
         ]]>
         </programlisting>
-    </section>
+    </simplesect>
 </section>

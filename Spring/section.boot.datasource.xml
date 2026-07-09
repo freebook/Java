@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.mongodb">
 	<title>Spring boot with MongoDB</title>
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<para>pom.xml</para>
 		<programlisting>
@@ -114,8 +114,8 @@
 </project>
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Application</title>
 		<para>Application.java</para>
 		<programlisting>
@@ -160,9 +160,9 @@ public class Application {
 			]]>
 		</programlisting>
 
-	</section>
+	</simplesect>
 
-	<section id="MongoTemplate">
+	<simplesect id="MongoTemplate">
 		<title>MongoTemplate</title>
 		<programlisting>
 			<![CDATA[
@@ -225,8 +225,8 @@ public class IndexController {
 
 			]]>
 		</programlisting>
-	</section>
-	<section id="Repository">
+	</simplesect>
+	<simplesect id="Repository">
 		<title>Repository</title>
 		<para>在上一节 MongoTemplate 中，继续添加下面代码。</para>
 		<programlisting>
@@ -393,12 +393,12 @@ public class IndexController {
 }
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 
 </section>
 <section id="springboot.mysql">
 	<title>Spring boot with MySQL</title>
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<para>pom.xml</para>
 		<screen>
@@ -514,8 +514,8 @@ public class IndexController {
 </project>
 			]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Resource</title>
 		<para>src/main/resources/application.properties</para>
 		<screen>
@@ -548,8 +548,8 @@ spring.datasource.time-between-eviction-runs-millis=18800
 spring.datasource.jdbc-interceptors=ConnectionState;SlowQueryReport(threshold=0)
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Application</title>
 		<programlisting>
 			<![CDATA[
@@ -578,8 +578,8 @@ public class Application {
 }
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>JdbcTemplate</title>
 		<programlisting>
 			<![CDATA[
@@ -628,8 +628,8 @@ public class IndexController {
 			]]>
 		</programlisting>
 
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>CrudRepository</title>
 		<para>ArticleRepository</para>
 		<programlisting>
@@ -772,11 +772,11 @@ public class IndexController {
 		</programlisting>
 
 
-	</section>
+	</simplesect>
 </section>
 <section id="springboot.oracle">
 	<title>Spring boot with Oracle</title>
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<para>首先到oracle官网，根据你的Oracle数据库，下载ojdbc6.jar(Oracle 11) 或者 ojdbc7.jar (Oracle 12)</para>
 		<programlisting>
@@ -949,8 +949,8 @@ public class IndexController {
 				]]>
 			</programlisting>
 		</example>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>application.properties</title>
 		<programlisting>
 			<![CDATA[
@@ -994,8 +994,8 @@ jdbc:oracle:thin:@(DESCRIPTION=
 )
 		]]>	
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Application</title>
 		<programlisting>
 			<![CDATA[
@@ -1039,8 +1039,8 @@ public class Application {
 }
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>CrudRepository</title>
 		<programlisting>
 			<![CDATA[
@@ -1137,8 +1137,8 @@ public class Article implements Serializable {
 }
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>JdbcTemplate</title>
 		<programlisting>
 			<![CDATA[
@@ -1156,9 +1156,9 @@ public class Article implements Serializable {
 	}
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 
-	<section>
+	<simplesect>
 		<title>Controller</title>
 		<programlisting>
 			<![CDATA[
@@ -1235,14 +1235,14 @@ public class IndexController {
 			
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 	<!-- <programlisting> <![CDATA[ @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } ]]> </programlisting> <programlisting> <![CDATA[ import oracle.jdbc.pool.OracleDataSource; import org.springframework.boot.context.properties.ConfigurationProperties; import 
 		org.springframework.context.annotation.Bean; import org.springframework.context.annotation.Configuration; import org.springframework.context.annotation.Profile; import javax.sql.DataSource; import javax.validation.constraints.NotNull; import java.sql.SQLException; @Configuration @ConfigurationProperties("oracle") public class OracleConfiguration { @NotNull private String username; @NotNull private String password; @NotNull private String url; public void setUsername(String username) { this.username = username; 
 		} public void setPassword(String password) { this.password = password; } public void setUrl(String url) { this.url = url; } @Bean DataSource dataSource() throws SQLException { OracleDataSource dataSource = new OracleDataSource(); dataSource.setUser(username); dataSource.setPassword(password); dataSource.setURL(url); dataSource.setImplicitCachingEnabled(true); dataSource.setFastConnectionFailoverEnabled(true); return dataSource; } } ]]> </programlisting> -->
 </section>
 <section id="springboot.postgresql">
 	<title>Spring boot with PostgreSQL</title>
-	<section>
+	<simplesect>
 		<title>pom.xml</title>
 		<programlisting>
 			<![CDATA[
@@ -1264,8 +1264,8 @@ public class IndexController {
 
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>application.properties</title>
 		<programlisting>
 			<![CDATA[
@@ -1279,8 +1279,8 @@ spring.jpa.hibernate.ddl-auto=create-drop
 spring.jpa.generate-ddl=true
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Application</title>
 		<programlisting>
 			<![CDATA[
@@ -1308,8 +1308,8 @@ public class Application {
 }
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>CrudRepository</title>
 		<para>Model Class</para>
 		<programlisting>
@@ -1372,8 +1372,8 @@ public interface CustomerRepository extends CrudRepository<Customer, Long>{
 }
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>JdbcTemplate</title>
 		<programlisting>
 			<![CDATA[
@@ -1391,8 +1391,8 @@ public interface CustomerRepository extends CrudRepository<Customer, Long>{
 	}			
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Controller</title>
 		<programlisting>
 			<![CDATA[
@@ -1469,8 +1469,8 @@ public class TestPostgreSQLController {
 }
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Test</title>
 		<screen>
 			curl http://127.0.0.1:7000/test/pgsql/save
@@ -1478,11 +1478,11 @@ public class TestPostgreSQLController {
 			curl http://127.0.0.1:7000/test/pgsql/findbyid?id=1
 			curl http://127.0.0.1:7000/test/pgsql/jdbc?id=1
 		</screen>
-	</section>
+	</simplesect>
 </section>
 <section id="springboot.elasticsearch">
 	<title>Spring boot with Elasticsearch</title>
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<programlisting>
 			<![CDATA[
@@ -1521,8 +1521,8 @@ public class TestPostgreSQLController {
 </project>
                ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Application</title>
 		<programlisting>
                <![CDATA[
@@ -1550,8 +1550,8 @@ public class Application {
 }
                ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>application.properties</title>
 		<programlisting>
                <![CDATA[
@@ -1559,8 +1559,8 @@ spring.data.elasticsearch.repositories.enabled=true
 spring.data.elasticsearch.cluster-nodes=127.0.0.1:9300
                ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Domain</title>
 		<programlisting>
                <![CDATA[
@@ -1592,8 +1592,8 @@ public class City implements Serializable {
 }
             ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>ElasticsearchRepository</title>
 		<programlisting>
             <![CDATA[
@@ -1605,12 +1605,12 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
 }
 	        ]]>
 		</programlisting>
-	</section>
+	</simplesect>
 </section>
 <section>
 	<title>Spring boot with Elasticsearch TransportClient</title>
 	<para>Spring data 目前还不支持 Elasticsearch 5.5.x 所以需要通过注入 TransportClient 这就意味着使用 5.5.x 版本你无法使用 ElasticsearchRepository 这种特性，只能通过官方的 TransportClient 操作 Elasticsearch。</para>
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<para>Elasticsearch 依赖下来四个包</para>
 		<programlisting>
@@ -1752,8 +1752,8 @@ public interface CityRepository extends ElasticsearchRepository<City, Long> {
 
                ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Application</title>
 		<programlisting>
                <![CDATA[
@@ -1781,8 +1781,8 @@ public class Application {
 }
                ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>application.properties</title>
 		<para>注意：Elasticsearch 连接地址是 9300， 而不是 9200</para>
 		<programlisting>
@@ -1792,8 +1792,8 @@ spring.data.elasticsearch.local=false
 spring.data.elasticsearch.properties.transport.tcp.connect_timeout=60s
                ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>ElasticsearchConfiguration</title>
 		<programlisting>
                <![CDATA[
@@ -1881,8 +1881,8 @@ public class ElasticsearchConfiguration implements FactoryBean<TransportClient>,
 }
             ]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>RestController</title>
 		<programlisting>
             <![CDATA[
@@ -1918,11 +1918,11 @@ MacBook-Pro:~ neo$ curl -k https://test:test@localhost:8443/restful/search/clien
 {"fields":{},"id":"1093","type":"article","source":{"@timestamp":"2017-07-31T05:41:00.248Z","author":"test","@version":"1","description":"test","ctime":"2017-07-31T05:40:35.000Z","id":1093,"source":"test","title":"test11111","content":"<p>test</p><p>aaaaaaaaaaaaaa</p>"},"version":3,"index":"information","sourceAsBytes":"eyJAdGltZXN0YW1wIjoiMjAxNy0wNy0zMVQwNTo0MTowMC4yNDhaIiwiYXV0aG9yIjoidGVzdCIsIkB2ZXJzaW9uIjoiMSIsImRlc2NyaXB0aW9uIjoidGVzdCIsImN0aW1lIjoiMjAxNy0wNy0zMVQwNTo0MDozNS4wMDBaIiwiaWQiOjEwOTMsInNvdXJjZSI6InRlc3QiLCJ0aXRsZSI6InRlc3QxMTExMSIsImNvbnRlbnQiOiI8cD50ZXN0PC9wPjxwPmFhYWFhYWFhYWFhYWFhPC9wPiJ9","sourceInternal":{"childResources":[]},"sourceAsString":"{\"@timestamp\":\"2017-07-31T05:41:00.248Z\",\"author\":\"test\",\"@version\":\"1\",\"description\":\"test\",\"ctime\":\"2017-07-31T05:40:35.000Z\",\"id\":1093,\"source\":\"test\",\"title\":\"test11111\",\"content\":\"<p>test</p><p>aaaaaaaaaaaaaa</p>\"}","sourceEmpty":false,"sourceAsMap":{"@timestamp":"2017-07-31T05:41:00.248Z","author":"test","@version":"1","description":"test","ctime":"2017-07-31T05:40:35.000Z","id":1093,"source":"test","title":"test11111","content":"<p>test</p><p>aaaaaaaaaaaaaa</p>"},"exists":true,"sourceAsBytesRef":{"childResources":[]},"fragment":false}	        
 	        ]]>
 		</screen>
-	</section>
+	</simplesect>
 </section>
 <section id="springboot.hive">
 	<title>Spring boot with Apache Hive</title>
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<programlisting>
 			<![CDATA[
@@ -1954,8 +1954,8 @@ MacBook-Pro:~ neo$ curl -k https://test:test@localhost:8443/restful/search/clien
 		</dependency>
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>application.properties</title>
 		<para>hive 数据源配置项</para>
 		<programlisting>
@@ -1978,8 +1978,8 @@ hive:
   password: hive
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Configuration</title>
 		<programlisting>
 			<![CDATA[
@@ -2052,8 +2052,8 @@ public class HiveDataSource {
 }
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>CURD 操作实例</title>
 		<para>Hive 数据库的增删插改操作与其他数据库没有什么不同。</para>
 		<programlisting>
@@ -2128,11 +2128,11 @@ public class HiveController {
 }
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 </section>
 <section id="springboot.phoenix">
 	<title>Spring boot with Phoenix</title>
-	<section>
+	<simplesect>
 		<title>Maven</title>
 		<programlisting>
 			<![CDATA[
@@ -2164,8 +2164,8 @@ public class HiveController {
 </dependencies>  
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>application.properties</title>
 		<para>phoenix 数据源配置项</para>
 		<programlisting>
@@ -2180,8 +2180,8 @@ phoenix:
   default-auto-commit: true  
 			]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Configuration</title>
 		<programlisting>
 			<![CDATA[
@@ -2212,14 +2212,14 @@ public class PhoenixDataSource {
 }
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 </section>
 <section id="spirngboot.datasource">
 	<title>Spring boot with Datasource</title>
 	<subtitle>数据源配置</subtitle>
 	<section>
 		<title>Master / Slave 主从数据库数据源配置</title>
-		<section>
+		<simplesect>
 			<title>application.properties</title>
 			<screen>
 			<![CDATA[
@@ -2236,8 +2236,8 @@ spring.datasource.slave.password = password
 spring.jpa.database-platform=org.hibernate.dialect.MySQL5Dialect
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>配置主从数据源</title>
 			<programlisting>
 			<![CDATA[
@@ -2296,8 +2296,8 @@ public class MultiDataSourceConfig {
 }
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>选择数据源</title>
 			<programlisting>
 			<![CDATA[
@@ -2316,9 +2316,9 @@ public class MultiDataSourceConfig {
 	private JdbcTemplate slaveJdbcTemplate;
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
-	<section>
+	<simplesect>
 		<title>多数据源配置</title>
 
 		<programlisting>
@@ -2481,8 +2481,8 @@ spring.datasource.api.jdbc-interceptors=ConnectionState;SlowQueryReport(threshol
 	JdbcTemplate jdbcTempalte;		
 		]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>JPA 多数据源</title>
 		<para>多个 JPA 数据配置非常简单，请参考下面的例子。注意两点，第一点是设置Repository的位置：</para>
 		<screen>
@@ -2602,14 +2602,14 @@ public class SecondaryConfig {
 }
 		]]>
 		</programlisting>
-	</section>
+	</simplesect>
 	
 </section>
 <section id="springboot.pool">
 	<title>连接池配置</title>
 	<subtitle>Connection and Statement Pooling</subtitle>
 	<para>注意：下面的实例仅限 Spring boot 2.0.2.RELEASE</para>
-	<section id="tomcat">
+	<simplesect id="tomcat">
 		<title>org.apache.tomcat.jdbc.pool.DataSource</title>
 		<para>默认连接池，可以忽略配置</para>
 		<programlisting>
@@ -2617,7 +2617,7 @@ public class SecondaryConfig {
 spring.datasource.type = org.apache.tomcat.jdbc.pool.DataSource			
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 	<section id="pool.druid">
 		<title>druid</title>
 		<para>pom.xml</para>
@@ -2670,7 +2670,7 @@ spring.datasource.druid.connect-properties.slowSqlMillis=5000
 
 			]]>
 		</programlisting>
-		<section>
+		<simplesect>
 			<title>加密数据库密码</title>
 			<para>创建私钥、公钥和密码</para>
 			<screen>
@@ -2728,9 +2728,9 @@ public class ApplicationTests {
 }	
 				]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
-	<section id="pool.c3p0">
+	<simplesect id="pool.c3p0">
 		<title>c3p0 - JDBC3 Connection and Statement Pooling</title>
 		<para>pom.xml</para>
 		<programlisting>
@@ -2774,24 +2774,24 @@ spring.datasource.username=inf
 spring.datasource.password=inf
 			]]>
 		</programlisting>
-	</section>
-	<section id="dbcp2">
+	</simplesect>
+	<simplesect id="dbcp2">
 		<title>dbcp2</title>
 		<programlisting>
 			<![CDATA[
 spring.datasource.type = org.apache.commons.dbcp2.BasicDataSource			
 			]]>
 		</programlisting>
-	</section>
-	<section id="bonecp">
+	</simplesect>
+	<simplesect id="bonecp">
 		<title>bonecp</title>
 		<programlisting>
 			<![CDATA[
 spring.datasource.type = com.jolbox.bonecp.BoneCPDataSource		
 			]]>
 		</programlisting>
-	</section>
-	<section id="HikariPool">
+	</simplesect>
+	<simplesect id="HikariPool">
 		<title>HikariPool</title>
 		<programlisting>
 			<![CDATA[
@@ -2816,5 +2816,5 @@ spring.datasource.hikari.connection-timeout=30000
 spring.datasource.hikari.connection-test-query=SELECT 1
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 </section>

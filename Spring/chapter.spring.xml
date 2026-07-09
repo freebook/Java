@@ -8,4 +8,7 @@
 			<para>Spring Framework 为基于 Java 的企业级应用提供编程模型、配置模型和基础设施支持。</para>
 		</simplesect>
 	</section>
+	<!-- <section id="Aspect">
+		<title>Aspect</title>
+		</section> -->
 </chapter>

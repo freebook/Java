@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.properties">
-	<title>Properties 配置文件</title>
-	<section id="application.properties">
+	<title>Springboot with Properties 配置文件</title>
+	<simplesect id="application.properties">
 		<title>application.properties 配置文件</title>
 		<para>
 			<ulink
@@ -11,7 +11,7 @@
 			<ulink
 				url="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html" />
 		</para>
-		<section id="faq.application.properties">
+		<simplesect id="faq.application.properties">
 			<title>application.properties 参考</title>
 			<para>http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 			</para>
@@ -1463,22 +1463,22 @@ spring..database.replace=any # Type of existing DataSource to replace.
 spring..mockmvc.print=default # MVC Print option.		
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 
 		<section id="spring.config.location">
 			<title>启动指定参数</title>
 			<para>配置资源文件位置，默认application.properties是放在jar包中的，通过spring.config.location可以制定外部配置文件，这样更便于运维。
 			</para>
 
-			<section>
+			<simplesect>
 				<title>--spring.config.location 指定配置文件</title>
 				<screen>
 			<![CDATA[
 java -jar demo.jar --spring.config.location=/opt/config/application.properties
 			]]>
 				</screen>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>--spring.profiles.active 切换配置文件</title>
 				<screen>
 			<![CDATA[
@@ -1493,17 +1493,17 @@ application-pro.properties
 application-tes.properties		
 			]]>
 				</screen>
-			</section>
+			</simplesect>
 		</section>
-		<section id="spring.autoconfigure.exclude">
+		<simplesect id="spring.autoconfigure.exclude">
 			<title>加载排除</title>
 			<programlisting>
 			<![CDATA[
 spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration			
 			]]>
 			</programlisting>
-		</section>
-		<section id="spring.pid">
+		</simplesect>
+		<simplesect id="spring.pid">
 			<title>PID FILE</title>
 			<screen>
 		<![CDATA[
@@ -1511,18 +1511,18 @@ spring.pid.fail-on-write-error= # Fail if ApplicationPidFileWriter is used but i
 spring.pid.file= # Location of the PID file to write (if ApplicationPidFileWriter is used).		
 		]]>
 			</screen>
-		</section>
-		<section id="spring.main.banner-mode">
+		</simplesect>
+		<simplesect id="spring.main.banner-mode">
 			<title>banner 关闭</title>
 			<screen>
 			<![CDATA[
 spring.main.banner-mode=off 			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 		<section id="server">
 			<title>server</title>
-			<section id="server.shutdown">
+			<simplesect id="server.shutdown">
 				<title>优雅关闭</title>
 				<screen>
 				<![CDATA[
@@ -1549,8 +1549,8 @@ neo@MacBook-Pro-M2 engineering % kill -2 57854
 2023-04-24T17:34:30.554+08:00  INFO 57854 --- [ionShutdownHook] o.s.b.w.e.undertow.UndertowWebServer     : Graceful shutdown complete				
 				]]>
 				</screen>
-			</section>
-			<section id="server.port">
+			</simplesect>
+			<simplesect id="server.port">
 				<title>端口配置</title>
 				<screen>
 			<![CDATA[
@@ -1568,8 +1568,8 @@ server.port=0
 server.port=${random.int[1000,1999]}			
 				]]>
 				</screen>
-			</section>
-			<section id="session">
+			</simplesect>
+			<simplesect id="session">
 				<title>Session 配置</title>
 				<screen>
 				<![CDATA[
@@ -1579,8 +1579,8 @@ server.session.tracking-modes 设定Session的追踪模式(cookie, url, ssl).
 server.session.timeout=1800 #session有效时长
 				]]>
 				</screen>
-			</section>
-			<section id="cookie">
+			</simplesect>
+			<simplesect id="cookie">
 				<title>cookie</title>
 				<screen>
 				<![CDATA[
@@ -1602,16 +1602,16 @@ server.session.cookie.http-only=true
 server.session.cookie.path=/
 				]]>
 				</screen>
-			</section>
-			<section id="error">
+			</simplesect>
+			<simplesect id="error">
 				<title>error 路径</title>
 				<screen>
 				<![CDATA[
 server.error.path=/error
 				]]>
 				</screen>
-			</section>
-			<section id="compression">
+			</simplesect>
+			<simplesect id="compression">
 				<title>压缩传输</title>
 				<screen>
 				<![CDATA[
@@ -1625,8 +1625,8 @@ server.compression.mime-types=application/json,application/xml,text/html,text/xm
 server.compression.min-response-size=1024
 				]]>
 				</screen>
-			</section>
-			<section id="ssl">
+			</simplesect>
+			<simplesect id="ssl">
 				<title>ssl</title>
 				<screen>
 				<![CDATA[
@@ -1673,9 +1673,9 @@ server.ssl.keyPassword=123456
 server.ssl.keyStore=/www/ssl/spring
 				]]>
 				</screen>
-			</section>
+			</simplesect>
 		</section>
-		<section id="logging">
+		<simplesect id="logging">
 			<title>logging</title>
 			<screen>
 			<![CDATA[
@@ -1689,10 +1689,10 @@ logging.file.name=your.log # 日志文件名称，默认为spring.log
 java -jar spring-boot-app.jar --logging.file.name=/tmp/springboot.log
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 		<section id="server.tomcat">
 			<title>内嵌 tomcat server</title>
-			<section>
+			<simplesect>
 				<title></title>
 				<para>连接数配置</para>
 				<screen>
@@ -1700,8 +1700,8 @@ java -jar spring-boot-app.jar --logging.file.name=/tmp/springboot.log
 server.tomcat.max-threads=2048 # 最大线程数				
 				]]>
 				</screen>
-			</section>
-			<section id="server.tomcat.basedir">
+			</simplesect>
+			<simplesect id="server.tomcat.basedir">
 				<title>server.tomcat.basedir</title>
 				<para>设置 Tomcat 工作目录，默认 /tmp/tomcat-docbase.7057591687859485145.7000
 					通过下面配置修改
@@ -1711,9 +1711,9 @@ server.tomcat.max-threads=2048 # 最大线程数
 server.tomcat.basedir=/tmp/your_project
 			]]>
 				</screen>
-			</section>
+			</simplesect>
 
-			<section id="access.log">
+			<simplesect id="access.log">
 				<title>access.log</title>
 				<para>如果前端有 nginx 代理这个配置可以禁用</para>
 				<screen>
@@ -1725,9 +1725,9 @@ server.tomcat.accesslog.prefix=www.netkiller.cn.access
 server.tomcat.accesslog.suffix=.log		
 				]]>
 				</screen>
-			</section>
+			</simplesect>
 
-			<section id="charset">
+			<simplesect id="charset">
 				<title>charset</title>
 				<para>Spring boot 默认并非UTF-8 所以下面配置必设，否则将会出现</para>
 				<screen>
@@ -1739,13 +1739,13 @@ spring.http.encoding.enabled=true
 spring.http.encoding.force=true
 				]]>
 				</screen>
-			</section>
+			</simplesect>
 
 
 		</section>
 		<section id="spring.servlet">
 			<title>servlet</title>
-			<section id="spring.servlet.multipart">
+			<simplesect id="spring.servlet.multipart">
 				<title>上传限制</title>
 				<screen>
 			<![CDATA[
@@ -1754,16 +1754,16 @@ spring.servlet.multipart.max-request-size=10MB
 spring.http.multipart.enabled=false			
 			]]>
 				</screen>
-			</section>
-			<section id="server.servlet.context-path">
+			</simplesect>
+			<simplesect id="server.servlet.context-path">
 				<title>server.servlet.context-path</title>
 				<screen>
 				<![CDATA[
 server.servlet.context-path=/your
 				]]></screen>
-			</section>
+			</simplesect>
 		</section>
-		<section id="spring.jackson">
+		<simplesect id="spring.jackson">
 			<title>JSON 输出与日期格式化</title>
 			<screen>
 			<![CDATA[
@@ -1780,8 +1780,8 @@ spring.mvc.date-format=yyyy-MM-dd HH:mm:ss
 spring.jackson.time-zone=GMT+8
 			]]>
 			</screen>
-		</section>
-		<section id="mail">
+		</simplesect>
+		<simplesect id="mail">
 			<title>SMTP 相关配置</title>
 			<screen>
 		<![CDATA[
@@ -1794,8 +1794,8 @@ spring.mail.host=smtp.netkiller.cn
 mail.smtp.debug=true
 		]]>
 			</screen>
-		</section>
-		<section id="redis">
+		</simplesect>
+		<simplesect id="redis">
 			<title>Redis</title>
 			<para>Springboot 1.5</para>
 			<screen>
@@ -1846,16 +1846,16 @@ spring.redis.jedis.pool.min-idle=0
 		
 		]]>
 			</screen>
-		</section>
-		<section id="mongodb">
+		</simplesect>
+		<simplesect id="mongodb">
 			<title>MongoDB</title>
 			<para>格式：mongodb://用户名:密码@主机地址/数据库</para>
 			<screen>
 				spring.data.mongodb.uri=mongodb://user:passw0rd@mdb.netkiller.cn/
 				spring.data.mongodb.repositories.enabled=true
 			</screen>
-		</section>
-		<section id="mysql">
+		</simplesect>
+		<simplesect id="mysql">
 			<title>MySQL</title>
 			<screen>
 				spring.datasource.driver-class-name=com.mysql.jdbc.Driver
@@ -1864,8 +1864,8 @@ spring.redis.jedis.pool.min-idle=0
 				spring.datasource.password=密码
 				spring.jpa.database=MYSQL # 启用JPA支持
 			</screen>
-		</section>
-		<section id="oracle">
+		</simplesect>
+		<simplesect id="oracle">
 			<title>Oracle</title>
 			<screen>
 				spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
@@ -1888,14 +1888,14 @@ spring.redis.jedis.pool.min-idle=0
 				spring.datasource.time-between-eviction-runs-millis=5000
 				spring.datasource.min-evictable-idle-time-millis=60000
 			</screen>
-		</section>
-		<section id="default_schema">
+		</simplesect>
+		<simplesect id="default_schema">
 			<title>default_schema</title>
 			<screen>
 				spring.jpa.properties.hibernate.default_schema=schema
 			</screen>
-		</section>
-		<section id="datasource">
+		</simplesect>
+		<simplesect id="datasource">
 			<title>datasource</title>
 			<para>启用/禁用 导入 schema.sql 和 data.sql / data-${platform}.sql 其中
 				platform 是 spring.datasource.platform 所定义的平台
@@ -1904,8 +1904,8 @@ spring.redis.jedis.pool.min-idle=0
 				spring.datasource.initialize=false
 				spring.datasource.platform=MYSQL
 			</screen>
-		</section>
-		<section id="velocity">
+		</simplesect>
+		<simplesect id="velocity">
 			<title>velocity</title>
 			<screen>
 				spring.velocity.resourceLoaderPath=classpath:/templates/
@@ -1923,8 +1923,8 @@ spring.redis.jedis.pool.min-idle=0
 				spring.velocity.enabled=false
 				spring.velocity.check-template-location=false
 			</screen>
-		</section>
-		<section id="security">
+		</simplesect>
+		<simplesect id="security">
 			<title>Security 相关配置</title>
 			<screen>
 				security.user.name=user
@@ -1944,8 +1944,8 @@ spring.redis.jedis.pool.min-idle=0
 			<para> 参考
 				https://github.com/spring-projects/spring-boot/blob/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java#L171
 			</para>
-		</section>
-		<section id="mvc">
+		</simplesect>
+		<simplesect id="mvc">
 			<title>MVC 配置</title>
 			<para>是否支持favicon.ico，默认为: true</para>
 			<screen>
@@ -1953,8 +1953,8 @@ spring.redis.jedis.pool.min-idle=0
 spring.mvc.favicon.enabled=false
 		]]>
 			</screen>
-		</section>
-		<section id="kafka">
+		</simplesect>
+		<simplesect id="kafka">
 			<title>Kafka 相关配置</title>
 			<programlisting>
 		<![CDATA[
@@ -2039,12 +2039,12 @@ spring.kafka.ssl.truststore-type= # Type of the trust store.
 spring.kafka.template.default-topic= # Default topic to which messages are sent.
 		]]>
 			</programlisting>
-		</section>
-	</section>
-	<section id="properties">
+		</simplesect>
+	</simplesect>
+	<simplesect id="properties">
 		<title>Properties 文件</title>
 
-		<section id="@Value">
+		<simplesect id="@Value">
 			<title>@Value 注解</title>
 			<para>application.properties</para>
 			<screen>
@@ -2061,10 +2061,10 @@ server.host=192.168.0.1,172.16.0.1
 			</screen>
 
 
-		</section>
+		</simplesect>
 
 
-		<section id="ConfigurationProperties">
+		<simplesect id="ConfigurationProperties">
 			<title>@EnableConfigurationProperties 引用自定义 *.properties 配置文件</title>
 			<para>Application.java 配置NetkillerProperties.java是 @ComponentScan
 				扫描范围，可以不用声明下面注解。
@@ -2227,9 +2227,9 @@ netkiller.home=http://www.netkiller.cn
 @PropertySource(value = "classpath:netkiller.properties", encoding = "UTF-8", ignoreResourceNotFound = true) 			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 
-		<section id="@PropertySource">
+		<simplesect id="@PropertySource">
 			<title>@PropertySource 注解载入 properties 文件</title>
 			<programlisting>
 			<![CDATA[
@@ -2304,10 +2304,10 @@ public class TestController {
 }
 			]]>
 			</programlisting>
-		</section>
-	</section>
+		</simplesect>
+	</simplesect>
 
-	<section id="Environment">
+	<simplesect id="Environment">
 		<title>Environment 读取配置文件</title>
 		<programlisting>
 			<![CDATA[
@@ -2357,10 +2357,10 @@ this.environment.containsProperty("spring.jpa.database-platform")
 			]]>
 			</screen>
 		</simplesect>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>手工载入 *.properties 文件</title>
-		<section>
+		<simplesect>
 			<title>家在 resources 目录中的指定文件</title>
 
 			<programlisting>
@@ -2381,8 +2381,8 @@ this.environment.containsProperty("spring.jpa.database-platform")
 	}	
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>从 InputStreamReader 打开 application.properties</title>
 			<programlisting>
 			<![CDATA[
@@ -2400,11 +2400,11 @@ this.environment.containsProperty("spring.jpa.database-platform")
     }			
 			]]>
 			</programlisting>
-		</section>
-	</section>
-	<section>
+		</simplesect>
+	</simplesect>
+	<simplesect>
 		<title>命令行注入配置项</title>
-		<section id="spring.profiles.active">
+		<simplesect id="spring.profiles.active">
 			<title>spring.profiles.active 参数切换配置文件</title>
 			<para>首先我们准备三个配置文件</para>
 			<screen>
@@ -2430,8 +2430,8 @@ mvn clean package -Ptesting
 mvn clean package -Pproduction			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>SpringApplicationBuilder.properties() 方法添加配置项</title>
 			<screen>
 			</screen>
@@ -2442,20 +2442,20 @@ mvn clean package -Pproduction
   }			
 			]]>
 			</programlisting>
-		</section>
-		<section id="setAddCommandLineProperties">
+		</simplesect>
+		<simplesect id="setAddCommandLineProperties">
 			<title>禁用命令行注入环境变量</title>
 			<screen>
 		<![CDATA[
 SpringApplication.setAddCommandLineProperties(false)	
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 
 
-	</section>
+	</simplesect>
 
-	<section id="PropertyResolver">
+	<simplesect id="PropertyResolver">
 		<title>PropertyResolver 获取配置</title>
 		<programlisting>
 			<![CDATA[
@@ -2474,9 +2474,9 @@ public class EnvironmentTest {
 }			
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 
-	<section>
+	<simplesect>
 		<title>参数引用</title>
 		<screen>
 		<![CDATA[
@@ -2485,8 +2485,8 @@ book.author=netkiller
 book.title=《${book.name}》作者 ${book.author}
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>默认值</title>
 		<para>默认值 ${变量:默认值}</para>
 		<screen>
@@ -2521,8 +2521,8 @@ private String spelWithDefaultValue;
  	private String name;			
 			]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>产生随机数</title>
 		<screen>
 		<![CDATA[
@@ -2546,7 +2546,7 @@ cn.netkiller.blog.2=${random.int[10,20]}
 		]]>
 		</screen>
 
-		<section>
+		<simplesect>
 			<title>随机数</title>
 			<screen>
 		<![CDATA[
@@ -2610,9 +2610,9 @@ public class RandomValuePropertySourceTest {
 }		
 		]]>
 			</programlisting>
-		</section>
-	</section>
-	<section>
+		</simplesect>
+	</simplesect>
+	<simplesect>
 		<title>多行字符串</title>
 		<screen>
 		<![CDATA[
@@ -2622,8 +2622,8 @@ text.content=Bright moonlight in front of bed\
  down at home		
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>注入多值属性 arrays, list, set</title>
 		<para>处理逗号分割得值</para>
 		<screen>
@@ -2651,12 +2651,12 @@ my.lists=aa;bb;cc;dd
     }
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 
 
 
 
-	<section>
+	<simplesect>
 		<title>List 列表类型</title>
 		<para>List类型在properties文件中使用[]来定义列表类型，比如：</para>
 		<screen>
@@ -2716,8 +2716,8 @@ java -jar -D"api.url[0]=http://api1.example.com" \
 java -jar -Dapi.url=http://api1.example.com,http://api2.example.com demo.jar	
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Map类型</title>
 		<para>Map类型在properties和yaml中的标准配置方式如下：</para>
 		<screen>
@@ -2745,8 +2745,8 @@ user:
     '[last#name]': chen
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>Binder</title>
 		<screen>
 		<![CDATA[
@@ -2793,8 +2793,8 @@ public class Application {
 }		
 		]]>
 		</programlisting>
-	</section>
-	<section id="jasypt-spring-boot-starter">
+	</simplesect>
+	<simplesect id="jasypt-spring-boot-starter">
 		<title>加密 application.properties 中的敏感内容</title>
 		<para>
 			<ulink url="http://www.jasypt.org" />
@@ -2906,6 +2906,6 @@ public class Password {
 }
 		]]>
 		</programlisting>
-	</section>
+	</simplesect>
 
 </section>

@@ -1,7 +1,7 @@
 
 <section id="springboot.async">
 	<title>Spring boot with Async</title>
-	<section id="Callable">
+	<simplesect id="Callable">
 		<title>Callable 实现异步</title>
 		<programlisting>
 		<![CDATA[
@@ -20,8 +20,8 @@ public Callable<String> order() {
 }		
 		]]>
 		</programlisting>
-	</section>
-	<section id="WebAsyncTask">
+	</simplesect>
+	<simplesect id="WebAsyncTask">
 		<title>WebAsyncTask 实现异步</title>
 		<programlisting>
 		<![CDATA[
@@ -52,8 +52,8 @@ public WebAsyncTask<String> webAsyncTask() {
 }
 		]]>
 		</programlisting>
-	</section>
-	<section id="DeferredResult">
+	</simplesect>
+	<simplesect id="DeferredResult">
 		<title>DeferredResult 实现异步返回结果</title>
 		<programlisting>
 		<![CDATA[
@@ -114,10 +114,10 @@ public WebAsyncTask<String> webAsyncTask() {
     }		
 		]]>
 		</programlisting>
-	</section>
+	</simplesect>
 	<section>
 		<title>带有返回值的异步任务</title>
-		<section>
+		<simplesect>
 			<title>Future</title>
 			<programlisting>
         <![CDATA[
@@ -164,8 +164,8 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
 			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>CompletableFuture</title>
 			<programlisting>
 			<![CDATA[
@@ -230,7 +230,7 @@ future.exceptionally(e -> {
 java.lang.RuntimeException			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 	<section id="SimpleAsyncTaskExecutor">
 		<title>默认简单线程池 SimpleAsyncTaskExecutor</title>
@@ -263,7 +263,7 @@ public class AsyncTask {
 		]]>
 		</programlisting>
 
-		<section>
+		<simplesect>
 			<title>配置线程池</title>
 			<para>默认线程池的配置很简单，配置参数如下：</para>
 			<screen>
@@ -308,8 +308,8 @@ spring:
         await-termination-period: 60 # 等待任务完成的最大时长，单位为秒。默认为 0 ，根据自己应用来设置		
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>@Service/@Component 中异步执行</title>
 
 			<para>直接使用 @Async 注解，即可调用默认线程池</para>
@@ -362,8 +362,8 @@ public class Task {
 }						
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>applicationTaskExecutor</title>
 			<para>SimpleAsyncTaskExecutor Bean 名字是 applicationTaskExecutor</para>
 			<programlisting>
@@ -408,7 +408,7 @@ public class TestService {
 2024-02-02T18:20:50.938+08:00  INFO 91307 --- [watch-development] [       simple-2] cn.netkiller.service.TestService           : applicationTaskExecutor
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
 	<section id="ThreadPoolTaskExecutor">
 		<title>ThreadPoolTaskExecutor 自定义线程池</title>
@@ -481,7 +481,7 @@ public class Application {
         ]]>
 		</programlisting>
 		<para>设置线程池参数</para>
-		<section id="简单异步执行">
+		<simplesect id="简单异步执行">
 			<title>最简单的配置</title>
 			<para></para>
 			<programlisting>
@@ -522,8 +522,8 @@ public class Task {
 			<para>注意：@Async 不会用到刚刚定义的线程池，@Async("asyncExecutor")，@Async("thread")
 				会正确调用
 			</para>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>队列</title>
 			<para>线程池能接受多少队列？</para>
 			<para>下面配置是 executor.setQueueCapacity(10); 也就是 10个，但是实测结果跟你想的不同
@@ -573,8 +573,8 @@ public class ThreadPoolTaskExecutorConfiguration {
 			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>定义多个线程池</title>
 			<programlisting>
         <![CDATA[
@@ -665,9 +665,9 @@ public class DemoAsyncServiceImpl implements DemoAsyncService {
         ]]>
 			</programlisting>
 
-		</section>
+		</simplesect>
 
-		<section>
+		<simplesect>
 			<title>实现 AsyncConfigurer 接口方式创建自定义连接池</title>
 			<para>这种方式可以直接使用 @Async </para>
 			<programlisting>
@@ -728,8 +728,8 @@ public class ThreadPoolTaskExecutorConfiguration implements AsyncConfigurer {
     
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>继承 AsyncConfigurerSupport 创建自定义连接池 </title>
 			<programlisting>
 			<![CDATA[
@@ -788,8 +788,8 @@ public class ThreadPoolTaskExecutorConfiguration extends AsyncConfigurerSupport 
 }			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>生产环境完整代码 @Bean 注入方式</title>
 			<para>这种方式多用在 Spring 2.x 中</para>
 			<programlisting>
@@ -851,8 +851,8 @@ public class ThreadPoolTaskExecutorConfiguration {
 			]]>
 			</programlisting>
 			<para>注意：使用@Bean方式必须配合 @Async("threadPoolTaskExecutor")</para>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>通过 @Bean 覆盖掉 SimpleAsyncTaskExecutor</title>
 			<para>自定义连接池之后，系统内会存在两个连接吃 SimpleAsyncTaskExecutor 和
 				ThreadPoolTaskExecutor
@@ -871,13 +871,13 @@ public class ThreadPoolTaskExecutorConfiguration {
     }			
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
 
 	<section id="ThreadPoolExecutor">
 		<title>自定义线程池 ThreadPoolExecutor</title>
 		<para>自定义线程池</para>
-		<section>
+		<simplesect>
 			<title>ThreadPoolExecutor</title>
 			<para></para>
 			<programlisting>
@@ -896,8 +896,8 @@ public class ThreadPoolTaskExecutorConfiguration {
     }
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>注入自定义线程池bean</title>
 			<programlisting>
 		<![CDATA[
@@ -915,10 +915,10 @@ public class ThreadPoolTaskExecutorConfiguration {
     
 		]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
 
-	<section>
+	<simplesect>
 		<title>设置线程名称</title>
 		<programlisting>
 		<![CDATA[
@@ -935,8 +935,8 @@ public static Random random = new Random();
     }
 		]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>线程池监控</title>
 		<para>监控指标</para>
 		<screen>
@@ -994,11 +994,11 @@ neo@MacBook-Pro-M2 ~> curl -s http://www.netkiller.cn:8080/actuator/metrics/exec
     }	
 		]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>注意事项</title>
 		<para>再 Service 中 通过 this 访问另一个 @Async 方法，异步会失效，必须使用 @@Autowired 入住。
 		</para>
-	</section>
+	</simplesect>
 
 </section>

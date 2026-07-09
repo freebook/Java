@@ -3,7 +3,7 @@
 	<title>Spring boot with Redis</title>
 	<section id="redis">
 		<title>Spring boot with Redis</title>
-		<section>
+		<simplesect>
 			<title>maven</title>
 			<programlisting>
 				<![CDATA[
@@ -13,8 +13,8 @@
 </dependency>			
 				]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>application.properties</title>
 			<programlisting>
 				<![CDATA[
@@ -29,8 +29,8 @@ spring.redis.pool.min-idle=0
 spring.redis.timeout=0
 				]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>JUnit</title>
 			<programlisting>
 				<![CDATA[
@@ -48,8 +48,8 @@ public class ApplicationTests {
 }				
 				]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Controller</title>
 			<para>stringRedisTemplate模板用于存储key,value为字符串的数据</para>
 			<programlisting>
@@ -112,12 +112,12 @@ public class ApplicationTests {
 					]]>
 				</programlisting>
 			</example>
-		</section>
+		</simplesect>
 	</section>
 
 	<section id="redis.pubsub">
 		<title>Redis Pub/Sub</title>
-		<section>
+		<simplesect>
 			<title>Redis配置类</title>
 			<programlisting>
 				<![CDATA[
@@ -171,8 +171,8 @@ public class RedisConfig {
 
 				]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>订阅类</title>
 			<programlisting>
 				<![CDATA[
@@ -193,8 +193,8 @@ public class RedisMessageSubscriber implements MessageListener {
 				]]>
 			</programlisting>
 			
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>发布类</title>
 			<programlisting>
 				<![CDATA[
@@ -221,8 +221,8 @@ public class RedisMessagePublisher {
 								
 				]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>消息发布演示</title>
 			<programlisting>
 				<![CDATA[
@@ -247,20 +247,20 @@ public class RedisMessagePublisher {
 	}				
 				]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
 
 	<section id="redisson">
 		<title>Sprint boot with Redisson</title>
-		<section>
+		<simplesect>
 			<title>Springboot 3.x</title>
 			<screen>
 		<![CDATA[
 
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Springboot 2.1</title>
 			<para>注意：排除 redisson-spring-data-23，引用 redisson-spring-data-21</para>
 			<screen>
@@ -284,7 +284,7 @@ public class RedisMessagePublisher {
 		
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 
 	</section>
 </section>

@@ -2,7 +2,7 @@
 <section id="springboot.actuator">
 	<title>Spring Boot Actuator</title>
 	<subtitle>健康检查、审计、统计和监控</subtitle>
-	<section>
+	<simplesect>
 		<title>Maven 依赖</title>
 		<screen>
 		<![CDATA[
@@ -12,7 +12,7 @@
 </dependency>		
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 	<section id="actuator.config">
 		<title>与 Spring Boot Actuator 有关的配置</title>
 		<para>application.properties</para>
@@ -23,7 +23,7 @@ management.endpoints.web.cors.allowed-origins=https://example.com
 management.endpoints.web.cors.allowed-methods=GET,POST		
 		]]>
 		</screen>
-		<section>
+		<simplesect>
 			<title>禁用HTTP端点</title>
 			<para>如果您不想通过HTTP公开端点，则可以将管理端口设置为-1，如以下示例所示：</para>
 			<screen>
@@ -31,8 +31,8 @@ management.endpoints.web.cors.allowed-methods=GET,POST
 management.server.port=-1			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>安全配置</title>
 			<screen>
 			<![CDATA[
@@ -53,8 +53,8 @@ endpoints.health.sensitive=false  #actuator的health接口是否需要安全保�
 endpoints.health.enabled=true			
 			]]>
 			</screen>
-		</section>
-		<section id="actuator.path">
+		</simplesect>
+		<simplesect id="actuator.path">
 			<title>修改 actuator 地址</title>
 			<screen>
 		<![CDATA[
@@ -64,8 +64,8 @@ management:
       base-path: /monitor		
 		]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>关机</title>
 			<para>配置文件中加入</para>
 			<screen>
@@ -79,9 +79,9 @@ management.endpoint.shutdown.enabled=true
 curl -X POST www.netkiller.cn:8080/actuator/shutdown	
 		]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
-	<section id="actuator.address">
+	<simplesect id="actuator.address">
 		<title>actuator 接口</title>
 		<para>常规接口</para>
 		<screen>
@@ -340,7 +340,7 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator |jq
 }		
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 	<section id="actuator.health">
 		<title>健康状态</title>
 		<para>curl www.netkiller.cn:8080/actuator/health</para>
@@ -352,7 +352,7 @@ neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/health | jq
 }
 		]]>
 		</screen>
-		<section>
+		<simplesect>
 			<title>健康状态</title>
 			<para>详细的健康状态信息</para>
 			<screen>
@@ -379,10 +379,10 @@ neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/health | jq
 }			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 		<section id="actuator.health.custom">
 			<title>自定义健康检查</title>
-			<section>
+			<simplesect>
 				<title>方案一</title>
 				<programlisting>
 				<![CDATA[
@@ -402,8 +402,8 @@ public class CustomHealthIndicator extends AbstractHealthIndicator {
 }
 				]]>
 				</programlisting>
-			</section>
-			<section>
+			</simplesect>
+			<simplesect>
 				<title>方案二</title>
 				<programlisting>
 			<![CDATA[
@@ -445,14 +445,14 @@ public class CustomHealthIndicator implements HealthIndicator {
 
 			]]>
 				</programlisting>
-			</section>
+			</simplesect>
 		</section>
 
 	</section>
 
 	<section id="actuator.info">
 		<title>info 配置信息</title>
-		<section>
+		<simplesect>
 			<title>application.properties 配置静态信息</title>
 			<para>返回 application.properties 文件中定义的 info 配置信息，如:</para>
 			<screen>
@@ -474,8 +474,8 @@ neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/info | jq
 }
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>动态信息</title>
 			<programlisting>
 			<![CDATA[
@@ -520,9 +520,9 @@ neo@Mac ~ % curl -s http://localhost:8080/actuator/info | jq
 }			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
-	<section id="actuator.beans">
+	<simplesect id="actuator.beans">
 		<title>beans 信息</title>
 		<screen>
 		<![CDATA[
@@ -4943,8 +4943,8 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/beans |jq
 }		
 		]]>
 		</screen>
-	</section>
-	<section id="actuator.caches">
+	</simplesect>
+	<simplesect id="actuator.caches">
 		<title>caches</title>
 
 		<screen>
@@ -4976,8 +4976,8 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/caches/cens
 }	
 		]]>
 		</screen>
-	</section>
-	<section id="actuator.conditions">
+	</simplesect>
+	<simplesect id="actuator.conditions">
 		<title>conditions</title>
 		<screen>
 		<![CDATA[
@@ -5041,8 +5041,8 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/conditions 
 
 		]]>
 		</screen>
-	</section>
-	<section id="actuator.configprops">
+	</simplesect>
+	<simplesect id="actuator.configprops">
 		<title>configprops 配置文件</title>
 		<para>查看 spring.task.execution 配置 </para>
 		<screen>
@@ -6681,8 +6681,8 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/configprops
 }
 		]]>
 		</screen>
-	</section>
-	<section id="actuator.env">
+	</simplesect>
+	<simplesect id="actuator.env">
 		<title>env 环境变量</title>
 		<screen>
 		<![CDATA[
@@ -7308,8 +7308,8 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/env |jq
 	
 		]]>
 		</screen>
-	</section>
-	<section id="actuator.logfile">
+	</simplesect>
+	<simplesect id="actuator.logfile">
 		<title>logfile 日志</title>
 		<screen>
 		<![CDATA[
@@ -7331,8 +7331,8 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/loggers | t
 		]]>
 		</screen>
 
-	</section>
-	<section id="actuator.threaddump">
+	</simplesect>
+	<simplesect id="actuator.threaddump">
 		<title>threaddump 线程信息</title>
 		<screen>
 		<![CDATA[
@@ -7385,19 +7385,19 @@ neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/threaddump 
       "threadName": "lettuce-epollEventLoop-4-2",	
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 
 
-	<section id="actuator.scheduledtasks">
+	<simplesect id="actuator.scheduledtasks">
 		<title>计划任务</title>
 		<screen>
 		<![CDATA[
 http://www.netkiller.cn:8080/actuator/scheduledtasks		
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 
-	<section id="actuator.metrics">
+	<simplesect id="actuator.metrics">
 		<title>metrics</title>
 		<screen>
 		<![CDATA[
@@ -7505,17 +7505,17 @@ neo@MacBook-Pro-Neo ~/w/Architect (master)> curl -s https://www.netkiller.cn/act
 }
 		]]>
 		</screen>
-	</section>
-	<section id="actuator.mappings">
+	</simplesect>
+	<simplesect id="actuator.mappings">
 		<title>控制器映射 URL</title>
 		<screen>
 		<![CDATA[
 neo@MacBook-Pro-M2 ~ % curl -s http://www.netkiller.cn:8080/actuator/mappings |jq 		
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 
-	<section id="actuator.endpoint">
+	<simplesect id="actuator.endpoint">
 		<title>自定义监控指标</title>
 		<programlisting>
 		<![CDATA[
@@ -7624,5 +7624,5 @@ public class CustomActuatorEndpoint {
 		]]>
 		</programlisting>
 
-	</section>
+	</simplesect>
 </section>

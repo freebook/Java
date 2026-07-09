@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.test">
 	<title>SpringBootTest</title>
-	<section id="springboot.test.maven">
+	<simplesect id="springboot.test.maven">
 		<title>Maven 依赖</title>
 		<screen>
 		<![CDATA[
@@ -12,8 +12,8 @@
 		</dependency>		
 		]]>
 		</screen>
-	</section>
-	<section id="test.class">
+	</simplesect>
+	<simplesect id="test.class">
 		<title>测试类</title>
 		<para>创建测试类，在测试类的类头部添加：@RunWith(SpringRunner.class)和@SpringBootTest注解，在测试方法的前添加@Test，最后选择方法右键run运行。</para>
 		<programlisting>
@@ -38,7 +38,7 @@ public class WalletTest {
 }
 		]]>
 		</programlisting>
-		<section id="spring.boot.test">
+		<simplesect id="spring.boot.test">
 			<title>Junit基本注解介绍</title>
 			<screen>
 			<![CDATA[
@@ -69,18 +69,18 @@ public class WalletTest {
 @Test	
 			]]>
 			</screen>
-		</section>
-	</section>
-	<section id="Assert">
-		<title></title>
-		<section id="Assert.assertEquals">
+		</simplesect>
+	</simplesect>
+	<simplesect id="Assert">
+		<title>Assert</title>
+		<simplesect id="Assert.assertEquals">
 			<title>Assert.assertEquals 判断相等</title>
-		</section>
-		<section id="Assert.assertTrue">
+		</simplesect>
+		<simplesect id="Assert.assertTrue">
 			<title>Assert.assertTrue</title>
-		</section>
-	</section>
-	<section>
+		</simplesect>
+	</simplesect>
+	<simplesect>
 		<title>JPA 测试</title>
 		<programlisting>
 		<![CDATA[
@@ -114,8 +114,8 @@ public class ApplicationTests {
 }		
 		]]>
 		</programlisting>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>TestRestTemplate</title>
 		<screen>
 		<![CDATA[
@@ -188,8 +188,8 @@ public class SpringBootDemoApplicationTests
 }	
 		]]>
 		</screen>
-	</section>
-	<section id="MockMvc">
+	</simplesect>
+	<simplesect id="MockMvc">
 		<title>Controller单元测试</title>
 		<para>创建测试类，在测试类的类头部添加：@RunWith(SpringRunner.class)、@SpringBootTest、@ AutoConfigureMockMvc注解，在测试方法的前添加@Test，最后选择方法右键run运行。</para>
 		<para>使用@Autowired 注入MockMvc，在方法中使用 mvc测试功能。示例：</para>
@@ -243,10 +243,10 @@ public class StudentControllerTest {
 }		
 		]]>
 		</programlisting>
-	</section>
+	</simplesect>
 
 	
-	<section id="WebTestClient">
+	<simplesect id="WebTestClient">
 		<title>WebTestClient</title>
 		<programlisting>
 		<![CDATA[
@@ -287,5 +287,5 @@ public class WebfluxApplicationTests {
 		
 		]]>
 		</programlisting>
-	</section>
+	</simplesect>
 </section>

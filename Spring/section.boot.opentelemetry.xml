@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.opentelemetry">
 	<title>Spring Boot 4 + OpenTelemetry</title>
-	<section>
+	<simplesect>
 		<title>依赖配置</title>
 		<para>首先，在你的pom.xml中添加依赖：</para>
 		<screen>
@@ -38,8 +38,8 @@ management:
 		</screen>
 		
 		
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>定义 Span</title>
 		<para>通过注解添加自定义 Span：</para>
 		<screen>
@@ -60,8 +60,8 @@ public class OrderService {
 }		
 		]]>
 		</screen>
-	</section>
-	<section>
+	</simplesect>
+	<simplesect>
 		<title>日志追踪</title>
 		<para>在logback-spring.xml 中配置日志模式包含追踪信息：</para>
 		<screen>
@@ -78,5 +78,5 @@ public class OrderService {
 </configuration>
 		]]>
 		</screen>
-	</section>
+	</simplesect>
 </section>

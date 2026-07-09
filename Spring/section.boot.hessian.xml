@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.hessian">
     <title>Spring boot with Hessian</title>
-    <section>
+    <simplesect>
         <title>Maven</title>
         <programlisting>
         <![CDATA[
@@ -12,8 +12,8 @@
     </dependency>			
         ]]>
         </programlisting>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>Application</title>
         <programlisting>
         <![CDATA[
@@ -42,8 +42,8 @@ public static void main(String[] args) {
 }
         ]]>
         </programlisting>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>HessianServiceExporter</title>
         <programlisting>
         <![CDATA[
@@ -81,8 +81,8 @@ public HessianProxyFactoryBean helloClient() {
 }		
         ]]>
         </programlisting>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>Service</title>
         <programlisting>
         <![CDATA[
@@ -111,8 +111,8 @@ public String sayHello(String name) {
 }
         ]]>
         </programlisting>
-    </section>
-    <section>
+    </simplesect>
+    <simplesect>
         <title>RestController</title>
         <programlisting>
         <![CDATA[
@@ -137,5 +137,5 @@ public String test() {
 }		
         ]]>
         </programlisting>
-    </section>
+    </simplesect>
 </section>

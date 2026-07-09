@@ -1,6 +1,6 @@
 <section id="springboot.quickstart">
 	<title>Spring Boot Quick start</title>
-	<section>
+	<simplesect>
 		<title>创建项目</title>
 		<screen>
 		<![CDATA[
@@ -13,8 +13,8 @@ curl https://start.spring.io/starter.tgz  \
 | tar -xzvf -		
 		]]>
 		</screen>
-	</section>
-	<section id="pom">
+	</simplesect>
+	<simplesect id="pom">
 		<title>pom.xml</title>
 		<screen>
 		<![CDATA[
@@ -54,8 +54,8 @@ curl https://start.spring.io/starter.tgz  \
 </project>		
 		]]>
 		</screen>
-	</section>
-	<section id="controller">
+	</simplesect>
+	<simplesect id="controller">
 		<title>Controller</title>
 		<programlisting>
 		<![CDATA[
@@ -86,11 +86,11 @@ public class SampleController {
 		<screen>
 			curl http://127.0.0.1:8080/
 		</screen>
-	</section>
+	</simplesect>
 	<section id="spring-boot-maven-plugin">
 		<title>Springboot with Maven</title>
 		<para>spring-boot-maven-plugin 插件</para>
-		<section>
+		<simplesect>
 			<title>resource</title>
 			<para>将 resource 添加应用程序</para>
 			<screen>
@@ -117,8 +117,8 @@ public class SampleController {
 </build>		
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Maven run</title>
 			<programlisting>
 			<![CDATA[
@@ -140,8 +140,8 @@ $ mvn package
 $ java -jar target/api.netkiller.cn-0.0.1-SNAPSHOT.jar
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Spring Boot maven 插件 build-image</title>
 			<para>Spring Boot 构建 Docker 镜像，你不需要写 Dockerfile，plugin 帮你完成。</para>
 			<para>只需要简单的执行：</para>
@@ -168,8 +168,8 @@ docker run -p 8000:8080 -t demo:0.0.1-SNAPSHOT
 curl http://localhost:8000/
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>生成项目信息</title>
 			<para>mvn spring-boot:build-info</para>
 			<screen>
@@ -177,6 +177,6 @@ curl http://localhost:8000/
 neo@MacBook-Pro-Neo ~/workspace/microservice/config % mvn spring-boot:build-info			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 </section>

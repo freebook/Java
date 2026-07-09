@@ -6,7 +6,7 @@
 	<!-- https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-starters -->
 	<section>
 		<title>实现 starter</title>
-		<section>
+		<simplesect>
 			<title>Maven pom.xml 依赖包</title>
 			<screen>
 			<![CDATA[
@@ -67,8 +67,8 @@
 			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>配置文件处理</title>
 			<para>application.properties 加入短信网关的配置项</para>
 			<screen>
@@ -129,8 +129,8 @@ public class SmsProperties {
 }			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>自动配置文件</title>
 			<programlisting>
 			<![CDATA[
@@ -157,8 +157,8 @@ public class SmsAutoConfiguration {
 }			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>启用 starter 的自定义注解</title>
 			<programlisting>
 			<![CDATA[
@@ -181,11 +181,11 @@ public @interface EnableSms {
 }			
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
 	<section>
 		<title>引用 starter</title>
-		<section>
+		<simplesect>
 			<title>Maven pom.xml 引入依赖</title>
 			<screen>
 			<![CDATA[
@@ -225,8 +225,8 @@ public @interface EnableSms {
 </project>			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>通过注解配置 starter</title>
 			<para>@EnableSms 启用自动配置短信发送模块</para>
 			
@@ -255,8 +255,8 @@ public class Application {
 }			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>测试运行结果</title>
 			<screen>
 			<![CDATA[
@@ -277,6 +277,6 @@ SmsProperties [url=https://sms.netkiller.cn/v1, username=netkiller, password=pas
 验证码发送成功！			
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 </section>

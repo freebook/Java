@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="springboot.aop">
 	<title>Spring boot with Aop</title>
-	<section id="Aspect">
-		<title>Aspect</title>
-		<section>
+	
+		<simplesect>
 			<title>Maven</title>
 			<screen>
 			<![CDATA[
@@ -13,8 +12,8 @@
 		</dependency>			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Pojo 类</title>
 			<programlisting>
 			<![CDATA[
@@ -35,8 +34,8 @@ public class Employee {
 			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Service 类</title>
 			<programlisting>
 			<![CDATA[
@@ -68,8 +67,8 @@ public class EmployeeService {
 			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Aspect 类</title>
 			<programlisting>
 			<![CDATA[
@@ -103,8 +102,8 @@ public class EmployeeServiceAspect {
 }		
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>控制器</title>
 			<programlisting>
 			<![CDATA[
@@ -148,8 +147,8 @@ public class EmployeeController {
 			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Application</title>
 			<programlisting>
 			<![CDATA[
@@ -168,8 +167,8 @@ public class Application {
 			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>测试</title>
 			<para>触发 Aspect</para>
 			<screen>
@@ -187,7 +186,7 @@ After method:Employee cn.netkiller.aop.service.EmployeeService.createEmployee(St
 Successfully created Employee with id: 1, name: neo
 			]]>
 			</screen>
-		</section>
+		</simplesect>
 		
-	</section>
+	
 </section>

@@ -10,7 +10,7 @@
 		
 		]]>
 		</programlisting>
-		<section id="spring.ConcurrencyLimit">
+		<simplesect id="spring.ConcurrencyLimit">
 			<title>@ConcurrencyLimit 限流</title>
 			<para>在需要限制并发的方法上添加@ConcurrencyLimit注解</para>
 			<programlisting>
@@ -35,8 +35,8 @@ public class NotificationService {
 }		
 		]]>
 			</programlisting>
-		</section>
-		<section id="spring.Retryable">
+		</simplesect>
+		<simplesect id="spring.Retryable">
 			<title>@Retryable 重试</title>
 			<programlisting>
 			<![CDATA[
@@ -68,13 +68,13 @@ var retryTemplate = new RetryTemplate(retryPolicy);
 retryTemplate.execute(() -> jmsClient.destination("notifications").send(...));
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 
 	</section>
 	
 	<section>
 		<title>spring-retry</title>
-		<section>
+		<simplesect>
 			<title>spring-retry 依赖</title>
 			<para>添加依赖</para>
 			<screen>
@@ -86,8 +86,8 @@ retryTemplate.execute(() -> jmsClient.destination("notifications").send(...));
         </dependency>
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>@EnableRetry 启用重试</title>
 			<programlisting>
 			<![CDATA[
@@ -138,8 +138,8 @@ public class Application {
 }			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title></title>
 			<programlisting>
 			<![CDATA[
@@ -180,8 +180,8 @@ api  | 2026-01-12 17:52:55.306  WARN  --- [tomcat-handler-0] cn.aigcsst.service.
 api  | 2026-01-12 17:52:55.308 ERROR  --- [tomcat-handler-0] c.aigcsst.config.GloablControllerAdvice  : RuntimeException: null <- handleException:19			
 			]]>
 			</screen>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>高级用法</title>
 			<programlisting>
 			<![CDATA[
@@ -196,7 +196,7 @@ api  | 2026-01-12 17:52:55.308 ERROR  --- [tomcat-handler-0] c.aigcsst.config.Gl
     }			
 			]]>
 			</programlisting>
-		</section>		
+		</simplesect>		
 		
 	</section>
 

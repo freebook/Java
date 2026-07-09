@@ -2,7 +2,7 @@
 <section id="springboot.email">
 	<title>Spring boot with Email</title>
 
-	<section id="jakarta.mail">
+	<simplesect id="jakarta.mail">
 		<title>jakarta.mail</title>
 		<para>原生 jakarta.mail 例子</para>
 		<programlisting>
@@ -119,11 +119,11 @@ public class EmailComponent {
 
 			]]>
 		</programlisting>
-	</section>
+	</simplesect>
 	<section id="spring-boot-starter-mail">
 		<title>spring-boot-starter-mail</title>
 		<para>Springboot 封装的 jakarta.mail</para>
-		<section>
+		<simplesect>
 			<title>Maven</title>
 			<programlisting>
         <![CDATA[
@@ -268,8 +268,8 @@ public class EmailComponent {
             ]]>
 				</programlisting>
 			</example>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Resource</title>
 			<para>application.properties</para>
 			<para>Postfix / Exam4 / Sendmail 邮件服务器配置</para>
@@ -289,8 +289,8 @@ spring.mail.properties.mail.smtp.auth=true
 #spring.mail.properties.mail.smtp.starttls.required=true  
         ]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>POJO</title>
 			<programlisting>
         <![CDATA[
@@ -354,8 +354,8 @@ public Email(String from, String to, String subject, String text) {
 
         ]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>RestController</title>
 			<programlisting>
         <![CDATA[
@@ -452,8 +452,8 @@ public ResponseEntity<Email> sendmail(@RequestBody Email email) {
 }
         ]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>Test</title>
 			<screen>
         <![CDATA[
@@ -467,11 +467,11 @@ Date: Wed, 10 Aug 2016 06:38:00 GMT
 {"from":"root@netkiller.cn","to":"21214094@qq.com","subject":"Hello","text":"Hello world!!!","status":true}
         ]]>
 			</screen>
-		</section>
+		</simplesect>
 	</section>
 	<section id="spring-boot-starter-mail.detail">
 		<title>用法详解</title>
-		<section>
+		<simplesect>
 			<title>开启 DEBUG</title>
 
 			<programlisting>
@@ -479,8 +479,8 @@ Date: Wed, 10 Aug 2016 06:38:00 GMT
 spring.mail.properties.mail.debug=true
 		]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>SMTP SSL 配置</title>
 			<para>ssl smtp 配置 spring.mail.properties.mail.smtp.ssl.enable=true
 			</para>
@@ -501,9 +501,9 @@ spring.mail.properties.mail.smtp.ssl.enable=true
 spring.mail.properties.mail.debug=true
 			]]>
 			</programlisting>
-		</section>
+		</simplesect>
 
-		<section>
+		<simplesect>
 			<title>SMTP TLS 配置</title>
 			<para>tls smtp 配置
 				spring.mail.properties.mail.smtp.starttls.enable=true
@@ -527,9 +527,9 @@ spring.mail.properties.mail.debug=true
 			]]>
 			</programlisting>
 
-		</section>
+		</simplesect>
 
-		<section>
+		<simplesect>
 			<title>发送文本邮件</title>
 			<para>发送文本邮件</para>
 			<programlisting>
@@ -567,8 +567,8 @@ public class EmailComponent {
 }
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>发送HTML邮件</title>
 			<programlisting>
 			<![CDATA[
@@ -580,8 +580,8 @@ public class EmailComponent {
         mimeMessageHelper.setText(body, true); // true = 支持HTML			
 			]]>
 			</programlisting>
-		</section>
-		<section>
+		</simplesect>
+		<simplesect>
 			<title>发送带附件的邮件</title>
 			<programlisting>
 		<![CDATA[
@@ -651,6 +651,6 @@ public class EmailComponent {
 }		
 		]]>
 			</programlisting>
-		</section>
+		</simplesect>
 	</section>
 </section>
