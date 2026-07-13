@@ -5624,8 +5624,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> removeByFirstName(String firstName);      			
 			]]>
 			</programlisting>
-			<section>
-				<title>返回删除数量</title>
+			<example>
+				<title>JPA deleteBy 返回删除数量</title>
 				<para>仓库定义</para>
 				<programlisting>
 				<![CDATA[
@@ -5681,7 +5681,51 @@ public interface AssetsRepository extends CrudRepository<Assets, Integer> {
     }
 				]]>
 				</programlisting>
-			</section>
+			</example>
+			<example>
+				<title>JPA 更多用法</title>
+				<programlisting>
+				<![CDATA[
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class UserService {
+
+    @Resource
+    private UserRepository userRepo;
+
+    public void testDelete() {
+        // 根据用户名删除单个
+        userRepo.deleteByUsername("zhangsan");
+
+        // 删除年龄小于18的所有人
+        userRepo.deleteAllByAgeLessThan(18);
+
+        // 删除姓名=李四 且年龄=25
+        userRepo.deleteAllByUsernameAndAge("lisi", 25);
+
+        // 删除手机号=138xxx 或姓名=wangwu
+        userRepo.deleteAllByPhoneOrUsername("13800138000", "wangwu");
+
+        // 模糊删除用户名带 test 的 %test%
+        userRepo.deleteAllByUsernameLike("%test%");
+
+        // 根据id批量删除
+        userRepo.deleteAllByIdIn(List.of(1L,2L,3L));
+
+        // 删除年龄20~30之间
+        userRepo.deleteAllByAgeBetween(20,30);
+
+        // 返回删除记录行数
+        long count = userRepo.deleteAllByAgeGreaterThan(60);
+        System.out.println("删除了：" + count + " 条");
+    }
+}				
+				]]>
+				</programlisting>
+			</example>
 		</section>
 		<section id="IsNull">
 			<title>IsNull</title>
