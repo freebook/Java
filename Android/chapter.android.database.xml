@@ -152,10 +152,14 @@ File xmlFile = new File("/data/data/<package name>/shared_prefs/<name>.xml");
 		</section>
 	</section>
 	&section.android.database.room.xml;
-	<section id="PreferencesDataStore">
-		<title>Preferences DataStore</title>
+	<section id="Jetpack.DataStore">
+		<title>Jetpack DataStore</title>
+		<section id="PreferencesDataStore">
+			<title>Preferences DataStore</title>
+		</section>
+		<section id="ProtoDataStore">
+			<title>Proto DataStore</title>
+		</section>
 	</section>
-	<section id="ProtoDataStore">
-		<title>Proto DataStore</title>
-	</section>
+
 </chapter>
