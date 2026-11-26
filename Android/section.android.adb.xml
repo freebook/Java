@@ -85,6 +85,23 @@ List of devices attached
 CFE6R21625003544       device usb:1114112X product:MRR-W29 model:MRR_W29 device:HWMRR-Q transport_id:1
 			]]>
 		</screen>
+		<para>输出字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead>
+					<row><entry>字段</entry><entry>含义</entry></row>
+				</thead>
+				<tbody>
+					<row><entry><literal>0123456789ABCDEF</literal></entry><entry>设备序列号（serial number），用于唯一标识设备，后续 <command>adb -s</command> 指定设备时使用</entry></row>
+					<row><entry><literal>device</literal></entry><entry>设备状态。<literal>device</literal>=已连接且可用，<literal>offline</literal>=设备离线无响应，<literal>unauthorized</literal>=设备未授权 USB 调试（需在设备上点击"允许"）</entry></row>
+					<row><entry><literal>usb:1310720X</literal></entry><entry>USB 端口标识，表示设备通过哪个 USB 端口连接。X 为十六进制端口号</entry></row>
+					<row><entry><literal>product:full_aiv8167sm3_bsp</literal></entry><entry>产品名称，对应 <literal>ro.product.name</literal> 属性，标识设备的软件配置版本</entry></row>
+					<row><entry><literal>model:aiv8167sm3_bsp</literal></entry><entry>设备型号，对应 <literal>ro.product.model</literal> 属性</entry></row>
+					<row><entry><literal>device:aiv8167sm3_bsp</literal></entry><entry>设备代号（device name），对应 <literal>ro.product.device</literal> 属性，标识硬件平台</entry></row>
+					<row><entry><literal>transport_id:2</literal></entry><entry>ADB 传输通道编号，内部用于管理多个设备连接，每次连接分配一个唯一 ID</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 	</section>
 	<section id="adb.shell">
 		<title>Shell</title>
@@ -124,9 +141,42 @@ eth0      Link encap:Ethernet  HWaddr 86:7a:05:cc:ae:72
           TX packets:6 errors:0 dropped:0 overruns:0 carrier:0 
           collisions:0 txqueuelen:1000 
           RX bytes:0 TX bytes:508 
-          Interrupt:42 			
+          Interrupt:42 		
 			]]>
 				</screen>
+				<para>输出字段解读：</para>
+				<informaltable>
+					<tgroup cols="2">
+						<thead>
+							<row><entry>字段</entry><entry>含义</entry></row>
+						</thead>
+						<tbody>
+							<row><entry><literal>Link encap</literal></entry><entry>链路封装类型。Ethernet=以太网，Local Loopback=本地回环接口</entry></row>
+							<row><entry><literal>HWaddr</literal></entry><entry>硬件地址（MAC 地址），网络接口的物理标识</entry></row>
+							<row><entry><literal>UP BROADCAST MULTICAST</literal></entry><entry>接口标志位：UP=接口已启用，BROADCAST=支持广播，MULTICAST=支持组播，RUNNING=接口正在运行，LOOPBACK=回环接口</entry></row>
+							<row><entry><literal>MTU</literal></entry><entry>最大传输单元（Maximum Transmission Unit），单位字节。以太网/WiFi 默认 1500，回环接口通常为 65536</entry></row>
+							<row><entry><literal>Metric</literal></entry><entry>路由度量值，值越小优先级越高，用于多路径选择</entry></row>
+							<row><entry><literal>RX packets</literal></entry><entry>接收到的数据包总数</entry></row>
+							<row><entry><literal>RX errors</literal></entry><entry>接收错误的数据包数</entry></row>
+							<row><entry><literal>RX dropped</literal></entry><entry>因缓冲区满等原因被丢弃的接收数据包数</entry></row>
+							<row><entry><literal>RX overruns</literal></entry><entry>因接收缓冲区溢出而丢失的数据包数</entry></row>
+							<row><entry><literal>RX frame</literal></entry><entry>因帧对齐错误而丢弃的接收数据包数</entry></row>
+							<row><entry><literal>TX packets</literal></entry><entry>发送的数据包总数</entry></row>
+							<row><entry><literal>TX errors</literal></entry><entry>发送失败的数据包数</entry></row>
+							<row><entry><literal>TX dropped</literal></entry><entry>被丢弃的发送数据包数</entry></row>
+							<row><entry><literal>TX overruns</literal></entry><entry>因发送缓冲区溢出而丢失的数据包数</entry></row>
+							<row><entry><literal>TX carrier</literal></entry><entry>因载波丢失（物理链路中断）而未能发送的数据包数</entry></row>
+							<row><entry><literal>collisions</literal></entry><entry>以太网冲突次数，正常网络中应接近 0</entry></row>
+							<row><entry><literal>txqueuelen</literal></entry><entry>发送队列长度，控制数据包在发送前的缓冲数量</entry></row>
+							<row><entry><literal>RX bytes / TX bytes</literal></entry><entry>接收/发送的总字节数</entry></row>
+							<row><entry><literal>inet addr</literal></entry><entry>IPv4 地址，如 127.0.0.1</entry></row>
+							<row><entry><literal>Mask</literal></entry><entry>子网掩码，如 255.0.0.0 表示 /8 网络</entry></row>
+							<row><entry><literal>inet6 addr</literal></entry><entry>IPv6 地址，如 fe80::... 为链路本地地址</entry></row>
+							<row><entry><literal>Scope</literal></entry><entry>IPv6 地址作用域：Host=仅本机（::1），Link=仅本链路（fe80::），Global=全局可路由</entry></row>
+							<row><entry><literal>Interrupt</literal></entry><entry>硬件中断号（IRQ），标识该网卡使用的中断线编号</entry></row>
+						</tbody>
+					</tgroup>
+				</informaltable>
 			</section>
 			<section>
 				<title>无线 IP 地址</title>
@@ -202,6 +252,31 @@ CmaFree:           14540 kB
 			
 			]]>
 			</screen>
+			<para>输出字段解读：</para>
+			<informaltable>
+				<tgroup cols="2">
+					<thead><row><entry>字段</entry><entry>含义</entry></row></thead>
+					<tbody>
+						<row><entry><literal>MemTotal</literal></entry><entry>系统可用的物理内存总量（不含内核保留部分）</entry></row>
+						<row><entry><literal>MemFree</literal></entry><entry>完全未被使用的物理内存，不包括缓存和缓冲区</entry></row>
+						<row><entry><literal>MemAvailable</literal></entry><entry>应用程序实际可使用的内存估算值，包含可回收的缓存</entry></row>
+						<row><entry><literal>Buffers</literal></entry><entry>用于块设备 I/O 的缓冲区大小（如磁盘读写缓存）</entry></row>
+						<row><entry><literal>Cached</literal></entry><entry>页缓存大小，用于缓存已读取的文件内容以加速后续访问</entry></row>
+						<row><entry><literal>Active</literal></entry><entry>最近被频繁访问的内存页总量，系统会优先保留这部分内存</entry></row>
+						<row><entry><literal>Inactive</literal></entry><entry>最近较少使用的内存页总量，在内存紧张时优先被回收</entry></row>
+						<row><entry><literal>SwapTotal</literal></entry><entry>交换分区（Swap）的总大小</entry></row>
+						<row><entry><literal>SwapFree</literal></entry><entry>交换分区中尚未被使用的空间</entry></row>
+						<row><entry><literal>Dirty</literal></entry><entry>已修改但尚未写回磁盘的内存页大小</entry></row>
+						<row><entry><literal>AnonPages</literal></entry><entry>匿名内存页（不属于任何文件的内存，如进程堆、栈）</entry></row>
+						<row><entry><literal>Mapped</literal></entry><entry>已映射到进程地址空间的文件页大小（如 mmap 映射）</entry></row>
+						<row><entry><literal>Slab</literal></entry><entry>内核用于缓存自身数据结构的内存总量</entry></row>
+						<row><entry><literal>SReclaimable</literal></entry><entry>Slab 中可被回收的部分（如 dentry、inode 缓存）</entry></row>
+						<row><entry><literal>SUnreclaim</literal></entry><entry>Slab 中不可回收的部分，内核必须保留</entry></row>
+						<row><entry><literal>CommitLimit</literal></entry><entry>系统允许承诺分配的内存上限（物理内存 + Swap 的按比例计算值）</entry></row>
+						<row><entry><literal>Committed_AS</literal></entry><entry>所有进程已申请但未必实际使用的内存总量（虚拟内存承诺量）</entry></row>
+					</tbody>
+				</tgroup>
+			</informaltable>
 		</section>
 		<section>
 			<title>查看硬件与系统属性</title>
@@ -389,6 +464,28 @@ dalvik.vm.stack-trace-file=/data/anr/traces.txt
 ro.expect.recovery_id=0x182fbd9a6eea8693a3aeac4bfab86ba6271f55d1000000000000000000000000
 			]]>
 			</screen>
+			<para>输出字段解读：</para>
+			<informaltable>
+				<tgroup cols="2">
+					<thead><row><entry>属性</entry><entry>含义</entry></row></thead>
+					<tbody>
+						<row><entry><literal>ro.build.id</literal></entry><entry>构建版本号标识，用于唯一标识一次系统编译</entry></row>
+						<row><entry><literal>ro.build.version.sdk</literal></entry><entry>当前系统的 SDK 版本号（整数），决定 API 兼容性级别</entry></row>
+						<row><entry><literal>ro.build.version.release</literal></entry><entry>Android 系统的发布版本号（如 10、11、12）</entry></row>
+						<row><entry><literal>ro.build.type</literal></entry><entry>构建类型，常见值：<literal>user</literal>（正式发布）、<literal>userdebug</literal>（调试版）、<literal>eng</literal>（工程版）</entry></row>
+						<row><entry><literal>ro.build.fingerprint</literal></entry><entry>系统构建指纹，由厂商/产品/设备/版本等信息拼接而成，用于 OTA 校验和唯一标识</entry></row>
+						<row><entry><literal>ro.product.model</literal></entry><entry>设备型号名称（如 SM-G998B、Pixel 6）</entry></row>
+						<row><entry><literal>ro.product.cpu.abi</literal></entry><entry>设备首选的 CPU 指令集架构（如 arm64-v8a、armeabi-v7a）</entry></row>
+						<row><entry><literal>ro.product.cpu.abilist</literal></entry><entry>设备支持的所有 CPU 架构列表，按优先级排列</entry></row>
+						<row><entry><literal>ro.product.manufacturer</literal></entry><entry>设备制造商名称（如 samsung、Google、Xiaomi）</entry></row>
+						<row><entry><literal>ro.board.platform</literal></entry><entry>SoC 芯片平台代号（如 msm8998、mt6893、gs101）</entry></row>
+						<row><entry><literal>dalvik.vm.heapsize</literal></entry><entry>Dalvik/ART 虚拟机单个进程允许的最大堆内存</entry></row>
+						<row><entry><literal>dalvik.vm.heapgrowthlimit</literal></entry><entry>普通应用堆内存的增长上限（达到后触发 GC 而非扩容）</entry></row>
+						<row><entry><literal>persist.sys.timezone</literal></entry><entry>系统持久化的时区设置（如 Asia/Shanghai）</entry></row>
+						<row><entry><literal>ro.sf.lcd_density</literal></entry><entry>屏幕像素密度（DPI），影响 UI 元素的缩放和布局适配</entry></row>
+					</tbody>
+				</tgroup>
+			</informaltable>
 			<para>获取指定的属性 adb shell getprop net.bt.name</para>
 			<screen>
 			<![CDATA[
@@ -605,6 +702,32 @@ WINDOW MANAGER DISPLAY CONTENTS (dumpsys window displays)
 			
 			]]>
 		</screen>
+		<para>输出字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead><row><entry>字段</entry><entry>含义</entry></row></thead>
+				<tbody>
+					<row><entry><literal>mDisplayId</literal></entry><entry>显示屏的唯一标识符 ID</entry></row>
+					<row><entry><literal>init=WxH Ddpi</literal></entry><entry>初始化分辨率（宽x高）和 DPI 密度</entry></row>
+					<row><entry><literal>cur=WxH</literal></entry><entry>当前实际分辨率</entry></row>
+					<row><entry><literal>app=WxH</literal></entry><entry>应用程序可用区域分辨率</entry></row>
+					<row><entry><literal>rng</literal></entry><entry>屏幕尺寸范围（最小宽x最小高 - 最大宽x最大高）</entry></row>
+					<row><entry><literal>mStackId</literal></entry><entry>任务栈 ID</entry></row>
+					<row><entry><literal>taskId</literal></entry><entry>任务 ID</entry></row>
+					<row><entry><literal>mFullscreen</literal></entry><entry>是否全屏显示</entry></row>
+					<row><entry><literal>mBounds</literal></entry><entry>窗口边界坐标（左上角和右下角）</entry></row>
+					<row><entry><literal>appTokens/AppWindowToken</literal></entry><entry>应用窗口令牌，标识一个 Activity 的窗口</entry></row>
+					<row><entry><literal>ActivityRecord</literal></entry><entry>Activity 记录，包含组件名、任务 ID 等信息</entry></row>
+					<row><entry><literal>windowType</literal></entry><entry>窗口类型（2 表示应用窗口）</entry></row>
+					<row><entry><literal>hidden</literal></entry><entry>窗口是否隐藏</entry></row>
+					<row><entry><literal>hasVisible</literal></entry><entry>是否包含可见的窗口</entry></row>
+					<row><entry><literal>reportedDrawn</literal></entry><entry>是否已报告绘制完成</entry></row>
+					<row><entry><literal>reportedVisible</literal></entry><entry>是否已报告为可见状态</entry></row>
+					<row><entry><literal>DimLayerController</literal></entry><entry>调光层控制器，管理窗口调光效果</entry></row>
+					<row><entry><literal>DockedStackDividerController</literal></entry><entry>分屏分隔线控制器，管理分屏模式下的分隔条</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 		<section>
 			<title>查看 dpi</title>
 
@@ -663,8 +786,30 @@ Current Battery Service state:
   voltage: 0
   temperature: 424
   technology: 			
-			]]>
+		]]>
 			</screen>
+		<para>输出字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead><row><entry>字段</entry><entry>含义</entry></row></thead>
+				<tbody>
+					<row><entry><literal>AC powered</literal></entry><entry>是否使用交流电源供电</entry></row>
+					<row><entry><literal>USB powered</literal></entry><entry>是否使用 USB 电源供电</entry></row>
+					<row><entry><literal>Wireless powered</literal></entry><entry>是否使用无线充电</entry></row>
+					<row><entry><literal>Max charging current</literal></entry><entry>最大充电电流（微安）</entry></row>
+					<row><entry><literal>Max charging voltage</literal></entry><entry>最大充电电压（微伏）</entry></row>
+					<row><entry><literal>Charge counter</literal></entry><entry>当前电池电荷量（微安时）</entry></row>
+					<row><entry><literal>status</literal></entry><entry>电池状态：1=未知，2=充电中，3=放电中，4=未充电，5=已充满</entry></row>
+					<row><entry><literal>health</literal></entry><entry>电池健康度：1=未知，2=良好，3=过热，4=损坏，5=过压，6=过冷</entry></row>
+					<row><entry><literal>present</literal></entry><entry>电池是否存在</entry></row>
+					<row><entry><literal>level</literal></entry><entry>当前电池电量百分比</entry></row>
+					<row><entry><literal>scale</literal></entry><entry>电量满格值（通常为 100）</entry></row>
+					<row><entry><literal>voltage</literal></entry><entry>当前电池电压（毫伏）</entry></row>
+					<row><entry><literal>temperature</literal></entry><entry>电池温度（除以 10 得到摄氏度）</entry></row>
+					<row><entry><literal>technology</literal></entry><entry>电池技术类型（如 Li-ion）</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 		</section>
 	</section>
 
@@ -698,6 +843,19 @@ Bluetooth Status
   time since enabled: 00:12:52.801		
 		]]>
 		</screen>
+		<para>输出字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead><row><entry>字段</entry><entry>含义</entry></row></thead>
+				<tbody>
+					<row><entry><literal>enabled</literal></entry><entry>蓝牙是否启用，<literal>true</literal> 表示已启用，<literal>false</literal> 表示未启用</entry></row>
+					<row><entry><literal>state</literal></entry><entry>蓝牙状态：<literal>ON</literal>（已开启）、<literal>OFF</literal>（已关闭）、<literal>TURNING_ON</literal>（正在开启）、<literal>TURNING_OFF</literal>（正在关闭）</entry></row>
+					<row><entry><literal>address</literal></entry><entry>蓝牙 MAC 地址</entry></row>
+					<row><entry><literal>name</literal></entry><entry>蓝牙设备名称</entry></row>
+					<row><entry><literal>time since enabled</literal></entry><entry>自蓝牙启用以来经过的时间，格式为 <literal>HH:MM:SS.mmm</literal></entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 		<para>获取蓝牙开关状态</para>
 		<screen>
 		<![CDATA[
@@ -759,7 +917,7 @@ adb shell settings put global bluetooth_disabled false
 		</section>
 		
 	</section>
-	<section>
+	<section id="adb.asound">
 		<title>声卡</title>
 		<screen>
 			<![CDATA[
@@ -772,6 +930,19 @@ rk3568_r:/storage/emulated/0 # cat /proc/asound/cards
                       Yamaha Corporation Steinberg UR22C at usb-xhci-hcd.5.auto-1, high speed			
 			]]>
 		</screen>
+		<para>输出字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead><row><entry>字段</entry><entry>含义</entry></row></thead>
+				<tbody>
+					<row><entry>格式：<literal>编号 [短名称]</literal></entry><entry>声卡编号（从0开始）和短标识名称</entry></row>
+					<row><entry><literal>长名称 - 描述</literal></entry><entry>声卡的完整名称和驱动描述信息</entry></row>
+					<row><entry><literal>rockchip_hdmi</literal></entry><entry>Rockchip 平台 HDMI 音频输出声卡，用于 HDMI 显示器的音频传输</entry></row>
+					<row><entry><literal>rockchip_rk809-</literal></entry><entry>RK809 编解码器（Codec）声卡，提供板载模拟音频输入输出</entry></row>
+					<row><entry><literal>USB-Audio</literal></entry><entry>USB 音频设备，如外置声卡（示例中为 Steinberg UR22C，Yamaha 制造）</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 		<para></para>
 		<screen>
 			<![CDATA[
@@ -789,6 +960,20 @@ rk3568_r:/storage/emulated/0 # cat /proc/asound/devices
 			
 			]]>
 		</screen>
+		<para>输出字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead><row><entry>字段</entry><entry>含义</entry></row></thead>
+				<tbody>
+					<row><entry>设备编号格式：<literal>编号: [卡号-设备号]</literal></entry><entry>全局设备编号，以及所属声卡号和设备号（如 <literal>[ 0- 0]</literal> 表示声卡0的设备0）</entry></row>
+					<row><entry><literal>digital audio playback</literal></entry><entry>数字音频播放设备</entry></row>
+					<row><entry><literal>digital audio capture</literal></entry><entry>数字音频采集（录音）设备</entry></row>
+					<row><entry><literal>control</literal></entry><entry>声卡控制设备，用于调节音量、增益等参数</entry></row>
+					<row><entry><literal>raw midi</literal></entry><entry>原始 MIDI 设备，用于 MIDI 乐器通信</entry></row>
+					<row><entry><literal>timer</literal></entry><entry>音频定时器设备，用于音频流的精确时序同步</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 		<para></para>
 		<screen>
 			<![CDATA[
@@ -798,8 +983,21 @@ rk3568_r:/storage/emulated/0 # cat /proc/asound/pcm
 02-00: USB Audio : USB Audio : playback 1 : capture 1			
 			]]>
 		</screen>
+		<para>输出字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead><row><entry>字段</entry><entry>含义</entry></row></thead>
+				<tbody>
+					<row><entry><literal>卡号-设备号</literal>（如 <literal>00-00</literal>）</entry><entry>声卡编号和设备编号，对应 <literal>/proc/asound/cards</literal> 和 <literal>/proc/asound/devices</literal> 中的编号</entry></row>
+					<row><entry>DAI 名称（如 <literal>fe400000.i2s-i2s-hifi</literal>）</entry><entry>数字音频接口（Digital Audio Interface）名称，表示 CPU 端的 I2S 控制器及其连接的 DAI 链路</entry></row>
+					<row><entry>Codec 名称（如 <literal>i2s-hifi-0</literal>、<literal>rk817-hifi-0</literal>、<literal>USB Audio</literal>）</entry><entry>音频编解码器名称，标识具体的音频芯片或 USB 音频设备</entry></row>
+					<row><entry><literal>playback N</literal></entry><entry>支持播放，<literal>N</literal> 为播放流的数量（子流数）</entry></row>
+					<row><entry><literal>capture N</literal></entry><entry>支持录音采集，<literal>N</literal> 为采集流的数量（子流数）</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 	</section>
-	<section>
+	<section id="adb.camera">
 		<title>摄像头</title>
 		<screen>
 		<![CDATA[
@@ -836,6 +1034,219 @@ adb shell "am start -a android.media.action.VIDEO_CAPTURE"
 adb shell "input keyevent KEYCODE_CAMERA"			
 			]]>
 			</screen>
+		</section>
+	</section>
+	<section id="adb.ip">
+		<title>IP 地址</title>
+		<para>Android 系统内置了 <command>ip</command> 命令（来自 iproute2），用于查看和配置网络接口、路由表、邻居缓存等。相比已废弃的 <command>ifconfig</command>，<command>ip</command> 功能更完整，支持 IPv6、策略路由、隧道等。</para>
+		<section>
+			<title>ip 命令用法</title>
+			<informaltable>
+				<tgroup cols="2">
+					<thead>
+						<row>
+							<entry>命令</entry>
+							<entry>说明</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row><entry><command>ip addr</command> / <command>ip a</command></entry><entry>查看所有网络接口的 IP 地址（IPv4 + IPv6）</entry></row>
+						<row><entry><command>ip -4 addr</command></entry><entry>仅显示 IPv4 地址</entry></row>
+						<row><entry><command>ip -6 addr</command></entry><entry>仅显示 IPv6 地址</entry></row>
+						<row><entry><command>ip addr show wlan0</command></entry><entry>仅查看 wlan0 接口的地址</entry></row>
+						<row><entry><command>ip link</command> / <command>ip l</command></entry><entry>查看网络接口链路层状态（MAC、MTU、UP/DOWN）</entry></row>
+						<row><entry><command>ip route</command> / <command>ip r</command></entry><entry>查看路由表</entry></row>
+						<row><entry><command>ip -6 route</command></entry><entry>查看 IPv6 路由表</entry></row>
+						<row><entry><command>ip neigh</command> / <command>ip n</command></entry><entry>查看 ARP/NDP 邻居缓存</entry></row>
+						<row><entry><command>ip rule</command></entry><entry>查看策略路由规则</entry></row>
+						<row><entry><command>ip addr add 192.168.1.100/24 dev eth0</command></entry><entry>手动添加 IP 地址</entry></row>
+						<row><entry><command>ip addr del 192.168.1.100/24 dev eth0</command></entry><entry>删除 IP 地址</entry></row>
+						<row><entry><command>ip link set wlan0 up</command></entry><entry>启用接口</entry></row>
+						<row><entry><command>ip link set wlan0 down</command></entry><entry>禁用接口</entry></row>
+						<row><entry><command>ip route add default via 192.168.1.1</command></entry><entry>添加默认网关</entry></row>
+					</tbody>
+				</tgroup>
+			</informaltable>
+		</section>
+		<section>
+			<title>IP 地址</title>
+			<screen>
+			<![CDATA[
+130|P61:/ $ ip addr                                                                                                                                                                                       
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: ccmni0: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 1e:29:f7:ad:70:1d brd ff:ff:ff:ff:ff:ff
+3: ccmni1: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 02:99:4d:fa:bd:b7 brd ff:ff:ff:ff:ff:ff
+4: ccmni2: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 3e:6d:c9:e1:a1:9e brd ff:ff:ff:ff:ff:ff
+5: ccmni3: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 42:0a:25:2c:91:29 brd ff:ff:ff:ff:ff:ff
+6: ccmni4: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 5e:eb:18:3c:f3:19 brd ff:ff:ff:ff:ff:ff
+7: ccmni5: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] d6:cf:0c:24:11:b9 brd ff:ff:ff:ff:ff:ff
+8: ccmni6: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] d2:25:fd:6f:ff:64 brd ff:ff:ff:ff:ff:ff
+9: ccmni7: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] ca:59:e1:ec:fa:4b brd ff:ff:ff:ff:ff:ff
+10: ccmni8: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 1a:7c:a6:df:12:43 brd ff:ff:ff:ff:ff:ff
+11: ccmni9: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 92:e7:e4:e0:50:a0 brd ff:ff:ff:ff:ff:ff
+12: ccmni10: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 1a:ac:99:da:c6:1e brd ff:ff:ff:ff:ff:ff
+13: ccmni11: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 0e:f1:1f:fa:2f:f7 brd ff:ff:ff:ff:ff:ff
+14: ccmni12: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] a6:41:dd:b4:78:de brd ff:ff:ff:ff:ff:ff
+15: ccmni13: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] c6:dd:b7:b3:17:4b brd ff:ff:ff:ff:ff:ff
+16: ccmni14: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 56:fd:0a:3a:fd:d6 brd ff:ff:ff:ff:ff:ff
+17: ccmni15: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 02:13:72:c1:ce:5a brd ff:ff:ff:ff:ff:ff
+18: ccmni16: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 2a:6f:6f:0c:e6:a4 brd ff:ff:ff:ff:ff:ff
+19: ccmni17: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 2a:b5:04:1d:e0:2e brd ff:ff:ff:ff:ff:ff
+20: ccmni18: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] a6:45:38:e0:69:fd brd ff:ff:ff:ff:ff:ff
+21: ccmni19: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] 3e:32:3b:c7:6b:6a brd ff:ff:ff:ff:ff:ff
+22: ccmni20: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/[519] ea:06:09:6a:cf:b0 brd ff:ff:ff:ff:ff:ff
+23: ccmni-lan: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 0a:53:b4:f5:99:23 brd ff:ff:ff:ff:ff:ff
+24: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 62:6e:7b:c0:49:f2 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::606e:7bff:fec0:49f2/64 scope link 
+       valid_lft forever preferred_lft forever
+25: ifb0: <BROADCAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 32
+    link/ether 36:a2:3b:fb:9e:a1 brd ff:ff:ff:ff:ff:ff
+26: ifb1: <BROADCAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 32
+    link/ether 02:3d:ef:05:59:0a brd ff:ff:ff:ff:ff:ff
+27: ip_vti0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default qlen 1000
+    link/ipip 0.0.0.0 brd 0.0.0.0
+28: ip6_vti0@NONE: <NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/tunnel6 :: brd ::
+29: sit0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default qlen 1000
+    link/sit 0.0.0.0 brd 0.0.0.0
+30: ip6tnl0@NONE: <NOARP> mtu 1452 qdisc noop state DOWN group default qlen 1000
+    link/tunnel6 :: brd ::
+32: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 3000
+    link/ether ce:3f:35:fb:27:95 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.10.26/23 brd 192.168.11.255 scope global wlan0
+       valid_lft forever preferred_lft forever
+    inet6 fdc1:c3b9:10a3:0:31f0:568b:f3fe:4ad5/64 scope global temporary dynamic 
+       valid_lft 2956sec preferred_lft 256sec
+    inet6 fdc1:c3b9:10a3:0:cc3f:35ff:fefb:2795/64 scope global dynamic mngtmpaddr 
+       valid_lft 2956sec preferred_lft 256sec
+    inet6 240e:3bc:308f:17c0:31f0:568b:f3fe:4ad5/64 scope global temporary dynamic 
+       valid_lft 170211sec preferred_lft 15207sec
+    inet6 240e:3bc:308f:17c0:cc3f:35ff:fefb:2795/64 scope global dynamic mngtmpaddr 
+       valid_lft 170211sec preferred_lft 90251sec
+    inet6 fe80::cc3f:35ff:fefb:2795/64 scope link 
+       valid_lft forever preferred_lft forever
+34: p2p0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN group default qlen 1000
+    link/ether 7a:fc:c6:71:36:59 brd ff:ff:ff:ff:ff:ff			
+			]]>
+		</screen>
+		<para>输出字段解读（以 wlan0 为例）：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead>
+					<row>
+						<entry>字段</entry>
+						<entry>含义</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row><entry><literal>32:</literal></entry><entry>接口索引号（内核分配的唯一编号）</entry></row>
+					<row><entry><literal>wlan0</literal></entry><entry>网络接口名称（WiFi 通常为 wlan0，以太网为 eth0）</entry></row>
+					<row><entry><literal>&lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;</literal></entry><entry>接口标志位：UP=接口已启用，LOWER_UP=物理链路已连接，BROADCAST=支持广播，MULTICAST=支持组播，NO-CARRIER=无信号</entry></row>
+					<row><entry><literal>state UP</literal></entry><entry>接口运行状态。UP=工作中，DOWN=已关闭，UNKNOWN=无法确定（如回环接口）</entry></row>
+					<row><entry><literal>mtu 1500</literal></entry><entry>最大传输单元，单位字节。以太网/WiFi 默认 1500</entry></row>
+					<row><entry><literal>qdisc mq</literal></entry><entry>排队策略（queueing discipline）。mq=多队列，noqueue=无队列（回环）</entry></row>
+					<row><entry><literal>qlen 3000</literal></entry><entry>发送队列长度</entry></row>
+					<row><entry><literal>link/ether ce:3f:35:fb:27:95</literal></entry><entry>链路层类型和 MAC 地址</entry></row>
+					<row><entry><literal>brd ff:ff:ff:ff:ff:ff</literal></entry><entry>以太网广播地址</entry></row>
+					<row><entry><literal>inet 192.168.10.26/23</literal></entry><entry>IPv4 地址及子网掩码长度（/23 = 255.255.254.0）</entry></row>
+					<row><entry><literal>brd 192.168.11.255</literal></entry><entry>该子网的广播地址</entry></row>
+					<row><entry><literal>scope global</literal></entry><entry>地址作用域：global=全局可用，link=仅本链路（如 169.254.x.x），host=仅本机（127.x.x.x）</entry></row>
+					<row><entry><literal>valid_lft forever</literal></entry><entry>地址有效生存时间。forever=永不过期（静态配置），数字=剩余秒数（DHCP/SLAAC 分配）</entry></row>
+					<row><entry><literal>preferred_lft forever</literal></entry><entry>优先生存时间。过期后地址仍可用但不再用于新建连接</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
+		</section>
+		<section>
+			<title>IPv4</title>
+			<screen>
+			<![CDATA[
+130|P61:/ $ ip -4 addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+32: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 3000
+    inet 192.168.10.26/23 brd 192.168.11.255 scope global wlan0
+       valid_lft forever preferred_lft forever			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>IPv6</title>
+			<screen>
+			<![CDATA[
+P61:/ $ ip -6 addr                                                                                                                                                                                        
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 state UNKNOWN qlen 1000
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+24: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 state UNKNOWN qlen 1000
+    inet6 fe80::606e:7bff:fec0:49f2/64 scope link 
+       valid_lft forever preferred_lft forever
+32: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP qlen 3000
+    inet6 fdc1:c3b9:10a3:0:31f0:568b:f3fe:4ad5/64 scope global temporary dynamic 
+       valid_lft 2881sec preferred_lft 181sec
+    inet6 fdc1:c3b9:10a3:0:cc3f:35ff:fefb:2795/64 scope global dynamic mngtmpaddr 
+       valid_lft 2881sec preferred_lft 181sec
+    inet6 240e:3bc:308f:17c0:31f0:568b:f3fe:4ad5/64 scope global temporary dynamic 
+       valid_lft 170136sec preferred_lft 15132sec
+    inet6 240e:3bc:308f:17c0:cc3f:35ff:fefb:2795/64 scope global dynamic mngtmpaddr 
+       valid_lft 170136sec preferred_lft 90176sec
+    inet6 fe80::cc3f:35ff:fefb:2795/64 scope link 
+       valid_lft forever preferred_lft forever			
+			]]>
+		</screen>
+		<para>IPv6 特有字段解读：</para>
+		<informaltable>
+			<tgroup cols="2">
+				<thead>
+					<row>
+						<entry>字段</entry>
+						<entry>含义</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row><entry><literal>scope global</literal></entry><entry>全局可路由地址，可访问外网</entry></row>
+					<row><entry><literal>scope link</literal></entry><entry>链路本地地址（fe80:: 开头），仅在同一物理链路上通信，用于 NDP/SLAAC</entry></row>
+					<row><entry><literal>scope host</literal></entry><entry>仅本机使用（::1/128，等价于 IPv4 的 127.0.0.1）</entry></row>
+					<row><entry><literal>temporary dynamic</literal></entry><entry>隐私扩展地址（RFC 4941）。随机生成，定期轮换，防止通过 IPv6 地址追踪设备</entry></row>
+					<row><entry><literal>mngtmpaddr</literal></entry><entry>管理临时地址（manage temporary address）。由 SLAAC 生成，是 temporary 地址的基础模板</entry></row>
+					<row><entry><literal>dynamic</literal></entry><entry>通过 SLAAC（无状态地址自动配置）或 DHCPv6 动态获取的地址</entry></row>
+					<row><entry><literal>valid_lft 170136sec</literal></entry><entry>地址有效剩余时间（秒）。过期后地址失效，不可再用于收发任何数据包</entry></row>
+					<row><entry><literal>preferred_lft 90176sec</literal></entry><entry>优选剩余时间（秒）。过期后地址仍可用（已有连接不断），但新连接会使用其他优选地址</entry></row>
+				</tbody>
+			</tgroup>
+		</informaltable>
+		<tip>
+			<para>Android 设备同时拥有多个 IPv6 地址是正常现象：链路本地（fe80::）用于本链路通信，全局地址中 temporary 用于对外访问（隐藏真实接口标识），mngtmpaddr 是 SLAAC 生成的稳定地址。运营商前缀 <literal>240e:</literal> 开头表示中国电信分配的公网 IPv6 地址。</para>
+		</tip>
 		</section>
 	</section>
 </section>
